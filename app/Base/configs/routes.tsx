@@ -19,7 +19,6 @@ const register = wrap({
     navbarVisibility: false,
     component: lazy(() => import('#views/Register')),
     componentProps: {
-        name: 'Register',
     },
     visibility: 'is-not-authenticated',
 });
