@@ -4,6 +4,9 @@ import { _cs } from '@togglecorp/fujs';
 import {
     Card,
 } from '@the-deep/deep-ui';
+
+import RegisterForm from './RegisterForm';
+
 import styles from './styles.css';
 
 interface Props {
@@ -22,7 +25,7 @@ function Register(props: Props) {
                     Image goes here
                 </div>
                 <div className={styles.right}>
-                    This is where the form goes!
+                    <RegisterForm />
                 </div>
             </Card>
         </div>

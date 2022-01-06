@@ -9,7 +9,7 @@
     .card {
         display: flex;
         width: 60vw;
-        height: 50vh;
+        height: 40vh;
         gap: var(--dui-spacing-extra-large);
 
         .left {
@@ -24,8 +24,9 @@
             display: flex;
             flex-basis: 50%;
             flex-direction: column;
-            border: 4px solid var(--dui-color-background);
-            border-radius: 5px;
+            border: var(--dui-width-separator-thick) solid var(--dui-color-background);
+            border-radius: var(--dui-radius-border-medium);
+            overflow-y: auto;
         }
     }
 

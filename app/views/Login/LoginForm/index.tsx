@@ -80,6 +80,7 @@ function LoginForm() {
                 className={styles.loginFormContainer}
                 heading="Login"
                 headingSize="medium"
+                headingClassName={styles.heading}
                 contentClassName={styles.inputContainer}
                 footerContent={(
                     <div className={styles.footer}>
