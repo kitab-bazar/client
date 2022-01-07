@@ -1,0 +1,58 @@
+.filter {
+    display: flex;
+    justify-content: flex-end;
+    .input {
+        margin: 0 5% 1% 2%;
+    }
+}
+
+.page-content {
+    gap: var(--dui-spacing-extra-large);
+    margin: 0 5% 5% 5%;
+
+    .cover-image {
+        background-color: grey;
+        width: 100%;
+        height: 20vw;
+    }
+    .book-section {
+        display: flex;
+        align-content: space-between;
+        width: 100%;
+
+        .book-list {
+            margin: 1% 0 0 4%;
+            width: 20%;
+
+            .bookImg {
+                width: 100%;
+            }
+        }
+    }
+
+    .main-content {
+        flex-grow: 1;
+    }
+
+    .right-side-content {
+        flex-basis: calc(200px + 10vw);
+        flex-grow: 0;
+        flex-shrink: 0;
+    }
+    .footer {
+        margin: 0 5% 5% 5%;
+        height: 25vh;
+
+        .footer-buttons {
+            display: flex;
+            flex-shrink: 0;
+            justify-content: flex-end;
+            background-color: grey;
+            padding: 5% calc(var(--dui-spacing-large) - var(--dui-spacing-small));
+
+            > * {
+                margin: 0 var(--dui-spacing-small);
+            }
+        }
+    }
+}

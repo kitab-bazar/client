@@ -37,7 +37,6 @@ const home = wrap({
     navbarVisibility: true,
     component: lazy(() => import('#views/Template')),
     componentProps: {
-        name: 'Home Page',
     },
     visibility: 'is-authenticated',
 });
