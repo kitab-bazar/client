@@ -1,7 +1,6 @@
 import React from 'react';
 import { _cs } from '@togglecorp/fujs';
 import { Button, SelectInput } from '@the-deep/deep-ui';
-import Challa from './Challa.png';
 import Biralo from './Biralo.png';
 import Chaad from './Chaad.png';
 import Bahinee from './Bahinee.png';
@@ -59,7 +58,9 @@ function HomePage() {
                             src={Aalu}
                             alt="Aalu"
                         />
-                        <h1>Book Detail</h1>
+                        <div className={styles.bookLabel}>
+                            Book Detail
+                        </div>
                     </div>
                     <div className={styles.bookList}>
                         <img
@@ -67,7 +68,9 @@ function HomePage() {
                             src={Biralo}
                             alt="birallo"
                         />
-                        <h1>Book Detail</h1>
+                        <div className={styles.bookLabel}>
+                            Book Detail
+                        </div>
                     </div>
                     <div className={styles.bookList}>
                         <img
@@ -75,7 +78,9 @@ function HomePage() {
                             src={Chaad}
                             alt="chaad"
                         />
-                        <h1>Book Detail</h1>
+                        <div className={styles.bookLabel}>
+                            Book Detail
+                        </div>
                     </div>
                     <div className={styles.bookList}>
                         <img
@@ -83,7 +88,9 @@ function HomePage() {
                             src={Bahinee}
                             alt="bahinee"
                         />
-                        <h1>Book Detail</h1>
+                        <div className={styles.bookLabel}>
+                            Book Detail
+                        </div>
                     </div>
                 </div>
                 <div className={styles.bookSection}>
@@ -93,7 +100,9 @@ function HomePage() {
                             src={Riban}
                             alt="Riban"
                         />
-                        <h1>Book Detail</h1>
+                        <div className={styles.bookLabel}>
+                            Book Detail
+                        </div>
                     </div>
                     <div className={styles.bookList}>
                         <img
@@ -101,7 +110,9 @@ function HomePage() {
                             src={Bahinee}
                             alt="Bahinee"
                         />
-                        <h1>Book Detail</h1>
+                        <div className={styles.bookLabel}>
+                            Book Detail
+                        </div>
                     </div>
                     <div className={styles.bookList}>
                         <img
@@ -109,7 +120,9 @@ function HomePage() {
                             src={Aawaj}
                             alt="Aawaj"
                         />
-                        <h1>Book Detail</h1>
+                        <div className={styles.bookLabel}>
+                            Book Detail
+                        </div>
                     </div>
                     <div className={styles.bookList}>
                         <img
@@ -117,48 +130,9 @@ function HomePage() {
                             src={Pooja}
                             alt="Pooja"
                         />
-                        <h1>Book Detail</h1>
-                    </div>
-                </div>
-                <div className={styles.footer}>
-                    footer
-                    <div className={styles.footerButtons}>
-                        <Button
-                            name={undefined}
-                            onClick={undefined}
-                            className={styles.loginButton}
-                            variant="primary"
-                            autoFocus
-                        >
-                            FAQs
-                        </Button>
-                        <Button
-                            name={undefined}
-                            onClick={undefined}
-                            className={styles.loginButton}
-                            variant="primary"
-                            autoFocus
-                        >
-                            Blogs
-                        </Button>
-                        <Button
-                            name={undefined}
-                            onClick={undefined}
-                            className={styles.loginButton}
-                            variant="primary"
-                            autoFocus
-                        >
-                            Why Kitab Bazar
-                        </Button>
-                        <Button
-                            name={undefined}
-                            onClick={undefined}
-                            className={styles.loginButton}
-                            variant="primary"
-                            autoFocus
-                        >
-                            Contact Us
-                        </Button>
+                        <div className={styles.bookLabel}>
+                            Book Detail
+                        </div>
                     </div>
                 </div>
             </div>

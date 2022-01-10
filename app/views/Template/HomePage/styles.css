@@ -14,6 +14,7 @@
         background-color: grey;
         width: 100%;
         height: 20vw;
+        object-fit: cover;
     }
     .book-section {
         display: flex;
@@ -21,11 +22,27 @@
         width: 100%;
 
         .book-list {
-            margin: 1% 0 0 4%;
+            box-sizing: border-box;
+            transition: all 0.5s ease;
+            object-fit: cover;
+            margin: 3% 0 0 4%;
+            -webkit-box-shadow: 5px 3px 20px 1px rgba(117, 116, 117, 1);
+            -moz-box-shadow: 5px 3px 20px 1px rgba(117, 116, 117, 1);
+            box-shadow: 5px 3px 20px 1px rgba(117, 116, 117, 1);
             width: 20%;
 
-            .bookImg {
+            &:hover {
+                transform: scale(1.1);
+            }
+
+            .book-img {
                 width: 100%;
+                height: 35vh;
+            }
+            .book-label {
+                align-items: center;
+                font-size: 20px;
+                font-weight: 500;
             }
         }
     }
@@ -38,21 +55,5 @@
         flex-basis: calc(200px + 10vw);
         flex-grow: 0;
         flex-shrink: 0;
-    }
-    .footer {
-        margin: 0 5% 5% 5%;
-        height: 25vh;
-
-        .footer-buttons {
-            display: flex;
-            flex-shrink: 0;
-            justify-content: flex-end;
-            background-color: grey;
-            padding: 5% calc(var(--dui-spacing-large) - var(--dui-spacing-small));
-
-            > * {
-                margin: 0 var(--dui-spacing-small);
-            }
-        }
     }
 }
