@@ -1,20 +1,16 @@
 import React, { useContext, useCallback } from 'react';
 import { _cs } from '@togglecorp/fujs';
 import {
-    QuickActionLink,
-    DropdownMenu,
-    DropdownMenuItem,
     useConfirmation,
+    Button,
+    TextInput,
 } from '@the-deep/deep-ui';
 import {
-    IoHelp,
-    IoLogOutOutline,
-    IoRocketSharp,
+    IoText,
 } from 'react-icons/io5';
-
-import SmartNavLink from '#base/components/SmartNavLink';
+import { GoSearch } from 'react-icons/go';
+import KitabLogo from './KitabLogo.png';
 import { UserContext } from '#base/context/UserContext';
-import route from '#base/configs/routes';
 
 import styles from './styles.css';
 
@@ -54,7 +50,7 @@ function Navbar(props: Props) {
 
     const [
         modal,
-        onLogoutClick,
+        // onLogoutClick,
     ] = useConfirmation<undefined>({
         showConfirmationInitially: false,
         onConfirm: logout,
@@ -64,45 +60,48 @@ function Navbar(props: Props) {
     return (
         <nav className={_cs(className, styles.navbar)}>
             <div className={styles.appBrand}>
-                <IoRocketSharp className={styles.logo} />
+                <img
+                    className={styles.logo}
+                    src={KitabLogo}
+                    alt="logo"
+                />
+                <div className={styles.appName}>
+                    Kitab Bazar
+                </div>
             </div>
             <div className={styles.main}>
                 <div className={styles.navLinks}>
-                    <SmartNavLink
-                        exact
-                        route={route.home}
-                        className={styles.link}
-                    />
+                    <div className={styles.textInput}>
+                        <TextInput
+                            icons={<GoSearch />}
+                            onChange={undefined}
+                            placeholder="Search all books"
+                            name={undefined}
+                            value={undefined}
+                        />
+                    </div>
                 </div>
                 <div className={styles.actions}>
-                    <QuickActionLink
-                        to="https://togglecorp.com"
+                    <Button
+                        name={undefined}
+                        onClick={undefined}
+                        className={styles.signUpButton}
                     >
-                        <IoHelp />
-                    </QuickActionLink>
+                        Sign Up
+                    </Button>
                 </div>
             </div>
-            {authenticated && user && (
-                <DropdownMenu
-                    label={user.displayName ?? 'Anon'}
-                    className={styles.userDisplay}
-                    variant="transparent"
-                >
-                    <DropdownMenuItem
-                        href={route.myProfile.path}
-                    >
-                        User Profile
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
+            {!(authenticated && user) && (
+                <>
+                    <Button
                         name={undefined}
-                        onClick={onLogoutClick}
-                        actions={(
-                            <IoLogOutOutline />
-                        )}
+                        onClick={undefined}
+                        className={styles.loginButton}
+                        variant="primary"
                     >
-                        Logout
-                    </DropdownMenuItem>
-                </DropdownMenu>
+                        Login
+                    </Button>
+                </>
             )}
             {modal}
         </nav>

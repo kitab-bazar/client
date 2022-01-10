@@ -35,11 +35,9 @@ const home = wrap({
     path: '/',
     title: 'Home',
     navbarVisibility: true,
-    component: lazy(() => import('#views/Template')),
-    componentProps: {
-        name: 'Home Page',
-    },
-    visibility: 'is-authenticated',
+    component: lazy(() => import('#views/HomePage')),
+    componentProps: {},
+    visibility: 'is-anything',
 });
 const myProfile = wrap({
     path: '/my-profile/',

@@ -14,9 +14,17 @@
         flex-shrink: 0;
         padding: var(--dui-spacing-medium) var(--dui-spacing-large);
         color: var(--dui-color-brand);
+        gap: var(--dui-spacing-medium);
 
         .logo {
-            font-size: var(--dui-font-size-extra-large);
+            width: auto;
+            height: 3rem;
+        }
+
+        .app-name {
+            text-transform: uppercase;
+            color: var(--dui-color-accent);
+            font-size: var(--dui-font-size-large);
         }
     }
 
@@ -29,13 +37,13 @@
         .nav-links {
             display: flex;
             flex-grow: 1;
-            justify-content: flex-start;
+            justify-content: center;
+            margin-top: 30px;
             padding: 0 calc(var(--dui-spacing-super-large) - var(--dui-spacing-large));
             overflow: hidden;
             font-size: var(--dui-font-size-large);
-
-            .link {
-                margin: 0 var(--dui-spacing-large);
+            .textInput {
+                width: 30%;
             }
         }
     }
@@ -46,17 +54,18 @@
         flex-shrink: 0;
         padding: 0 calc(var(--dui-spacing-large) - var(--dui-spacing-small));
 
-        >* {
+        > * {
             margin: 0 var(--dui-spacing-small);
         }
     }
 
+    /*
     .user-display {
         display: flex;
-        align-items: stretch;
         flex-shrink: 0;
         padding: 0 var(--dui-spacing-large);
         color: var(--dui-color-text-message);
         font-weight: var(--dui-font-weight-bold);
     }
+    */
 }

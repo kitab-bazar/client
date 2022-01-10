@@ -17,9 +17,11 @@ function Template(props: Props) {
     } = props;
 
     return (
-        <PageContent className={_cs(styles.template, className)}>
-            {name}
-        </PageContent>
+        <>
+            <PageContent className={_cs(styles.template, className)}>
+                {name}
+            </PageContent>
+        </>
     );
 }
 
