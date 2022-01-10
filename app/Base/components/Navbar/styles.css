@@ -14,9 +14,17 @@
         flex-shrink: 0;
         padding: var(--dui-spacing-medium) var(--dui-spacing-large);
         color: var(--dui-color-brand);
+        gap: var(--dui-spacing-medium);
 
         .logo {
-            font-size: var(--dui-font-size-extra-large);
+            width: auto;
+            height: 3rem;
+        }
+
+        .app-name {
+            text-transform: uppercase;
+            color: var(--dui-color-accent);
+            font-size: var(--dui-font-size-large);
         }
     }
 
@@ -51,6 +59,7 @@
         }
     }
 
+    /*
     .user-display {
         display: flex;
         flex-shrink: 0;
@@ -58,18 +67,5 @@
         color: var(--dui-color-text-message);
         font-weight: var(--dui-font-weight-bold);
     }
-    .loginButton {
-        border-width: medium;
-        border-radius: 10%;
-        border-color: #d3d3d3;
-        background-color: #fff;
-        color: #808080;
-    }
-    .signUpButton {
-        border-width: medium;
-        border-radius: 10%;
-        border-color: #d3d3d3;
-        background-color: blue;
-        color: #fff;
-    }
+    */
 }

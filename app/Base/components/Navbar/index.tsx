@@ -50,7 +50,7 @@ function Navbar(props: Props) {
 
     const [
         modal,
-        onLogoutClick,
+        // onLogoutClick,
     ] = useConfirmation<undefined>({
         showConfirmationInitially: false,
         onConfirm: logout,
@@ -62,11 +62,12 @@ function Navbar(props: Props) {
             <div className={styles.appBrand}>
                 <img
                     className={styles.logo}
-                    height={75}
-                    width={110}
                     src={KitabLogo}
                     alt="logo"
                 />
+                <div className={styles.appName}>
+                    Kitab Bazar
+                </div>
             </div>
             <div className={styles.main}>
                 <div className={styles.navLinks}>
@@ -80,7 +81,6 @@ function Navbar(props: Props) {
                         />
                     </div>
                     <GoSearch />
-                    {/* </div> */}
                 </div>
                 <div className={styles.actions}>
                     <Button
@@ -92,14 +92,13 @@ function Navbar(props: Props) {
                     </Button>
                 </div>
             </div>
-            {authenticated && user && (
+            {!(authenticated && user) && (
                 <>
                     <Button
                         name={undefined}
                         onClick={undefined}
                         className={styles.loginButton}
                         variant="primary"
-                        autoFocus
                     >
                         Login
                     </Button>

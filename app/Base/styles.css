@@ -3,12 +3,14 @@
     --dui-color-accent: #00adb5;
     --dui-color-background: #eeeeee;
     --dui-color-text: #222730;
+    --dui-font-family-sans-serif: 'Laila', sans-serif;
 }
 .base {
     display: flex;
     flex-direction: column;
     width: 100vw;
     height: 100vh;
+    overflow: auto;
     font-size: var(--dui-font-size-medium);
 
     .navbar {
