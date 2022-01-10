@@ -1,0 +1,33 @@
+.register {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    overflow-y: auto;
+
+    .card {
+        display: flex;
+        width: 60vw;
+        height: 40vh;
+        gap: var(--dui-spacing-extra-large);
+
+        .left {
+            display: flex;
+            align-items: center;
+            flex-basis: 50%;
+            justify-content: center;
+            background-color: var(--dui-color-background);
+        }
+
+        .right {
+            display: flex;
+            flex-basis: 50%;
+            flex-direction: column;
+            border: var(--dui-width-separator-thick) solid var(--dui-color-background);
+            border-radius: var(--dui-radius-border-medium);
+            overflow-y: auto;
+        }
+    }
+
+}

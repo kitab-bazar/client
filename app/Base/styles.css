@@ -1,3 +1,9 @@
+:root {
+    --dui-color-primary: #383d46;
+    --dui-color-accent: #00adb5;
+    --dui-color-background: #eeeeee;
+    --dui-color-text: #222730;
+}
 .base {
     display: flex;
     flex-direction: column;

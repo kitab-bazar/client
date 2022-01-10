@@ -13,13 +13,21 @@ const fourHundredFour = wrap({
     visibility: 'is-anything',
     navbarVisibility: true,
 });
+const register = wrap({
+    path: '/register/',
+    title: 'Register',
+    navbarVisibility: false,
+    component: lazy(() => import('#views/Register')),
+    componentProps: {
+    },
+    visibility: 'is-not-authenticated',
+});
 const login = wrap({
     path: '/login/',
     title: 'Login',
     navbarVisibility: false,
-    component: lazy(() => import('#views/Template')),
+    component: lazy(() => import('#views/Login')),
     componentProps: {
-        name: 'Login Page',
     },
     visibility: 'is-not-authenticated',
 });
@@ -45,6 +53,7 @@ const myProfile = wrap({
 });
 
 const routes = {
+    register,
     login,
     home,
     myProfile,
