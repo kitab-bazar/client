@@ -73,14 +73,13 @@ function Navbar(props: Props) {
                 <div className={styles.navLinks}>
                     <div className={styles.textInput}>
                         <TextInput
-                            icons={<IoText />}
+                            icons={<GoSearch />}
                             onChange={undefined}
                             placeholder="Search all books"
                             name={undefined}
                             value={undefined}
                         />
                     </div>
-                    <GoSearch />
                 </div>
                 <div className={styles.actions}>
                     <Button

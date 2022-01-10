@@ -15,6 +15,8 @@ import Riban from './temp-img/Riban.png';
 import Pooja from './temp-img/Pooja.png';
 // import Aawaj from './temp-img/Aawaj.png';
 import Aalu from './temp-img/Aalu.png';
+import coverImage from './cover.jpg';
+
 import styles from './styles.css';
 
 const optionLabelSelector = (d: any) => d.title;
@@ -103,8 +105,25 @@ function HomePage() {
     return (
         <div className={styles.home}>
             <div className={styles.pageContent}>
-                <div className={styles.coverImage}>
-                    Cover Image Here
+                <div className={styles.coverImageContainer}>
+                    <img
+                        className={styles.coverImage}
+                        src={coverImage}
+                        alt=""
+                    />
+                    <div className={styles.topLayer}>
+                        <div className={styles.appName}>
+                            <div className={styles.kitab}>
+                                Kitab
+                            </div>
+                            <div className={styles.bazar}>
+                                Bazar
+                            </div>
+                        </div>
+                        <div className={styles.appDescription}>
+                            Knowledge Improvement Through Access of Books
+                        </div>
+                    </div>
                 </div>
                 <Container
                     className={styles.featuredBooksSection}
