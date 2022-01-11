@@ -46,8 +46,12 @@ const LOGIN = gql`
             password: $password,
             email: $email,
         }) {
-            errors,
-            ok,
+            errors
+            ok
+            result {
+                fullName
+                id
+            }
         }
     }
 `;
@@ -121,7 +125,10 @@ function LoginForm() {
                     );
                 } else if (ok) {
                     const safeUser = removeNull(result);
-                    setUser(safeUser);
+                    setUser({
+                        id: safeUser.id,
+                        displayName: safeUser.fullName,
+                    });
                     alert.show(
                         'Successfully logged in.',
                         {
