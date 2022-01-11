@@ -134,7 +134,8 @@ module.exports = () => {
                 allowEmptyValues: true,
                 defaults: false,
                 path: getPath('.env'),
-                systemvars: !!isProduction, // NOTE: need to filter system variables
+                // systemvars: !!isProduction, // NOTE: need to filter system variables
+                systemvars: true,
             }),
             new MiniCssExtractPlugin({
                 filename: isProduction

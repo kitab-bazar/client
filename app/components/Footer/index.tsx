@@ -11,7 +11,6 @@ function Footer() {
                     <Button
                         name={undefined}
                         onClick={undefined}
-                        className={styles.loginButton}
                         variant="primary"
                         autoFocus
                     >
@@ -20,7 +19,6 @@ function Footer() {
                     <Button
                         name={undefined}
                         onClick={undefined}
-                        className={styles.loginButton}
                         variant="primary"
                         autoFocus
                     >
@@ -29,7 +27,6 @@ function Footer() {
                     <Button
                         name={undefined}
                         onClick={undefined}
-                        className={styles.loginButton}
                         variant="primary"
                         autoFocus
                     >
@@ -38,7 +35,6 @@ function Footer() {
                     <Button
                         name={undefined}
                         onClick={undefined}
-                        className={styles.loginButton}
                         variant="primary"
                         autoFocus
                     >

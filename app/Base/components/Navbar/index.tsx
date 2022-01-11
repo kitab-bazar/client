@@ -1,18 +1,29 @@
 import React, { useContext, useCallback } from 'react';
+import { generatePath } from 'react-router-dom';
 import { _cs } from '@togglecorp/fujs';
+import { useMutation, gql } from '@apollo/client';
 import {
     useConfirmation,
     Button,
+    ButtonLikeLink,
     TextInput,
+    useAlert,
 } from '@the-deep/deep-ui';
-import {
-    IoText,
-} from 'react-icons/io5';
 import { GoSearch } from 'react-icons/go';
 import KitabLogo from './KitabLogo.png';
 import { UserContext } from '#base/context/UserContext';
+import routes from '#base/configs/routes';
+import { LogoutMutation, LogoutMutationVariables } from '#generated/types';
 
 import styles from './styles.css';
+
+const LOGOUT = gql`
+    mutation Logout {
+        logout {
+            ok
+        }
+    }
+`;
 
 interface Props {
     className?: string;
@@ -27,25 +38,47 @@ function Navbar(props: Props) {
         setUser,
     } = useContext(UserContext);
 
-    /*
-    const [logout] = useMutation<LogoutMutation>(
+    const alert = useAlert();
+
+    const [logout] = useMutation<LogoutMutation, LogoutMutationVariables>(
         LOGOUT,
         {
             onCompleted: (data) => {
                 if (data.logout?.ok) {
                     setUser(undefined);
+                    alert.show(
+                        'Successfully logged out',
+                        {
+                            variant: 'success',
+                        },
+                    );
+                } else {
+                    alert.show(
+                        'Error logging out',
+                        {
+                            variant: 'error',
+                        },
+                    );
                 }
-                // FIXME: handle failure
             },
-            // FIXME: handle failure
+
+            onError: (gqlError) => {
+                alert.show(
+                    'Failed to send join request.',
+                    { variant: 'error' },
+                );
+                // TODO: Remove this
+                console.warn('Error: ', gqlError);
+            },
         },
     );
-    */
-    const logout = useCallback(
+
+    const handleLogout = useCallback(
         () => {
+            logout();
             setUser(undefined);
         },
-        [setUser],
+        [setUser, logout],
     );
 
     const [
@@ -81,27 +114,35 @@ function Navbar(props: Props) {
                         />
                     </div>
                 </div>
-                <div className={styles.actions}>
-                    <Button
-                        name={undefined}
-                        onClick={undefined}
-                        className={styles.signUpButton}
-                    >
-                        Sign Up
-                    </Button>
-                </div>
+                {!(authenticated && user) && (
+                    <div className={styles.actions}>
+                        <Button
+                            name={undefined}
+                            onClick={undefined}
+                        >
+                            Sign Up
+                        </Button>
+                    </div>
+                )}
             </div>
             {!(authenticated && user) && (
                 <>
-                    <Button
-                        name={undefined}
-                        onClick={undefined}
-                        className={styles.loginButton}
+                    <ButtonLikeLink
+                        to={generatePath(routes.login.path)}
                         variant="primary"
                     >
                         Login
-                    </Button>
+                    </ButtonLikeLink>
                 </>
+            )}
+            {authenticated && user && (
+                <Button
+                    name={undefined}
+                    onClick={handleLogout}
+                    variant="primary"
+                >
+                    Logout
+                </Button>
             )}
             {modal}
         </nav>

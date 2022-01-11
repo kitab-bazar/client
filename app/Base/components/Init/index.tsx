@@ -1,5 +1,11 @@
 import React, { useContext, useState, useMemo, useEffect } from 'react';
 
+import { useQuery, gql } from '@apollo/client';
+
+import {
+    removeNull,
+} from '@togglecorp/toggle-form';
+
 import { UserContext } from '#base/context/UserContext';
 import PreloadMessage from '#base/components/PreloadMessage';
 
@@ -8,6 +14,34 @@ import {
     ProjectContextInterface,
 } from '#base/context/ProjectContext';
 import { Project } from '#base/types/project';
+import { checkErrorCode } from '#base/utils/apollo';
+import { MeQuery, MeQueryVariables } from '#generated/types';
+
+const ME = gql`
+    query Me {
+        me {
+            email
+            firstName
+            id
+            isActive
+            lastLogin
+            lastName
+            userType
+            profile {
+                id
+                institution {
+                    id
+                }
+                publisher {
+                    id
+                }
+                school {
+                    id
+                }
+            }
+        }
+    }
+`;
 
 interface Props {
     className?: string;
@@ -26,34 +60,36 @@ function Init(props: Props) {
     const {
         setUser,
     } = useContext(UserContext);
-    /*
 
-    useQuery<MeQuery>(ME, {
-        fetchPolicy: 'network-only',
-        onCompleted: (data) => {
-            const safeMe = removeNull(data.me);
-            if (safeMe) {
-                setUser(safeMe);
-                setProject(safeMe.lastActiveProject ?? undefined);
-            } else {
-                setUser(undefined);
-                setProject(undefined);
-            }
-            setReady(true);
-        },
-        onError: (error) => {
-            const { graphQLErrors } = error;
-            const authError = checkErrorCode(
-                graphQLErrors,
-                ['me'],
-                '401',
-            );
+    useQuery<MeQuery, MeQueryVariables>(
+        ME,
+        {
+            fetchPolicy: 'network-only',
+            onCompleted: (data) => {
+                const safeMe = removeNull(data.me);
+                if (safeMe) {
+                    setUser(safeMe);
+                    setProject(safeMe.lastActiveProject ?? undefined);
+                } else {
+                    setUser(undefined);
+                    setProject(undefined);
+                }
+                setReady(true);
+            },
+            onError: (error) => {
+                const { graphQLErrors } = error;
+                const authError = checkErrorCode(
+                    graphQLErrors,
+                    ['me'],
+                    '401',
+                );
 
-            setErrored(!authError);
-            setReady(true);
+                setErrored(!authError);
+                setReady(true);
+            },
         },
-    });
-    */
+    );
+
     useEffect(
         () => {
             // setUser({ id: '1', displayName: 'Ram' });
