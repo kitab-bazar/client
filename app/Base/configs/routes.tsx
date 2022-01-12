@@ -49,12 +49,23 @@ const myProfile = wrap({
     },
     visibility: 'is-authenticated',
 });
+const bookDetail = wrap({
+    path: '/book/:id',
+    title: 'My Book Detail',
+    navbarVisibility: true,
+    component: lazy(() => import('#views/BookDetail')),
+    componentProps: {
+        className: '',
+    },
+    visibility: 'is-not-authenticated',
+});
 
 const routes = {
     register,
     login,
     home,
     myProfile,
+    bookDetail,
     fourHundredFour,
 };
 export default routes;

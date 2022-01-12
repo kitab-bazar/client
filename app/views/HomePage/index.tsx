@@ -4,6 +4,7 @@ import {
     ListView,
     Container,
 } from '@the-deep/deep-ui';
+import { Link } from 'react-router-dom';
 
 import Footer from '#components/Footer';
 
@@ -73,26 +74,33 @@ function BookItem(props: BookProps) {
     } = props;
 
     return (
-        <div className={styles.bookItem}>
-            <div className={styles.imageWrapper}>
-                <img
-                    className={styles.image}
-                    src={book.image}
-                    alt={book.title}
-                />
+        <Link
+            style={{
+                textDecoration: 'none',
+            }}
+            to={`/book/${book.id}`}
+        >
+            <div className={styles.bookItem}>
+                <div className={styles.imageWrapper}>
+                    <img
+                        className={styles.image}
+                        src={book.image}
+                        alt={book.title}
+                    />
+                </div>
+                <div className={styles.details}>
+                    <div className={styles.title}>
+                        {book.title}
+                    </div>
+                    <div className={styles.author}>
+                        {book.author}
+                    </div>
+                    <div className={styles.price}>
+                        {book.price}
+                    </div>
+                </div>
             </div>
-            <div className={styles.details}>
-                <div className={styles.title}>
-                    {book.title}
-                </div>
-                <div className={styles.author}>
-                    {book.author}
-                </div>
-                <div className={styles.price}>
-                    {book.price}
-                </div>
-            </div>
-        </div>
+        </Link>
     );
 }
 
