@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { generatePath } from 'react-router-dom';
 
 import {
@@ -7,7 +7,10 @@ import {
     PasswordInput,
     Button,
     ButtonLikeLink,
+    useAlert,
 } from '@the-deep/deep-ui';
+
+import { gql, useMutation } from '@apollo/client';
 
 import {
     ObjectSchema,
@@ -19,8 +22,12 @@ import {
     lengthGreaterThanCondition,
     lengthSmallerThanCondition,
     getErrorObject,
+    removeNull,
 } from '@togglecorp/toggle-form';
 import routes from '#base/configs/routes';
+import { LoginMutation, LoginMutationVariables } from '#generated/types';
+import { UserContext } from '#base/context/UserContext';
+import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
 
 import styles from './styles.css';
 
@@ -29,6 +36,26 @@ interface LoginFields {
     password: string;
     // captcha?: string;
 }
+
+const LOGIN = gql`
+    mutation Login(
+        $email: String!,
+        $password: String!,
+    ) {
+        login(data: {
+            password: $password,
+            email: $email,
+        }) {
+            errors
+            ok
+            result {
+                fullName
+                id
+            }
+        }
+    }
+`;
+
 type FormType = Partial<LoginFields>;
 
 type FormSchema = ObjectSchema<PartialForm<FormType>>;
@@ -64,12 +91,64 @@ function LoginForm() {
         setError,
     } = useForm(schema, initialValue);
 
+    const { setUser } = useContext(UserContext);
+
     const error = getErrorObject(riskyError);
 
-    const handleSubmit = useCallback(() => {
-        console.warn('to be handled');
-        // TODO: handle Submit
-    }, []);
+    const alert = useAlert();
+
+    const [
+        login,
+        { loading: loginPending },
+    ] = useMutation<LoginMutation, LoginMutationVariables>(
+        LOGIN,
+        {
+            onCompleted: (response) => {
+                const { login: loginRes } = response;
+                if (!loginRes) {
+                    return;
+                }
+                const {
+                    errors,
+                    result,
+                    ok,
+                } = loginRes;
+
+                if (errors) {
+                    const formError = transformToFormError(removeNull(errors) as ObjectError[]);
+                    setError(formError);
+                    alert.show(
+                        'Error logging in.',
+                        {
+                            variant: 'error',
+                        },
+                    );
+                } else if (ok) {
+                    const safeUser = removeNull(result);
+                    setUser({
+                        id: safeUser.id,
+                        displayName: safeUser.fullName,
+                    });
+                    alert.show(
+                        'Successfully logged in.',
+                        {
+                            variant: 'success',
+                        },
+                    );
+                }
+            },
+        },
+    );
+
+    const handleSubmit = useCallback((finalValue) => {
+        // elementRef.current?.resetCaptcha();
+        login({
+            variables: {
+                email: finalValue?.email,
+                password: finalValue?.password,
+            },
+        });
+    }, [login]);
 
     return (
         <form
@@ -103,6 +182,7 @@ function LoginForm() {
                     value={value?.email}
                     error={error?.email}
                     placeholder="john.doe@gmail.com"
+                    disabled={loginPending}
                 />
                 <PasswordInput
                     name="password"
@@ -111,13 +191,14 @@ function LoginForm() {
                     value={value?.password}
                     error={error?.password}
                     placeholder="****"
+                    disabled={loginPending}
                 />
                 <Button
                     name="login"
                     className={styles.submit}
                     type="submit"
                     variant="primary"
-                    disabled={pristine}
+                    disabled={loginPending || pristine}
                 >
                     Login
                 </Button>
