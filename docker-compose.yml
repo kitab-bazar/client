@@ -45,9 +45,6 @@ services:
   react:
     build: .
     command: sh -c 'yarn install --frozen-lockfile && yarn start'
-    build:
-      context: ./
-      target: base
     tty: true
     environment:
       NODE_OPTIONS: --openssl-legacy-provider
