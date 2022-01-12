@@ -8,22 +8,23 @@
 
     .card {
         display: flex;
-        width: 60vw;
-        height: 40vh;
+        width: 100%;
+        max-width: 900px;
         gap: var(--dui-spacing-extra-large);
 
         .left {
             display: flex;
             align-items: center;
-            flex-basis: 50%;
             justify-content: center;
             background-color: var(--dui-color-background);
+            width: 20rem;
+            height: 20rem;
         }
 
         .right {
             display: flex;
-            flex-basis: 50%;
             flex-direction: column;
+            flex-grow: 1;
             border: var(--dui-width-separator-thick) solid var(--dui-color-background);
             border-radius: var(--dui-radius-border-medium);
             overflow-y: auto;

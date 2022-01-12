@@ -116,12 +116,12 @@ function Navbar(props: Props) {
                 </div>
                 {!(authenticated && user) && (
                     <div className={styles.actions}>
-                        <Button
-                            name={undefined}
-                            onClick={undefined}
+                        <ButtonLikeLink
+                            to={generatePath(routes.register.path)}
+                            variant="primary"
                         >
                             Sign Up
-                        </Button>
+                        </ButtonLikeLink>
                     </div>
                 )}
             </div>
