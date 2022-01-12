@@ -5,6 +5,11 @@ import {
     Container,
 } from '@the-deep/deep-ui';
 import { Link } from 'react-router-dom';
+import {
+    gql,
+    useMutation,
+    useQuery,
+} from '@apollo/client';
 
 import Footer from '#components/Footer';
 
@@ -18,6 +23,30 @@ import Aalu from './temp-img/Aalu.png';
 import coverImage from './cover.jpg';
 
 import styles from './styles.css';
+
+const FEATURED_BOOKS = gql`
+    query FeaturedBooks {
+        books(page: 1, pageSize: 10) {
+            results {
+              id
+              isbn
+              language
+              image
+              price
+              title
+              description
+              authors {
+                id
+                name
+                nameEn
+              }
+            }
+            page
+            pageSize
+            totalCount
+          }
+      }
+`;
 
 const optionLabelSelector = (d: any) => d.title;
 const optionKeySelector = (d: any) => d.id;
