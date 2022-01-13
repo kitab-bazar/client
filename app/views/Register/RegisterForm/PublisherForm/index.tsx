@@ -11,23 +11,22 @@ import {
     SetValueArg,
 } from '@togglecorp/toggle-form';
 
-import {
-    InstitutionType,
-} from '../common';
+import { PublisherType } from '../common';
+import LocationInput from '../LocationInput';
 
 // import styles from './styles.css';
 
-type InstitutionInputValue = PartialForm<InstitutionType> | undefined;
-const defaultInstitutionValue: NonNullable<InstitutionInputValue> = {};
+type PublisherInputValue = PartialForm<PublisherType> | undefined;
+const defaultPublisherValue: NonNullable<PublisherInputValue> = {};
 
 interface Props<K extends string> {
     name: K;
-    value: InstitutionInputValue;
-    error: Error<InstitutionType>;
-    onChange: (value: SetValueArg<InstitutionInputValue> | undefined, name: K) => void;
+    value: PublisherInputValue;
+    error: Error<PublisherType>;
+    onChange: (value: SetValueArg<PublisherInputValue> | undefined, name: K) => void;
 }
 
-function InstitutionForm<K extends string>(props: Props<K>) {
+function PublisherForm<K extends string>(props: Props<K>) {
     const {
         name,
         value,
@@ -35,18 +34,24 @@ function InstitutionForm<K extends string>(props: Props<K>) {
         onChange,
     } = props;
 
-    const setFieldValue = useFormObject(name, onChange, defaultInstitutionValue);
+    const setFieldValue = useFormObject(name, onChange, defaultPublisherValue);
     const error = getErrorObject(formError);
 
     return (
         <>
             <TextInput
                 name="name"
-                label="Name of the Institution"
+                label="Name of the Publisher"
                 value={value?.name}
                 error={error?.name}
                 onChange={setFieldValue}
                 placeholder="Togglecorp"
+            />
+            <LocationInput
+                name="municipality"
+                value={value?.municipality}
+                error={error?.municipality}
+                onChange={setFieldValue}
             />
             <NumberInput
                 name="wardNumber"
@@ -80,4 +85,4 @@ function InstitutionForm<K extends string>(props: Props<K>) {
     );
 }
 
-export default InstitutionForm;
+export default PublisherForm;

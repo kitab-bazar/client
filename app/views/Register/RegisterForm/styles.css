@@ -1,28 +1,10 @@
-.register {
-    display: flex;
-    flex-grow: 1;
+.register-form {
+    background-color: unset;
 
-    .register-form-container {
-        background-color: unset;
-        width: 100%;
-
-        .heading {
-            color: var(--dui-color-accent);
-        }
-
-        .input-container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: var(--dui-spacing-large);
-        }
-        .submit {
-            align-self: flex-end;
-        }
-
-        .register-link {
-            padding: unset;
-            color: var(--dui-color-accent);
-        }
+    .form {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: var(--dui-spacing-large);
     }
 }

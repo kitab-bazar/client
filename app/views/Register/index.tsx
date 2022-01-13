@@ -1,11 +1,8 @@
 import React from 'react';
 import { _cs } from '@togglecorp/fujs';
 
-import {
-    Card,
-} from '@the-deep/deep-ui';
-
 import RegisterForm from './RegisterForm';
+import KitabLogo from './KitabLogo.png';
 
 import styles from './styles.css';
 
@@ -20,14 +17,20 @@ function Register(props: Props) {
 
     return (
         <div className={_cs(styles.register, className)}>
-            <Card className={styles.card}>
+            <div className={styles.container}>
                 <div className={styles.left}>
-                    Image goes here
+                    <img
+                        src={KitabLogo}
+                        alt=""
+                    />
+                    <div className={styles.appName}>
+                        Kitab Bazar
+                    </div>
                 </div>
                 <div className={styles.right}>
                     <RegisterForm />
                 </div>
-            </Card>
+            </div>
         </div>
     );
 }

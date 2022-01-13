@@ -35,68 +35,6 @@ import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
 
 import styles from './styles.css';
 
-const REGISTER = gql`
-    mutation Register(
-        $email: String!,
-        $password: String!,
-        $firstName: String!,
-        $lastName: String!,
-        $userType: user_type,
-        $phoneNumber: String,
-    ) {
-        register(data: {
-            email: $email,
-            password: $password,
-            firstName: $firstName,
-            lastName: $lastName,
-            userType: $userType,
-            phoneNumber: $phoneNumber,
-        }) {
-            errors
-            ok
-        }
-    }
-`;
-
-interface IndividualRegistrationFields {
-    email: string;
-    firstName: string;
-    lastName: string;
-    password: string;
-    verifyPassword: string;
-    userType: UserUserType;
-    phoneNumber: string;
-}
-
-type FormType = Partial<IndividualRegistrationFields>;
-
-type FormSchema = ObjectSchema<PartialForm<FormType>>;
-
-type FormSchemaFields = ReturnType<FormSchema['fields']>;
-
-const schema: FormSchema = {
-    fields: (): FormSchemaFields => ({
-        email: [emailCondition, requiredStringCondition],
-        firstName: [requiredStringCondition],
-        lastName: [requiredStringCondition],
-        password: [
-            requiredStringCondition,
-            lengthGreaterThanCondition(4),
-            lengthSmallerThanCondition(129),
-        ],
-        userType: [requiredStringCondition],
-        phoneNumber: [
-            requiredStringCondition,
-            lengthGreaterThanCondition(9),
-            lengthSmallerThanCondition(15),
-        ],
-    }),
-};
-
-const initialValue: FormType = {
-    userType: 'INDIVIDUAL_USER',
-};
-
 function IndividualUserForm() {
     const {
         pristine,

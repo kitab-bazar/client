@@ -1,34 +1,47 @@
 .register {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: var(--dui-spacing-large);
     width: 100vw;
     height: 100vh;
-    overflow-y: auto;
+    overflow: auto;
+    scrollbar-gutter: stable;
 
-    .card {
+    .container {
         display: flex;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        margin: 0 auto;
         width: 100%;
         max-width: 900px;
-        gap: var(--dui-spacing-extra-large);
+        overflow: auto;
 
         .left {
             display: flex;
             align-items: center;
+            flex-basis: 40%;
+            flex-direction: column;
+            flex-grow: 1;
             justify-content: center;
-            background-color: var(--dui-color-background);
-            width: 20rem;
-            height: 20rem;
+            padding: var(--dui-spacing-medium);
+            height: auto;
+
+            .app-name {
+                padding: var(--dui-spacing-medium);
+                text-transform: uppercase;
+                color: var(--dui-color-accent);
+                font-size: var(--dui-font-size-super-large);
+                font-weight: var(--dui-font-weight-bold);
+            }
         }
 
         .right {
             display: flex;
+            flex-basis: 60%;
             flex-direction: column;
             flex-grow: 1;
-            border: var(--dui-width-separator-thick) solid var(--dui-color-background);
-            border-radius: var(--dui-radius-border-medium);
             overflow-y: auto;
         }
     }
-
 }

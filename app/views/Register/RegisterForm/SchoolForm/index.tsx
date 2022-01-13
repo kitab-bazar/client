@@ -12,22 +12,22 @@ import {
 } from '@togglecorp/toggle-form';
 
 import {
-    InstitutionType,
+    SchoolType,
 } from '../common';
 
 // import styles from './styles.css';
 
-type InstitutionInputValue = PartialForm<InstitutionType> | undefined;
-const defaultInstitutionValue: NonNullable<InstitutionInputValue> = {};
+type SchoolInputValue = PartialForm<SchoolType> | undefined;
+const defaultSchoolValue: NonNullable<SchoolInputValue> = {};
 
 interface Props<K extends string> {
     name: K;
-    value: InstitutionInputValue;
-    error: Error<InstitutionType>;
-    onChange: (value: SetValueArg<InstitutionInputValue> | undefined, name: K) => void;
+    value: SchoolInputValue;
+    error: Error<SchoolType>;
+    onChange: (value: SetValueArg<SchoolInputValue> | undefined, name: K) => void;
 }
 
-function InstitutionForm<K extends string>(props: Props<K>) {
+function SchoolForm<K extends string>(props: Props<K>) {
     const {
         name,
         value,
@@ -35,14 +35,14 @@ function InstitutionForm<K extends string>(props: Props<K>) {
         onChange,
     } = props;
 
-    const setFieldValue = useFormObject(name, onChange, defaultInstitutionValue);
+    const setFieldValue = useFormObject(name, onChange, defaultSchoolValue);
     const error = getErrorObject(formError);
 
     return (
         <>
             <TextInput
                 name="name"
-                label="Name of the Institution"
+                label="Name of the School"
                 value={value?.name}
                 error={error?.name}
                 onChange={setFieldValue}
@@ -80,4 +80,4 @@ function InstitutionForm<K extends string>(props: Props<K>) {
     );
 }
 
-export default InstitutionForm;
+export default SchoolForm;
