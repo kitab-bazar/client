@@ -21,7 +21,7 @@ services:
       context: ./server/
     tty: true
     environment:
-      DEBUG: true
+      DEBUG: "true"
       # ALLOWED_HOSTS: localhost
       SECRET_KEY: unsecure-123456789-dont-use-in-production
       # From db.environment

@@ -27,7 +27,6 @@ import {
 
 import {
     UserUserType,
-    ProfileInputType,
     RegisterMutation,
     RegisterMutationVariables,
 } from '#generated/types';
@@ -43,7 +42,6 @@ const REGISTER = gql`
         $firstName: String!,
         $lastName: String!,
         $userType: user_type,
-        $profile: ProfileInputType!,
         $phoneNumber: String,
     ) {
         register(data: {
@@ -52,7 +50,6 @@ const REGISTER = gql`
             firstName: $firstName,
             lastName: $lastName,
             userType: $userType,
-            profile: $profile,
             phoneNumber: $phoneNumber,
         }) {
             errors
@@ -68,7 +65,6 @@ interface IndividualRegistrationFields {
     password: string;
     verifyPassword: string;
     userType: UserUserType;
-    profile: ProfileInputType;
     phoneNumber: string;
 }
 
@@ -99,7 +95,6 @@ const schema: FormSchema = {
 
 const initialValue: FormType = {
     userType: 'INDIVIDUAL_USER',
-    profile: {},
 };
 
 function IndividualUserForm() {
@@ -166,7 +161,6 @@ function IndividualUserForm() {
                 firstName: finalValue?.firstName,
                 lastName: finalValue?.lastName,
                 phoneNumber: finalValue?.phoneNumber,
-                profile: {},
                 userType: 'INDIVIDUAL_USER',
             },
         });

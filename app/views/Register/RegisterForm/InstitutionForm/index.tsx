@@ -4,6 +4,7 @@ import { useQuery, useMutation, gql } from '@apollo/client';
 
 import {
     TextInput,
+    NumberInput,
     SelectInput,
     PasswordInput,
     Button,
@@ -27,8 +28,8 @@ import {
 
 import {
     UserUserType,
-    RegisterMutation,
-    RegisterMutationVariables,
+    RegisterInstitutionMutation,
+    RegisterInstitutionMutationVariables,
     ProvinceListQuery,
     ProvinceListQueryVariables,
     DistrictListQuery,
@@ -42,42 +43,21 @@ import styles from './styles.css';
 
 const REGISTER = gql`
     mutation RegisterInstitution(
-        $email: String!,
-        $password: String!,
-        $firstName: String!,
-        $lastName: String!,
-        $userType: user_type,
-        $wardNumber: Int!,
-        $panNumber: String!,
-        $vatNumber: String!,
-        $name: String!,
-        $institutionEmail: String!,
-        $province: String!,
-        $district: String!,
-        $municipality: String!,
-        $localAddress: String,
-        $phoneNumber: String,
+        $email: String!
+        $name: String
+        $password: String!
+        $phoneNumber: String
+        $userType: user_type
+        $institution: InstitutionInputType!
     ) {
         register(data: {
-            email: $email,
-            password: $password,
-            firstName: $firstName,
-            lastName: $lastName,
-            userType: $userType,
-            phoneNumber: $phoneNumber,
-            profile: {
-                institution: {
-                    wardNumber: $wardNumber,
-                    panNumber: $panNumber,
-                    vatNumber: $vatNumber,
-                    name: $name,
-                    email: $institutionEmail,
-                    province: $province,
-                    district: $district,
-                    municipality: $municipality,
-                    localAddress: $localAddress,
-                },
-            },
+            email: $email
+            firstName: $name
+            lastName: $name
+            password: $password
+            phoneNumber: $phoneNumber
+            userType: $userType
+            institution: $institution
         }) {
             errors
             ok
@@ -129,14 +109,13 @@ const MUNICIPALITY_LIST = gql`
 
 interface InstitutionalRegistrationFields {
     email: string;
-    firstName: string;
-    lastName: string;
+    name: string;
     password: string;
     verifyPassword: string;
     userType: UserUserType;
     wardNumber: number;
-    panNumber: number;
-    vatNumber: number;
+    panNumber: string;
+    vatNumber: string;
     province: string;
     district: string;
     municipality: string;
@@ -145,22 +124,18 @@ interface InstitutionalRegistrationFields {
 }
 
 type FormType = Partial<InstitutionalRegistrationFields>;
-
 type FormSchema = ObjectSchema<PartialForm<FormType>>;
-
 type FormSchemaFields = ReturnType<FormSchema['fields']>;
 
 const schema: FormSchema = {
     fields: (): FormSchemaFields => ({
         email: [emailCondition, requiredStringCondition],
-        firstName: [requiredStringCondition],
-        lastName: [requiredStringCondition],
+        name: [requiredStringCondition],
         password: [
             requiredStringCondition,
             lengthGreaterThanCondition(4),
             lengthSmallerThanCondition(129),
         ],
-        userType: [requiredStringCondition],
         wardNumber: [requiredCondition],
         panNumber: [requiredCondition],
         vatNumber: [requiredCondition],
@@ -180,14 +155,18 @@ const initialValue: FormType = {
     userType: 'INSTITUTIONAL_USER',
 };
 
-const provinceKeySelector = (d) => d.id;
-const provinceLabelSelector = (d) => d.name;
+type Province = NonNullable<NonNullable<ProvinceListQuery['provinces']>['results']>[number];
+type District = NonNullable<NonNullable<DistrictListQuery['districts']>['results']>[number];
+type Municipality = NonNullable<NonNullable<MunicipalityListQuery['municipalities']>['results']>[number];
 
-const districtKeySelector = (d) => d.id;
-const districtLabelSelector = (d) => d.name;
+const provinceKeySelector = (d: Province) => d.id;
+const provinceLabelSelector = (d: Province) => d.name;
 
-const municipalityKeySelector = (d) => d.id;
-const municipalityLabelSelector = (d) => d.name;
+const districtKeySelector = (d: District) => d.id;
+const districtLabelSelector = (d: District) => d.name;
+
+const municipalityKeySelector = (d: Municipality) => d.id;
+const municipalityLabelSelector = (d: Municipality) => d.name;
 
 function InstitutionForm() {
     const {
@@ -202,7 +181,7 @@ function InstitutionForm() {
     const alert = useAlert();
 
     const error = getErrorObject(riskyError);
-    const [confirmPassword, setConfirmPassword] = useInputState<string>('');
+    const [confirmPassword, setConfirmPassword] = useInputState<string | undefined>(undefined);
 
     const {
         data: provinceList,
@@ -212,42 +191,37 @@ function InstitutionForm() {
     );
 
     const districtVariables = useMemo(() => ({
-        provinceIds: [value?.province],
-    }), []);
+        provinceIds: value?.province ? [value.province] : undefined,
+    }), [value?.province]);
 
     const {
         data: districtList,
         loading: districtsPending,
     } = useQuery<DistrictListQuery, DistrictListQueryVariables>(
         DISTRICT_LIST,
-        {
-            variables: districtVariables,
-        },
+        { variables: districtVariables },
     );
 
     const municipalityVariables = useMemo(() => ({
-        provinceIds: [value?.province],
-        districtIds: [value?.district],
-    }), []);
+        provinceIds: value?.province ? [value.province] : undefined,
+        districtIds: value?.district ? [value.district] : undefined,
+    }), [value?.province, value?.district]);
 
     const {
         data: municipalityList,
         loading: municipalitiesPending,
     } = useQuery<MunicipalityListQuery, MunicipalityListQueryVariables>(
         MUNICIPALITY_LIST,
-        {
-            variables: municipalityVariables,
-        },
+        { variables: municipalityVariables },
     );
 
     const [
         register,
         { loading: registerPending },
-    ] = useMutation<RegisterMutation, RegisterMutationVariables>(
+    ] = useMutation<RegisterInstitutionMutation, RegisterInstitutionMutationVariables>(
         REGISTER,
         {
             onCompleted: (response) => {
-                console.info('Institution form');
                 const { register: registerRes } = response;
 
                 if (!register) {
@@ -262,9 +236,7 @@ function InstitutionForm() {
                 if (ok) {
                     alert.show(
                         'Registration completed successfully!',
-                        {
-                            variant: 'success',
-                        },
+                        { variant: 'success' },
                     );
                 } else if (errors) {
                     const formError = transformToFormError(removeNull(errors) as ObjectError []);
@@ -272,9 +244,7 @@ function InstitutionForm() {
 
                     alert.show(
                         'Error during registration',
-                        {
-                            variant: 'error',
-                        },
+                        { variant: 'error' },
                     );
                 }
             },
@@ -286,30 +256,25 @@ function InstitutionForm() {
         || municipalitiesPending
         || registerPending;
 
-    const handleSubmit = useCallback((finalValue) => {
+    const handleSubmit = useCallback((formValues: Partial<InstitutionalRegistrationFields>) => {
+        const finalValue = formValues as InstitutionalRegistrationFields;
         register({
             variables: {
-                email: finalValue?.email,
-                password: finalValue?.password,
-                firstName: finalValue?.firstName,
-                lastName: finalValue?.lastName,
-                userType: 'INDIVIDUAL_USER',
-                profile: {
-                    institution: {
-                        wardNumber: finalValue?.wardNumber,
-                        panNumber: finalValue?.panNumber,
-                        vatNumber: finalValue?.vatNumber,
-                        name: finalValue?.name,
-                        email: finalValue?.email,
-                        province: finalValue?.province,
-                        district: finalValue?.district,
-                        municipality: finalValue?.municipality,
-                        localAddress: finalValue?.localAddress,
-                    },
+                email: finalValue.email,
+                password: finalValue.password,
+                phoneNumber: finalValue.phoneNumber,
+                userType: 'INSTITUTIONAL_USER',
+                institution: {
+                    name: finalValue.name,
+                    municipality: finalValue.municipality,
+                    wardNumber: finalValue.wardNumber,
+                    localAddress: finalValue.localAddress,
+                    panNumber: finalValue.panNumber,
+                    vatNumber: finalValue.vatNumber,
                 },
             },
         });
-    }, []);
+    }, [register]);
 
     const confirmationError = React.useMemo(() => {
         if (confirmPassword === value?.password) {
@@ -320,92 +285,123 @@ function InstitutionForm() {
     }, [confirmPassword, value?.password]);
 
     return (
-        <div>
-            <form
-                className={styles.registerForm}
-                onSubmit={createSubmitHandler(validate, setError, handleSubmit)}
+        <form
+            className={styles.registerForm}
+            onSubmit={createSubmitHandler(validate, setError, handleSubmit)}
+        >
+            <TextInput
+                name="email"
+                label="Email"
+                value={value?.email}
+                error={error?.email}
+                onChange={setFieldValue}
+                placeholder="johndoe@email.com"
+                disabled={pending}
+            />
+            <TextInput
+                name="name"
+                label="Name of the Institution"
+                value={value?.name}
+                error={error?.name}
+                onChange={setFieldValue}
+                placeholder="Togglecorp"
+                disabled={pending}
+            />
+            <PasswordInput
+                name="password"
+                label="Password"
+                value={value?.password}
+                error={error?.password}
+                onChange={setFieldValue}
+                disabled={pending}
+            />
+            <PasswordInput
+                name="confirm-password"
+                label="Confirm Password"
+                value={confirmPassword}
+                error={confirmationError}
+                onChange={setConfirmPassword}
+                disabled={pending}
+            />
+            <TextInput
+                name="phoneNumber"
+                label="Phone Number"
+                value={value?.phoneNumber}
+                error={error?.phoneNumber}
+                onChange={setFieldValue}
+                disabled={pending}
+            />
+            <SelectInput
+                label="Province"
+                name="province"
+                options={provinceList?.provinces?.results}
+                keySelector={provinceKeySelector}
+                labelSelector={provinceLabelSelector}
+                value={value?.province}
+                error={error?.province}
+                onChange={setFieldValue}
+            />
+            <SelectInput
+                label="District"
+                name="district"
+                options={districtList?.districts?.results}
+                keySelector={districtKeySelector}
+                labelSelector={districtLabelSelector}
+                value={value?.district}
+                error={error?.district}
+                onChange={setFieldValue}
+            />
+            <SelectInput
+                label="Municipality"
+                name="municipality"
+                options={municipalityList?.municipalities?.results}
+                keySelector={municipalityKeySelector}
+                labelSelector={municipalityLabelSelector}
+                value={value?.municipality}
+                error={error?.municipality}
+                onChange={setFieldValue}
+            />
+            <NumberInput
+                name="wardNumber"
+                label="Ward Number"
+                value={value?.wardNumber}
+                error={error?.wardNumber}
+                onChange={setFieldValue}
+                disabled={pending}
+            />
+            <TextInput
+                name="localAddress"
+                label="Local Address"
+                value={value?.localAddress}
+                error={error?.localAddress}
+                onChange={setFieldValue}
+                disabled={pending}
+            />
+            <TextInput
+                name="panNumber"
+                label="PAN"
+                value={value?.panNumber}
+                error={error?.panNumber}
+                onChange={setFieldValue}
+                disabled={pending}
+            />
+            <TextInput
+                name="vatNumber"
+                label="VAT Number"
+                value={value?.vatNumber}
+                error={error?.vatNumber}
+                onChange={setFieldValue}
+                disabled={pending}
+            />
+            <Button
+                name="register"
+                type="submit"
+                variant="primary"
+                disabled={pristine || pending || !!confirmationError}
             >
-                <TextInput
-                    name="email"
-                    label="Email"
-                    value={value?.email}
-                    error={error?.email}
-                    onChange={setFieldValue}
-                    placeholder="johndoe@email.com"
-                    disabled={pending}
-                />
-                <TextInput
-                    name="firstName"
-                    label="First Name"
-                    value={value?.firstName}
-                    error={error?.firstName}
-                    onChange={setFieldValue}
-                    placeholder="John"
-                    disabled={pending}
-                />
-                <TextInput
-                    name="lastName"
-                    label="Last Name"
-                    value={value?.lastName}
-                    error={error?.lastName}
-                    onChange={setFieldValue}
-                    placeholder="John Doe"
-                    disabled={pending}
-                />
-                <PasswordInput
-                    name="password"
-                    label="Password"
-                    value={value?.password}
-                    error={error?.password}
-                    onChange={setFieldValue}
-                    disabled={pending}
-                />
-                <PasswordInput
-                    name="confirm-password"
-                    label="Confirm Password"
-                    value={confirmPassword}
-                    error={confirmationError}
-                    onChange={setConfirmPassword}
-                    disabled={pending}
-                />
-                <SelectInput
-                    name="province"
-                    options={provinceList}
-                    keySelector={provinceKeySelector}
-                    labelSelector={provinceLabelSelector}
-                    value={value?.province}
-                    error={error?.province}
-                    onChange={setFieldValue}
-                />
-                <SelectInput
-                    name="district"
-                    options={districtList}
-                    keySelector={districtKeySelector}
-                    labelSelector={districtLabelSelector}
-                    value={value?.district}
-                    error={error?.district}
-                    onChange={setFieldValue}
-                />
-                <SelectInput
-                    name="municipality"
-                    options={municipalityList}
-                    keySelector={municipalityKeySelector}
-                    labelSelector={municipalityLabelSelector}
-                    value={value?.municipality}
-                    error={error?.municipality}
-                    onChange={setFieldValue}
-                />
-                <Button
-                    name="register"
-                    className={styles.submit}
-                    type="submit"
-                    variant="primary"
-                    disabled={pristine || pending}
-                >
-                    Register
-                </Button>
-            </form>
-        </div>
+                Register
+            </Button>
+        </form>
     );
 }
 

@@ -27,17 +27,14 @@ const ME = gql`
             lastLogin
             lastName
             userType
-            profile {
+            institution {
                 id
-                institution {
-                    id
-                }
-                publisher {
-                    id
-                }
-                school {
-                    id
-                }
+            }
+            publisher {
+                id
+            }
+            school {
+                id
             }
         }
     }
