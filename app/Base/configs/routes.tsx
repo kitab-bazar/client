@@ -55,7 +55,6 @@ const bookDetail = wrap({
     navbarVisibility: true,
     component: lazy(() => import('#views/BookDetail')),
     componentProps: {
-        className: '',
     },
     visibility: 'is-not-authenticated',
 });

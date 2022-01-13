@@ -1,12 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     Button,
     Card,
     Container,
     ListView,
     Tab,
+    TabPanel,
     Tabs,
 } from '@the-deep/deep-ui';
+import {
+    gql,
+    useQuery,
+} from '@apollo/client';
+import { useParams } from 'react-router-dom';
+
 import { BiChevronsRight } from 'react-icons/bi';
 
 import Aalu from '../HomePage/temp-img/Aalu.png';
@@ -16,6 +23,35 @@ import Pooja from '../HomePage/temp-img/Pooja.png';
 import Footer from '#components/Footer';
 
 import styles from './styles.css';
+import { BACKEND_SERVER_URL } from '#base/configs/env';
+
+const BOOK_DETAIL = gql`
+query MyBookDetail ($id: ID!){
+    book(id: $id ) {
+        description
+        id
+        image
+        isbn
+        edition
+        language
+        price
+        metaDescription
+        metaKeywords
+        metaTitle
+        numberOfPages
+        ogDescription
+        ogImage
+        ogLocale
+        ogTitle
+        ogType
+        title
+      authors {
+            id
+            name
+        }
+    }
+}
+`;
 
 const bookKeySelector = (b: Book) => b.id;
 
@@ -91,10 +127,13 @@ function SimilarBook(props: BookProps) {
         </div>
     );
 }
-function BookDetail(props: BookProps) {
-    const {
-        book,
-    } = props;
+function BookDetail() {
+    const { id } = useParams();
+
+    const { data: result, loading, error } = useQuery(BOOK_DETAIL, {
+        variables: { id },
+    });
+    const book = (!loading && result) ? result.book : [];
 
     const bookItemRendererParams = React.useCallback((_, data) => ({
         book: data,
@@ -106,28 +145,25 @@ function BookDetail(props: BookProps) {
                 <div className={styles.imageWrapper}>
                     <img
                         className={styles.image}
-                        src={Aalu}
-                        alt="aalu"
+                        src={`${BACKEND_SERVER_URL}/media/${book.image}`}
+                        alt={book.title}
                     />
                 </div>
                 <div className={styles.bookDetailSection}>
                     <Container
                         headerActions={(
                             <div className={styles.bookDescription}>
-                                <h1>Book 1</h1>
-                                <h4>Language:English</h4>
+                                <h1>{book.title}</h1>
+                                <h4>
+                                    Language:
+                                    {book.language}
+                                </h4>
                                 <p>
-                                    Lorem ipsum dolor sit amet consectetur
-                                    adipisicing elit. Similique labore, itaque dignissimos,
-                                    esse minima sint autem sequi porro dolore
-                                    non aperiam consequatur culpa dolorum.
-                                    Aut numquam voluptates impedit exercitationem porro ratione.
-                                    Aliquam harum quos inventore iste! Nostrum quos repellat
-                                    adipisci praesentium
-                                    a odio incidunt eum,nulla dolor provident minus qui ex aut?
-                                    Repellat eaque incidunt quos amet cupiditate voluptatum
-                                    eveniet quas,
-                                    aliquid molestias consequuntur!
+                                    {book.description}
+                                </p>
+                                <p>
+                                    ISBN:
+                                    {book.isbn}
                                 </p>
                                 <div className={styles.bookButtons}>
                                     <Button
@@ -160,60 +196,56 @@ function BookDetail(props: BookProps) {
                 >
                     <Tabs
                         onChange={undefined}
-                        value="new-tab"
+                        value="description-tab"
                     >
                         <Tab
-                            name="new-tab"
+                            name="description-tab"
                         >
                             <React.Fragment key=".0">
                                 Description
                             </React.Fragment>
                         </Tab>
                         <Tab
-                            name="new-tab"
+                            name="content-tab"
                         >
                             <React.Fragment key=".0">
                                 Content
                             </React.Fragment>
                         </Tab>
-                        <Card>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit. Nulla sed convallis quam, quis molestie nisi.
-                            Integer fringilla maximus tellus at aliquam.
-                            Nunc ac turpis non elit placerat luctus. Mauris vehicula,
-                            dui vitae feugiat malesuada, diam elit porttitor
-                            tellus, ut ultricies nibh est at ante.
-                            Maecenas congue congue nulla quis feugiat.
-                            Etiam porta volutpat mollis. Morbi libero eros,
-                            malesuada nec metus ac, varius cursus purus.
-                            Proin metus tellus, fermentum vel tellus et,
-                            tristique mattis urna. Nunc sapien sapien, malesuada
-                            posuere nulla in, imperdiet placerat o
-                            Phasellus dapibus magna sit amet neque sollicitudin
-                            laoreet.
-                        </Card>
+                        <TabPanel name="description-tab">
+                            {book.description}
+                        </TabPanel>
                     </Tabs>
                 </Container>
                 <Container
                     className={styles.authorDescription}
                     heading="About the Author"
                 />
-                <Card>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing
-                    elit. Nulla sed convallis quam, quis molestie nisi.
-                    Integer fringilla maximus tellus at aliquam.
-                    Nunc ac turpis non elit placerat luctus. Mauris vehicula,
-                    dui vitae feugiat malesuada, diam elit porttitor
-                    tellus, ut ultricies nibh est at ante.
-                    Maecenas congue congue nulla quis feugiat.
-                    Etiam porta volutpat mollis. Morbi libero eros,
-                    malesuada nec metus ac, varius cursus purus.
-                    Proin metus tellus, fermentum vel tellus et,
-                    tristique mattis urna. Nunc sapien sapien, malesuada
-                    posuere nulla in, imperdiet placerat o
-                    Phasellus dapibus magna sit amet neque sollicitudin
-                    laoreet.
-                </Card>
+                {!loading && (
+                    <Card>
+                        {book.authors.forEach((author: any) => {
+                            <p>{author.name}</p>;
+                        })}
+                        Lorem ipsum dolor sit amet, consectetur adipiscing
+                        elit. Nulla sed convallis quam, quis molestie nisi.
+                        Integer fringilla maximus tellus at aliquam.
+                        Nunc ac turpis non elit placerat luctus. Mauris vehicula,
+                        dui vitae feugiat malesuada, diam elit porttitor
+                        tellus, ut ultricies nibh est at ante.
+                        Maecenas congue congue nulla quis feugiat.
+                        Etiam porta volutpat mollis. Morbi libero eros,
+                        malesuada nec metus ac, varius cursus purus.
+                        Proin metus tellus, fermentum vel tellus et,
+                        tristique mattis urna. Nunc sapien sapien, malesuada
+                        posuere nulla in, imperdiet placerat o
+                        Phasellus dapibus magna sit amet neque sollicitudin
+                        laoreet.
+                    </Card>
+                )}
+                <Container
+                    className={styles.authorDescription}
+                    heading="Similar Books"
+                />
                 <div className={styles.similarBooksList}>
                     <ListView
                         className={styles.bookList}

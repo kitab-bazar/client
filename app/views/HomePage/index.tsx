@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     SelectInput,
     ListView,
@@ -13,85 +13,49 @@ import {
 
 import Footer from '#components/Footer';
 
-import Biralo from './temp-img/Biralo.png';
-// import Chaad from './temp-img/Chaad.png';
-// import Bahinee from './temp-img/Bahinee.png';
-import Riban from './temp-img/Riban.png';
-import Pooja from './temp-img/Pooja.png';
-// import Aawaj from './temp-img/Aawaj.png';
-import Aalu from './temp-img/Aalu.png';
 import coverImage from './cover.jpg';
 
 import styles from './styles.css';
+import { BACKEND_SERVER_URL } from '#base/configs/env';
 
 const FEATURED_BOOKS = gql`
-    query FeaturedBooks {
-        books(page: 1, pageSize: 10) {
-            results {
-              id
-              isbn
-              language
-              image
-              price
-              title
-              description
-              authors {
-                id
-                name
-                nameEn
-              }
-            }
-            page
-            pageSize
-            totalCount
-          }
+query FeaturedBooks($page: Int!, $pageSize: Int!) {
+  books(page: $page , pageSize: $pageSize) {
+    results {
+      id
+      isbn
+      language
+      image
+      price
+      title
+      description
+      authors {
+        id
+        name
+        nameEn
       }
+    }
+  }
 `;
 
 const optionLabelSelector = (d: any) => d.title;
 const optionKeySelector = (d: any) => d.id;
 const handleInputChange = (d: any) => d.value;
 
+interface Author {
+    id: number;
+    name: string;
+}
+
 interface Book {
     id: number;
     title: string;
     image: string;
-    author: string,
-    price: number,
+    authors: Author[];
+    price: number;
 }
 
 const bookKeySelector = (b: Book) => b.id;
-
-const books = [
-    {
-        id: 1,
-        title: 'Aalu',
-        image: Aalu,
-        author: 'Subina',
-        price: 467,
-    },
-    {
-        id: 2,
-        title: 'Biralo',
-        image: Biralo,
-        author: 'Barsha',
-        price: 650,
-    },
-    {
-        id: 3,
-        title: 'Riban',
-        image: Riban,
-        author: 'Safar Sanu Ligar',
-        price: 345,
-    },
-    {
-        id: 4,
-        title: 'Pooja',
-        image: Pooja,
-        author: 'Pooja',
-        price: 800,
-    },
-];
 
 interface BookProps {
     book: Book;
@@ -113,7 +77,7 @@ function BookItem(props: BookProps) {
                 <div className={styles.imageWrapper}>
                     <img
                         className={styles.image}
-                        src={book.image}
+                        src={`${BACKEND_SERVER_URL}/media/${book.image}`}
                         alt={book.title}
                     />
                 </div>
@@ -122,10 +86,10 @@ function BookItem(props: BookProps) {
                         {book.title}
                     </div>
                     <div className={styles.author}>
-                        {book.author}
+                        {book.authors[0].name}
                     </div>
                     <div className={styles.price}>
-                        {book.price}
+                        {`NPR ${book.price}`}
                     </div>
                 </div>
             </div>
@@ -134,9 +98,23 @@ function BookItem(props: BookProps) {
 }
 
 function HomePage() {
+    const [page, setPage] = useState<number>(1);
+
+    const { data: result, loading, refetch } = useQuery(FEATURED_BOOKS, {
+        variables: {
+            page: 1,
+            pageSize: 10,
+        },
+    });
+    const books = (!loading && result) ? result.books.results : [];
     const bookItemRendererParams = React.useCallback((_, data) => ({
         book: data,
     }), []);
+
+    const nextPage = React.useCallback(() => {
+        setPage(page + 1);
+        refetch();
+    }, []);
 
     return (
         <div className={styles.home}>
@@ -196,7 +174,7 @@ function HomePage() {
                         rendererParams={bookItemRendererParams}
                         renderer={BookItem}
                         errored={false}
-                        pending={false}
+                        pending={loading}
                         filtered={false}
                     />
                 </Container>

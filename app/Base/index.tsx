@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { Router } from 'react-router-dom';
 import { init, ErrorBoundary, setUser as setUserOnSentry } from '@sentry/react';
 import { unique, _cs } from '@togglecorp/fujs';
@@ -153,6 +153,18 @@ function Base() {
         }),
         [alerts, addAlert, updateAlertContent, removeAlert],
     );
+
+    useEffect(() => {
+        try {
+            window.scroll({
+                top: 0,
+                left: 0,
+                behavior: 'smooth',
+            });
+        } catch (err) {
+            window.scrollTo(0, 0);
+        }
+    });
 
     return (
         <div className={styles.base}>
