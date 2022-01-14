@@ -1,84 +1,167 @@
-import React, { useCallback } from 'react';
-
+import React from 'react';
 import {
     Container,
+    RadioInput,
     TextInput,
     PasswordInput,
+    useInputState,
     Button,
+    useAlert,
 } from '@the-deep/deep-ui';
-
 import {
-    ObjectSchema,
     PartialForm,
-    emailCondition,
-    requiredStringCondition,
-    lengthGreaterThanCondition,
-    lengthSmallerThanCondition,
     useForm,
     getErrorObject,
     createSubmitHandler,
+    removeNull,
 } from '@togglecorp/toggle-form';
+import { useMutation, gql } from '@apollo/client';
+
+import {
+    UserUserType,
+    RegisterMutation,
+    RegisterMutationVariables,
+} from '#generated/types';
+
+import {
+    transformToFormError,
+    ObjectError,
+} from '#base/utils/errorTransform';
+
+import {
+    RegisterFormType,
+    RegistrationFields,
+    schema,
+} from './common';
+
+import InstitutionForm from './InstitutionForm';
+import PublisherForm from './PublisherForm';
+import SchoolForm from './SchoolForm';
 import styles from './styles.css';
 
-interface RegisterFields {
-    email: string;
-    fullName: string;
-    organizationName: string;
-    createPassword: string;
-    verifyPassword: string;
-    captcha?: string;
+interface UserType {
+    id: UserUserType;
+    title: string;
 }
 
-type FormType = Partial<RegisterFields>;
+// FIXME: fetch this from the server
+const userType: UserType[] = [
+    {
+        id: 'INDIVIDUAL_USER',
+        title: 'Individual User',
+    },
+    {
+        id: 'PUBLISHER',
+        title: 'Publisher',
+    },
+    {
+        id: 'INSTITUTIONAL_USER',
+        title: 'Institution',
+    },
+    {
+        id: 'SCHOOL_ADMIN',
+        title: 'School',
+    },
+];
 
-type FormSchema = ObjectSchema<PartialForm<FormType>>;
-
-type FormSchemaFields = ReturnType<FormSchema['fields']>;
-
-const schema: FormSchema = {
-    fields: (): FormSchemaFields => ({
-        email: [emailCondition, requiredStringCondition],
-        fullName: [requiredStringCondition],
-        organizationName: [requiredStringCondition],
-        createPassword: [
-            requiredStringCondition,
-            lengthGreaterThanCondition(4),
-            lengthSmallerThanCondition(129),
-        ],
-    }),
+const defaultFormValues: PartialForm<RegisterFormType> = {
+    userType: 'INDIVIDUAL_USER',
 };
 
-const initialValue: FormType = {};
+const userKeySelector = (u: UserType) => u.id;
+const userLabelSelector = (u: UserType) => u.title;
+
+const REGISTER = gql`
+    mutation Register($data: RegisterInputType!) {
+        register(data: $data) {
+            errors
+            ok
+        }
+    }
+`;
 
 function RegisterForm() {
     const {
-        pristine,
-        value,
-        error: riskyError,
         setFieldValue,
+        value,
+        error: formError,
         validate,
         setError,
-    } = useForm(schema, initialValue);
+    } = useForm(schema, defaultFormValues);
+    const alert = useAlert();
 
-    const error = getErrorObject(riskyError);
+    const error = getErrorObject(formError);
+    const [confirmPassword, setConfirmPassword] = useInputState<string | undefined>(undefined);
 
-    const handleSubmit = useCallback(() => {
-        console.warn('to be handled');
-        // TODO: handle Submit
-    }, []);
+    const [
+        register,
+        { loading: registerPending },
+    ] = useMutation<RegisterMutation, RegisterMutationVariables>(
+        REGISTER,
+        {
+            onCompleted: (response) => {
+                const { register: registerResponse } = response;
+                if (!registerResponse) {
+                    alert.show('No response from server!');
+                    return;
+                }
+
+                if (registerResponse?.ok) {
+                    alert.show(
+                        'Registration completed successfully! Please validate your account before loggin in',
+                        { variant: 'success' },
+                    );
+                } else if (registerResponse?.errors) {
+                    const formErrorFromServer = transformToFormError(
+                        removeNull(registerResponse?.errors) as ObjectError[],
+                    );
+                    setError(formErrorFromServer);
+
+                    alert.show(
+                        'Error during registration!',
+                        { variant: 'error' },
+                    );
+                }
+            },
+        },
+    );
+
+    const handleSubmit = React.useCallback((formValues: Partial<RegisterFormType>) => {
+        const finalValues = { ...formValues } as RegistrationFields;
+
+        register({ variables: { data: finalValues } });
+    }, [register]);
+
+    const confirmationError = React.useMemo(() => {
+        if (confirmPassword === value?.password) {
+            return undefined;
+        }
+
+        return 'Password doesn\'t match';
+    }, [confirmPassword, value?.password]);
 
     return (
-        <form
+        <Container
             className={styles.registerForm}
-            onSubmit={createSubmitHandler(validate, setError, handleSubmit)}
+            heading="Register new User"
+            headingSize="large"
+            spacing="loose"
         >
-            <Container
-                className={styles.registerFormContainer}
-                heading="Register"
-                headingSize="medium"
-                headingClassName={styles.heading}
-                contentClassName={styles.inputContainer}
+            <form
+                className={styles.form}
+                onSubmit={createSubmitHandler(validate, setError, handleSubmit)}
             >
+                <RadioInput
+                    name="userType"
+                    options={userType}
+                    label="Select User Type"
+                    keySelector={userKeySelector}
+                    labelSelector={userLabelSelector}
+                    onChange={setFieldValue}
+                    value={value.userType}
+                    error={error?.userType}
+                    disabled={registerPending}
+                />
                 <TextInput
                     name="email"
                     label="Email"
@@ -86,50 +169,88 @@ function RegisterForm() {
                     error={error?.email}
                     onChange={setFieldValue}
                     placeholder="johndoe@email.com"
-                />
-                <TextInput
-                    name="fullName"
-                    label="Full Name"
-                    value={value?.fullName}
-                    error={error?.fullName}
-                    onChange={setFieldValue}
-                    placeholder="John Doe"
-                />
-                <TextInput
-                    name="organizationName"
-                    label="Organization Name"
-                    value={value?.organizationName}
-                    error={error?.organizationName}
-                    onChange={setFieldValue}
-                    placeholder="Janashakti School"
+                    disabled={registerPending}
                 />
                 <PasswordInput
-                    name="createPassword"
-                    label="Create Password"
-                    value={value?.createPassword}
-                    error={error?.createPassword}
+                    name="password"
+                    label="Password"
+                    value={value?.password}
+                    error={error?.password}
                     onChange={setFieldValue}
-                    placeholder="******"
+                    disabled={registerPending}
                 />
                 <PasswordInput
-                    name="verifyPassword"
-                    label="Re-enter Password"
-                    value={value?.verifyPassword}
-                    error={error?.verifyPassword}
-                    onChange={setFieldValue}
-                    placeholder="******"
+                    name="confirm-password"
+                    label="Confirm Password"
+                    value={confirmPassword}
+                    error={confirmationError}
+                    onChange={setConfirmPassword}
+                    disabled={registerPending}
                 />
+                <TextInput
+                    name="phoneNumber"
+                    label="Phone Number"
+                    value={value?.phoneNumber}
+                    error={error?.phoneNumber}
+                    onChange={setFieldValue}
+                    disabled={registerPending}
+                />
+                {value.userType === 'INDIVIDUAL_USER' && (
+                    <>
+                        <TextInput
+                            name="firstName"
+                            label="First Name"
+                            value={value?.firstName}
+                            error={error?.firstName}
+                            onChange={setFieldValue}
+                            disabled={registerPending}
+                        />
+                        <TextInput
+                            name="lastName"
+                            label="Last Name"
+                            value={value?.lastName}
+                            error={error?.lastName}
+                            onChange={setFieldValue}
+                            disabled={registerPending}
+                        />
+                    </>
+                )}
+                {value.userType === 'INSTITUTIONAL_USER' && (
+                    <InstitutionForm
+                        name="institution"
+                        value={value.institution}
+                        onChange={setFieldValue}
+                        error={error?.institution}
+                        disabled={registerPending}
+                    />
+                )}
+                {value.userType === 'PUBLISHER' && (
+                    <PublisherForm
+                        name="publisher"
+                        value={value.publisher}
+                        onChange={setFieldValue}
+                        error={error?.publisher}
+                        disabled={registerPending}
+                    />
+                )}
+                {value.userType === 'SCHOOL_ADMIN' && (
+                    <SchoolForm
+                        name="school"
+                        value={value.school}
+                        onChange={setFieldValue}
+                        error={error?.school}
+                        disabled={registerPending}
+                    />
+                )}
                 <Button
-                    name="register"
-                    className={styles.submit}
+                    name={undefined}
                     type="submit"
-                    variant="primary"
-                    disabled={pristine}
+                    disabled={registerPending}
                 >
-                    Register
+                    Submit
                 </Button>
-            </Container>
-        </form>
+            </form>
+        </Container>
     );
 }
 

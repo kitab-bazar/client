@@ -21,7 +21,7 @@ services:
       context: ./server/
     tty: true
     environment:
-      DEBUG: true
+      DEBUG: "true"
       # ALLOWED_HOSTS: localhost
       SECRET_KEY: unsecure-123456789-dont-use-in-production
       # From db.environment
@@ -50,7 +50,7 @@ services:
       NODE_OPTIONS: --openssl-legacy-provider
       MY_APP: ${MY_APP:-kitab-bazar}
       REACT_APP_ENVIRONMENT: ${REACT_APP_ENVIRONMENT:-development}
-      GRAPHQL_CODEGEN_ENDPOINT: ${GRAPHQL_CODEGEN_ENDPOINT:-http://localhost:8020/graphql/}
+      GRAPHQL_CODEGEN_ENDPOINT: ${GRAPHQL_CODEGEN_ENDPOINT:-http://server:8020/graphql/}
       REACT_APP_GRAPHQL_ENDPOINT: ${REACT_APP_GRAPHQL_ENDPOINT:-http://localhost:8020/graphql/}
     env_file:
       - .env
