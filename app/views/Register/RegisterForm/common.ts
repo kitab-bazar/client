@@ -28,7 +28,8 @@ interface PublisherFields extends BaseExtraFields {
 interface SchoolFields extends BaseExtraFields {
 }
 
-interface RegistrationFields {
+// FIXME: use generated typing
+export interface RegistrationFields {
     email: string;
     firstName?: string;
     lastName?: string;
@@ -58,68 +59,61 @@ export type SchoolSchema = ObjectSchema<PartialForm<SchoolType>, RegisterFormTyp
 export type SchoolSchemaFields = ReturnType<SchoolSchema['fields']>;
 
 export const schema: RegisterFormSchema = {
-    fields: (currentFormValue): RegisterFormSchemaFields => ({
-        email: [emailCondition, requiredStringCondition],
-        firstName: [],
-        lastName: [],
-        userType: [requiredCondition],
-        password: [
-            requiredStringCondition,
-            lengthGreaterThanCondition(4),
-            lengthSmallerThanCondition(129),
-        ],
-        phoneNumber: [
-            requiredStringCondition,
-            lengthGreaterThanCondition(9),
-            lengthSmallerThanCondition(15),
-        ],
-        institution: {
-            fields: (): InstitutionSchemaFields => {
-                if (currentFormValue?.userType !== 'INSTITUTIONAL_USER') {
-                    return {};
-                }
+    fields: (currentFormValue): RegisterFormSchemaFields => {
+        const baseSchema: RegisterFormSchemaFields = {
+            email: [emailCondition, requiredStringCondition],
+            userType: [requiredCondition],
+            password: [
+                requiredStringCondition,
+                lengthGreaterThanCondition(4),
+                lengthSmallerThanCondition(129),
+            ],
+            phoneNumber: [
+                requiredStringCondition,
+                lengthGreaterThanCondition(9),
+                lengthSmallerThanCondition(15),
+            ],
+        };
 
-                return {
-                    name: [],
-                    municipality: [requiredStringCondition],
-                    wardNumber: [requiredCondition],
-                    localAddress: [],
-                    panNumber: [requiredCondition],
-                    vatNumber: [requiredCondition],
-                };
-            },
-        },
-        publisher: {
-            fields: (): PublisherSchemaFields => {
-                if (currentFormValue?.userType !== 'PUBLISHER') {
-                    return {};
-                }
+        const extraSchema = {
+            name: [],
+            municipality: [requiredStringCondition],
+            wardNumber: [requiredCondition],
+            localAddress: [],
+            panNumber: [requiredCondition],
+            vatNumber: [requiredCondition],
+        };
 
+        switch (currentFormValue?.userType) {
+            case 'INDIVIDUAL_USER':
                 return {
-                    name: [],
-                    municipality: [requiredStringCondition],
-                    wardNumber: [requiredCondition],
-                    localAddress: [],
-                    panNumber: [requiredCondition],
-                    vatNumber: [requiredCondition],
+                    ...baseSchema,
+                    firstName: [requiredCondition],
+                    lastName: [requiredCondition],
                 };
-            },
-        },
-        school: {
-            fields: (): SchoolSchemaFields => {
-                if (currentFormValue?.userType !== 'SCHOOL_ADMIN') {
-                    return {};
-                }
-
+            case 'INSTITUTIONAL_USER':
                 return {
-                    name: [],
-                    municipality: [requiredStringCondition],
-                    wardNumber: [requiredCondition],
-                    localAddress: [],
-                    panNumber: [requiredCondition],
-                    vatNumber: [requiredCondition],
+                    ...baseSchema,
+                    institution: {
+                        fields: () => extraSchema,
+                    },
                 };
-            },
-        },
-    }),
+            case 'PUBLISHER':
+                return {
+                    ...baseSchema,
+                    publisher: {
+                        fields: () => extraSchema,
+                    },
+                };
+            case 'SCHOOL_ADMIN':
+                return {
+                    ...baseSchema,
+                    school: {
+                        fields: () => extraSchema,
+                    },
+                };
+            default:
+                return baseSchema;
+        }
+    },
 };

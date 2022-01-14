@@ -1,9 +1,11 @@
 import React from 'react';
-import { useQuery, gql } from '@apollo/client';
 import {
-    useInputState,
-    SelectInput,
-} from '@the-deep/deep-ui';
+    useQuery,
+    useLazyQuery,
+    gql,
+} from '@apollo/client';
+import { SelectInput } from '@the-deep/deep-ui';
+import { isDefined } from '@togglecorp/fujs';
 
 import {
     ProvinceListQuery,
@@ -13,8 +15,6 @@ import {
     MunicipalityListQuery,
     MunicipalityListQueryVariables,
 } from '#generated/types';
-
-// import styles from './styles.css';
 
 const PROVINCE_LIST = gql`
     query ProvinceList {
@@ -74,16 +74,16 @@ const municipalityLabelSelector = (d: Municipality) => d.name;
 interface Props<K extends string> {
     name: K;
     onChange: (value: Municipality['id'] | undefined, name: K) => void;
-    value: Municipality['id'] | undefined;
     error?: string;
+    disabled?: boolean;
 }
 
 function LocationInput<K extends string>(props: Props<K>) {
     const {
         name,
         onChange,
-        value,
         error,
+        disabled,
     } = props;
 
     const {
@@ -93,44 +93,66 @@ function LocationInput<K extends string>(props: Props<K>) {
         PROVINCE_LIST,
     );
 
-    const [province, setProvince] = useInputState<Province['id'] | undefined>(undefined);
-    const [district, setDistrict] = useInputState<District['id'] | undefined>(undefined);
-    const [municipality, setMunicipality] = useInputState<Municipality['id'] | undefined>(undefined);
+    const [province, setProvince] = React.useState<Province['id'] | undefined>();
+    const [district, setDistrict] = React.useState<District['id'] | undefined>();
+    const [municipality, setMunicipality] = React.useState<Municipality['id'] | undefined>();
 
-    React.useEffect(() => {
+    const handleMunicipalityChange = React.useCallback((newMunicipality: Municipality['id'] | undefined) => {
         if (onChange) {
-            onChange(municipality, name);
+            onChange(newMunicipality, name);
+            setMunicipality(newMunicipality);
         }
-    }, [name, onChange, municipality]);
-
-    React.useEffect(() => {
-        setMunicipality(value);
-    }, [value, setMunicipality]);
+    }, [onChange, name, setMunicipality]);
 
     const districtVariables = React.useMemo(() => ({
         provinceIds: province ? [province] : undefined,
     }), [province]);
 
-    const {
-        data: districtList,
-        loading: districtsPending,
-    } = useQuery<DistrictListQuery, DistrictListQueryVariables>(
+    const [
+        loadDistricts,
+        {
+            data: districtList,
+            loading: districtsPending,
+        },
+    ] = useLazyQuery<DistrictListQuery, DistrictListQueryVariables>(
         DISTRICT_LIST,
         { variables: districtVariables },
     );
+
+    const handleProvinceChange = React.useCallback((newProvince: Province['id'] | undefined) => {
+        setProvince(newProvince);
+        if (isDefined(newProvince)) {
+            loadDistricts();
+        } else {
+            setDistrict(undefined);
+            handleMunicipalityChange(undefined);
+        }
+    }, [loadDistricts, handleMunicipalityChange]);
 
     const municipalityVariables = React.useMemo(() => ({
         provinceIds: province ? [province] : undefined,
         districtIds: district ? [district] : undefined,
     }), [province, district]);
 
-    const {
-        data: municipalityList,
-        loading: municipalitiesPending,
-    } = useQuery<MunicipalityListQuery, MunicipalityListQueryVariables>(
+    const [
+        loadMunicipalities,
+        {
+            data: municipalityList,
+            loading: municipalitiesPending,
+        },
+    ] = useLazyQuery<MunicipalityListQuery, MunicipalityListQueryVariables>(
         MUNICIPALITY_LIST,
         { variables: municipalityVariables },
     );
+
+    const handleDistrictChange = React.useCallback((newDistrict: District['id'] | undefined) => {
+        setDistrict(newDistrict);
+        if (isDefined(newDistrict)) {
+            loadMunicipalities();
+        } else {
+            handleMunicipalityChange(undefined);
+        }
+    }, [loadMunicipalities, handleMunicipalityChange]);
 
     return (
         <>
@@ -141,8 +163,8 @@ function LocationInput<K extends string>(props: Props<K>) {
                 keySelector={provinceKeySelector}
                 labelSelector={provinceLabelSelector}
                 value={province}
-                onChange={setProvince}
-                disabled={provincesPending}
+                onChange={handleProvinceChange}
+                disabled={disabled || provincesPending}
             />
             <SelectInput
                 label="District"
@@ -151,8 +173,8 @@ function LocationInput<K extends string>(props: Props<K>) {
                 keySelector={districtKeySelector}
                 labelSelector={districtLabelSelector}
                 value={district}
-                onChange={setDistrict}
-                disabled={districtsPending}
+                onChange={handleDistrictChange}
+                disabled={disabled || !province || districtsPending || !districtList}
             />
             <SelectInput
                 label="Municipality"
@@ -161,8 +183,8 @@ function LocationInput<K extends string>(props: Props<K>) {
                 keySelector={municipalityKeySelector}
                 labelSelector={municipalityLabelSelector}
                 value={municipality}
-                onChange={setMunicipality}
-                disabled={municipalitiesPending}
+                onChange={handleMunicipalityChange}
+                disabled={disabled || !district || municipalitiesPending || !municipalityList}
                 error={error}
             />
         </>

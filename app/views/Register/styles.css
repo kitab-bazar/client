@@ -2,7 +2,7 @@
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
-    padding: var(--dui-spacing-large);
+    padding: 6vh var(--dui-spacing-medium);
     width: 100vw;
     height: 100vh;
     overflow: auto;
@@ -20,7 +20,7 @@
         .left {
             display: flex;
             align-items: center;
-            flex-basis: 40%;
+            flex-basis: 30%;
             flex-direction: column;
             flex-grow: 1;
             justify-content: center;
@@ -29,6 +29,7 @@
 
             .app-name {
                 padding: var(--dui-spacing-medium);
+                text-align: center;
                 text-transform: uppercase;
                 color: var(--dui-color-accent);
                 font-size: var(--dui-font-size-super-large);
@@ -38,7 +39,7 @@
 
         .right {
             display: flex;
-            flex-basis: 60%;
+            flex-basis: 70%;
             flex-direction: column;
             flex-grow: 1;
             overflow-y: auto;

@@ -24,6 +24,7 @@ interface Props<K extends string> {
     value: PublisherInputValue;
     error: Error<PublisherType>;
     onChange: (value: SetValueArg<PublisherInputValue> | undefined, name: K) => void;
+    disabled?: boolean;
 }
 
 function PublisherForm<K extends string>(props: Props<K>) {
@@ -32,6 +33,7 @@ function PublisherForm<K extends string>(props: Props<K>) {
         value,
         error: formError,
         onChange,
+        disabled,
     } = props;
 
     const setFieldValue = useFormObject(name, onChange, defaultPublisherValue);
@@ -46,12 +48,13 @@ function PublisherForm<K extends string>(props: Props<K>) {
                 error={error?.name}
                 onChange={setFieldValue}
                 placeholder="Togglecorp"
+                disabled={disabled}
             />
             <LocationInput
                 name="municipality"
-                value={value?.municipality}
                 error={error?.municipality}
                 onChange={setFieldValue}
+                disabled={disabled}
             />
             <NumberInput
                 name="wardNumber"
@@ -59,6 +62,7 @@ function PublisherForm<K extends string>(props: Props<K>) {
                 value={value?.wardNumber}
                 error={error?.wardNumber}
                 onChange={setFieldValue}
+                disabled={disabled}
             />
             <TextInput
                 name="localAddress"
@@ -66,6 +70,7 @@ function PublisherForm<K extends string>(props: Props<K>) {
                 value={value?.localAddress}
                 error={error?.localAddress}
                 onChange={setFieldValue}
+                disabled={disabled}
             />
             <TextInput
                 name="panNumber"
@@ -73,6 +78,7 @@ function PublisherForm<K extends string>(props: Props<K>) {
                 value={value?.panNumber}
                 error={error?.panNumber}
                 onChange={setFieldValue}
+                disabled={disabled}
             />
             <TextInput
                 name="vatNumber"
@@ -80,6 +86,7 @@ function PublisherForm<K extends string>(props: Props<K>) {
                 value={value?.vatNumber}
                 error={error?.vatNumber}
                 onChange={setFieldValue}
+                disabled={disabled}
             />
         </>
     );

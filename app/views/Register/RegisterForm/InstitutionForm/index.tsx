@@ -11,9 +11,8 @@ import {
     SetValueArg,
 } from '@togglecorp/toggle-form';
 
-import {
-    InstitutionType,
-} from '../common';
+import { InstitutionType } from '../common';
+import LocationInput from '../LocationInput';
 
 // import styles from './styles.css';
 
@@ -25,6 +24,7 @@ interface Props<K extends string> {
     value: InstitutionInputValue;
     error: Error<InstitutionType>;
     onChange: (value: SetValueArg<InstitutionInputValue> | undefined, name: K) => void;
+    disabled?: boolean;
 }
 
 function InstitutionForm<K extends string>(props: Props<K>) {
@@ -33,6 +33,7 @@ function InstitutionForm<K extends string>(props: Props<K>) {
         value,
         error: formError,
         onChange,
+        disabled,
     } = props;
 
     const setFieldValue = useFormObject(name, onChange, defaultInstitutionValue);
@@ -47,6 +48,13 @@ function InstitutionForm<K extends string>(props: Props<K>) {
                 error={error?.name}
                 onChange={setFieldValue}
                 placeholder="Togglecorp"
+                disabled={disabled}
+            />
+            <LocationInput
+                name="municipality"
+                error={error?.municipality}
+                onChange={setFieldValue}
+                disabled={disabled}
             />
             <NumberInput
                 name="wardNumber"
@@ -54,6 +62,7 @@ function InstitutionForm<K extends string>(props: Props<K>) {
                 value={value?.wardNumber}
                 error={error?.wardNumber}
                 onChange={setFieldValue}
+                disabled={disabled}
             />
             <TextInput
                 name="localAddress"
@@ -61,6 +70,7 @@ function InstitutionForm<K extends string>(props: Props<K>) {
                 value={value?.localAddress}
                 error={error?.localAddress}
                 onChange={setFieldValue}
+                disabled={disabled}
             />
             <TextInput
                 name="panNumber"
@@ -68,6 +78,7 @@ function InstitutionForm<K extends string>(props: Props<K>) {
                 value={value?.panNumber}
                 error={error?.panNumber}
                 onChange={setFieldValue}
+                disabled={disabled}
             />
             <TextInput
                 name="vatNumber"
@@ -75,6 +86,7 @@ function InstitutionForm<K extends string>(props: Props<K>) {
                 value={value?.vatNumber}
                 error={error?.vatNumber}
                 onChange={setFieldValue}
+                disabled={disabled}
             />
         </>
     );

@@ -30,6 +30,7 @@ import {
 
 import {
     RegisterFormType,
+    RegistrationFields,
     schema,
 } from './common';
 
@@ -43,10 +44,11 @@ interface UserType {
     title: string;
 }
 
+// FIXME: fetch this from the server
 const userType: UserType[] = [
     {
-        id: 'ADMIN',
-        title: 'Admin',
+        id: 'INDIVIDUAL_USER',
+        title: 'Individual User',
     },
     {
         id: 'PUBLISHER',
@@ -60,10 +62,6 @@ const userType: UserType[] = [
         id: 'SCHOOL_ADMIN',
         title: 'School',
     },
-    {
-        id: 'INDIVIDUAL_USER',
-        title: 'Individual User',
-    },
 ];
 
 const defaultFormValues: PartialForm<RegisterFormType> = {
@@ -74,21 +72,8 @@ const userKeySelector = (u: UserType) => u.id;
 const userLabelSelector = (u: UserType) => u.title;
 
 const REGISTER = gql`
-    mutation RegisterMutation (
-        $email: String!
-        $name: String
-        $password: String!
-        $phoneNumber: String
-        $userType: user_type
-    ) {
-        register(data: {
-            email: $email
-            firstName: $name
-            lastName: $name
-            password: $password
-            phoneNumber: $phoneNumber
-            userType: $userType
-        }) {
+    mutation Register($data: RegisterInputType!) {
+        register(data: $data) {
             errors
             ok
         }
@@ -121,19 +106,14 @@ function RegisterForm() {
                     return;
                 }
 
-                const {
-                    ok,
-                    errors,
-                } = registerResponse ?? {};
-
-                if (ok) {
+                if (registerResponse?.ok) {
                     alert.show(
                         'Registration completed successfully! Please validate your account before loggin in',
                         { variant: 'success' },
                     );
-                } else if (errors) {
+                } else if (registerResponse?.errors) {
                     const formErrorFromServer = transformToFormError(
-                        removeNull(errors) as ObjectError[],
+                        removeNull(registerResponse?.errors) as ObjectError[],
                     );
                     setError(formErrorFromServer);
 
@@ -146,30 +126,10 @@ function RegisterForm() {
         },
     );
 
-    const handleSubmit = React.useCallback((formValues: PartialForm<RegisterFormType>) => {
-        const finalValues = { ...formValues } as RegisterFormType;
-        switch (formValues.userType) {
-            case 'PUBLISHER':
-                delete finalValues.institution;
-                delete finalValues.school;
-                break;
-            case 'SCHOOL_ADMIN':
-                delete finalValues.institution;
-                delete finalValues.publisher;
-                break;
-            case 'INSTITUTIONAL_USER':
-                delete finalValues.school;
-                delete finalValues.publisher;
-                break;
-            default:
-                delete finalValues.school;
-                delete finalValues.institution;
-                delete finalValues.publisher;
-                break;
-        }
+    const handleSubmit = React.useCallback((formValues: Partial<RegisterFormType>) => {
+        const finalValues = { ...formValues } as RegistrationFields;
 
-        // TODO: Fix typing error;
-        register({ variables: finalValues });
+        register({ variables: { data: finalValues } });
     }, [register]);
 
     const confirmationError = React.useMemo(() => {
@@ -179,8 +139,6 @@ function RegisterForm() {
 
         return 'Password doesn\'t match';
     }, [confirmPassword, value?.password]);
-
-    const pending = false;
 
     return (
         <Container
@@ -202,6 +160,7 @@ function RegisterForm() {
                     onChange={setFieldValue}
                     value={value.userType}
                     error={error?.userType}
+                    disabled={registerPending}
                 />
                 <TextInput
                     name="email"
@@ -210,7 +169,7 @@ function RegisterForm() {
                     error={error?.email}
                     onChange={setFieldValue}
                     placeholder="johndoe@email.com"
-                    disabled={pending}
+                    disabled={registerPending}
                 />
                 <PasswordInput
                     name="password"
@@ -218,7 +177,7 @@ function RegisterForm() {
                     value={value?.password}
                     error={error?.password}
                     onChange={setFieldValue}
-                    disabled={pending}
+                    disabled={registerPending}
                 />
                 <PasswordInput
                     name="confirm-password"
@@ -226,7 +185,7 @@ function RegisterForm() {
                     value={confirmPassword}
                     error={confirmationError}
                     onChange={setConfirmPassword}
-                    disabled={pending}
+                    disabled={registerPending}
                 />
                 <TextInput
                     name="phoneNumber"
@@ -234,14 +193,35 @@ function RegisterForm() {
                     value={value?.phoneNumber}
                     error={error?.phoneNumber}
                     onChange={setFieldValue}
-                    disabled={pending}
+                    disabled={registerPending}
                 />
+                {value.userType === 'INDIVIDUAL_USER' && (
+                    <>
+                        <TextInput
+                            name="firstName"
+                            label="First Name"
+                            value={value?.firstName}
+                            error={error?.firstName}
+                            onChange={setFieldValue}
+                            disabled={registerPending}
+                        />
+                        <TextInput
+                            name="lastName"
+                            label="Last Name"
+                            value={value?.lastName}
+                            error={error?.lastName}
+                            onChange={setFieldValue}
+                            disabled={registerPending}
+                        />
+                    </>
+                )}
                 {value.userType === 'INSTITUTIONAL_USER' && (
                     <InstitutionForm
                         name="institution"
                         value={value.institution}
                         onChange={setFieldValue}
                         error={error?.institution}
+                        disabled={registerPending}
                     />
                 )}
                 {value.userType === 'PUBLISHER' && (
@@ -250,6 +230,7 @@ function RegisterForm() {
                         value={value.publisher}
                         onChange={setFieldValue}
                         error={error?.publisher}
+                        disabled={registerPending}
                     />
                 )}
                 {value.userType === 'SCHOOL_ADMIN' && (
@@ -258,6 +239,7 @@ function RegisterForm() {
                         value={value.school}
                         onChange={setFieldValue}
                         error={error?.school}
+                        disabled={registerPending}
                     />
                 )}
                 <Button
