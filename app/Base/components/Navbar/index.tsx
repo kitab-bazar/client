@@ -8,6 +8,7 @@ import {
     useAlert,
 } from '@the-deep/deep-ui';
 import { GoSearch } from 'react-icons/go';
+import { Link } from 'react-router-dom';
 
 import routes from '#base/configs/routes';
 import { UserContext } from '#base/context/UserContext';
@@ -94,7 +95,10 @@ function Navbar(props: Props) {
 
     return (
         <nav className={_cs(className, styles.navbar)}>
-            <div className={styles.appBrand}>
+            <Link
+                to="/"
+                className={styles.appBrand}
+            >
                 <img
                     className={styles.logo}
                     src={KitabLogo}
@@ -103,11 +107,12 @@ function Navbar(props: Props) {
                 <div className={styles.appName}>
                     Kitab Bazar
                 </div>
-            </div>
+            </Link>
             <div className={styles.main}>
                 <div className={styles.navLinks}>
                     <div className={styles.textInput}>
                         <TextInput
+                            disabled
                             icons={<GoSearch />}
                             onChange={undefined}
                             placeholder="Search all books"
