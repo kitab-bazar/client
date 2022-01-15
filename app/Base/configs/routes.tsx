@@ -50,7 +50,7 @@ const myProfile = wrap({
     visibility: 'is-authenticated',
 });
 const bookDetail = wrap({
-    path: '/book/:id',
+    path: '/book/:id/',
     title: 'My Book Detail',
     navbarVisibility: true,
     component: lazy(() => import('#views/BookDetail')),

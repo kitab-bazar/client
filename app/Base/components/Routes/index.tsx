@@ -23,6 +23,12 @@ function Routes(props: Props) {
             <Switch>
                 <Route
                     exact
+                    path={routes.bookDetail.path}
+                >
+                    {routes.bookDetail.load({ className })}
+                </Route>
+                <Route
+                    exact
                     path={routes.myProfile.path}
                 >
                     {routes.myProfile.load({ className })}
@@ -38,12 +44,6 @@ function Routes(props: Props) {
                     path={routes.register.path}
                 >
                     {routes.register.load({ className })}
-                </Route>
-                <Route
-                    exact
-                    path={routes.bookDetail.path}
-                >
-                    {routes.bookDetail.load({ className })}
                 </Route>
                 <Route
                     exact

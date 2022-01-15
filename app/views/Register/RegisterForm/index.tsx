@@ -1,4 +1,5 @@
 import React from 'react';
+import { generatePath } from 'react-router-dom';
 import {
     Container,
     RadioInput,
@@ -7,6 +8,7 @@ import {
     useInputState,
     Button,
     useAlert,
+    ButtonLikeLink,
 } from '@the-deep/deep-ui';
 import {
     PartialForm,
@@ -22,6 +24,7 @@ import {
     RegisterMutation,
     RegisterMutationVariables,
 } from '#generated/types';
+import routes from '#base/configs/routes';
 
 import {
     transformToFormError,
@@ -146,6 +149,20 @@ function RegisterForm() {
             heading="Register new User"
             headingSize="large"
             spacing="loose"
+            footerContentClassName={styles.footerContent}
+            footerContent={(
+                <>
+                    Already have an account?
+                    &nbsp;
+                    <ButtonLikeLink
+                        className={styles.loginLink}
+                        to={generatePath(routes.login.path)}
+                        variant="transparent"
+                    >
+                        Login
+                    </ButtonLikeLink>
+                </>
+            )}
         >
             <form
                 className={styles.form}
@@ -243,11 +260,12 @@ function RegisterForm() {
                     />
                 )}
                 <Button
+                    className={styles.registerButton}
                     name={undefined}
                     type="submit"
                     disabled={registerPending}
                 >
-                    Submit
+                    Register
                 </Button>
             </form>
         </Container>

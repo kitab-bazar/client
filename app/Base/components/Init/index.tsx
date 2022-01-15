@@ -1,4 +1,4 @@
-import React, { useContext, useState, useMemo, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 
 import { useQuery, gql } from '@apollo/client';
 
@@ -9,11 +9,6 @@ import {
 import { UserContext } from '#base/context/UserContext';
 import PreloadMessage from '#base/components/PreloadMessage';
 
-import {
-    ProjectContext,
-    ProjectContextInterface,
-} from '#base/context/ProjectContext';
-import { Project } from '#base/types/project';
 import { checkErrorCode } from '#base/utils/apollo';
 import { MeQuery, MeQueryVariables } from '#generated/types';
 
@@ -52,7 +47,6 @@ function Init(props: Props) {
 
     const [ready, setReady] = useState(false);
     const [errored, setErrored] = useState(false);
-    const [project, setProject] = useState<Project | undefined>(undefined);
 
     const {
         setUser,
@@ -66,10 +60,8 @@ function Init(props: Props) {
                 const safeMe = removeNull(data.me);
                 if (safeMe) {
                     setUser(safeMe);
-                    setProject(safeMe.lastActiveProject ?? undefined);
                 } else {
                     setUser(undefined);
-                    setProject(undefined);
                 }
                 setReady(true);
             },
@@ -89,20 +81,10 @@ function Init(props: Props) {
 
     useEffect(
         () => {
-            // setUser({ id: '1', displayName: 'Ram' });
-            setProject({ id: '1', title: 'Ramayan', allowedPermissions: [] });
             setErrored(false);
             setReady(true);
         },
         [setUser],
-    );
-
-    const projectContext: ProjectContextInterface = useMemo(
-        () => ({
-            project,
-            setProject,
-        }),
-        [project],
     );
 
     if (errored) {
@@ -124,9 +106,9 @@ function Init(props: Props) {
     }
 
     return (
-        <ProjectContext.Provider value={projectContext}>
+        <>
             {children}
-        </ProjectContext.Provider>
+        </>
     );
 }
 export default Init;

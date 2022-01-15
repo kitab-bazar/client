@@ -1,19 +1,19 @@
 import React, { useContext, useCallback } from 'react';
-import { generatePath } from 'react-router-dom';
 import { _cs } from '@togglecorp/fujs';
 import { useMutation, gql } from '@apollo/client';
 import {
     useConfirmation,
     Button,
-    ButtonLikeLink,
     TextInput,
     useAlert,
 } from '@the-deep/deep-ui';
 import { GoSearch } from 'react-icons/go';
-import KitabLogo from './KitabLogo.png';
-import { UserContext } from '#base/context/UserContext';
+
 import routes from '#base/configs/routes';
+import { UserContext } from '#base/context/UserContext';
 import { LogoutMutation, LogoutMutationVariables } from '#generated/types';
+import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
+import KitabLogo from '#resources/img/KitabLogo.png';
 
 import styles from './styles.css';
 
@@ -67,7 +67,9 @@ function Navbar(props: Props) {
                     'Failed to send join request.',
                     { variant: 'error' },
                 );
+
                 // TODO: Remove this
+                // eslint-disable-next-line no-console
                 console.warn('Error: ', gqlError);
             },
         },
@@ -116,23 +118,23 @@ function Navbar(props: Props) {
                 </div>
                 {!(authenticated && user) && (
                     <div className={styles.actions}>
-                        <ButtonLikeLink
-                            to={generatePath(routes.register.path)}
+                        <SmartButtonLikeLink
+                            route={routes.register}
                             variant="primary"
                         >
                             Sign Up
-                        </ButtonLikeLink>
+                        </SmartButtonLikeLink>
                     </div>
                 )}
             </div>
             {!(authenticated && user) && (
                 <>
-                    <ButtonLikeLink
-                        to={generatePath(routes.login.path)}
+                    <SmartButtonLikeLink
+                        route={routes.login}
                         variant="primary"
                     >
                         Login
-                    </ButtonLikeLink>
+                    </SmartButtonLikeLink>
                 </>
             )}
             {authenticated && user && (

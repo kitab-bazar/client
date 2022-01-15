@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
     Button,
     Card,
@@ -13,17 +13,12 @@ import {
     useQuery,
 } from '@apollo/client';
 import { useParams } from 'react-router-dom';
-
 import { BiChevronsRight } from 'react-icons/bi';
 
-import Aalu from '../HomePage/temp-img/Aalu.png';
-import Biralo from '../HomePage/temp-img/Biralo.png';
-import Riban from '../HomePage/temp-img/Riban.png';
-import Pooja from '../HomePage/temp-img/Pooja.png';
 import Footer from '#components/Footer';
+import { BACKEND_SERVER_URL } from '#base/configs/env';
 
 import styles from './styles.css';
-import { BACKEND_SERVER_URL } from '#base/configs/env';
 
 const BOOK_DETAIL = gql`
 query MyBookDetail ($id: ID!){
@@ -54,37 +49,6 @@ query MyBookDetail ($id: ID!){
 `;
 
 const bookKeySelector = (b: Book) => b.id;
-
-const books = [
-    {
-        id: 1,
-        title: 'Aalu',
-        image: Aalu,
-        author: 'Subina',
-        price: 467,
-    },
-    {
-        id: 2,
-        title: 'Biralo',
-        image: Biralo,
-        author: 'Barsha',
-        price: 650,
-    },
-    {
-        id: 3,
-        title: 'Riban',
-        image: Riban,
-        author: 'Safar Sanu Ligar',
-        price: 345,
-    },
-    {
-        id: 4,
-        title: 'Pooja',
-        image: Pooja,
-        author: 'Pooja',
-        price: 800,
-    },
-];
 
 interface Book {
     id: number;
@@ -127,10 +91,11 @@ function SimilarBook(props: BookProps) {
         </div>
     );
 }
+
 function BookDetail() {
     const { id } = useParams();
 
-    const { data: result, loading, error } = useQuery(BOOK_DETAIL, {
+    const { data: result, loading } = useQuery(BOOK_DETAIL, {
         variables: { id },
     });
     const book = (!loading && result) ? result.book : [];
@@ -169,7 +134,6 @@ function BookDetail() {
                                     <Button
                                         name={undefined}
                                         onClick={undefined}
-                                        className={styles.loginButton}
                                         variant="primary"
                                         autoFocus
                                     >
@@ -178,7 +142,6 @@ function BookDetail() {
                                     <Button
                                         name={undefined}
                                         onClick={undefined}
-                                        className={styles.loginButton}
                                         variant="primary"
                                         autoFocus
                                     >
@@ -191,9 +154,7 @@ function BookDetail() {
                 </div>
             </div>
             <div className={styles.bookDescriptionContent}>
-                <Container
-                    className={styles.bookDescriptionSection}
-                >
+                <Container className={styles.bookDescriptionSection}>
                     <Tabs
                         onChange={undefined}
                         value="description-tab"

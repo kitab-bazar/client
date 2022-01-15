@@ -1,46 +1,40 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
-    SelectInput,
     ListView,
     Container,
 } from '@the-deep/deep-ui';
 import { Link } from 'react-router-dom';
 import {
     gql,
-    useMutation,
     useQuery,
 } from '@apollo/client';
 
 import Footer from '#components/Footer';
 
-import coverImage from './cover.jpg';
-
+import coverImage from '#resources/img/cover.jpg';
 import styles from './styles.css';
+
 import { BACKEND_SERVER_URL } from '#base/configs/env';
 
 const FEATURED_BOOKS = gql`
 query FeaturedBooks($page: Int!, $pageSize: Int!) {
-  books(page: $page , pageSize: $pageSize) {
-    results {
-      id
-      isbn
-      language
-      image
-      price
-      title
-      description
-      authors {
-        id
-        name
-        nameEn
-      }
+    books(page: $page , pageSize: $pageSize) {
+        results {
+            id
+            isbn
+            language
+            image
+            price
+            title
+            description
+            authors {
+                id
+                name
+            }
+        }
     }
-  }
+}
 `;
-
-const optionLabelSelector = (d: any) => d.title;
-const optionKeySelector = (d: any) => d.id;
-const handleInputChange = (d: any) => d.value;
 
 interface Author {
     id: number;
@@ -62,35 +56,38 @@ interface BookProps {
 }
 
 function BookItem(props: BookProps) {
-    const {
-        book,
-    } = props;
+    const { book } = props;
 
     return (
         <Link
-            style={{
-                textDecoration: 'none',
-            }}
-            to={`/book/${book.id}`}
+            to={`/book/${book.id}/`}
+            className={styles.bookItem}
+            title={book.title}
         >
-            <div className={styles.bookItem}>
-                <div className={styles.imageWrapper}>
+            <div className={styles.imageWrapper}>
+                {book.image ? (
                     <img
                         className={styles.image}
                         src={`${BACKEND_SERVER_URL}/media/${book.image}`}
                         alt={book.title}
                     />
+                ) : (
+                    <div className={styles.noPreview}>
+                        Preview not available
+                    </div>
+                )}
+            </div>
+            <div className={styles.details}>
+                <div
+                    className={styles.title}
+                >
+                    {book.title}
                 </div>
-                <div className={styles.details}>
-                    <div className={styles.title}>
-                        {book.title}
-                    </div>
-                    <div className={styles.author}>
-                        {book.authors[0].name}
-                    </div>
-                    <div className={styles.price}>
-                        {`NPR ${book.price}`}
-                    </div>
+                <div className={styles.author}>
+                    {book.authors[0].name}
+                </div>
+                <div className={styles.price}>
+                    {`NPR ${book.price}`}
                 </div>
             </div>
         </Link>
@@ -98,9 +95,7 @@ function BookItem(props: BookProps) {
 }
 
 function HomePage() {
-    const [page, setPage] = useState<number>(1);
-
-    const { data: result, loading, refetch } = useQuery(FEATURED_BOOKS, {
+    const { data: result, loading } = useQuery(FEATURED_BOOKS, {
         variables: {
             page: 1,
             pageSize: 10,
@@ -110,11 +105,6 @@ function HomePage() {
     const bookItemRendererParams = React.useCallback((_, data) => ({
         book: data,
     }), []);
-
-    const nextPage = React.useCallback(() => {
-        setPage(page + 1);
-        refetch();
-    }, []);
 
     return (
         <div className={styles.home}>
@@ -142,30 +132,6 @@ function HomePage() {
                 <Container
                     className={styles.featuredBooksSection}
                     heading="Featured Books"
-                    headerActions={(
-                        <div className={styles.filter}>
-                            <SelectInput
-                                name="sort"
-                                keySelector={optionKeySelector}
-                                labelSelector={optionLabelSelector}
-                                value={undefined}
-                                onChange={handleInputChange}
-                                options={undefined}
-                                label="Sort by"
-                                placeholder="Recently added"
-                            />
-                            <SelectInput
-                                name="filter"
-                                keySelector={optionKeySelector}
-                                labelSelector={optionLabelSelector}
-                                value={undefined}
-                                onChange={handleInputChange}
-                                options={undefined}
-                                label="Filter by category"
-                                placeholder="Category"
-                            />
-                        </div>
-                    )}
                 >
                     <ListView
                         className={styles.bookList}

@@ -1,8 +1,6 @@
 import React from 'react';
 
-import {
-    Card,
-} from '@the-deep/deep-ui';
+import KitabLogo from '#resources/img/KitabLogo.png';
 
 import LoginForm from './LoginForm';
 
@@ -11,14 +9,21 @@ import styles from './styles.css';
 function Login() {
     return (
         <div className={styles.login}>
-            <Card className={styles.card}>
+            <div className={styles.container}>
                 <div className={styles.left}>
-                    Image goes here
+                    <img
+                        className={styles.kitabLogo}
+                        src={KitabLogo}
+                        alt=""
+                    />
+                    <div className={styles.appName}>
+                        Kitab Bazar
+                    </div>
                 </div>
                 <div className={styles.right}>
                     <LoginForm />
                 </div>
-            </Card>
+            </div>
         </div>
     );
 }

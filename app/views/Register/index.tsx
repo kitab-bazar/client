@@ -2,7 +2,7 @@ import React from 'react';
 import { _cs } from '@togglecorp/fujs';
 
 import RegisterForm from './RegisterForm';
-import KitabLogo from './KitabLogo.png';
+import KitabLogo from '#resources/img/KitabLogo.png';
 
 import styles from './styles.css';
 
