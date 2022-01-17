@@ -82,7 +82,7 @@ function useAuthSync() {
 
     const handleConfirmModalConfirm = useCallback(
         () => {
-            window.location.reload(true);
+            window.location.reload();
         },
         [],
     );
