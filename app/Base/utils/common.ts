@@ -1,4 +1,4 @@
-import { BACKEND_SERVER_URL } from '#base/configs/env';
+import { webEndpoint } from '#base/configs/env';
 
 // eslint-disable-next-line import/prefer-default-export
 export function getMediaUrl(mediaName: string | undefined) {
@@ -6,5 +6,5 @@ export function getMediaUrl(mediaName: string | undefined) {
         return undefined;
     }
 
-    return `${BACKEND_SERVER_URL}/media/${mediaName}`;
+    return `${webEndpoint}/media/${mediaName}`;
 }
