@@ -24,16 +24,36 @@ const ME = gql`
             userType
             institution {
                 id
+                name
             }
             publisher {
                 id
+                name
             }
             school {
                 id
+                name
             }
         }
     }
 `;
+
+function getDisplayName(data: NonNullable<MeQuery['me']>) {
+    if (data.userType === 'ADMIN' || data.userType === 'INDIVIDUAL_USER') {
+        if (!data.firstName || !data.lastName) {
+            return data.email;
+        }
+
+        return [
+            data.firstName,
+            data.lastName,
+        ].filter(Boolean).join(' ') || 'Unnamed User';
+    }
+
+    return data?.institution?.name
+        ?? data?.publisher?.name
+        ?? data?.school?.name ?? 'Unnamed';
+}
 
 interface Props {
     className?: string;
@@ -59,7 +79,11 @@ function Init(props: Props) {
             onCompleted: (data) => {
                 const safeMe = removeNull(data.me);
                 if (safeMe) {
-                    setUser(safeMe);
+                    setUser({
+                        id: safeMe.id,
+                        displayName: getDisplayName(safeMe),
+                        type: safeMe.userType,
+                    });
                 } else {
                     setUser(undefined);
                 }

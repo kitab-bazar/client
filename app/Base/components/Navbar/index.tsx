@@ -121,36 +121,41 @@ function Navbar(props: Props) {
                         />
                     </div>
                 </div>
-                {!(authenticated && user) && (
-                    <div className={styles.actions}>
-                        <SmartButtonLikeLink
-                            route={routes.register}
-                            variant="primary"
-                        >
-                            Sign Up
-                        </SmartButtonLikeLink>
-                    </div>
-                )}
-            </div>
-            {!(authenticated && user) && (
-                <>
+                <div className={styles.actions}>
+                    <SmartButtonLikeLink
+                        route={routes.register}
+                        variant="primary"
+                    >
+                        Sign Up
+                    </SmartButtonLikeLink>
                     <SmartButtonLikeLink
                         route={routes.login}
                         variant="primary"
                     >
                         Login
                     </SmartButtonLikeLink>
-                </>
-            )}
-            {authenticated && user && (
-                <Button
-                    name={undefined}
-                    onClick={handleLogout}
-                    variant="primary"
-                >
-                    Logout
-                </Button>
-            )}
+                    {authenticated && user && (
+                        <div className={styles.userInfo}>
+                            <div>
+                                Hello
+                            </div>
+                            <div>
+                                <strong>
+                                    {user.displayName}
+                                </strong>
+                                !
+                            </div>
+                            <Button
+                                name={undefined}
+                                onClick={handleLogout}
+                                variant="primary"
+                            >
+                                Logout
+                            </Button>
+                        </div>
+                    )}
+                </div>
+            </div>
             {modal}
         </nav>
     );
