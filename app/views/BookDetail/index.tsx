@@ -14,7 +14,7 @@ import {
 } from '@apollo/client';
 import { useParams } from 'react-router-dom';
 
-import { BACKEND_SERVER_URL } from '#base/configs/env';
+import { getMediaUrl } from '#base/utils/common';
 import {
     BookDetailQuery,
     BookDetailQueryVariables,
@@ -53,6 +53,9 @@ function BookDetail() {
     });
 
     const [activeTab, setActiveTab] = React.useState<'description' | 'content' | undefined>('description');
+    const authorsDisplay = React.useMemo(() => (
+        result?.book?.authors?.map((d) => d.name).join(', ')
+    ), [result?.book?.authors]);
 
     return (
         <div className={styles.bookDetail}>
@@ -64,7 +67,7 @@ function BookDetail() {
                                 {result?.book?.image ? (
                                     <img
                                         className={styles.image}
-                                        src={`${BACKEND_SERVER_URL}/media/${result.book.image}`}
+                                        src={getMediaUrl(result.book.image)}
                                         alt={result.book.title}
                                     />
                                 ) : (
@@ -76,7 +79,7 @@ function BookDetail() {
                             <Container
                                 className={styles.details}
                                 heading={result.book.title}
-                                headingDescription={result.book.authors?.map((d) => d.name).join(', ')}
+                                headingDescription={authorsDisplay}
                                 headerDescription={(
                                     <div className={styles.headerDescription}>
                                         <TextOutput
