@@ -11,6 +11,11 @@ import {
 
 import Footer from '#components/Footer';
 
+import {
+    FeaturedBooksQuery,
+    FeaturedBooksQueryVariables,
+} from '#generated/types';
+
 import coverImage from '#resources/img/cover.jpg';
 import styles from './styles.css';
 
@@ -21,7 +26,10 @@ query FeaturedBooks($page: Int!, $pageSize: Int!) {
             id
             isbn
             language
-            image
+            image {
+                name
+                url
+            }
             price
             title
             description
@@ -34,19 +42,7 @@ query FeaturedBooks($page: Int!, $pageSize: Int!) {
 }
 `;
 
-interface Author {
-    id: number;
-    name: string;
-}
-
-interface Book {
-    id: number;
-    title: string;
-    image: string;
-    authors: Author[];
-    price: number;
-}
-
+type Book = NonNullable<NonNullable<FeaturedBooksQuery['books']>['results']>[number]
 const bookKeySelector = (b: Book) => b.id;
 
 interface BookProps {
@@ -63,10 +59,10 @@ function BookItem(props: BookProps) {
             title={book.title}
         >
             <div className={styles.imageWrapper}>
-                {book.image ? (
+                {book.image?.url ? (
                     <img
                         className={styles.image}
-                        src={book.image}
+                        src={book.image.url}
                         alt={book.title}
                     />
                 ) : (
@@ -93,13 +89,16 @@ function BookItem(props: BookProps) {
 }
 
 function HomePage() {
-    const { data: result, loading } = useQuery(FEATURED_BOOKS, {
+    const { data: result, loading } = useQuery<
+        FeaturedBooksQuery,
+        FeaturedBooksQueryVariables
+    >(FEATURED_BOOKS, {
         variables: {
             page: 1,
             pageSize: 10,
         },
     });
-    const books = (!loading && result) ? result.books.results : [];
+    const books = (!loading && result?.books?.results) ? result.books.results : [];
     const bookItemRendererParams = React.useCallback((_, data) => ({
         book: data,
     }), []);

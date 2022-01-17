@@ -26,7 +26,10 @@ query BookDetail ($id: ID!){
     book(id: $id ) {
         description
         id
-        image
+        image {
+            name
+            url
+        }
         isbn
         edition
         language
@@ -64,10 +67,10 @@ function BookDetail() {
                     <>
                         <div className={styles.metaData}>
                             <div className={styles.preview}>
-                                {result?.book?.image ? (
+                                {result?.book?.image?.url ? (
                                     <img
                                         className={styles.image}
-                                        src={result.book.image}
+                                        src={result.book.image.url}
                                         alt={result.book.title}
                                     />
                                 ) : (
