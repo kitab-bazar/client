@@ -33,6 +33,7 @@ query BookDetail ($id: ID!){
         language
         price
         title
+        numberOfPages
         authors {
             id
             name
