@@ -7,4 +7,17 @@
         justify-content: center;
         gap: var(--dui-spacing-extra-large);
     }
+
+    .register-button {
+        align-self: flex-end;
+    }
+
+    .footer-content {
+        display: flex;
+
+        .login-link {
+            padding: unset;
+            color: var(--dui-color-accent);
+        }
+    }
 }

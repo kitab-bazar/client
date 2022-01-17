@@ -23,9 +23,9 @@ function Routes(props: Props) {
             <Switch>
                 <Route
                     exact
-                    path={routes.home.path}
+                    path={routes.bookDetail.path}
                 >
-                    {routes.home.load({ className })}
+                    {routes.bookDetail.load({ className })}
                 </Route>
                 <Route
                     exact
@@ -47,9 +47,9 @@ function Routes(props: Props) {
                 </Route>
                 <Route
                     exact
-                    path={routes.bookDetail.path}
+                    path={routes.home.path}
                 >
-                    {routes.bookDetail.load({ className })}
+                    {routes.home.load({ className })}
                 </Route>
                 <Route
                     exact

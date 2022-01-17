@@ -1,6 +1,5 @@
 import React, { useCallback, useContext } from 'react';
 import { generatePath } from 'react-router-dom';
-
 import {
     TextInput,
     Container,
@@ -24,6 +23,7 @@ import {
     getErrorObject,
     removeNull,
 } from '@togglecorp/toggle-form';
+
 import routes from '#base/configs/routes';
 import { LoginMutation, LoginMutationVariables } from '#generated/types';
 import { UserContext } from '#base/context/UserContext';
@@ -158,11 +158,13 @@ function LoginForm() {
             <Container
                 className={styles.loginFormContainer}
                 heading="Login"
-                headingSize="medium"
+                headingSize="large"
                 headingClassName={styles.heading}
                 contentClassName={styles.inputContainer}
+                spacing="loose"
+                footerContentClassName={styles.footerContent}
                 footerContent={(
-                    <div className={styles.footer}>
+                    <>
                         Do not have an account yet?
                         &nbsp;
                         <ButtonLikeLink
@@ -172,7 +174,7 @@ function LoginForm() {
                         >
                             Register
                         </ButtonLikeLink>
-                    </div>
+                    </>
                 )}
             >
                 <TextInput
@@ -194,8 +196,8 @@ function LoginForm() {
                     disabled={loginPending}
                 />
                 <Button
+                    className={styles.loginButton}
                     name="login"
-                    className={styles.submit}
                     type="submit"
                     variant="primary"
                     disabled={loginPending || pristine}

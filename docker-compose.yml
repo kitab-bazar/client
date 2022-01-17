@@ -31,7 +31,7 @@ services:
       DB_HOST: db
       DB_PORT: 5432
     env_file:
-      - server.env
+      - .env
     command: bash -c "/code/scripts/run_develop.sh"
     volumes:
       - ./server/:/code
@@ -52,6 +52,7 @@ services:
       REACT_APP_ENVIRONMENT: ${REACT_APP_ENVIRONMENT:-development}
       GRAPHQL_CODEGEN_ENDPOINT: ${GRAPHQL_CODEGEN_ENDPOINT:-http://server:8020/graphql/}
       REACT_APP_GRAPHQL_ENDPOINT: ${REACT_APP_GRAPHQL_ENDPOINT:-http://localhost:8020/graphql/}
+      REACT_APP_WEB_ENDPOINT: ${REACT_APP_WEB_ENDPOINT:-http://localhost:8020}
     env_file:
       - .env
     volumes:

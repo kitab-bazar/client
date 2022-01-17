@@ -8,19 +8,19 @@ import ReactGA from 'react-ga';
 
 import '@the-deep/deep-ui/build/index.css';
 
-import Init from '#base/components/Init';
-import PreloadMessage from '#base/components/PreloadMessage';
 import browserHistory from '#base/configs/history';
 import sentryConfig from '#base/configs/sentry';
+import apolloConfig from '#base/configs/apollo';
+import { trackingId, gaConfig } from '#base/configs/googleAnalytics';
 import { UserContext, UserContextInterface } from '#base/context/UserContext';
 import { NavbarContext, NavbarContextInterface } from '#base/context/NavbarContext';
-import AuthPopup from '#base/components/AuthPopup';
 import { sync } from '#base/hooks/useAuthSync';
+import Init from '#base/components/Init';
+import PreloadMessage from '#base/components/PreloadMessage';
+import AuthPopup from '#base/components/AuthPopup';
 import Navbar from '#base/components/Navbar';
 import Routes from '#base/components/Routes';
 import { User } from '#base/types/user';
-import apolloConfig from '#base/configs/apollo';
-import { trackingId, gaConfig } from '#base/configs/googleAnalytics';
 
 import styles from './styles.css';
 
@@ -172,18 +172,14 @@ function Base() {
                                 <AuthPopup />
                                 <AlertContainer className={styles.alertContainer} />
                                 <Router history={browserHistory}>
-                                    <Init
-                                        className={styles.init}
-                                    >
+                                    <Init className={styles.init}>
                                         <Navbar
                                             className={_cs(
                                                 styles.navbar,
                                                 !navbarVisibility && styles.hidden,
                                             )}
                                         />
-                                        <Routes
-                                            className={styles.view}
-                                        />
+                                        <Routes className={styles.view} />
                                     </Init>
                                 </Router>
                             </AlertContext.Provider>

@@ -16,7 +16,7 @@ const fourHundredFour = wrap({
 const register = wrap({
     path: '/register/',
     title: 'Register',
-    navbarVisibility: false,
+    navbarVisibility: true,
     component: lazy(() => import('#views/Register')),
     componentProps: {
     },
@@ -25,7 +25,7 @@ const register = wrap({
 const login = wrap({
     path: '/login/',
     title: 'Login',
-    navbarVisibility: false,
+    navbarVisibility: true,
     component: lazy(() => import('#views/Login')),
     componentProps: {
     },
@@ -50,14 +50,13 @@ const myProfile = wrap({
     visibility: 'is-authenticated',
 });
 const bookDetail = wrap({
-    path: '/book/:id',
+    path: '/book/:id/',
     title: 'My Book Detail',
     navbarVisibility: true,
     component: lazy(() => import('#views/BookDetail')),
     componentProps: {
-        className: '',
     },
-    visibility: 'is-not-authenticated',
+    visibility: 'is-anything',
 });
 
 const routes = {

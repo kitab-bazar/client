@@ -1,103 +1,93 @@
 import React from 'react';
 import {
-    SelectInput,
     ListView,
     Container,
 } from '@the-deep/deep-ui';
 import { Link } from 'react-router-dom';
+import {
+    gql,
+    useQuery,
+} from '@apollo/client';
 
 import Footer from '#components/Footer';
 
-import Biralo from './temp-img/Biralo.png';
-// import Chaad from './temp-img/Chaad.png';
-// import Bahinee from './temp-img/Bahinee.png';
-import Riban from './temp-img/Riban.png';
-import Pooja from './temp-img/Pooja.png';
-// import Aawaj from './temp-img/Aawaj.png';
-import Aalu from './temp-img/Aalu.png';
-import coverImage from './cover.jpg';
-
+import coverImage from '#resources/img/cover.jpg';
 import styles from './styles.css';
 
-const optionLabelSelector = (d: any) => d.title;
-const optionKeySelector = (d: any) => d.id;
-const handleInputChange = (d: any) => d.value;
+import { getMediaUrl } from '#base/utils/common';
+
+const FEATURED_BOOKS = gql`
+query FeaturedBooks($page: Int!, $pageSize: Int!) {
+    books(page: $page , pageSize: $pageSize) {
+        results {
+            id
+            isbn
+            language
+            image
+            price
+            title
+            description
+            authors {
+                id
+                name
+            }
+        }
+    }
+}
+`;
+
+interface Author {
+    id: number;
+    name: string;
+}
 
 interface Book {
     id: number;
     title: string;
     image: string;
-    author: string,
-    price: number,
+    authors: Author[];
+    price: number;
 }
 
 const bookKeySelector = (b: Book) => b.id;
-
-const books = [
-    {
-        id: 1,
-        title: 'Aalu',
-        image: Aalu,
-        author: 'Subina',
-        price: 467,
-    },
-    {
-        id: 2,
-        title: 'Biralo',
-        image: Biralo,
-        author: 'Barsha',
-        price: 650,
-    },
-    {
-        id: 3,
-        title: 'Riban',
-        image: Riban,
-        author: 'Safar Sanu Ligar',
-        price: 345,
-    },
-    {
-        id: 4,
-        title: 'Pooja',
-        image: Pooja,
-        author: 'Pooja',
-        price: 800,
-    },
-];
 
 interface BookProps {
     book: Book;
 }
 
 function BookItem(props: BookProps) {
-    const {
-        book,
-    } = props;
+    const { book } = props;
 
     return (
         <Link
-            style={{
-                textDecoration: 'none',
-            }}
-            to={`/book/${book.id}`}
+            to={`/book/${book.id}/`}
+            className={styles.bookItem}
+            title={book.title}
         >
-            <div className={styles.bookItem}>
-                <div className={styles.imageWrapper}>
+            <div className={styles.imageWrapper}>
+                {book.image ? (
                     <img
                         className={styles.image}
-                        src={book.image}
+                        src={getMediaUrl(book.image)}
                         alt={book.title}
                     />
+                ) : (
+                    <div className={styles.noPreview}>
+                        Preview not available
+                    </div>
+                )}
+            </div>
+            <div className={styles.details}>
+                <div
+                    className={styles.title}
+                >
+                    {book.title}
                 </div>
-                <div className={styles.details}>
-                    <div className={styles.title}>
-                        {book.title}
-                    </div>
-                    <div className={styles.author}>
-                        {book.author}
-                    </div>
-                    <div className={styles.price}>
-                        {book.price}
-                    </div>
+                <div className={styles.author}>
+                    {book.authors[0].name}
+                </div>
+                <div className={styles.price}>
+                    {`NPR ${book.price}`}
                 </div>
             </div>
         </Link>
@@ -105,6 +95,13 @@ function BookItem(props: BookProps) {
 }
 
 function HomePage() {
+    const { data: result, loading } = useQuery(FEATURED_BOOKS, {
+        variables: {
+            page: 1,
+            pageSize: 10,
+        },
+    });
+    const books = (!loading && result) ? result.books.results : [];
     const bookItemRendererParams = React.useCallback((_, data) => ({
         book: data,
     }), []);
@@ -135,30 +132,6 @@ function HomePage() {
                 <Container
                     className={styles.featuredBooksSection}
                     heading="Featured Books"
-                    headerActions={(
-                        <div className={styles.filter}>
-                            <SelectInput
-                                name="sort"
-                                keySelector={optionKeySelector}
-                                labelSelector={optionLabelSelector}
-                                value={undefined}
-                                onChange={handleInputChange}
-                                options={undefined}
-                                label="Sort by"
-                                placeholder="Recently added"
-                            />
-                            <SelectInput
-                                name="filter"
-                                keySelector={optionKeySelector}
-                                labelSelector={optionLabelSelector}
-                                value={undefined}
-                                onChange={handleInputChange}
-                                options={undefined}
-                                label="Filter by category"
-                                placeholder="Category"
-                            />
-                        </div>
-                    )}
                 >
                     <ListView
                         className={styles.bookList}
@@ -167,7 +140,7 @@ function HomePage() {
                         rendererParams={bookItemRendererParams}
                         renderer={BookItem}
                         errored={false}
-                        pending={false}
+                        pending={loading}
                         filtered={false}
                     />
                 </Container>

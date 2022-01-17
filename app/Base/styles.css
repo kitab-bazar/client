@@ -4,6 +4,7 @@
     --dui-color-background: #eeeeee;
     --dui-color-text: #222730;
     --dui-font-family-sans-serif: 'Laila', sans-serif;
+    --dui-color-background-hover-primary-button: #0098a6;
 }
 .base {
     display: flex;
