@@ -51,6 +51,7 @@ const LOGIN = gql`
             result {
                 fullName
                 id
+                userType
             }
         }
     }
@@ -128,6 +129,7 @@ function LoginForm() {
                     setUser({
                         id: safeUser.id,
                         displayName: safeUser.fullName,
+                        type: safeUser.userType,
                     });
                     alert.show(
                         'Successfully logged in.',
