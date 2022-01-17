@@ -14,7 +14,6 @@ import {
 } from '@apollo/client';
 import { useParams } from 'react-router-dom';
 
-import { getMediaUrl } from '#base/utils/common';
 import {
     BookDetailQuery,
     BookDetailQueryVariables,
@@ -68,7 +67,7 @@ function BookDetail() {
                                 {result?.book?.image ? (
                                     <img
                                         className={styles.image}
-                                        src={getMediaUrl(result.book.image)}
+                                        src={result.book.image}
                                         alt={result.book.title}
                                     />
                                 ) : (

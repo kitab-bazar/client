@@ -14,8 +14,6 @@ import Footer from '#components/Footer';
 import coverImage from '#resources/img/cover.jpg';
 import styles from './styles.css';
 
-import { getMediaUrl } from '#base/utils/common';
-
 const FEATURED_BOOKS = gql`
 query FeaturedBooks($page: Int!, $pageSize: Int!) {
     books(page: $page , pageSize: $pageSize) {
@@ -68,7 +66,7 @@ function BookItem(props: BookProps) {
                 {book.image ? (
                     <img
                         className={styles.image}
-                        src={getMediaUrl(book.image)}
+                        src={book.image}
                         alt={book.title}
                     />
                 ) : (
