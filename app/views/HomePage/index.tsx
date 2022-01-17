@@ -21,7 +21,10 @@ query FeaturedBooks($page: Int!, $pageSize: Int!) {
             id
             isbn
             language
-            image
+            image {
+                name
+                url
+            }
             price
             title
             description
@@ -63,10 +66,10 @@ function BookItem(props: BookProps) {
             title={book.title}
         >
             <div className={styles.imageWrapper}>
-                {book.image ? (
+                {book.image?.url ? (
                     <img
                         className={styles.image}
-                        src={book.image}
+                        src={book.image.url}
                         alt={book.title}
                     />
                 ) : (

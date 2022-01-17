@@ -47,7 +47,7 @@ function getDisplayName(data: NonNullable<MeQuery['me']>) {
         return [
             data.firstName,
             data.lastName,
-        ].filter(Boolean).join(' ') || 'Unnamed User';
+        ].filter(Boolean).join(' ');
     }
 
     return data?.institution?.name
