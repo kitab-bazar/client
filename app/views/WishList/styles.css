@@ -1,6 +1,8 @@
 .wish-list {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    margin-right: auto;
+    margin-left: auto;
 
     .container {
         display: flex;
@@ -10,7 +12,7 @@
         border-color: #d3d3d3;
         padding: var(--dui-spacing-large);
         width: 100%;
-        max-width: 1100px;
+        max-width: 1200px;
         overflow: auto;
         gap: var(--dui-spacing-extra-large);
 
