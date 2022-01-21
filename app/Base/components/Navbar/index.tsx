@@ -7,8 +7,11 @@ import {
     TextInput,
     useAlert,
     Link,
+    QuickActionButton,
 } from '@the-deep/deep-ui';
 import { GoSearch } from 'react-icons/go';
+import { FaShoppingCart } from 'react-icons/fa';
+import { useHistory } from 'react-router-dom';
 
 import routes from '#base/configs/routes';
 import { UserContext } from '#base/context/UserContext';
@@ -33,6 +36,7 @@ interface Props {
 
 function Navbar(props: Props) {
     const { className } = props;
+    const history = useHistory();
 
     const {
         authenticated,
@@ -135,6 +139,12 @@ function Navbar(props: Props) {
                     >
                         Login
                     </SmartButtonLikeLink>
+                    <QuickActionButton
+                        name="cart"
+                        onClick={() => history.push('/cart-page')}
+                    >
+                        <FaShoppingCart />
+                    </QuickActionButton>
                     {authenticated && user && (
                         <div className={styles.userInfo}>
                             <div>
