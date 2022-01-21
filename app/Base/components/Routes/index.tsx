@@ -23,6 +23,12 @@ function Routes(props: Props) {
             <Switch>
                 <Route
                     exact
+                    path={routes.cartPage.path}
+                >
+                    {routes.cartPage.load({ className })}
+                </Route>
+                <Route
+                    exact
                     path={routes.bookDetail.path}
                 >
                     {routes.bookDetail.load({ className })}
