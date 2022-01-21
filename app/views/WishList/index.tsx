@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Button, Container, NumberInput, TextOutput } from '@the-deep/deep-ui';
+import { Button, Container, ElementFragments, InformationCard, NumberInput, TextOutput } from '@the-deep/deep-ui';
 import {
     gql,
     useQuery,
     useMutation,
 } from '@apollo/client';
 import { AiTwotoneDelete } from 'react-icons/ai';
-import { FaShoppingCart } from 'react-icons/fa';
+import { FaRegHeart, FaShoppingCart } from 'react-icons/fa';
 
 import {
     WishListQuery,
@@ -78,67 +78,74 @@ function WishListBook(props: Book) {
     };
 
     return (
-        <div className={styles.container}>
-            <div className={styles.metaData}>
-                {image?.url ? (
-                    <img
-                        className={styles.image}
-                        src={image.url}
-                        alt={title}
-                    />
-                ) : (
-                    <div className={styles.noPreview}>
-                        Preview not available
-                    </div>
-                )}
-                <Container
-                    className={styles.details}
-                    heading={title}
-                >
-                    <div className={styles.headerDescription}>
-                        <TextOutput
-                            label={authorsDisplay}
+        <>
+            <ElementFragments>
+                My WishList
+                <FaRegHeart />
+            </ElementFragments>
+            <div className={styles.container}>
+                <div className={styles.metaData}>
+                    {image?.url ? (
+                        <img
+                            className={styles.image}
+                            src={image.url}
+                            alt={title}
                         />
-                        <TextOutput
-                            label="Price (NPR)"
-                            valueType="number"
-                            value={price}
-                        />
-                        <div className={styles.quantity}>
-                            <TextOutput
-                                label="Quantity"
-                                valueType="number"
-                            />
-                            <NumberInput
-                                name="quantity"
-                                value={undefined}
-                                onChange={undefined}
-                            />
+                    ) : (
+                        <div className={styles.noPreview}>
+                            Preview not available
                         </div>
+                    )}
+                    <Container
+                        className={styles.details}
+                        heading={title}
+                    >
+                        <div className={styles.headerDescription}>
+                            <TextOutput
+                                label="Author"
+                                value={authorsDisplay}
+                            />
+                            <TextOutput
+                                label="Price (NPR)"
+                                valueType="number"
+                                value={price}
+                            />
+                            <div className={styles.quantity}>
+                                <TextOutput
+                                    label="Quantity"
+                                    valueType="number"
+                                />
+                                <NumberInput
+                                    name="quantity"
+                                    value={undefined}
+                                    onChange={undefined}
+                                />
+                            </div>
+                        </div>
+                    </Container>
+                    <div className={styles.wishListButton}>
+                        <Button
+                            name={undefined}
+                            onClick={undefined}
+                            variant="secondary"
+                            icons={<FaShoppingCart />}
+                            autoFocus
+                        >
+                            Add to cart
+                        </Button>
+                        <Button
+                            name={undefined}
+                            onClick={() => removeBook(id)}
+                            variant="secondary"
+                            icons={<AiTwotoneDelete />}
+                            autoFocus
+                        >
+                            Remove
+                        </Button>
                     </div>
-                </Container>
-                <div className={styles.wishListButton}>
-                    <Button
-                        name={undefined}
-                        onClick={undefined}
-                        variant="secondary"
-                        icons={<FaShoppingCart />}
-                        autoFocus
-                    >
-                        Add to cart
-                    </Button>
-                    <Button
-                        name={undefined}
-                        onClick={() => removeBook(id)}
-                        variant="secondary"
-                        icons={<AiTwotoneDelete />}
-                        autoFocus
-                    >
-                        Remove
-                    </Button>
                 </div>
             </div>
-        </div>
+        </>
     );
 }
 
