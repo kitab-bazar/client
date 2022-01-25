@@ -29,6 +29,12 @@ function Routes(props: Props) {
                 </Route>
                 <Route
                     exact
+                    path={routes.orderPage.path}
+                >
+                    {routes.orderPage.load({ className })}
+                </Route>
+                <Route
+                    exact
                     path={routes.cartPage.path}
                 >
                     {routes.cartPage.load({ className })}

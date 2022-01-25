@@ -1,0 +1,14 @@
+.orderPage {
+    display: flex;
+    justify-content: center;
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        padding: var(--dui-spacing-large);
+        width: 100%;
+        max-width: 1200px;
+        overflow: auto;
+        gap: var(--dui-spacing-extra-large);
+    }
+}

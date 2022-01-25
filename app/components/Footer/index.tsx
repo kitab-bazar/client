@@ -12,7 +12,6 @@ function Footer() {
                         name={undefined}
                         onClick={undefined}
                         variant="primary"
-                        autoFocus
                     >
                         FAQs
                     </Button>
@@ -20,7 +19,6 @@ function Footer() {
                         name={undefined}
                         onClick={undefined}
                         variant="primary"
-                        autoFocus
                     >
                         Blogs
                     </Button>
@@ -28,7 +26,6 @@ function Footer() {
                         name={undefined}
                         onClick={undefined}
                         variant="primary"
-                        autoFocus
                     >
                         Why Kitab Bazar
                     </Button>
@@ -36,7 +33,6 @@ function Footer() {
                         name={undefined}
                         onClick={undefined}
                         variant="primary"
-                        autoFocus
                     >
                         Contact Us
                     </Button>
