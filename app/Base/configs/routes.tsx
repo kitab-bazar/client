@@ -65,7 +65,16 @@ const cartPage = wrap({
     component: lazy(() => import('#views/CartPage')),
     componentProps: {
     },
-    visibility: 'is-anything',
+    visibility: 'is-authenticated',
+});
+const orderPage = wrap({
+    path: '/order-page/',
+    title: 'My Order Page',
+    navbarVisibility: true,
+    component: lazy(() => import('#views/OrderPage')),
+    componentProps: {
+    },
+    visibility: 'is-authenticated',
 });
 
 const routes = {
@@ -75,6 +84,7 @@ const routes = {
     myProfile,
     bookDetail,
     cartPage,
+    orderPage,
     fourHundredFour,
 };
 export default routes;

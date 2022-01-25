@@ -35,7 +35,6 @@ function AuthPopup() {
                         onClick={onConfirm}
                         className={styles.actionButton}
                         variant="primary"
-                        autoFocus
                     >
                         Reload
                     </Button>
