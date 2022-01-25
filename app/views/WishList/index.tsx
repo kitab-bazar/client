@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Button, Container, ElementFragments, InformationCard, NumberInput, TextOutput } from '@the-deep/deep-ui';
+import { Button, Container, ElementFragments, NumberInput, TextOutput } from '@the-deep/deep-ui';
 import {
     gql,
     useQuery,
@@ -19,6 +19,7 @@ const WISH_LIST = gql`
     query WishList ($pageSize: Int!, $page: Int!){
         wishList(pageSize: $pageSize, page: $page) {
             results {
+                id
                 book {
                     id
                     isbn
@@ -59,23 +60,24 @@ interface Image {
 }
 
 interface Book {
-    id: number;
+    // id: number;
     price: number;
     authors: Author[];
     image: Image;
     title: string;
-    mutate: (id: number) => void;
+    removeBookFromWishList: (id: number) => void;
+    wishListId: number;
 }
 
 function WishListBook(props: Book) {
-    const { id, price, authors, image, title, mutate } = props;
+    const { price, authors, image, title, removeBookFromWishList, wishListId } = props;
     const authorsDisplay = React.useMemo(() => (
         authors?.map((d) => d.name).join(', ')
     ), [authors]);
 
-    const removeBook = (_id: number) => {
-        mutate(_id);
-    };
+    const removeBook = useCallback(() => {
+        removeBookFromWishList(wishListId);
+    }, [wishListId]);
 
     return (
         <>
@@ -135,7 +137,7 @@ function WishListBook(props: Book) {
                         </Button>
                         <Button
                             name={undefined}
-                            onClick={() => removeBook(id)}
+                            onClick={removeBook}
                             variant="secondary"
                             icons={<AiTwotoneDelete />}
                             autoFocus
@@ -185,12 +187,13 @@ function WishList() {
                         {
                             data.wishList.results.map((_b: any) => (
                                 <WishListBook
-                                    id={_b.book.id}
+                                    // id={_b.book.id}
                                     title={_b.book.title}
                                     image={_b.book.image}
                                     price={_b.book.price}
                                     authors={_b.book.authors}
-                                    mutate={deleteBook}
+                                    removeBookFromWishList={deleteBook}
+                                    wishListId={_b.id}
                                 />
                             ))
                         }

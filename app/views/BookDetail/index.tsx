@@ -12,7 +12,7 @@ import {
     gql,
     useQuery,
 } from '@apollo/client';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
 import {
     BookDetailQuery,
@@ -43,10 +43,20 @@ query BookDetail ($id: ID!){
     }
 }
 `;
+// const CREATE_WISH_LIST = gql`
+// type BookInput {
+//     book: ID!
+// }
+// mutation CreateWishList ($data: BookInput!){
+//     createWishlist(data: $data) {
+//       errors
+//       ok
+//     }
+// }
+// `;
 
 function BookDetail() {
     const { id } = useParams();
-    const history = useHistory();
 
     const { data: result, loading } = useQuery<
         BookDetailQuery,
@@ -111,13 +121,14 @@ function BookDetail() {
                                         <Button name="buy">
                                             Buy now
                                         </Button>
-                                        <Button
-                                            name="wishlist"
-                                            variant="secondary"
-                                            onClick={() => history.push('/wish-list')}
-                                        >
-                                            Add to wishlist
-                                        </Button>
+                                        <Link to="/wish-list" style={{ textDecoration: 'none' }}>
+                                            <Button
+                                                name="wishlist"
+                                                variant="secondary"
+                                            >
+                                                Add to wishlist
+                                            </Button>
+                                        </Link>
                                     </>
                                 )}
                             />
