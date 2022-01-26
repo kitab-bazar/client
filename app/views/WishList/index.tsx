@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Button, Container, ElementFragments, NumberInput, TextOutput } from '@the-deep/deep-ui';
 import {
     gql,
@@ -9,6 +9,8 @@ import { AiTwotoneDelete } from 'react-icons/ai';
 import { FaRegHeart, FaShoppingCart } from 'react-icons/fa';
 
 import {
+    RemoveWishListMutation,
+    RemoveWishListMutationVariables,
     WishListQuery,
     WishListQueryVariables,
 } from '#generated/types';
@@ -60,17 +62,17 @@ interface Image {
 }
 
 interface Book {
-    // id: number;
+    id: number;
     price: number;
     authors: Author[];
     image: Image;
     title: string;
-    removeBookFromWishList: (id: number) => void;
-    wishListId: number;
+    removeBookFromWishList: (id: string) => void;
+    wishListId: string;
 }
 
 function WishListBook(props: Book) {
-    const { price, authors, image, title, removeBookFromWishList, wishListId } = props;
+    const { id, price, authors, image, title, removeBookFromWishList, wishListId } = props;
     const authorsDisplay = React.useMemo(() => (
         authors?.map((d) => d.name).join(', ')
     ), [authors]);
@@ -81,10 +83,6 @@ function WishListBook(props: Book) {
 
     return (
         <>
-            <ElementFragments>
-                My WishList
-                <FaRegHeart />
-            </ElementFragments>
             <div className={styles.container}>
                 <div className={styles.metaData}>
                     {image?.url ? (
@@ -154,30 +152,26 @@ function WishListBook(props: Book) {
 function WishList() {
     const [page, setPage] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(10);
-    const [deleteWishlist] = useMutation(REMOVE_WISH_LIST);
+    const [deleteWishlist] = useMutation<
+        RemoveWishListMutation,
+        RemoveWishListMutationVariables
+    >(REMOVE_WISH_LIST);
 
     const { data, refetch, loading } = useQuery<
         WishListQuery,
         WishListQueryVariables
     >(WISH_LIST, {
         variables: { page, pageSize },
+        onCompleted: (res: WishListQuery) => {
+            setPage(res.wishList?.page ? res.wishList.page : page);
+            setPageSize(res.wishList?.pageSize ? res.wishList.pageSize : pageSize);
+        },
     });
 
-    const deleteBook = (_id: number) => {
-        deleteWishlist({ variables: { id: _id } });
+    const deleteBook = (id: string) => {
+        deleteWishlist({ variables: { id } });
         refetch();
     };
-
-    useEffect(() => {
-        if (!loading && data?.wishList) {
-            if (data.wishList.page != null && data.wishList.page) {
-                setPage(data.wishList.page);
-            }
-            if (data.wishList.pageSize != null && data.wishList.pageSize) {
-                setPageSize(data.wishList.pageSize);
-            }
-        }
-    }, [loading]);
 
     return (
         <div className={styles.wishList}>
@@ -185,15 +179,15 @@ function WishList() {
                 && (
                     <>
                         {
-                            data.wishList.results.map((_b: any) => (
+                            data.wishList.results.map((b: any) => (
                                 <WishListBook
-                                    // id={_b.book.id}
-                                    title={_b.book.title}
-                                    image={_b.book.image}
-                                    price={_b.book.price}
-                                    authors={_b.book.authors}
+                                    id={b.book.id}
+                                    title={b.book.title}
+                                    image={b.book.image}
+                                    price={b.book.price}
+                                    authors={b.book.authors}
                                     removeBookFromWishList={deleteBook}
-                                    wishListId={_b.id}
+                                    wishListId={b.id}
                                 />
                             ))
                         }

@@ -10,6 +10,7 @@ import {
 } from '@the-deep/deep-ui';
 import {
     gql,
+    useMutation,
     useQuery,
 } from '@apollo/client';
 import { useParams, Link } from 'react-router-dom';
@@ -43,17 +44,15 @@ query BookDetail ($id: ID!){
     }
 }
 `;
-// const CREATE_WISH_LIST = gql`
-// type BookInput {
-//     book: ID!
-// }
-// mutation CreateWishList ($data: BookInput!){
-//     createWishlist(data: $data) {
-//       errors
-//       ok
-//     }
-// }
-// `;
+
+const CREATE_WISH_LIST = gql`
+mutation CreateWishList ($id: String!) {
+    createWishlist(data: {book: $id}) {
+      errors
+      ok
+    }
+}
+`;
 
 function BookDetail() {
     const { id } = useParams();
@@ -65,6 +64,11 @@ function BookDetail() {
         skip: !id,
         variables: { id: id ?? '' },
     });
+
+    const [createWishList] = useMutation(CREATE_WISH_LIST);
+    const addToWishList = () => {
+        createWishList({ variables: { id } });
+    };
 
     const [activeTab, setActiveTab] = React.useState<'description' | 'content' | undefined>('description');
     const authorsDisplay = React.useMemo(() => (
@@ -125,6 +129,7 @@ function BookDetail() {
                                             <Button
                                                 name="wishlist"
                                                 variant="secondary"
+                                                onClick={addToWishList}
                                             >
                                                 Add to wishlist
                                             </Button>
