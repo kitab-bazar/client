@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "Client application for KITAB bazar",
     "scripts": {
-        "generate": "env-cmd -f .env graphql-codegen --config codegen.yml",
+        "generate": "graphql-codegen --config codegen.yml",
         "lint": "eslint ./app --report-unused-disable-directives",
         "typecheck": "tsc",
         "build": "webpack --mode=production --node-env=production",
