@@ -65,7 +65,7 @@ const cartPage = wrap({
     component: lazy(() => import('#views/CartPage')),
     componentProps: {
     },
-    visibility: 'is-anything',
+    visibility: 'is-authenticated',
 });
 
 const routes = {

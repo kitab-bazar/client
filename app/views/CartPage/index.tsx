@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Button, Container, NumberInput, TextOutput } from '@the-deep/deep-ui';
 import {
     gql,
@@ -6,10 +6,10 @@ import {
     useQuery,
 } from '@apollo/client';
 import { AiTwotoneDelete } from 'react-icons/ai';
-import { FaHeart, FaShoppingCart } from 'react-icons/fa';
+import { FaHeart } from 'react-icons/fa';
 
 import styles from './styles.css';
-import { CartListQuery, CartListQueryVariables } from '#generated/types';
+import { CartListQuery, CartListQueryVariables, DeleteCartItemsMutation, DeleteCartItemsMutationVariables } from '#generated/types';
 
 const CART_LIST = gql`
     query CartList ($email: ID!, $page: Int!, $pageSize: Int!) {
@@ -64,19 +64,20 @@ interface Book {
     quantity: number;
     image: Image;
     title: string;
-    cartId: number;
-    mutate: (id: number) => void;
+    cartId: string;
+    removeBookFromCartList: (id: string) => void;
 }
 
 function CartContent(props: Book) {
-    const { id, price, authors, image, title, quantity, mutate, cartId } = props;
+    const { id, price, authors, image, title, quantity, removeBookFromCartList, cartId } = props;
     const authorsDisplay = React.useMemo(() => (
         authors?.map((d) => d.name).join(', ')
     ), [authors]);
 
-    const deleteCartItem = (_id: number) => {
-        mutate(_id);
-    };
+    const deleteCartItem = useCallback(() => {
+        removeBookFromCartList(cartId);
+    }, [cartId]);
+
     return (
         <div className={styles.container}>
             <div className={styles.metaData}>
@@ -133,7 +134,7 @@ function CartContent(props: Book) {
                         variant="secondary"
                         icons={<AiTwotoneDelete />}
                         autoFocus
-                        onClick={() => deleteCartItem(cartId)}
+                        onClick={deleteCartItem}
                     >
                         Remove
                     </Button>
@@ -147,7 +148,10 @@ function CartPage() {
     const [page, setPage] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(10);
     const [email, setEmail] = useState<string>('admin@gmail.com');
-    const [deleteCartItem] = useMutation(DELETE_CART_ITEMS);
+    const [deleteCartItem] = useMutation<
+        DeleteCartItemsMutation,
+        DeleteCartItemsMutationVariables
+    >(DELETE_CART_ITEMS);
 
     const { data, refetch, loading } = useQuery<
         CartListQuery,
@@ -156,8 +160,8 @@ function CartPage() {
         variables: { page, pageSize, email },
     });
 
-    const removeCartItem = (_id: number) => {
-        deleteCartItem({ variables: { id: _id } });
+    const removeCartItem = (id: string) => {
+        deleteCartItem({ variables: { id } });
         refetch();
     };
     return (
@@ -167,16 +171,16 @@ function CartPage() {
                     && (
                         <>
                             {
-                                data.cartItems.results.map((_b: any) => (
+                                data.cartItems.results.map((b: any) => (
                                     <CartContent
-                                        id={_b.book.id}
-                                        title={_b.book.title}
-                                        image={_b.book.image}
-                                        price={_b.book.price}
-                                        quantity={_b.quantity}
-                                        authors={_b.book.authors}
-                                        mutate={removeCartItem}
-                                        cartId={_b.id}
+                                        id={b.book.id}
+                                        title={b.book.title}
+                                        image={b.book.image}
+                                        price={b.book.price}
+                                        quantity={b.quantity}
+                                        authors={b.book.authors}
+                                        removeBookFromCartList={removeCartItem}
+                                        cartId={b.id}
                                     />
                                 ))
                             }
