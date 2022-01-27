@@ -144,7 +144,4 @@ deploy/eb/
 # tox
 ./.tox
 
-# git
-./.git
-
 server/
