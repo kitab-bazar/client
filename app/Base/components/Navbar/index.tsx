@@ -140,7 +140,7 @@ function Navbar(props: Props) {
                     </SmartButtonLikeLink>
                     <ButtonLikeLink
                         variant="secondary"
-                        to="/cart-page"
+                        to="/cart"
                     >
                         <FaShoppingCart />
                     </ButtonLikeLink>

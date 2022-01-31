@@ -76,7 +76,7 @@ const wishList = wrap({
     visibility: 'is-authenticated',
 });
 const cartPage = wrap({
-    path: '/cart-page/',
+    path: '/cart/',
     title: 'My Cart Page',
     navbarVisibility: true,
     component: lazy(() => import('#views/CartPage')),

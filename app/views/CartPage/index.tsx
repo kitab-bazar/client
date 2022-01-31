@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Button, Container, ListView, NumberInput, TextOutput } from '@the-deep/deep-ui';
+import { Button, Container, ListView, Message, NumberInput, TextOutput } from '@the-deep/deep-ui';
 import {
     gql,
     useMutation,
@@ -7,14 +7,14 @@ import {
 } from '@apollo/client';
 import { AiTwotoneDelete } from 'react-icons/ai';
 import { FaHeart } from 'react-icons/fa';
-
-import styles from './styles.css';
 import {
     CartListQuery,
     CartListQueryVariables,
     CheckOutCartMutation,
     CheckOutCartMutationVariables,
 } from '#generated/types';
+
+import styles from './styles.css';
 
 const CART_LIST = gql`
     query CartList ($email: ID!, $page: Int!, $pageSize: Int!) {
@@ -77,17 +77,26 @@ interface CartProps {
 }
 
 function CartContent(props: CartProps) {
-    const { cart, deleteCart } = props;
-    const { id, quantity, book } = cart;
-    const { id: bookId, title, image, authors, price } = book;
+    const {
+        cart,
+        deleteCart,
+    } = props;
+
+    const {
+        id,
+        quantity,
+        book,
+    } = cart;
+
+    const {
+        title, image,
+        authors,
+        price,
+    } = book;
 
     const authorsDisplay = React.useMemo(() => (
         authors?.map((d) => d.name).join(', ')
     ), [authors]);
-
-    const deleteCartItem = useCallback(() => {
-        deleteCart(id);
-    }, [id]);
 
     return (
         <div className={styles.container} key={id}>
@@ -99,9 +108,9 @@ function CartContent(props: CartProps) {
                         alt={title}
                     />
                 ) : (
-                    <div className={styles.noPreview}>
-                        Preview not available
-                    </div>
+                    <Message
+                        message="Preview not available"
+                    />
                 )}
                 <Container
                     className={styles.details}
@@ -140,10 +149,10 @@ function CartContent(props: CartProps) {
                         Add to wish list
                     </Button>
                     <Button
-                        name={undefined}
+                        name={id}
                         variant="secondary"
                         icons={<AiTwotoneDelete />}
-                        onClick={() => deleteCartItem()}
+                        onClick={deleteCart}
                     >
                         Remove
                     </Button>
@@ -175,14 +184,18 @@ function CartPage() {
     const pending = loading || submitting;
     const carts = (!loading && result?.cartItems?.results) ? result.cartItems.results : [];
 
-    const removeCartItem = (id: string) => {
-        deleteCartItem({ variables: { id } });
-        refetch();
-    };
+    const removeCartItem = useCallback((id: string) => {
+        deleteCartItem({ variables: { id } }).then(() => {
+            refetch();
+        });
+    }, []);
 
     const checkout = () => {
-        placeOrderFromCart();
-        refetch();
+        placeOrderFromCart().then(() => {
+            refetch();
+        }).catch((e) => {
+            console.log(e);
+        });
     };
 
     const cartItemRendererParams = React.useCallback((_, data) => ({
