@@ -7,9 +7,10 @@ import {
 } from '@apollo/client';
 import { AiTwotoneDelete } from 'react-icons/ai';
 import { FaHeart } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { CartListQuery, CartListQueryVariables, DeleteCartItemsMutation, DeleteCartItemsMutationVariables } from '#generated/types';
 
 import styles from './styles.css';
-import { CartListQuery, CartListQueryVariables, DeleteCartItemsMutation, DeleteCartItemsMutationVariables } from '#generated/types';
 
 const CART_LIST = gql`
     query CartList ($email: ID!, $page: Int!, $pageSize: Int!) {
@@ -18,7 +19,7 @@ const CART_LIST = gql`
                 id
                 totalPrice
                 book {
-                id
+                    id
                 title
                 image {
                     url
@@ -125,7 +126,6 @@ function CartContent(props: Book) {
                         onClick={undefined}
                         variant="secondary"
                         icons={<FaHeart />}
-                        autoFocus
                     >
                         Add to wish list
                     </Button>
@@ -133,7 +133,6 @@ function CartContent(props: Book) {
                         name={undefined}
                         variant="secondary"
                         icons={<AiTwotoneDelete />}
-                        autoFocus
                         onClick={deleteCartItem}
                     >
                         Remove
@@ -167,8 +166,8 @@ function CartPage() {
     return (
         <>
             <div className={styles.wishList}>
-                {!loading && data?.cartItems?.results
-                    && (
+                {!loading && data?.cartItems?.results && data.cartItems.results.length > 0
+                    ? (
                         <>
                             {
                                 data.cartItems.results.map((b: any) => (
@@ -184,16 +183,21 @@ function CartPage() {
                                     />
                                 ))
                             }
+                            <Link to="/order" style={{ textDecoration: 'none' }}>
+                                <Button
+                                    name={undefined}
+                                    variant="secondary"
+                                >
+                                    Order
+                                </Button>
+                            </Link>
                         </>
+                    ) : (
+                        <div className={styles.noPreview}>
+                            Cart is empty
+                        </div>
                     )}
             </div>
-            <Button
-                name={undefined}
-                variant="secondary"
-                autoFocus
-            >
-                Order
-            </Button>
         </>
     );
 }
