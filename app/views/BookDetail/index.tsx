@@ -5,10 +5,11 @@ import {
     Tabs,
     TabPanel,
     TabList,
-    Button,
     TextOutput,
     useAlert,
     Message,
+    Button,
+    ButtonLikeLink,
 } from '@the-deep/deep-ui';
 import {
     gql,
@@ -23,9 +24,6 @@ import {
     CreateWishListMutation,
     CreateWishListMutationVariables,
 } from '#generated/types';
-
-import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
-import routes from '#base/configs/routes';
 
 import styles from './styles.css';
 
@@ -152,16 +150,19 @@ function BookDetail() {
                                 )}
                                 footerIcons={(
                                     <>
-                                        <Button name="buy">
-                                            Buy now
-                                        </Button>
-                                        <SmartButtonLikeLink
+                                        <Button
+                                            name={undefined}
                                             variant="secondary"
-                                            route={routes.wishList}
                                             onClick={addToWishList}
                                         >
                                             Add to wishlist
-                                        </SmartButtonLikeLink>
+                                        </Button>
+                                        <ButtonLikeLink
+                                            variant="primary"
+                                            to={`/order?book=${result.book.id}`}
+                                        >
+                                            Buy now
+                                        </ButtonLikeLink>
                                     </>
                                 )}
                             />

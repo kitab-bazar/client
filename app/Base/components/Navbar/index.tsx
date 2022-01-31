@@ -8,6 +8,7 @@ import {
     useAlert,
     Link,
     QuickActionButton,
+    ButtonLikeLink,
 } from '@the-deep/deep-ui';
 import { GoSearch } from 'react-icons/go';
 import { FaShoppingCart } from 'react-icons/fa';
@@ -137,13 +138,12 @@ function Navbar(props: Props) {
                     >
                         Login
                     </SmartButtonLikeLink>
-                    <Link to="/cart-page">
-                        <QuickActionButton
-                            name="cart"
-                        >
-                            <FaShoppingCart />
-                        </QuickActionButton>
-                    </Link>
+                    <ButtonLikeLink
+                        variant="secondary"
+                        to="/cart-page"
+                    >
+                        <FaShoppingCart />
+                    </ButtonLikeLink>
                     {authenticated && user && (
                         <div className={styles.userInfo}>
                             <div>
