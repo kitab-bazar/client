@@ -7,6 +7,8 @@ import {
     TabList,
     Button,
     TextOutput,
+    ButtonLikeLink,
+    Message,
 } from '@the-deep/deep-ui';
 import {
     gql,
@@ -89,9 +91,9 @@ function BookDetail() {
                                         alt={result.book.title}
                                     />
                                 ) : (
-                                    <div className={styles.noPreview}>
-                                        Preview not available
-                                    </div>
+                                    <Message
+                                        message="Preview not available"
+                                    />
                                 )}
                             </div>
                             <Container
@@ -125,15 +127,13 @@ function BookDetail() {
                                         <Button name="buy">
                                             Buy now
                                         </Button>
-                                        <Link to="/wish-list" style={{ textDecoration: 'none' }}>
-                                            <Button
-                                                name="wishlist"
-                                                variant="secondary"
-                                                onClick={addToWishList}
-                                            >
-                                                Add to wishlist
-                                            </Button>
-                                        </Link>
+                                        <ButtonLikeLink
+                                            variant="secondary"
+                                            onClick={addToWishList}
+                                            to="/wish"
+                                        >
+                                            Add to wishlist
+                                        </ButtonLikeLink>
                                     </>
                                 )}
                             />

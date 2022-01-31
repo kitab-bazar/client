@@ -1,12 +1,18 @@
-import React, { useCallback, useState } from 'react';
-import { Button, Container, ElementFragments, NumberInput, TextOutput } from '@the-deep/deep-ui';
+import React, { useState } from 'react';
+import {
+    Button,
+    Container,
+    ListView,
+    NumberInput,
+    TextOutput,
+} from '@the-deep/deep-ui';
 import {
     gql,
     useQuery,
     useMutation,
 } from '@apollo/client';
 import { AiTwotoneDelete } from 'react-icons/ai';
-import { FaRegHeart, FaShoppingCart } from 'react-icons/fa';
+import { FaShoppingCart } from 'react-icons/fa';
 
 import {
     RemoveWishListMutation,
@@ -52,100 +58,102 @@ mutation RemoveWishList ($id: ID!) {
   }
 `;
 
-interface Author {
-    id: number;
-    name: string;
+type Wish = NonNullable<NonNullable<WishListQuery['wishList']>['results']>[number]
+const wishKeySelector = (w: Wish) => w.id;
+
+interface WishProps {
+    wish: Wish;
+    removeWishList: (id: string) => void;
 }
 
-interface Image {
-    url: string;
-}
+function WishListItem(props: WishProps) {
+    const {
+        wish,
+        removeWishList,
+    } = props;
 
-interface Book {
-    id: number;
-    price: number;
-    authors: Author[];
-    image: Image;
-    title: string;
-    removeBookFromWishList: (id: string) => void;
-    wishListId: string;
-}
+    const {
+        id,
+        book,
+    } = wish;
 
-function WishListBook(props: Book) {
-    const { id, price, authors, image, title, removeBookFromWishList, wishListId } = props;
+    const {
+        price,
+        authors,
+        title,
+        image,
+    } = book;
+
+    const [quantity, setQuantity] = useState<number | undefined>(0);
+    const handleQuantityChange = (value: number | undefined) => {
+        setQuantity(value);
+    };
+
     const authorsDisplay = React.useMemo(() => (
         authors?.map((d) => d.name).join(', ')
     ), [authors]);
 
-    const removeBook = useCallback(() => {
-        removeBookFromWishList(wishListId);
-    }, [wishListId]);
-
     return (
-        <>
-            <div className={styles.container}>
-                <div className={styles.metaData}>
-                    {image?.url ? (
-                        <img
-                            className={styles.image}
-                            src={image.url}
-                            alt={title}
-                        />
-                    ) : (
-                        <div className={styles.noPreview}>
-                            Preview not available
-                        </div>
-                    )}
-                    <Container
-                        className={styles.details}
-                        heading={title}
-                    >
-                        <div className={styles.headerDescription}>
-                            <TextOutput
-                                label="Author"
-                                value={authorsDisplay}
-                            />
-                            <TextOutput
-                                label="Price (NPR)"
-                                valueType="number"
-                                value={price}
-                            />
-                            <div className={styles.quantity}>
-                                <TextOutput
-                                    label="Quantity"
-                                    valueType="number"
-                                />
-                                <NumberInput
-                                    name="quantity"
-                                    value={undefined}
-                                    onChange={undefined}
-                                />
-                            </div>
-                        </div>
-                    </Container>
-                    <div className={styles.wishListButton}>
-                        <Button
-                            name={undefined}
-                            onClick={undefined}
-                            variant="secondary"
-                            icons={<FaShoppingCart />}
-                            autoFocus
-                        >
-                            Add to cart
-                        </Button>
-                        <Button
-                            name={undefined}
-                            onClick={removeBook}
-                            variant="secondary"
-                            icons={<AiTwotoneDelete />}
-                            autoFocus
-                        >
-                            Remove
-                        </Button>
+        <div className={styles.container} key={id}>
+            <div className={styles.metaData}>
+                {image?.url ? (
+                    <img
+                        className={styles.image}
+                        src={image.url}
+                        alt={title}
+                    />
+                ) : (
+                    <div className={styles.noPreview}>
+                        Preview not available
                     </div>
+                )}
+                <Container
+                    className={styles.details}
+                    heading={title}
+                >
+                    <div className={styles.headerDescription}>
+                        <TextOutput
+                            label="Author"
+                            value={authorsDisplay}
+                        />
+                        <TextOutput
+                            label="Price (NPR)"
+                            valueType="number"
+                            value={price}
+                        />
+                        <div className={styles.quantity}>
+                            <TextOutput
+                                label="Quantity"
+                                valueType="number"
+                            />
+                            <NumberInput
+                                name="quantity"
+                                value={quantity}
+                                onChange={handleQuantityChange}
+                            />
+                        </div>
+                    </div>
+                </Container>
+                <div className={styles.wishListButton}>
+                    <Button
+                        name={undefined}
+                        onClick={undefined}
+                        variant="secondary"
+                        icons={<FaShoppingCart />}
+                    >
+                        Add to cart
+                    </Button>
+                    <Button
+                        name={id}
+                        onClick={removeWishList}
+                        variant="secondary"
+                        icons={<AiTwotoneDelete />}
+                    >
+                        Remove
+                    </Button>
                 </div>
             </div>
-        </>
+        </div>
     );
 }
 
@@ -169,30 +177,34 @@ function WishList() {
     });
 
     const deleteBook = (id: string) => {
-        deleteWishlist({ variables: { id } });
-        refetch();
+        deleteWishlist({ variables: { id } }).then(() => {
+            refetch();
+        });
     };
+
+    const wishes = (!loading && data?.wishList?.results) ? data.wishList.results : [];
+    const wishItemRendererParams = React.useCallback((_, d) => ({
+        wish: d,
+        removeWishList: deleteBook,
+    }), []);
 
     return (
         <div className={styles.wishList}>
-            {!loading && data?.wishList?.results
-                && (
-                    <>
-                        {
-                            data.wishList.results.map((b: any) => (
-                                <WishListBook
-                                    id={b.book.id}
-                                    title={b.book.title}
-                                    image={b.book.image}
-                                    price={b.book.price}
-                                    authors={b.book.authors}
-                                    removeBookFromWishList={deleteBook}
-                                    wishListId={b.id}
-                                />
-                            ))
-                        }
-                    </>
-                )}
+            <Container
+                className={styles.featuredBooksSection}
+                heading="My Wishlist"
+            >
+                <ListView
+                    className={styles.bookList}
+                    data={wishes}
+                    keySelector={wishKeySelector}
+                    rendererParams={wishItemRendererParams}
+                    renderer={WishListItem}
+                    errored={false}
+                    pending={loading}
+                    filtered={false}
+                />
+            </Container>
         </div>
     );
 }

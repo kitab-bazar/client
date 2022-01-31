@@ -21,8 +21,6 @@
             overflow: auto;
 
             .details {
-                background-color: #fff;
-
                 .header-description {
                     display: flex;
                     flex-direction: column;
