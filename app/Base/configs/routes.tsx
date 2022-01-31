@@ -58,15 +58,6 @@ const bookDetail = wrap({
     },
     visibility: 'is-anything',
 });
-const cartPage = wrap({
-    path: '/cart-page/',
-    title: 'My Cart Page',
-    navbarVisibility: true,
-    component: lazy(() => import('#views/CartPage')),
-    componentProps: {
-    },
-    visibility: 'is-authenticated',
-});
 const orderPage = wrap({
     path: '/order/',
     title: 'My Order',

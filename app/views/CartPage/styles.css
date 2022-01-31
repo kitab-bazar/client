@@ -8,8 +8,6 @@
         display: flex;
         flex-direction: column;
         margin-top: var(--dui-spacing-large);
-        border-style: solid;
-        border-color: #d3d3d3;
         padding: var(--dui-spacing-large);
         width: 100%;
         max-width: 1200px;

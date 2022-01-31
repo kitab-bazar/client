@@ -143,6 +143,7 @@ function Navbar(props: Props) {
                     >
                         <FaShoppingCart />
                     </ButtonLikeLink>
+                    </Link>
                     {authenticated && user && (
                         <div className={styles.userInfo}>
                             <div>
