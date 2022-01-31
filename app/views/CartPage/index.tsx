@@ -10,7 +10,10 @@ import { FaHeart } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 import styles from './styles.css';
-import { CartListQuery, CartListQueryVariables } from '#generated/types';
+import {
+    CartListQuery,
+    CartListQueryVariables,
+} from '#generated/types';
 
 const CART_LIST = gql`
     query CartList ($email: ID!, $page: Int!, $pageSize: Int!) {
@@ -19,7 +22,7 @@ const CART_LIST = gql`
                 id
                 totalPrice
                 book {
-                id
+                    id
                 title
                 image {
                     url
@@ -179,7 +182,7 @@ function CartPage() {
                                     />
                                 ))
                             }
-                            <Link to="/order-page" style={{ textDecoration: 'none' }}>
+                            <Link to="/order" style={{ textDecoration: 'none' }}>
                                 <Button
                                     name={undefined}
                                     variant="secondary"

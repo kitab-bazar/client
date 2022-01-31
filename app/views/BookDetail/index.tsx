@@ -7,6 +7,7 @@ import {
     TabList,
     Button,
     TextOutput,
+    ButtonLikeLink,
 } from '@the-deep/deep-ui';
 import {
     gql,
@@ -107,15 +108,18 @@ function BookDetail() {
                                 )}
                                 footerIcons={(
                                     <>
-                                        <Button name="buy">
-                                            Buy now
-                                        </Button>
-                                        <Button
-                                            name="wishlist"
-                                            variant="secondary"
+                                        <ButtonLikeLink
+                                            variant="primary"
+                                            to={`/order?book=${result.book.id}`}
                                         >
-                                            Add to wishlist
-                                        </Button>
+                                            Buy now
+                                        </ButtonLikeLink>
+                                        <ButtonLikeLink
+                                            variant="primary"
+                                            to="/wishlist-page"
+                                        >
+                                            Add to Wishlist
+                                        </ButtonLikeLink>
                                     </>
                                 )}
                             />

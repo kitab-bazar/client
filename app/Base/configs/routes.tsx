@@ -68,8 +68,8 @@ const cartPage = wrap({
     visibility: 'is-authenticated',
 });
 const orderPage = wrap({
-    path: '/order-page/',
-    title: 'My Order Page',
+    path: '/order/',
+    title: 'My Order',
     navbarVisibility: true,
     component: lazy(() => import('#views/OrderPage')),
     componentProps: {
