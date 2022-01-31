@@ -82,6 +82,11 @@ function OrderItem(props: ItemProps) {
                             valueType="number"
                             value={price}
                         />
+                        <TextOutput
+                            label="Amount (NPR)"
+                            valueType="number"
+                            value={price * quantity}
+                        />
                     </div>
                 </Container>
                 <div className={styles.orderButton}>
@@ -142,6 +147,7 @@ function OrderPage() {
                             {resp.placeSingleOrder.result?.orderCode}
                             For Total Price: NPR
                             {resp.placeSingleOrder.result?.totalPrice}
+                            Order Status:
                             {resp.placeSingleOrder.result?.status}
                         </Alert>
                     </>

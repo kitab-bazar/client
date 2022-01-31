@@ -17,7 +17,7 @@
         .meta-data {
             display: flex;
             justify-content: space-evenly;
-            height: 12rem;
+            height: 17rem;
             overflow: auto;
 
             .details {

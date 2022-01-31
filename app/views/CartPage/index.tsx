@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Button, Container, NumberInput, TextOutput } from '@the-deep/deep-ui';
+import React, { useCallback, useState } from 'react';
+import { Button, Container, ListView, NumberInput, TextOutput } from '@the-deep/deep-ui';
 import {
     gql,
     useMutation,
@@ -7,12 +7,13 @@ import {
 } from '@apollo/client';
 import { AiTwotoneDelete } from 'react-icons/ai';
 import { FaHeart } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
 
 import styles from './styles.css';
 import {
     CartListQuery,
     CartListQueryVariables,
+    CheckOutCartMutation,
+    CheckOutCartMutationVariables,
 } from '#generated/types';
 
 const CART_LIST = gql`
@@ -44,45 +45,52 @@ const CART_LIST = gql`
 `;
 
 const DELETE_CART_ITEMS = gql`
-mutation DeleteCartItems ($id: ID!) {
-    deleteCartItem(id: $id) {
-      errors
-      ok
+    mutation DeleteCartItems ($id: ID!) {
+        deleteCartItem(id: $id) {
+        errors
+        ok
+        }
     }
-  }
 `;
 
-interface Author {
-    id: number;
-    name: string;
+const ORDER_FROM_CART = gql`
+    mutation CheckOutCart {
+        placeOrderFromCart {
+            errors
+            ok
+        result {
+                id
+                orderCode
+                status
+                totalPrice
+            }
+        }
+    }
+`;
+
+type Cart = NonNullable<NonNullable<CartListQuery['cartItems']>['results']>[number]
+const cartKeySelector = (c: Cart) => c.id;
+
+interface CartProps {
+    cart: Cart;
+    deleteCart: (id: string) => void;
 }
 
-interface Image {
-    url: string;
-}
+function CartContent(props: CartProps) {
+    const { cart, deleteCart } = props;
+    const { id, quantity, book } = cart;
+    const { id: bookId, title, image, authors, price } = book;
 
-interface Book {
-    id: number;
-    price: number;
-    authors: Author[];
-    quantity: number;
-    image: Image;
-    title: string;
-    cartId: number;
-    mutate: (id: number) => void;
-}
-
-function CartContent(props: Book) {
-    const { id, price, authors, image, title, quantity, mutate, cartId } = props;
     const authorsDisplay = React.useMemo(() => (
         authors?.map((d) => d.name).join(', ')
     ), [authors]);
 
-    const deleteCartItem = (_id: number) => {
-        mutate(_id);
-    };
+    const deleteCartItem = useCallback(() => {
+        deleteCart(id);
+    }, [id]);
+
     return (
-        <div className={styles.container}>
+        <div className={styles.container} key={id}>
             <div className={styles.metaData}>
                 {image?.url ? (
                     <img
@@ -135,7 +143,7 @@ function CartContent(props: Book) {
                         name={undefined}
                         variant="secondary"
                         icons={<AiTwotoneDelete />}
-                        onClick={() => deleteCartItem(cartId)}
+                        onClick={() => deleteCartItem()}
                     >
                         Remove
                     </Button>
@@ -151,53 +159,66 @@ function CartPage() {
     const [email, setEmail] = useState<string>('admin@gmail.com');
     const [deleteCartItem] = useMutation(DELETE_CART_ITEMS);
 
-    const { data, refetch, loading } = useQuery<
+    const { data: result, refetch, loading } = useQuery<
         CartListQuery,
         CartListQueryVariables
     >(CART_LIST, {
         variables: { page, pageSize, email },
     });
 
-    const removeCartItem = (_id: number) => {
-        deleteCartItem({ variables: { id: _id } });
+    const [placeOrderFromCart,
+        { data: response, loading: submitting }] = useMutation<
+            CheckOutCartMutation,
+            CheckOutCartMutationVariables
+        >(ORDER_FROM_CART);
+
+    const pending = loading || submitting;
+    const carts = (!loading && result?.cartItems?.results) ? result.cartItems.results : [];
+
+    const removeCartItem = (id: string) => {
+        deleteCartItem({ variables: { id } });
         refetch();
     };
+
+    const checkout = () => {
+        placeOrderFromCart();
+        refetch();
+    };
+
+    const cartItemRendererParams = React.useCallback((_, data) => ({
+        cart: data,
+        deleteCart: removeCartItem,
+    }), []);
+
     return (
-        <>
-            <div className={styles.wishList}>
-                {!loading && data?.cartItems?.results && data.cartItems.results.length > 0
-                    ? (
-                        <>
-                            {
-                                data.cartItems.results.map((_b: any) => (
-                                    <CartContent
-                                        id={_b.book.id}
-                                        title={_b.book.title}
-                                        image={_b.book.image}
-                                        price={_b.book.price}
-                                        quantity={_b.quantity}
-                                        authors={_b.book.authors}
-                                        mutate={removeCartItem}
-                                        cartId={_b.id}
-                                    />
-                                ))
-                            }
-                            <Link to="/order" style={{ textDecoration: 'none' }}>
-                                <Button
-                                    name={undefined}
-                                    variant="secondary"
-                                >
-                                    Order
-                                </Button>
-                            </Link>
-                        </>
-                    ) : (
-                        <div className={styles.noPreview}>
-                            Cart is empty
-                        </div>
-                    )}
-            </div>
-        </>
+        <div className={styles.wishList}>
+            <Container
+                className={styles.featuredBooksSection}
+                heading="My Cart"
+            >
+                <ListView
+                    className={styles.bookList}
+                    data={carts}
+                    keySelector={cartKeySelector}
+                    rendererParams={cartItemRendererParams}
+                    renderer={CartContent}
+                    errored={false}
+                    pending={loading}
+                    filtered={false}
+                />
+            </Container>
+            {!loading && carts.length > 0
+                && (
+                    <Button
+                        name={undefined}
+                        variant="secondary"
+                        onClick={checkout}
+                    >
+                        Order
+                    </Button>
+                )}
+        </div>
+
     );
 }
 
