@@ -40,14 +40,14 @@ const home = wrap({
     visibility: 'is-anything',
 });
 const myProfile = wrap({
-    path: '/my-profile/',
+    path: '/profile/',
     title: 'My Profile',
     navbarVisibility: true,
-    component: lazy(() => import('#views/Template')),
+    component: lazy(() => import('#views/Profile')),
     componentProps: {
         name: 'My Profile Page',
     },
-    visibility: 'is-authenticated',
+    visibility: 'is-anything', // TODO: change visibility to 'is-authenticated'
 });
 const bookDetail = wrap({
     path: '/book/:id/',
@@ -58,6 +58,13 @@ const bookDetail = wrap({
     },
     visibility: 'is-anything',
 });
+const orderList = wrap({
+    path: '/orders/',
+    title: 'My Orders',
+    navbarVisibility: true,
+    component: lazy(() => import('#views/OrderList')),
+    visibility: 'is-anything',
+});
 
 const routes = {
     register,
@@ -66,5 +73,6 @@ const routes = {
     myProfile,
     bookDetail,
     fourHundredFour,
+    orderList,
 };
 export default routes;

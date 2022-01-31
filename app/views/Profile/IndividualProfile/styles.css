@@ -1,0 +1,31 @@
+.individual-profile {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: var(--dui-spacing-large);
+
+    .profile-details {
+        display: flex;
+        justify-content: space-between;
+
+        .display-picture {
+            background-color: var(--dui-color-foreground);
+            width: 200px;
+            height: 200px;
+        }
+
+        .buttons {
+            display: flex;
+        }
+    }
+
+    .orders {
+        display: flex;
+        gap: var(--dui-spacing-large);
+
+        .order-item {
+            display: flex;
+            flex-direction: column;
+        }
+    }
+}
