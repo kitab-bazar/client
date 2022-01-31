@@ -37,16 +37,17 @@ query BookById ($id: ID!) {
   }
 `;
 
+type Book = NonNullable<BookByIdQuery['book']>
+
 interface ItemProps {
-    id: string;
-    title: string;
+    book: Book;
     quantity: number;
-    price: number;
     changeQuantity: (qty: number) => void;
 }
 
 function OrderItem(props: ItemProps) {
-    const { id, title, price, quantity, changeQuantity } = props;
+    const { book, quantity, changeQuantity } = props;
+    const { id, title, price } = book;
     const handleQuantityChange = (value: number | undefined,
         name: string,
         event: React.FormEvent<HTMLInputElement> | undefined) => {
@@ -157,10 +158,8 @@ function OrderPage() {
                 result && result.book && !loading
                 && (
                     <OrderItem
-                        id={result.book.id}
-                        title={result.book.title}
+                        book={result.book}
                         quantity={quantity}
-                        price={result.book.price}
                         changeQuantity={setQuantityChange}
                     />
                 )
