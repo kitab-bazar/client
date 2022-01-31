@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
     Button,
     Container,
     ListView,
+    Message,
     NumberInput,
     TextOutput,
 } from '@the-deep/deep-ui';
@@ -15,6 +16,8 @@ import { AiTwotoneDelete } from 'react-icons/ai';
 import { FaShoppingCart } from 'react-icons/fa';
 
 import {
+    CreateCartMutation,
+    CreateCartMutationVariables,
     RemoveWishListMutation,
     RemoveWishListMutationVariables,
     WishListQuery,
@@ -58,18 +61,29 @@ mutation RemoveWishList ($id: ID!) {
   }
 `;
 
+const CREATE_CART = gql`
+mutation CreateCart ($id: String!, $quantity: Int! ) {
+    createCartItem(data: {book: $id, quantity: $quantity}) {
+      errors
+      ok
+    }
+  }
+`;
+
 type Wish = NonNullable<NonNullable<WishListQuery['wishList']>['results']>[number]
 const wishKeySelector = (w: Wish) => w.id;
 
 interface WishProps {
     wish: Wish;
     removeWishList: (id: string) => void;
+    createCart: (id: string, quantity: number) => void;
 }
 
 function WishListItem(props: WishProps) {
     const {
         wish,
         removeWishList,
+        createCart,
     } = props;
 
     const {
@@ -78,6 +92,7 @@ function WishListItem(props: WishProps) {
     } = wish;
 
     const {
+        id: bookId,
         price,
         authors,
         title,
@@ -88,6 +103,11 @@ function WishListItem(props: WishProps) {
     const handleQuantityChange = (value: number | undefined) => {
         setQuantity(value);
     };
+    const handleAddToCart = useCallback(() => {
+        if (quantity && quantity > 0) {
+            createCart(bookId, quantity);
+        }
+    }, [quantity]);
 
     const authorsDisplay = React.useMemo(() => (
         authors?.map((d) => d.name).join(', ')
@@ -103,9 +123,9 @@ function WishListItem(props: WishProps) {
                         alt={title}
                     />
                 ) : (
-                    <div className={styles.noPreview}>
-                        Preview not available
-                    </div>
+                    <Message
+                        message="Preview not available"
+                    />
                 )}
                 <Container
                     className={styles.details}
@@ -136,8 +156,8 @@ function WishListItem(props: WishProps) {
                 </Container>
                 <div className={styles.wishListButton}>
                     <Button
-                        name={undefined}
-                        onClick={undefined}
+                        name={bookId}
+                        onClick={handleAddToCart}
                         variant="secondary"
                         icons={<FaShoppingCart />}
                     >
@@ -165,6 +185,11 @@ function WishList() {
         RemoveWishListMutationVariables
     >(REMOVE_WISH_LIST);
 
+    const [createCartItem] = useMutation<
+        CreateCartMutation,
+        CreateCartMutationVariables
+    >(CREATE_CART);
+
     const { data, refetch, loading } = useQuery<
         WishListQuery,
         WishListQueryVariables
@@ -176,16 +201,23 @@ function WishList() {
         },
     });
 
-    const deleteBook = (id: string) => {
+    const addToCart = useCallback((id: string, quantity: number) => {
+        createCartItem({ variables: { id, quantity } }).then(() => {
+            refetch();
+        }).catch((e) => console.log(e));
+    }, []);
+
+    const deleteBook = useCallback((id: string) => {
         deleteWishlist({ variables: { id } }).then(() => {
             refetch();
         });
-    };
+    }, []);
 
     const wishes = (!loading && data?.wishList?.results) ? data.wishList.results : [];
     const wishItemRendererParams = React.useCallback((_, d) => ({
         wish: d,
         removeWishList: deleteBook,
+        createCart: addToCart,
     }), []);
 
     return (
