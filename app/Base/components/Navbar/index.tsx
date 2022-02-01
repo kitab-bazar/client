@@ -8,7 +8,11 @@ import {
     useAlert,
     Link,
 } from '@the-deep/deep-ui';
-import { IoSearchSharp, IoCart } from 'react-icons/io5';
+import {
+    IoSearchSharp,
+    IoCart,
+    IoHeart,
+} from 'react-icons/io5';
 
 import routes from '#base/configs/routes';
 import { UserContext } from '#base/context/UserContext';
@@ -134,6 +138,12 @@ function Navbar(props: Props) {
                         variant="primary"
                     >
                         Login
+                    </SmartButtonLikeLink>
+                    <SmartButtonLikeLink
+                        variant="secondary"
+                        route={routes.wishList}
+                    >
+                        <IoHeart />
                     </SmartButtonLikeLink>
                     <SmartButtonLikeLink
                         variant="secondary"

@@ -7,35 +7,25 @@
     .container {
         display: flex;
         flex-direction: column;
-        margin-top: var(--dui-spacing-large);
-        padding: var(--dui-spacing-large);
-        width: 100%;
+        min-width: 720px;
         max-width: 1200px;
         overflow: auto;
         gap: var(--dui-spacing-extra-large);
 
-        .meta-data {
+        .content {
             display: flex;
-            justify-content: space-evenly;
-            height: 12rem;
-            overflow: auto;
+            gap: var(--dui-spacing-small);
 
-            .details {
-                .header-description {
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--dui-spacing-small);
-
-                    .quantity {
-                        display: flex;
-                    }
+            .image-container {
+                .image {
+                    width: 56px;
                 }
             }
 
-            .wish-list-button {
+            .details {
                 display: flex;
                 flex-direction: column;
-                justify-content: space-evenly;
+                gap: var(--dui-spacing-small);
             }
         }
     }

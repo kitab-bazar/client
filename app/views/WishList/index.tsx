@@ -108,10 +108,6 @@ function WishListItem(props: WishProps) {
         setQuantity,
     ] = useState<number | undefined>(0);
 
-    const handleQuantityChange = useCallback((value: number | undefined) => {
-        setQuantity(value);
-    }, []);
-
     const handleAddToCart = useCallback(() => {
         if (isDefined(quantity) && quantity > 0) {
             onCreateCart(bookId, quantity);
@@ -123,43 +119,11 @@ function WishListItem(props: WishProps) {
     ), [authors]);
 
     return (
-        <div className={styles.container} key={id}>
-            <div className={styles.metaData}>
-                {image?.url ? (
-                    <img
-                        src={image.url}
-                        alt={title}
-                    />
-                ) : (
-                    <Message
-                        message="Preview not available"
-                    />
-                )}
-                <Container
-                    className={styles.details}
-                    heading={title}
-                >
-                    <div className={styles.headerDescription}>
-                        <TextOutput
-                            label="Author"
-                            value={authorsDisplay}
-                        />
-                        <TextOutput
-                            label="Price (NPR)"
-                            valueType="number"
-                            value={price}
-                        />
-                        <div className={styles.quantity}>
-                            <NumberInput
-                                label="Quantity"
-                                name="quantity"
-                                value={quantity}
-                                onChange={handleQuantityChange}
-                            />
-                        </div>
-                    </div>
-                </Container>
-                <div className={styles.wishListButton}>
+        <Container
+            className={styles.container}
+            heading={title}
+            footerActions={(
+                <>
                     <Button
                         name={bookId}
                         onClick={handleAddToCart}
@@ -176,9 +140,41 @@ function WishListItem(props: WishProps) {
                     >
                         Remove
                     </Button>
-                </div>
+                </>
+            )}
+            contentClassName={styles.content}
+        >
+            <div className={styles.imageContainer}>
+                {image?.url ? (
+                    <img
+                        className={styles.image}
+                        src={image.url}
+                        alt={title}
+                    />
+                ) : (
+                    <Message
+                        message="Preview not available"
+                    />
+                )}
             </div>
-        </div>
+            <div className={styles.details}>
+                <TextOutput
+                    label="Author"
+                    value={authorsDisplay}
+                />
+                <TextOutput
+                    label="Price (NPR)"
+                    valueType="number"
+                    value={price}
+                />
+                <NumberInput
+                    label="Quantity"
+                    name="quantity"
+                    value={quantity}
+                    onChange={setQuantity}
+                />
+            </div>
+        </Container>
     );
 }
 
@@ -244,8 +240,26 @@ function WishList() {
     ] = useMutation<CreateCartMutation, CreateCartMutationVariables>(
         CREATE_CART,
         {
-            onCompleted: () => {
-                refetch();
+            onCompleted: (response) => {
+                if (response?.createCartItem?.ok) {
+                    alert.show(
+                        'The book was successfully added to your cart.',
+                        {
+                            variant: 'success',
+                        },
+                    );
+                    // TODO: Delete book from wishlist from backend after item is added
+                    refetch();
+                } else {
+                    alert.show(
+                        'There was an error while adding this to your cart. It might already be there.',
+                        {
+                            variant: 'success',
+                        },
+                    );
+                    // TODO: Delete book from wishlist from backend after item is added
+                    refetch();
+                }
             },
         },
     );
@@ -266,7 +280,8 @@ function WishList() {
         });
     }, [deleteWishlist]);
 
-    const wishes = (data?.wishList?.results) ? data.wishList.results : [];
+    const wishes = data?.wishList?.results;
+
     const wishItemRendererParams = React.useCallback((_, d: Wish) => ({
         wish: d,
         onRemoveWishList: deleteBook,
@@ -274,21 +289,20 @@ function WishList() {
     }), [deleteBook, addToCart]);
 
     return (
-        <div className={styles.wishList}>
-            <Container
-                heading="My Wishlist"
-            >
-                <ListView
-                    data={wishes}
-                    keySelector={wishKeySelector}
-                    rendererParams={wishItemRendererParams}
-                    renderer={WishListItem}
-                    errored={false}
-                    pending={loading}
-                    filtered={false}
-                />
-            </Container>
-        </div>
+        <Container
+            className={styles.wishlist}
+            heading="My Wishlist"
+        >
+            <ListView
+                data={wishes ?? undefined}
+                keySelector={wishKeySelector}
+                rendererParams={wishItemRendererParams}
+                renderer={WishListItem}
+                pending={loading}
+                errored={false}
+                filtered={false}
+            />
+        </Container>
     );
 }
 

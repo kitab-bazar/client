@@ -88,6 +88,13 @@ function BookDetail() {
                             variant: 'success',
                         },
                     );
+                } else {
+                    alert.show(
+                        'Failed to add book to wishlist. It might already be in there.',
+                        {
+                            variant: 'error',
+                        },
+                    );
                 }
             },
         },
