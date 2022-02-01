@@ -23,25 +23,21 @@ const MY_PROFILE = gql`
 `;
 
 function Profile() {
-    const [userType, setUserType] = useState<UserMeType | undefined>();
-    useQuery<MyProfileQuery, MyProfileQueryVariables>(
+    const {
+        data: profileData,
+    } = useQuery<MyProfileQuery, MyProfileQueryVariables>(
         MY_PROFILE,
-        {
-            onCompleted: (data) => {
-                setUserType(data?.me?.userType);
-            },
-        },
     );
 
     return (
         <div className={styles.profile}>
-            {userType === 'INDIVIDUAL_USER' && (
+            {profileData?.me?.userType === 'INDIVIDUAL_USER' && (
                 <IndividualProfile />
             )}
-            {userType === 'SCHOOL_ADMIN' && (
+            {profileData?.me?.userType === 'SCHOOL_ADMIN' && (
                 <SchoolProfile />
             )}
-            {userType === 'INSTITUTIONAL_USER' && (
+            {profileData?.me?.userType === 'INSTITUTIONAL_USER' && (
                 <InstitutionProfile />
             )}
         </div>

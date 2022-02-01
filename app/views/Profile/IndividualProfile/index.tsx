@@ -1,9 +1,10 @@
 import React, { useCallback, useMemo } from 'react';
-
+import { generatePath } from 'react-router-dom';
 import {
     IoPencil,
     IoHeart,
     IoCart,
+    IoArrowForward,
 } from 'react-icons/io5';
 import { useQuery, gql } from '@apollo/client';
 
@@ -13,6 +14,7 @@ import {
     TextOutput,
     ListView,
     Card,
+    Link,
 } from '@the-deep/deep-ui';
 
 import {
@@ -23,6 +25,7 @@ import {
     OrderType,
     OrderStatus,
 } from '#generated/types';
+import routes from '#base/configs/routes';
 
 import styles from './styles.css';
 
@@ -33,6 +36,10 @@ const INDIVIDUAL_PROFILE = gql`
             fullName
             id
             phoneNumber
+            image {
+                name
+                url
+            }
         }
     }
 `;
@@ -88,26 +95,28 @@ function OrderListRenderer(props: OrderListProps) {
     } = props;
 
     return (
-        <Card
-            className={styles.orderItem}
-        >
-            <TextOutput
-                label="order number"
-                value={orderCode}
-            />
-            <TextOutput
-                label="Total book types"
-                value={totalBookTypes}
-            />
-            <TextOutput
-                label="total price"
-                value={totalPrice}
-            />
-            <TextOutput
-                label="status"
-                value={status}
-            />
-        </Card>
+        <Link to={generatePath(routes.orderList.path, { activeOrderId: orderCode })}>
+            <Card
+                className={styles.orderItem}
+            >
+                <TextOutput
+                    label="order number"
+                    value={orderCode}
+                />
+                <TextOutput
+                    label="Total book types"
+                    value={totalBookTypes}
+                />
+                <TextOutput
+                    label="total price"
+                    value={totalPrice}
+                />
+                <TextOutput
+                    label="status"
+                    value={status}
+                />
+            </Card>
+        </Link>
     );
 }
 
@@ -145,8 +154,8 @@ function IndividualProfile() {
         console.warn('handle me');
     }, []);
 
-    const orderListRendererParams = useCallback((_, data: OrderListQuery) => ({
-        totalBookTypes: data.bookOrders.totalCount,
+    const orderListRendererParams: OrderListProps = useCallback((_, data: OrderType) => ({
+        totalBookTypes: data.bookOrders?.totalCount,
         orderCode: data.orderCode,
         status: data.status,
         totalPrice: data.totalPrice,
@@ -162,7 +171,12 @@ function IndividualProfile() {
                 <div className={styles.left}>
                     <div
                         className={styles.displayPicture}
-                    />
+                    >
+                        <img
+                            src={profileDetails?.me?.image?.url ?? undefined}
+                            alt={profileDetails?.me?.image?.name ?? ''}
+                        />
+                    </div>
                     <div className={styles.description}>
                         <Button
                             name={undefined}
@@ -237,6 +251,10 @@ function IndividualProfile() {
                     filtered={false}
                     pending={loading}
                 />
+                <Link to={generatePath(routes.orderList.path, {})}>
+                    View More
+                    <IoArrowForward />
+                </Link>
             </Container>
         </div>
     );

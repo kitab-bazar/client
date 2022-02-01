@@ -86,6 +86,7 @@ function Init(props: Props) {
                     });
                 } else {
                     setUser(undefined);
+                    setErrored(true);
                 }
                 setReady(true);
             },
@@ -98,17 +99,10 @@ function Init(props: Props) {
                 );
 
                 setErrored(!authError);
+                setUser(undefined);
                 setReady(true);
             },
         },
-    );
-
-    useEffect(
-        () => {
-            setErrored(false);
-            setReady(true);
-        },
-        [setUser],
     );
 
     if (errored) {

@@ -56,7 +56,7 @@ const ORDER_LIST_WITH_BOOKS = gql`
 
 const bookListKeySelector = (b: BookOrderType) => b.id;
 
-interface BookListProps {
+interface BookProps {
     title: string;
     quantity: number;
     isbn: string;
@@ -65,7 +65,7 @@ interface BookListProps {
     image: string;
 }
 
-function BookListRenderer(props: BookListProps) {
+function Book(props: BookProps) {
     const {
         title,
         quantity,
@@ -165,9 +165,12 @@ function OrderListRenderer(props: OrderListProps) {
         >
             <ListView
                 data={books}
-                renderer={BookListRenderer}
+                renderer={Book}
                 rendererParams={bookListRendererParams}
                 keySelector={bookListKeySelector}
+                errored={false}
+                filtered={false}
+                pending={false}
             />
         </ControlledExpandableContainer>
     );
@@ -177,7 +180,15 @@ const orderListKeySelector = (o: OrderType) => o.id;
 
 const MAX_ITEMS_PER_PAGE = 20;
 
-function OrderList() {
+interface Props {
+    activeOrderId?: string;
+}
+
+function OrderList(props: Props) {
+    const {
+        activeOrderId,
+    } = props;
+
     const [pageSize, setPageSize] = useState<number>(MAX_ITEMS_PER_PAGE);
     const [page, setPage] = useState<number>(1);
     const orderVariables = useMemo(() => ({
@@ -185,7 +196,7 @@ function OrderList() {
         page,
     }), []);
 
-    const [expandedOrderId, setExpandedOrderId] = useState<string | undefined>();
+    const [expandedOrderId, setExpandedOrderId] = useState<string | undefined>(activeOrderId);
 
     const {
         data: orderList,

@@ -6,9 +6,9 @@ import {
     Button,
     TextInput,
     useAlert,
+    Link,
 } from '@the-deep/deep-ui';
 import { GoSearch } from 'react-icons/go';
-import { Link } from 'react-router-dom';
 
 import routes from '#base/configs/routes';
 import { UserContext } from '#base/context/UserContext';
@@ -140,10 +140,14 @@ function Navbar(props: Props) {
                                 Hello
                             </div>
                             <div>
-                                <strong>
-                                    {user.displayName}
-                                </strong>
-                                !
+                                <Link
+                                    to="/profile/"
+                                >
+                                    <strong>
+                                        {user.displayName}
+                                    </strong>
+                                    !
+                                </Link>
                             </div>
                             <Button
                                 name={undefined}

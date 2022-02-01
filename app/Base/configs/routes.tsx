@@ -45,9 +45,8 @@ const myProfile = wrap({
     navbarVisibility: true,
     component: lazy(() => import('#views/Profile')),
     componentProps: {
-        name: 'My Profile Page',
     },
-    visibility: 'is-anything', // TODO: change visibility to 'is-authenticated'
+    visibility: 'is-authenticated', // TODO: change visibility to 'is-authenticated'
 });
 const bookDetail = wrap({
     path: '/book/:id/',
@@ -63,7 +62,9 @@ const orderList = wrap({
     title: 'My Orders',
     navbarVisibility: true,
     component: lazy(() => import('#views/OrderList')),
-    visibility: 'is-anything',
+    componentProps: {
+    },
+    visibility: 'is-authenticated',
 });
 
 const routes = {
