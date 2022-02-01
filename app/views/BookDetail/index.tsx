@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
     Container,
     Tab,
@@ -7,7 +7,6 @@ import {
     TabList,
     Button,
     TextOutput,
-    ButtonLikeLink,
     Message,
 } from '@the-deep/deep-ui';
 import {
@@ -15,7 +14,7 @@ import {
     useMutation,
     useQuery,
 } from '@apollo/client';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import {
     BookDetailQuery,
@@ -23,6 +22,8 @@ import {
 } from '#generated/types';
 
 import styles from './styles.css';
+import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
+import routes from '#base/configs/routes';
 
 const BOOK_DETAIL = gql`
 query BookDetail ($id: ID!){
@@ -68,9 +69,9 @@ function BookDetail() {
     });
 
     const [createWishList] = useMutation(CREATE_WISH_LIST);
-    const addToWishList = () => {
+    const addToWishList = useCallback(() => {
         createWishList({ variables: { id } });
-    };
+    }, [id]);
 
     const [activeTab, setActiveTab] = React.useState<'description' | 'content' | undefined>('description');
     const authorsDisplay = React.useMemo(() => (
@@ -127,13 +128,13 @@ function BookDetail() {
                                         <Button name="buy">
                                             Buy now
                                         </Button>
-                                        <ButtonLikeLink
+                                        <SmartButtonLikeLink
                                             variant="secondary"
+                                            route={routes.wishList}
                                             onClick={addToWishList}
-                                            to="/wish"
                                         >
                                             Add to wishlist
-                                        </ButtonLikeLink>
+                                        </SmartButtonLikeLink>
                                     </>
                                 )}
                             />
