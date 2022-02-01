@@ -9,6 +9,7 @@ import {
     Message,
     NumberInput,
     TextOutput,
+    useAlert,
 } from '@the-deep/deep-ui';
 import {
     gql,
@@ -32,45 +33,45 @@ import styles from './styles.css';
 const WISH_LIST = gql`
 query WishList($pageSize: Int!, $page: Int!) {
     wishList(pageSize: $pageSize, page: $page) {
-      results {
-        id
-        book {
-          id
-          isbn
-          authors {
+        results {
             id
-            name
-          }
-          price
-          title
-          language
-          image {
-            url
-          }
+            book {
+                id
+                isbn
+                authors {
+                    id
+                    name
+                }
+                price
+                title
+                language
+                image {
+                    url
+                }
+            }
         }
-      }
-      pageSize
-      page
+        pageSize
+        page
     }
-  }
+}
 `;
 
 const REMOVE_WISH_LIST = gql`
 mutation RemoveWishList($id: ID!) {
     deleteWishlist(id: $id) {
-      errors
-      ok
+        errors
+        ok
     }
-  }
+}
 `;
 
 const CREATE_CART = gql`
 mutation CreateCart($id: String!, $quantity: Int!) {
     createCartItem(data: { book: $id, quantity: $quantity }) {
-      errors
-      ok
+        errors
+        ok
     }
-  }
+}
 `;
 
 type Wish = NonNullable<NonNullable<WishListQuery['wishList']>['results']>[number]
@@ -115,7 +116,7 @@ function WishListItem(props: WishProps) {
         if (isDefined(quantity) && quantity > 0) {
             onCreateCart(bookId, quantity);
         }
-    }, [quantity]);
+    }, [quantity, bookId, onCreateCart]);
 
     const authorsDisplay = React.useMemo(() => (
         authors?.map((d) => d.name).join(', ')
@@ -126,7 +127,6 @@ function WishListItem(props: WishProps) {
             <div className={styles.metaData}>
                 {image?.url ? (
                     <img
-                        className={styles.image}
                         src={image.url}
                         alt={title}
                     />
@@ -185,24 +185,15 @@ function WishListItem(props: WishProps) {
 function WishList() {
     const [page, setPage] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(10);
-    const [
-        deleteWishlist,
-    ] = useMutation<RemoveWishListMutation, RemoveWishListMutationVariables>(
-        REMOVE_WISH_LIST,
-    );
-
-    const [
-        createCartItem,
-    ] = useMutation<CreateCartMutation, CreateCartMutationVariables>(
-        CREATE_CART,
-    );
+    const alert = useAlert();
 
     const {
         data,
         refetch,
         loading,
     } = useQuery<WishListQuery, WishListQueryVariables>(
-        WISH_LIST, {
+        WISH_LIST,
+        {
             variables: {
                 page,
                 pageSize,
@@ -211,42 +202,83 @@ function WishList() {
                 setPage(res.wishList?.page ? res.wishList.page : page);
                 setPageSize(res.wishList?.pageSize ? res.wishList.pageSize : pageSize);
             },
-        });
+        },
+    );
 
+    const [
+        deleteWishlist,
+    ] = useMutation<RemoveWishListMutation, RemoveWishListMutationVariables>(
+        REMOVE_WISH_LIST,
+        {
+            onCompleted: (response) => {
+                refetch();
+                if (response?.deleteWishlist?.ok) {
+                    alert.show(
+                        'Item deleted from wishlist successfully',
+                        {
+                            variant: 'success',
+                        },
+                    );
+                } else {
+                    alert.show(
+                        'Failed to delete item from wishlist',
+                        {
+                            variant: 'error',
+                        },
+                    );
+                }
+            },
+            onError: () => {
+                alert.show(
+                    'Failed to delete item from wishlist',
+                    {
+                        variant: 'error',
+                    },
+                );
+            },
+        },
+    );
+
+    const [
+        createCartItem,
+    ] = useMutation<CreateCartMutation, CreateCartMutationVariables>(
+        CREATE_CART,
+        {
+            onCompleted: () => {
+                refetch();
+            },
+        },
+    );
     const addToCart = useCallback((id: string, quantity: number) => {
         createCartItem({
             variables: {
                 id,
                 quantity,
             },
-            onCompleted: () => refetch(),
         });
-    }, []);
+    }, [createCartItem]);
 
     const deleteBook = useCallback((id: string) => {
         deleteWishlist({
             variables: {
                 id,
             },
-            onCompleted: () => refetch(),
         });
-    }, []);
+    }, [deleteWishlist]);
 
     const wishes = (data?.wishList?.results) ? data.wishList.results : [];
     const wishItemRendererParams = React.useCallback((_, d: Wish) => ({
         wish: d,
         onRemoveWishList: deleteBook,
         onCreateCart: addToCart,
-    }), []);
+    }), [deleteBook, addToCart]);
 
     return (
         <div className={styles.wishList}>
             <Container
-                className={styles.featuredBooksSection}
                 heading="My Wishlist"
             >
                 <ListView
-                    className={styles.bookList}
                     data={wishes}
                     keySelector={wishKeySelector}
                     rendererParams={wishItemRendererParams}

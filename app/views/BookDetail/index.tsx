@@ -7,6 +7,7 @@ import {
     TabList,
     Button,
     TextOutput,
+    useAlert,
     Message,
 } from '@the-deep/deep-ui';
 import {
@@ -19,11 +20,14 @@ import { useParams } from 'react-router-dom';
 import {
     BookDetailQuery,
     BookDetailQueryVariables,
+    CreateWishListMutation,
+    CreateWishListMutationVariables,
 } from '#generated/types';
 
-import styles from './styles.css';
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
 import routes from '#base/configs/routes';
+
+import styles from './styles.css';
 
 const BOOK_DETAIL = gql`
 query BookDetail ($id: ID!){
@@ -51,8 +55,8 @@ query BookDetail ($id: ID!){
 const CREATE_WISH_LIST = gql`
 mutation CreateWishList ($id: String!) {
     createWishlist(data: {book: $id}) {
-      errors
-      ok
+        errors
+        ok
     }
 }
 `;
@@ -60,7 +64,10 @@ mutation CreateWishList ($id: String!) {
 function BookDetail() {
     const { id } = useParams();
 
-    const { data: result, loading } = useQuery<
+    const {
+        data: result,
+        loading,
+    } = useQuery<
         BookDetailQuery,
         BookDetailQueryVariables
     >(BOOK_DETAIL, {
@@ -68,12 +75,32 @@ function BookDetail() {
         variables: { id: id ?? '' },
     });
 
-    const [createWishList] = useMutation(CREATE_WISH_LIST);
+    const alert = useAlert();
+
+    const [
+        createWishList,
+    ] = useMutation<CreateWishListMutation, CreateWishListMutationVariables>(
+        CREATE_WISH_LIST,
+        {
+            onCompleted: (response) => {
+                if (response?.createWishlist?.ok) {
+                    alert.show(
+                        'Successfully added book to your wishlist.',
+                        {
+                            variant: 'success',
+                        },
+                    );
+                }
+            },
+        },
+    );
+
     const addToWishList = useCallback(() => {
-        createWishList({ variables: { id } });
-    }, [id]);
+        createWishList({ variables: id ? { id } : undefined });
+    }, [id, createWishList]);
 
     const [activeTab, setActiveTab] = React.useState<'description' | 'content' | undefined>('description');
+
     const authorsDisplay = React.useMemo(() => (
         result?.book?.authors?.map((d) => d.name).join(', ')
     ), [result?.book?.authors]);

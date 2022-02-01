@@ -7,7 +7,6 @@ import {
     IoArrowForward,
 } from 'react-icons/io5';
 import { useQuery, gql } from '@apollo/client';
-
 import {
     Container,
     Button,
@@ -26,6 +25,7 @@ import {
     OrderStatus,
 } from '#generated/types';
 import routes from '#base/configs/routes';
+import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
 
 import styles from './styles.css';
 
@@ -146,10 +146,6 @@ function IndividualProfile() {
         console.warn('handle me');
     }, []);
 
-    const handleWishlistClick = useCallback(() => {
-        console.warn('handle me');
-    }, []);
-
     const handleCartClick = useCallback(() => {
         console.warn('handle me');
     }, []);
@@ -206,14 +202,13 @@ function IndividualProfile() {
                 </div>
                 <div>
                     <div className={styles.buttons}>
-                        <Button
-                            name={undefined}
+                        <SmartButtonLikeLink
+                            route={routes.wishList}
                             variant="general"
-                            onClick={handleWishlistClick}
                             actions={<IoHeart />}
                         >
                             My Wishlist
-                        </Button>
+                        </SmartButtonLikeLink>
                         <Button
                             name={undefined}
                             variant="general"

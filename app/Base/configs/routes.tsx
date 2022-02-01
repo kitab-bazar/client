@@ -67,7 +67,7 @@ const orderList = wrap({
     visibility: 'is-authenticated',
 });
 const wishList = wrap({
-    path: '/wish',
+    path: '/wish-list',
     title: 'My Wish List',
     navbarVisibility: true,
     component: lazy(() => import('#views/WishList')),
