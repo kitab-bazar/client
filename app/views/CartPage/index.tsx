@@ -1,12 +1,21 @@
-import React, { useCallback, useState } from 'react';
-import { Button, Container, ListView, Message, NumberInput, TextOutput } from '@the-deep/deep-ui';
+import React, {
+    useCallback,
+    useState,
+} from 'react';
+import {
+    Button,
+    Container,
+    ListView,
+    Message,
+    NumberInput,
+    TextOutput,
+} from '@the-deep/deep-ui';
 import {
     gql,
     useMutation,
     useQuery,
 } from '@apollo/client';
-import { AiTwotoneDelete } from 'react-icons/ai';
-import { FaHeart } from 'react-icons/fa';
+import { IoHeartOutline, IoTrash } from 'react-icons/io5';
 import {
     CartListQuery,
     CartListQueryVariables,
@@ -17,55 +26,55 @@ import {
 import styles from './styles.css';
 
 const CART_LIST = gql`
-    query CartList ($email: ID!, $page: Int!, $pageSize: Int!) {
-        cartItems (createdBy: $email, page: $page, pageSize: $pageSize){
-            results {
-                id
-                totalPrice
-                book {
-                    id
-                title
-                image {
-                    url
-                }
-                authors {
-                    id
-                    name
-                }
-                price
-                }
-                quantity
-            }
-            grandTotalPrice
-            page
-            pageSize
-            totalCount
+query CartList($email: ID!, $page: Int!, $pageSize: Int!) {
+    cartItems(createdBy: $email, page: $page, pageSize: $pageSize) {
+      results {
+        id
+        totalPrice
+        book {
+          id
+          title
+          image {
+            url
+          }
+          authors {
+            id
+            name
+          }
+          price
         }
+        quantity
+      }
+      grandTotalPrice
+      page
+      pageSize
+      totalCount
     }
+  }
 `;
 
 const DELETE_CART_ITEMS = gql`
-    mutation DeleteCartItems ($id: ID!) {
-        deleteCartItem(id: $id) {
-        errors
-        ok
-        }
+mutation DeleteCartItems($id: ID!) {
+    deleteCartItem(id: $id) {
+      errors
+      ok
     }
+  }
 `;
 
 const ORDER_FROM_CART = gql`
-    mutation CheckOutCart {
-        placeOrderFromCart {
-            errors
-            ok
-        result {
-                id
-                orderCode
-                status
-                totalPrice
-            }
-        }
+mutation CheckOutCart {
+    placeOrderFromCart {
+      errors
+      ok
+      result {
+        id
+        orderCode
+        status
+        totalPrice
+      }
     }
+  }
 `;
 
 type Cart = NonNullable<NonNullable<CartListQuery['cartItems']>['results']>[number]
@@ -95,7 +104,7 @@ function CartContent(props: CartProps) {
     } = book;
 
     const authorsDisplay = React.useMemo(() => (
-        authors?.map((d) => d.name).join(', ')
+        authors?.map((d: any) => d.name).join(', ')
     ), [authors]);
 
     return (
@@ -144,14 +153,14 @@ function CartContent(props: CartProps) {
                         name={undefined}
                         onClick={undefined}
                         variant="secondary"
-                        icons={<FaHeart />}
+                        icons={<IoHeartOutline />}
                     >
                         Add to wish list
                     </Button>
                     <Button
                         name={id}
                         variant="secondary"
-                        icons={<AiTwotoneDelete />}
+                        icons={<IoTrash />}
                         onClick={deleteCart}
                     >
                         Remove
@@ -165,43 +174,47 @@ function CartContent(props: CartProps) {
 function CartPage() {
     const [page, setPage] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(10);
-    const [email, setEmail] = useState<string>('admin@gmail.com');
+    const [email, setEmail] = useState<string>(''); // TODO: need to discuss
     const [deleteCartItem] = useMutation(DELETE_CART_ITEMS);
 
-    const { data: result, refetch, loading } = useQuery<
-        CartListQuery,
-        CartListQueryVariables
-    >(CART_LIST, {
-        variables: { page, pageSize, email },
+    const {
+        data: result,
+        refetch,
+        loading,
+    } = useQuery<CartListQuery, CartListQueryVariables>(
+        CART_LIST, {
+        variables: {
+            page,
+            pageSize,
+            email,
+        },
     });
 
-    const [placeOrderFromCart,
-        { data: response, loading: submitting }] = useMutation<
-            CheckOutCartMutation,
-            CheckOutCartMutationVariables
-        >(ORDER_FROM_CART);
+    const [
+        placeOrderFromCart,
+        {
+            data: response,
+            loading: submitting,
+        },
+    ] = useMutation<CheckOutCartMutation, CheckOutCartMutationVariables>(
+        ORDER_FROM_CART,
+    );
 
     const pending = loading || submitting;
-    const carts = (!loading && result?.cartItems?.results) ? result.cartItems.results : [];
+    const carts = (result?.cartItems?.results) ? result.cartItems.results : [];
 
     const removeCartItem = useCallback((id: string) => {
-        deleteCartItem({ variables: { id } }).then(() => {
-            refetch();
-        });
+        deleteCartItem({ variables: { id }, onCompleted: () => refetch() });
     }, []);
 
     const checkout = () => {
-        placeOrderFromCart().then(() => {
-            refetch();
-        }).catch((e) => {
-            console.log(e);
-        });
+        placeOrderFromCart({ onCompleted: () => refetch() });
     };
 
-    const cartItemRendererParams = React.useCallback((_, data) => ({
+    const cartItemRendererParams = React.useCallback((_, data: Cart) => ({
         cart: data,
         deleteCart: removeCartItem,
-    }), []);
+    }), [removeCartItem]);
 
     return (
         <div className={styles.wishList}>
@@ -220,18 +233,18 @@ function CartPage() {
                     filtered={false}
                 />
             </Container>
-            {!loading && carts.length > 0
+            {carts.length > 0
                 && (
                     <Button
                         name={undefined}
                         variant="secondary"
                         onClick={checkout}
+                        disabled={loading}
                     >
                         Order
                     </Button>
                 )}
         </div>
-
     );
 }
 

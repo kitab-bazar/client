@@ -1,10 +1,22 @@
-import React, { useCallback, useState } from 'react';
-import { Alert, Button, Container, NumberInput, TextOutput } from '@the-deep/deep-ui';
-import { BsCashStack } from 'react-icons/bs';
-import { gql, useMutation, useQuery } from '@apollo/client';
+import React, {
+    useCallback,
+    useState,
+} from 'react';
+import {
+    Alert,
+    Button,
+    Container,
+    NumberInput,
+    TextOutput,
+} from '@the-deep/deep-ui';
+import { IoCashOutline } from 'react-icons/io5';
+import {
+    gql,
+    useMutation,
+    useQuery,
+} from '@apollo/client';
 import { useLocation } from 'react-router-dom';
-
-import styles from './styles.css';
+import { isDefined } from '@togglecorp/fujs';
 import {
     BookByIdQuery,
     BookByIdQueryVariables,
@@ -12,23 +24,25 @@ import {
     SingleOrderMutationVariables,
 } from '#generated/types';
 
+import styles from './styles.css';
+
 const ORDER = gql`
-    mutation SingleOrder ($bookId: Int!, $qty: Int!) {
-        placeSingleOrder(data: {bookId: $bookId, quantity: $qty}) {
-            errors
-            ok
-        result {
-            orderCode
-            id
-            status
-            totalPrice
-            }
-        }
+mutation SingleOrder($bookId: Int!, $qty: Int!) {
+    placeSingleOrder(data: { bookId: $bookId, quantity: $qty }) {
+      errors
+      ok
+      result {
+        orderCode
+        id
+        status
+        totalPrice
+      }
     }
+  }
 `;
 
 const BOOK_DETAIL = gql`
-query BookById ($id: ID!) {
+query BookById($id: ID!) {
     book(id: $id) {
       id
       title
@@ -48,12 +62,10 @@ interface ItemProps {
 function OrderItem(props: ItemProps) {
     const { book, quantity, changeQuantity } = props;
     const { id, title, price } = book;
-    const handleQuantityChange = (value: number | undefined,
-        name: string,
-        event: React.FormEvent<HTMLInputElement> | undefined) => {
-        if (value) changeQuantity(value);
-        else changeQuantity(1);
-    };
+    const handleQuantityChange = useCallback((value: number | undefined) => {
+        const qty = (isDefined(value)) ? value : 1;
+        changeQuantity(qty);
+    }, [quantity]);
 
     return (
         <div className={styles.container} key={id}>
@@ -69,12 +81,9 @@ function OrderItem(props: ItemProps) {
                                 value={title}
                             />
                         </div>
-                        <TextOutput
-                            label="Quantity"
-                            valueType="number"
-                        />
                         <NumberInput
                             name="quantity"
+                            label="Quantity"
                             value={quantity}
                             onChange={handleQuantityChange}
                         />
@@ -86,7 +95,7 @@ function OrderItem(props: ItemProps) {
                         <TextOutput
                             label="Amount (NPR)"
                             valueType="number"
-                            value={price * quantity}
+                            value={isDefined(quantity) ? price * quantity : 0}
                         />
                     </div>
                 </Container>
@@ -95,7 +104,7 @@ function OrderItem(props: ItemProps) {
                         name={undefined}
                         onClick={undefined}
                         variant="secondary"
-                        icons={<BsCashStack />}
+                        icons={<IoCashOutline />}
                     >
                         Cash On Delivery
                     </Button>
@@ -115,7 +124,7 @@ function OrderPage() {
         BookByIdQueryVariables
     >(BOOK_DETAIL, {
         skip: !id,
-        variables: { id: id ?? '' },
+        variables: id ? { id } : undefined,
     });
 
     const [placeSingleOrder,
@@ -128,9 +137,6 @@ function OrderPage() {
         placeSingleOrder({ variables: { bookId, qty: quantity } });
     }, [id, quantity]);
 
-    const setQuantityChange = (qty: number) => {
-        setQuantity(qty);
-    };
     const pending = loading || submitting;
 
     return (
@@ -155,12 +161,12 @@ function OrderPage() {
 
                 )}
             {
-                result && result.book && !loading
+                result?.book && !loading
                 && (
                     <OrderItem
                         book={result.book}
                         quantity={quantity}
-                        changeQuantity={setQuantityChange}
+                        changeQuantity={setQuantity}
                     />
                 )
             }

@@ -28,26 +28,26 @@ import {
 import styles from './styles.css';
 
 const BOOK_DETAIL = gql`
-query BookDetail ($id: ID!){
-    book(id: $id ) {
-        description
+query BookDetail($id: ID!) {
+    book(id: $id) {
+      description
+      id
+      image {
+        name
+        url
+      }
+      isbn
+      edition
+      language
+      price
+      title
+      numberOfPages
+      authors {
         id
-        image {
-            name
-            url
-        }
-        isbn
-        edition
-        language
-        price
-        title
-        numberOfPages
-        authors {
-            id
-            name
-        }
+        name
+      }
     }
-}
+  }
 `;
 
 const CREATE_WISH_LIST = gql`

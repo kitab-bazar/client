@@ -7,11 +7,8 @@ import {
     TextInput,
     useAlert,
     Link,
-    QuickActionButton,
-    ButtonLikeLink,
 } from '@the-deep/deep-ui';
-import { GoSearch } from 'react-icons/go';
-import { FaShoppingCart } from 'react-icons/fa';
+import { IoSearchSharp, IoCart } from 'react-icons/io5';
 
 import routes from '#base/configs/routes';
 import { UserContext } from '#base/context/UserContext';
@@ -117,7 +114,7 @@ function Navbar(props: Props) {
                     <div className={styles.textInput}>
                         <TextInput
                             disabled
-                            icons={<GoSearch />}
+                            icons={<IoSearchSharp />}
                             onChange={undefined}
                             placeholder="Search all books"
                             name={undefined}
@@ -138,12 +135,12 @@ function Navbar(props: Props) {
                     >
                         Login
                     </SmartButtonLikeLink>
-                    <ButtonLikeLink
+                    <SmartButtonLikeLink
                         variant="secondary"
-                        to="/cart"
+                        route={routes.cartPage}
                     >
-                        <FaShoppingCart />
-                    </ButtonLikeLink>
+                        <IoCart />
+                    </SmartButtonLikeLink>
                     {authenticated && user && (
                         <div className={styles.userInfo}>
                             <div>

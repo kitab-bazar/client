@@ -77,7 +77,7 @@ const wishList = wrap({
 });
 const cartPage = wrap({
     path: '/cart/',
-    title: 'My Cart Page',
+    title: 'My Cart',
     navbarVisibility: true,
     component: lazy(() => import('#views/CartPage')),
     componentProps: {
@@ -86,7 +86,7 @@ const cartPage = wrap({
 });
 const orderPage = wrap({
     path: '/order/',
-    title: 'My Order',
+    title: 'My Orders',
     navbarVisibility: true,
     component: lazy(() => import('#views/OrderPage')),
     componentProps: {
