@@ -14,11 +14,13 @@ import apolloConfig from '#base/configs/apollo';
 import { trackingId, gaConfig } from '#base/configs/googleAnalytics';
 import { UserContext, UserContextInterface } from '#base/context/UserContext';
 import { NavbarContext, NavbarContextInterface } from '#base/context/NavbarContext';
+import LanguageContext, { Lang } from '#base/context/LanguageContext';
 import { sync } from '#base/hooks/useAuthSync';
 import Init from '#base/components/Init';
 import PreloadMessage from '#base/components/PreloadMessage';
 import AuthPopup from '#base/components/AuthPopup';
 import Navbar from '#base/components/Navbar';
+import useLocalStorage from '#base/hooks/useLocalStorage';
 import Routes from '#base/components/Routes';
 import { User } from '#base/types/user';
 
@@ -43,6 +45,7 @@ function Base() {
     const [user, setUser] = useState<User | undefined>();
 
     const [navbarVisibility, setNavbarVisibility] = useState(false);
+    const [lang, setLang] = useLocalStorage<Lang>('lang', 'np');
 
     const authenticated = !!user;
 
@@ -154,6 +157,12 @@ function Base() {
         [alerts, addAlert, updateAlertContent, removeAlert],
     );
 
+    const languageContext = React.useMemo(() => ({
+        lang,
+        setLang,
+        debug: false,
+    }), [lang, setLang]);
+
     return (
         <div className={styles.base}>
             <ErrorBoundary
@@ -166,25 +175,29 @@ function Base() {
                 )}
             >
                 <ApolloProvider client={apolloClient}>
-                    <UserContext.Provider value={userContext}>
-                        <NavbarContext.Provider value={navbarContext}>
-                            <AlertContext.Provider value={alertContext}>
-                                <AuthPopup />
-                                <AlertContainer className={styles.alertContainer} />
-                                <Router history={browserHistory}>
-                                    <Init className={styles.init}>
-                                        <Navbar
-                                            className={_cs(
-                                                styles.navbar,
-                                                !navbarVisibility && styles.hidden,
-                                            )}
-                                        />
-                                        <Routes className={styles.view} />
-                                    </Init>
-                                </Router>
-                            </AlertContext.Provider>
-                        </NavbarContext.Provider>
-                    </UserContext.Provider>
+                    <LanguageContext.Provider
+                        value={languageContext}
+                    >
+                        <UserContext.Provider value={userContext}>
+                            <NavbarContext.Provider value={navbarContext}>
+                                <AlertContext.Provider value={alertContext}>
+                                    <AuthPopup />
+                                    <AlertContainer className={styles.alertContainer} />
+                                    <Router history={browserHistory}>
+                                        <Init className={styles.init}>
+                                            <Navbar
+                                                className={_cs(
+                                                    styles.navbar,
+                                                    !navbarVisibility && styles.hidden,
+                                                )}
+                                            />
+                                            <Routes className={styles.view} />
+                                        </Init>
+                                    </Router>
+                                </AlertContext.Provider>
+                            </NavbarContext.Provider>
+                        </UserContext.Provider>
+                    </LanguageContext.Provider>
                 </ApolloProvider>
             </ErrorBoundary>
         </div>
