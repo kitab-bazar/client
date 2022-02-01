@@ -4,6 +4,7 @@ import { useMutation, gql } from '@apollo/client';
 import {
     useConfirmation,
     Button,
+    SegmentInput,
     TextInput,
     useAlert,
     Link,
@@ -15,6 +16,11 @@ import {
 } from 'react-icons/io5';
 
 import routes from '#base/configs/routes';
+import LanguageContext, {
+    langOptions,
+    langKeySelector,
+    langLabelSelector,
+} from '#base/context/LanguageContext';
 import { UserContext } from '#base/context/UserContext';
 import { LogoutMutation, LogoutMutationVariables } from '#generated/types';
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
@@ -43,6 +49,11 @@ function Navbar(props: Props) {
         user,
         setUser,
     } = useContext(UserContext);
+
+    const {
+        lang,
+        setLang,
+    } = useContext(LanguageContext);
 
     const alert = useAlert();
 
@@ -127,6 +138,14 @@ function Navbar(props: Props) {
                     </div>
                 </div>
                 <div className={styles.actions}>
+                    <SegmentInput
+                        name={undefined}
+                        options={langOptions}
+                        keySelector={langKeySelector}
+                        labelSelector={langLabelSelector}
+                        value={lang}
+                        onChange={setLang}
+                    />
                     <SmartButtonLikeLink
                         route={routes.register}
                         variant="primary"

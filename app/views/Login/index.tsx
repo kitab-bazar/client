@@ -1,12 +1,16 @@
 import React from 'react';
 
 import KitabLogo from '#resources/img/KitabLogo.png';
+import { common } from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
 
 import LoginForm from './LoginForm';
 
 import styles from './styles.css';
 
 function Login() {
+    const t = useTranslation(common);
+
     return (
         <div className={styles.login}>
             <div className={styles.container}>
@@ -17,7 +21,7 @@ function Login() {
                         alt=""
                     />
                     <div className={styles.appName}>
-                        Kitab Bazar
+                        {t.kitabBazarAppLabel}
                     </div>
                 </div>
                 <div className={styles.right}>

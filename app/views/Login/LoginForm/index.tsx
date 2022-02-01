@@ -8,7 +8,6 @@ import {
     ButtonLikeLink,
     useAlert,
 } from '@the-deep/deep-ui';
-
 import { gql, useMutation } from '@apollo/client';
 
 import {
@@ -24,6 +23,8 @@ import {
     removeNull,
 } from '@togglecorp/toggle-form';
 
+import { login as loginStrings } from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
 import routes from '#base/configs/routes';
 import { LoginMutation, LoginMutationVariables } from '#generated/types';
 import { UserContext } from '#base/context/UserContext';
@@ -91,6 +92,7 @@ function LoginForm() {
         validate,
         setError,
     } = useForm(schema, initialValue);
+    const t = useTranslation(loginStrings);
 
     const { setUser } = useContext(UserContext);
 
@@ -159,7 +161,7 @@ function LoginForm() {
         >
             <Container
                 className={styles.loginFormContainer}
-                heading="Login"
+                heading={t.loginHeaderLabel}
                 headingSize="large"
                 headingClassName={styles.heading}
                 contentClassName={styles.inputContainer}
@@ -204,7 +206,7 @@ function LoginForm() {
                     variant="primary"
                     disabled={loginPending || pristine}
                 >
-                    Login
+                    {t.loginButtonLabel}
                 </Button>
             </Container>
         </form>
