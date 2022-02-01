@@ -1,4 +1,7 @@
-import React, { useCallback, useState } from 'react';
+import React, {
+    useCallback,
+    useState,
+} from 'react';
 import {
     Button,
     Container,
@@ -12,8 +15,7 @@ import {
     useQuery,
     useMutation,
 } from '@apollo/client';
-import { AiTwotoneDelete } from 'react-icons/ai';
-import { FaShoppingCart } from 'react-icons/fa';
+import { IoTrash, IoCart } from 'react-icons/io5';
 import { isDefined } from '@togglecorp/fujs';
 
 import {
@@ -148,11 +150,8 @@ function WishListItem(props: WishProps) {
                             value={price}
                         />
                         <div className={styles.quantity}>
-                            <TextOutput
-                                label="Quantity"
-                                valueType="number"
-                            />
                             <NumberInput
+                                label="Quantity"
                                 name="quantity"
                                 value={quantity}
                                 onChange={handleQuantityChange}
@@ -165,7 +164,7 @@ function WishListItem(props: WishProps) {
                         name={bookId}
                         onClick={handleAddToCart}
                         variant="secondary"
-                        icons={<FaShoppingCart />}
+                        icons={<IoCart />}
                     >
                         Add to cart
                     </Button>
@@ -173,7 +172,7 @@ function WishListItem(props: WishProps) {
                         name={id}
                         onClick={onRemoveWishList}
                         variant="secondary"
-                        icons={<AiTwotoneDelete />}
+                        icons={<IoTrash />}
                     >
                         Remove
                     </Button>
@@ -188,42 +187,49 @@ function WishList() {
     const [pageSize, setPageSize] = useState<number>(10);
     const [
         deleteWishlist,
-    ] = useMutation<
-        RemoveWishListMutation,
-        RemoveWishListMutationVariables
-    >(REMOVE_WISH_LIST);
+    ] = useMutation<RemoveWishListMutation, RemoveWishListMutationVariables>(
+        REMOVE_WISH_LIST,
+    );
 
     const [
         createCartItem,
-    ] = useMutation<
-        CreateCartMutation,
-        CreateCartMutationVariables
-    >(CREATE_CART);
+    ] = useMutation<CreateCartMutation, CreateCartMutationVariables>(
+        CREATE_CART,
+    );
 
     const {
         data,
         refetch,
         loading,
-    } = useQuery<
-        WishListQuery,
-        WishListQueryVariables
-    >(WISH_LIST, {
-        variables: {
-            page,
-            pageSize,
-        },
-        onCompleted: (res: WishListQuery) => {
-            setPage(res.wishList?.page ? res.wishList.page : page);
-            setPageSize(res.wishList?.pageSize ? res.wishList.pageSize : pageSize);
-        },
-    });
+    } = useQuery<WishListQuery, WishListQueryVariables>(
+        WISH_LIST, {
+            variables: {
+                page,
+                pageSize,
+            },
+            onCompleted: (res: WishListQuery) => {
+                setPage(res.wishList?.page ? res.wishList.page : page);
+                setPageSize(res.wishList?.pageSize ? res.wishList.pageSize : pageSize);
+            },
+        });
 
     const addToCart = useCallback((id: string, quantity: number) => {
-        createCartItem({ variables: { id, quantity }, onCompleted: () => refetch() });
+        createCartItem({
+            variables: {
+                id,
+                quantity,
+            },
+            onCompleted: () => refetch(),
+        });
     }, []);
 
     const deleteBook = useCallback((id: string) => {
-        deleteWishlist({ variables: { id }, onCompleted: () => refetch() });
+        deleteWishlist({
+            variables: {
+                id,
+            },
+            onCompleted: () => refetch(),
+        });
     }, []);
 
     const wishes = (data?.wishList?.results) ? data.wishList.results : [];
