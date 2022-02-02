@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { useQuery, gql } from '@apollo/client';
 
 import {
     MyProfileQuery,
     MyProfileQueryVariables,
-    UserMeType,
 } from '#generated/types';
 
 import IndividualProfile from './IndividualProfile';

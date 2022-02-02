@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-
+import { _cs } from '@togglecorp/fujs';
 import { useQuery, gql } from '@apollo/client';
 import {
     ListView,
@@ -57,12 +57,12 @@ const ORDER_LIST_WITH_BOOKS = gql`
 const bookListKeySelector = (b: BookOrderType) => b.id;
 
 interface BookProps {
-    title: string;
-    quantity: number;
+    edition: string;
+    image?: string;
     isbn: string;
     price: number;
-    edition: string;
-    image: string;
+    quantity: number;
+    title: string;
 }
 
 function Book(props: BookProps) {
@@ -113,7 +113,7 @@ interface OrderListProps {
     totalBooks: number;
     expanded: boolean;
     onExpansionChange: (isExpanded: boolean, orderId: string) => void;
-    books: unknown[];
+    books: BookOrderType[] | undefined;
 }
 
 function OrderListRenderer(props: OrderListProps) {
@@ -127,13 +127,13 @@ function OrderListRenderer(props: OrderListProps) {
         books,
     } = props;
 
-    const bookListRendererParams: BookListProps = useCallback((_: string, data: BookOrderType) => ({
-        title: data.title,
-        quantity: data.quantity,
-        isbn: data.isbn,
+    const bookListRendererParams = useCallback((_: string, data: BookOrderType): BookProps => ({
         edition: data.edition,
+        image: data?.image?.url ?? undefined,
+        isbn: data.isbn,
         price: data.price,
-        image: data.image.url,
+        quantity: data.quantity,
+        title: data.title,
     }), []);
 
     return (
@@ -181,11 +181,13 @@ const orderListKeySelector = (o: OrderType) => o.id;
 const MAX_ITEMS_PER_PAGE = 20;
 
 interface Props {
+    className?: string;
     activeOrderId?: string;
 }
 
 function OrderList(props: Props) {
     const {
+        className,
         activeOrderId,
     } = props;
 
@@ -194,7 +196,7 @@ function OrderList(props: Props) {
     const orderVariables = useMemo(() => ({
         pageSize,
         page,
-    }), []);
+    }), [pageSize, page]);
 
     const [expandedOrderId, setExpandedOrderId] = useState<string | undefined>(activeOrderId);
 
@@ -210,14 +212,14 @@ function OrderList(props: Props) {
         setExpandedOrderId(orderExpanded ? key : undefined);
     }, []);
 
-    const orderListRendererParams: OrderListProps = useCallback((_, data: OrderType) => ({
-        totalBooks: data.bookOrders.totalCount,
+    const orderListRendererParams = useCallback((_, data: Omit<OrderType, 'createdBy'>): OrderListProps => ({
+        totalBooks: data?.bookOrders?.totalCount ?? 0,
         orderCode: data.orderCode,
         status: data.status,
         totalPrice: data.totalPrice,
         onExpansionChange: handleExpansionChange,
         expanded: expandedOrderId === data.orderCode,
-        books: data.bookOrders.results,
+        books: data?.bookOrders?.results ?? undefined,
     }), [
         expandedOrderId,
         handleExpansionChange,
@@ -225,14 +227,12 @@ function OrderList(props: Props) {
 
     return (
         <Container
-            className={styles.orderList}
-            contentClassName={styles.orderListContent}
-            footerClassName={styles.footer}
+            className={_cs(styles.orderList, className)}
             footerContent={(
                 <Pager
                     activePage={page}
                     maxItemsPerPage={pageSize}
-                    itemsCount={orderList?.orders?.totalCount}
+                    itemsCount={orderList?.orders?.totalCount ?? 0}
                     onActivePageChange={setPage}
                     onItemsPerPageChange={setPageSize}
                 />
@@ -240,7 +240,7 @@ function OrderList(props: Props) {
         >
             <ListView
                 className={styles.orders}
-                data={orderList?.orders?.results}
+                data={orderList?.orders?.results ?? undefined}
                 keySelector={orderListKeySelector}
                 renderer={OrderListRenderer}
                 rendererParams={orderListRendererParams}

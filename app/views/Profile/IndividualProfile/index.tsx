@@ -154,8 +154,8 @@ function IndividualProfile() {
         console.warn('handle me');
     }, []);
 
-    const orderListRendererParams: OrderListProps = useCallback((_, data: OrderType) => ({
-        totalBookTypes: data.bookOrders?.totalCount,
+    const orderListRendererParams = useCallback((_, data: Omit<OrderType, 'createdBy'>): OrderListProps => ({
+        totalBookTypes: data.bookOrders?.totalCount ?? 0,
         orderCode: data.orderCode,
         status: data.status,
         totalPrice: data.totalPrice,
@@ -204,7 +204,7 @@ function IndividualProfile() {
                         />
                     </div>
                 </div>
-                <div className={styles.right}>
+                <div>
                     <div className={styles.buttons}>
                         <Button
                             name={undefined}
@@ -223,7 +223,7 @@ function IndividualProfile() {
                             My Card
                         </Button>
                     </div>
-                    <div className={styles.orderDetails}>
+                    <div>
                         <h4>Order Details</h4>
                         <TextOutput
                             label="total orders"
@@ -237,13 +237,12 @@ function IndividualProfile() {
                 </div>
             </Container>
             <Container
-                contentClassName={styles.orderWrapper}
                 heading="Order Details"
                 spacing="comfortable"
             >
                 <ListView
                     className={styles.orders}
-                    data={orderList?.orders?.results}
+                    data={orderList?.orders?.results ?? undefined}
                     keySelector={orderListKeySelector}
                     renderer={OrderListRenderer}
                     rendererParams={orderListRendererParams}

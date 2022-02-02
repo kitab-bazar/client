@@ -14,6 +14,7 @@ import routes from '#base/configs/routes';
 import { UserContext } from '#base/context/UserContext';
 import { LogoutMutation, LogoutMutationVariables } from '#generated/types';
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
+import SmartLink from '#base/components/SmartLink';
 import KitabLogo from '#resources/img/KitabLogo.png';
 
 import styles from './styles.css';
@@ -139,16 +140,14 @@ function Navbar(props: Props) {
                             <div>
                                 Hello
                             </div>
-                            <div>
-                                <Link
-                                    to="/profile/"
-                                >
-                                    <strong>
-                                        {user.displayName}
-                                    </strong>
-                                    !
-                                </Link>
-                            </div>
+                            <SmartLink
+                                route={routes.myProfile}
+                            >
+                                <strong>
+                                    {user.displayName}
+                                </strong>
+                                !
+                            </SmartLink>
                             <Button
                                 name={undefined}
                                 onClick={handleLogout}

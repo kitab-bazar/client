@@ -46,7 +46,7 @@ const myProfile = wrap({
     component: lazy(() => import('#views/Profile')),
     componentProps: {
     },
-    visibility: 'is-authenticated', // TODO: change visibility to 'is-authenticated'
+    visibility: 'is-authenticated',
 });
 const bookDetail = wrap({
     path: '/book/:id/',
