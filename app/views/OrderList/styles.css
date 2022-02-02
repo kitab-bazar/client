@@ -13,20 +13,36 @@
             display: flex;
             border: unset;
 
-            .book-item {
+            .book-list {
                 display: flex;
-                gap: var(--dui-spacing-medium);
+                flex-direction: column;
+                gap: var(--dui-spacing-large);
 
-                img {
-                    width: 100px;
-                    height: 150px;
-                    object-fit: cover;
-                }
-
-                .description {
+                .book-item {
                     display: flex;
-                    align-self: flex-end;
-                    flex-direction: column;
+                    gap: var(--dui-spacing-medium);
+
+                    .cover-image {
+                        display: flex;
+                        position: relative;
+                        align-items: center;
+                        flex-shrink: 0;
+                        background-color: var(--dui-color-background);
+                        width: 150px;
+                        height: 200px;
+
+                        img {
+                            width: 100%;
+                            height: 100%;
+                            object-fit: cover;
+                        }
+                    }
+
+                    .description {
+                        display: flex;
+                        align-self: flex-end;
+                        flex-direction: column;
+                    }
                 }
             }
         }
