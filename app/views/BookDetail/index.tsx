@@ -5,10 +5,11 @@ import {
     Tabs,
     TabPanel,
     TabList,
-    Button,
     TextOutput,
     useAlert,
     Message,
+    Button,
+    useModalState,
 } from '@the-deep/deep-ui';
 import {
     gql,
@@ -23,33 +24,31 @@ import {
     CreateWishListMutation,
     CreateWishListMutationVariables,
 } from '#generated/types';
-
-import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
-import routes from '#base/configs/routes';
+import OrderConfirmModal from './OrderConfirmModal';
 
 import styles from './styles.css';
 
 const BOOK_DETAIL = gql`
-query BookDetail ($id: ID!){
-    book(id: $id ) {
-        description
+query BookDetail($id: ID!) {
+    book(id: $id) {
+      description
+      id
+      image {
+        name
+        url
+      }
+      isbn
+      edition
+      language
+      price
+      title
+      numberOfPages
+      authors {
         id
-        image {
-            name
-            url
-        }
-        isbn
-        edition
-        language
-        price
-        title
-        numberOfPages
-        authors {
-            id
-            name
-        }
+        name
+      }
     }
-}
+  }
 `;
 
 const CREATE_WISH_LIST = gql`
@@ -75,6 +74,12 @@ function BookDetail() {
         variables: { id: id ?? '' },
     });
 
+    const [
+        orderConfirmModalShown,
+        showOrderConfirmModal,
+        hideOrderConfirmModal,
+    ] = useModalState(false);
+
     const alert = useAlert();
 
     const [
@@ -88,6 +93,13 @@ function BookDetail() {
                         'Successfully added book to your wishlist.',
                         {
                             variant: 'success',
+                        },
+                    );
+                } else {
+                    alert.show(
+                        'Failed to add book to wishlist. It might already be in there.',
+                        {
+                            variant: 'error',
                         },
                     );
                 }
@@ -152,16 +164,20 @@ function BookDetail() {
                                 )}
                                 footerIcons={(
                                     <>
-                                        <Button name="buy">
-                                            Buy now
-                                        </Button>
-                                        <SmartButtonLikeLink
+                                        <Button
+                                            name={undefined}
                                             variant="secondary"
-                                            route={routes.wishList}
                                             onClick={addToWishList}
                                         >
                                             Add to wishlist
-                                        </SmartButtonLikeLink>
+                                        </Button>
+                                        <Button
+                                            name={undefined}
+                                            variant="secondary"
+                                            onClick={showOrderConfirmModal}
+                                        >
+                                            Buy Now
+                                        </Button>
                                     </>
                                 )}
                             />
@@ -207,6 +223,13 @@ function BookDetail() {
                     </div>
                 ))}
             </div>
+            {orderConfirmModalShown && result?.book && (
+                <OrderConfirmModal
+                    bookId={result?.book?.id}
+                    book={result?.book}
+                    onClose={hideOrderConfirmModal}
+                />
+            )}
         </div>
     );
 }

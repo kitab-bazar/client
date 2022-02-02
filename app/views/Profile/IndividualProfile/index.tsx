@@ -146,10 +146,6 @@ function IndividualProfile() {
         console.warn('handle me');
     }, []);
 
-    const handleCartClick = useCallback(() => {
-        console.warn('handle me');
-    }, []);
-
     const orderListRendererParams = useCallback((_, data: Omit<OrderType, 'createdBy'>): OrderListProps => ({
         totalBookTypes: data.bookOrders?.totalCount ?? 0,
         orderCode: data.orderCode,
@@ -209,14 +205,13 @@ function IndividualProfile() {
                         >
                             My Wishlist
                         </SmartButtonLikeLink>
-                        <Button
-                            name={undefined}
+                        <SmartButtonLikeLink
+                            route={routes.cartPage}
                             variant="general"
-                            onClick={handleCartClick}
                             actions={<IoCart />}
                         >
-                            My Card
-                        </Button>
+                            My Cart
+                        </SmartButtonLikeLink>
                     </div>
                     <div>
                         <h4>Order Details</h4>
