@@ -1,26 +1,26 @@
 export const commonLang = {
     kitabBazarAppLabel: {
         en: 'Kitab Bazar',
-        np: 'किताब बजार ',
+        np: 'किताब बजार',
     },
 };
 
 export const navbarLang = {
     searchAllBooksPlaceholder: {
         en: 'Search all books',
-        np: 'किताब खोज्नु होस् ',
+        np: 'किताब खोज्नु होस्',
     },
     signUpButtonLabel: {
         en: 'Sign Up',
-        np: 'नया दर्ता ',
+        np: 'नया दर्ता',
     },
     loginButtonLabel: {
         en: 'Login',
-        np: 'लग इन ',
+        np: 'लग इन',
     },
     helloLabel: {
         en: 'Hello',
-        np: 'नमस्कार ',
+        np: 'नमस्कार',
     },
     logoutConfirmMessage: {
         en: 'Are you sure you want to logout?',
@@ -28,26 +28,26 @@ export const navbarLang = {
     },
     logoutButtonLabel: {
         en: 'Logout',
-        np: 'लग ओउट ',
+        np: 'लग ओउट',
     },
 };
 
 export const loginLang = {
     loginHeaderLabel: {
         en: 'Login',
-        np: 'लग इन ',
+        np: 'लग इन',
     },
     emailLabel: {
         en: 'Email',
-        np: 'इमेल ',
+        np: 'इमेल',
     },
     passwordLabel: {
         en: 'Password',
-        np: 'पासवर्ड ',
+        np: 'पासवर्ड',
     },
     loginButtonLabel: {
         en: 'Login',
-        np: 'लग इन ',
+        np: 'लग इन',
     },
     donotHaveAccountYetLabel: {
         en: 'Do not have an account yet?',
@@ -59,34 +59,34 @@ export const loginLang = {
     },
     registerlabel: {
         en: 'Register',
-        np: 'दर्ता  गर्नुहोस् ',
+        np: 'दर्ता  गर्नुहोस्',
     },
 };
 
 export const homePageLang = {
     kitabLabel: {
         en: 'Kitab',
-        np: 'किताब ',
+        np: 'किताब',
     },
     bazarLabel: {
         en: 'Bazar',
-        np: 'बजार ',
+        np: 'बजार',
     },
     tagLineLabel: {
         en: 'Knowledge Improvement Through Access of Books',
-        np: 'किताबको पहुँचबाट सिक्ष्याको विकास  ',
+        np: 'किताबको पहुँचबाट शिक्षाको विकास',
     },
     featuredBooksLabel: {
         en: 'Featured Books',
-        np: 'चित्रित किताबहरु ',
+        np: 'चित्रित किताबहरु',
     },
     faqButtonLabel: {
         en: 'FAQs',
-        np: 'जानबुझ ',
+        np: 'जानबुझ',
     },
     blogsButtonLabel: {
         en: 'Blogs',
-        np: 'ब्लगहरु ',
+        np: 'ब्लगहरु',
     },
     whyKitabBazarLabel: {
         en: 'Why Kitab Bazar?',
@@ -94,6 +94,6 @@ export const homePageLang = {
     },
     contactUsButtonLabel: {
         en: 'Contact Us',
-        np: 'सम्पर्क गर्नुहोस ',
+        np: 'सम्पर्क गर्नुहोस',
     },
 };

@@ -2,13 +2,13 @@ import { useMemo, useContext } from 'react';
 
 import LanguageContext, { Lang } from '../context/LanguageContext';
 
-type Trans<T> = {
+type Translations<T> = {
     [key in keyof T]: {
         [langkey in Lang]: string;
     };
 }
 
-export default function useTranslation<T>(translations: Trans<T>) {
+export default function useTranslation<T>(translations: Translations<T>) {
     const {
         lang,
     } = useContext(LanguageContext);
