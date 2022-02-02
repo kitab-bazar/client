@@ -23,7 +23,7 @@ import {
     removeNull,
 } from '@togglecorp/toggle-form';
 
-import { login as loginStrings } from '#base/configs/lang';
+import { loginLang } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 import routes from '#base/configs/routes';
 import { LoginMutation, LoginMutationVariables } from '#generated/types';
@@ -92,7 +92,8 @@ function LoginForm() {
         validate,
         setError,
     } = useForm(schema, initialValue);
-    const t = useTranslation(loginStrings);
+
+    const t = useTranslation(loginLang);
 
     const { setUser } = useContext(UserContext);
 
@@ -121,7 +122,7 @@ function LoginForm() {
                     const formError = transformToFormError(removeNull(errors) as ObjectError[]);
                     setError(formError);
                     alert.show(
-                        'Error logging in.',
+                        t.errorLoggingInLabel,
                         {
                             variant: 'error',
                         },
@@ -133,12 +134,6 @@ function LoginForm() {
                         displayName: safeUser.fullName,
                         type: safeUser.userType,
                     });
-                    alert.show(
-                        'Successfully logged in.',
-                        {
-                            variant: 'success',
-                        },
-                    );
                 }
             },
         },
@@ -169,14 +164,14 @@ function LoginForm() {
                 footerContentClassName={styles.footerContent}
                 footerContent={(
                     <>
-                        Do not have an account yet?
+                        {t.donotHaveAccountYetLabel}
                         &nbsp;
                         <ButtonLikeLink
                             className={styles.registerLink}
                             to={generatePath(routes.register.path)}
                             variant="transparent"
                         >
-                            Register
+                            {t.registerlabel}
                         </ButtonLikeLink>
                     </>
                 )}
@@ -184,7 +179,7 @@ function LoginForm() {
                 <TextInput
                     name="email"
                     onChange={setFieldValue}
-                    label="Email"
+                    label={t.emailLabel}
                     value={value?.email}
                     error={error?.email}
                     placeholder="john.doe@gmail.com"
@@ -193,7 +188,7 @@ function LoginForm() {
                 <PasswordInput
                     name="password"
                     onChange={setFieldValue}
-                    label="Password"
+                    label={t.passwordLabel}
                     value={value?.password}
                     error={error?.password}
                     placeholder="****"

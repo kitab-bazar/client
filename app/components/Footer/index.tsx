@@ -1,44 +1,49 @@
 import { Button } from '@the-deep/deep-ui';
 import React from 'react';
 
+import {
+    homePageLang,
+} from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
+
 import styles from './styles.css';
 
 function Footer() {
+    const homePageStrings = useTranslation(homePageLang);
+
     return (
-        <>
-            <div className={styles.footer}>
-                <div className={styles.footerButtons}>
-                    <Button
-                        name={undefined}
-                        onClick={undefined}
-                        variant="primary"
-                    >
-                        FAQs
-                    </Button>
-                    <Button
-                        name={undefined}
-                        onClick={undefined}
-                        variant="primary"
-                    >
-                        Blogs
-                    </Button>
-                    <Button
-                        name={undefined}
-                        onClick={undefined}
-                        variant="primary"
-                    >
-                        Why Kitab Bazar
-                    </Button>
-                    <Button
-                        name={undefined}
-                        onClick={undefined}
-                        variant="primary"
-                    >
-                        Contact Us
-                    </Button>
-                </div>
+        <div className={styles.footer}>
+            <div className={styles.footerButtons}>
+                <Button
+                    name={undefined}
+                    onClick={undefined}
+                    variant="primary"
+                >
+                    {homePageStrings.faqButtonLabel}
+                </Button>
+                <Button
+                    name={undefined}
+                    onClick={undefined}
+                    variant="primary"
+                >
+                    {homePageStrings.blogsButtonLabel}
+                </Button>
+                <Button
+                    name={undefined}
+                    onClick={undefined}
+                    variant="primary"
+                >
+                    {homePageStrings.whyKitabBazarLabel}
+                </Button>
+                <Button
+                    name={undefined}
+                    onClick={undefined}
+                    variant="primary"
+                >
+                    {homePageStrings.contactUsButtonLabel}
+                </Button>
             </div>
-        </>
+        </div>
     );
 }
 
