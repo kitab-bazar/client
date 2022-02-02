@@ -12,6 +12,7 @@
         "watch": "webpack --watch",
         "start": "webpack serve --mode=development",
         "initialize": "mkdir -p generated && yes n | cp -i type.template.tsx generated/types.tsx 2>/dev/null",
+        "css-lint": "stylelint 'app/**/*.css' --config stylelint.config.js",
         "prelint": "yarn initialize",
         "pretypecheck": "yarn initialize",
         "prebuild": "yarn initialize",
