@@ -1,0 +1,42 @@
+.wish-list {
+    display: flex;
+    flex-direction: column;
+    margin-right: auto;
+    margin-left: auto;
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        margin-top: var(--dui-spacing-large);
+        padding: var(--dui-spacing-large);
+        width: 100%;
+        max-width: 1200px;
+        overflow: auto;
+        gap: var(--dui-spacing-extra-large);
+
+        .meta-data {
+            display: flex;
+            justify-content: space-evenly;
+            height: 12rem;
+            overflow: auto;
+
+            .details {
+                .header-description {
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--dui-spacing-small);
+
+                    .quantity {
+                        display: flex;
+                    }
+                }
+            }
+
+            .wish-list-button {
+                button {
+                    margin-top: 40px;
+                }
+            }
+        }
+    }
+}

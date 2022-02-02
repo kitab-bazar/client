@@ -66,6 +66,15 @@ const orderList = wrap({
     },
     visibility: 'is-authenticated',
 });
+const wishList = wrap({
+    path: '/wish-list',
+    title: 'My Wish List',
+    navbarVisibility: true,
+    component: lazy(() => import('#views/WishList')),
+    componentProps: {
+    },
+    visibility: 'is-authenticated',
+});
 
 const routes = {
     register,
@@ -73,6 +82,7 @@ const routes = {
     home,
     myProfile,
     bookDetail,
+    wishList,
     fourHundredFour,
     orderList,
 };
