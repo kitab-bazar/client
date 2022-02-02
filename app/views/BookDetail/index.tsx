@@ -9,7 +9,7 @@ import {
     useAlert,
     Message,
     Button,
-    ButtonLikeLink,
+    useModalState,
 } from '@the-deep/deep-ui';
 import {
     gql,
@@ -24,6 +24,7 @@ import {
     CreateWishListMutation,
     CreateWishListMutationVariables,
 } from '#generated/types';
+import OrderConfirmModal from './OrderConfirmModal';
 
 import styles from './styles.css';
 
@@ -72,6 +73,12 @@ function BookDetail() {
         skip: !id,
         variables: { id: id ?? '' },
     });
+
+    const [
+        orderConfirmModalShown,
+        showOrderConfirmModal,
+        hideOrderConfirmModal,
+    ] = useModalState(false);
 
     const alert = useAlert();
 
@@ -164,12 +171,13 @@ function BookDetail() {
                                         >
                                             Add to wishlist
                                         </Button>
-                                        <ButtonLikeLink
-                                            variant="primary"
-                                            to={`/order?book=${result.book.id}`}
+                                        <Button
+                                            name={undefined}
+                                            variant="secondary"
+                                            onClick={showOrderConfirmModal}
                                         >
-                                            Buy now
-                                        </ButtonLikeLink>
+                                            Buy Now
+                                        </Button>
                                     </>
                                 )}
                             />
@@ -215,6 +223,13 @@ function BookDetail() {
                     </div>
                 ))}
             </div>
+            {orderConfirmModalShown && result?.book && (
+                <OrderConfirmModal
+                    bookId={result?.book?.id}
+                    book={result?.book}
+                    onClose={hideOrderConfirmModal}
+                />
+            )}
         </div>
     );
 }
