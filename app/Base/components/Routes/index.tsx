@@ -53,6 +53,18 @@ function Routes(props: Props) {
                 </Route>
                 <Route
                     exact
+                    path={routes.myProfile.path}
+                >
+                    {routes.myProfile.load({ className })}
+                </Route>
+                <Route
+                    exact
+                    path={routes.orderList.path}
+                >
+                    {routes.orderList.load({ className })}
+                </Route>
+                <Route
+                    exact
                     path={routes.fourHundredFour.path}
                 >
                     {routes.fourHundredFour.load({ className })}
