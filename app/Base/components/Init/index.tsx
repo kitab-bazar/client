@@ -86,7 +86,6 @@ function Init(props: Props) {
                     });
                 } else {
                     setUser(undefined);
-                    setErrored(true);
                 }
                 setReady(true);
             },

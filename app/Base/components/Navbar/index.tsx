@@ -2,8 +2,8 @@ import React, { useContext, useCallback } from 'react';
 import { _cs } from '@togglecorp/fujs';
 import { useMutation, gql } from '@apollo/client';
 import {
-    useConfirmation,
-    Button,
+    ConfirmButton,
+    SegmentInput,
     TextInput,
     useAlert,
     Link,
@@ -15,6 +15,16 @@ import {
 } from 'react-icons/io5';
 
 import routes from '#base/configs/routes';
+import LanguageContext, {
+    langOptions,
+    langKeySelector,
+    langLabelSelector,
+} from '#base/context/LanguageContext';
+import {
+    commonLang,
+    navbarLang,
+} from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
 import { UserContext } from '#base/context/UserContext';
 import { LogoutMutation, LogoutMutationVariables } from '#generated/types';
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
@@ -44,7 +54,14 @@ function Navbar(props: Props) {
         setUser,
     } = useContext(UserContext);
 
+    const {
+        lang,
+        setLang,
+    } = useContext(LanguageContext);
+
     const alert = useAlert();
+    const commonStrings = useTranslation(commonLang);
+    const navbarStrings = useTranslation(navbarLang);
 
     const [logout] = useMutation<LogoutMutation, LogoutMutationVariables>(
         LOGOUT,
@@ -67,16 +84,11 @@ function Navbar(props: Props) {
                     );
                 }
             },
-
-            onError: (gqlError) => {
+            onError: () => {
                 alert.show(
-                    'Failed to send join request.',
+                    'Failed to send logout.',
                     { variant: 'error' },
                 );
-
-                // TODO: Remove this
-                // eslint-disable-next-line no-console
-                console.warn('Error: ', gqlError);
             },
         },
     );
@@ -88,15 +100,6 @@ function Navbar(props: Props) {
         },
         [setUser, logout],
     );
-
-    const [
-        modal,
-        // onLogoutClick,
-    ] = useConfirmation<undefined>({
-        showConfirmationInitially: false,
-        onConfirm: logout,
-        message: 'Are you sure you want to logout?',
-    });
 
     return (
         <nav className={_cs(className, styles.navbar)}>
@@ -110,7 +113,7 @@ function Navbar(props: Props) {
                     alt="logo"
                 />
                 <div className={styles.appName}>
-                    Kitab Bazar
+                    {commonStrings.kitabBazarAppLabel}
                 </div>
             </Link>
             <div className={styles.main}>
@@ -120,24 +123,32 @@ function Navbar(props: Props) {
                             disabled
                             icons={<IoSearchSharp />}
                             onChange={undefined}
-                            placeholder="Search all books"
+                            placeholder={navbarStrings.searchAllBooksPlaceholder}
                             name={undefined}
                             value={undefined}
                         />
                     </div>
                 </div>
                 <div className={styles.actions}>
+                    <SegmentInput
+                        name={undefined}
+                        options={langOptions}
+                        keySelector={langKeySelector}
+                        labelSelector={langLabelSelector}
+                        value={lang}
+                        onChange={setLang}
+                    />
                     <SmartButtonLikeLink
                         route={routes.register}
                         variant="primary"
                     >
-                        Sign Up
+                        {navbarStrings.signUpButtonLabel}
                     </SmartButtonLikeLink>
                     <SmartButtonLikeLink
                         route={routes.login}
                         variant="primary"
                     >
-                        Login
+                        {navbarStrings.loginButtonLabel}
                     </SmartButtonLikeLink>
                     <SmartButtonLikeLink
                         variant="secondary"
@@ -154,7 +165,7 @@ function Navbar(props: Props) {
                     {authenticated && user && (
                         <div className={styles.userInfo}>
                             <div>
-                                Hello
+                                {navbarStrings.helloLabel}
                             </div>
                             <SmartLink
                                 route={routes.myProfile}
@@ -164,18 +175,17 @@ function Navbar(props: Props) {
                                 </strong>
                                 !
                             </SmartLink>
-                            <Button
+                            <ConfirmButton
                                 name={undefined}
-                                onClick={handleLogout}
-                                variant="primary"
+                                onConfirm={handleLogout}
+                                message={navbarStrings.logoutConfirmMessage}
                             >
-                                Logout
-                            </Button>
+                                {navbarStrings.logoutButtonLabel}
+                            </ConfirmButton>
                         </div>
                     )}
                 </div>
             </div>
-            {modal}
         </nav>
     );
 }

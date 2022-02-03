@@ -10,6 +10,10 @@ import {
 } from '@apollo/client';
 
 import Footer from '#components/Footer';
+import {
+    homePageLang,
+} from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
 
 import {
     FeaturedBooksQuery,
@@ -98,10 +102,11 @@ function HomePage() {
             pageSize: 10,
         },
     });
-    const books = (!loading && result?.books?.results) ? result.books.results : [];
+    const books = result?.books?.results ?? undefined;
     const bookItemRendererParams = React.useCallback((_, data) => ({
         book: data,
     }), []);
+    const homePageStrings = useTranslation(homePageLang);
 
     return (
         <div className={styles.home}>
@@ -115,20 +120,20 @@ function HomePage() {
                     <div className={styles.topLayer}>
                         <div className={styles.appName}>
                             <div className={styles.kitab}>
-                                Kitab
+                                {homePageStrings.kitabLabel}
                             </div>
                             <div className={styles.bazar}>
-                                Bazar
+                                {homePageStrings.bazarLabel}
                             </div>
                         </div>
                         <div className={styles.appDescription}>
-                            Knowledge Improvement Through Access of Books
+                            {homePageStrings.tagLineLabel}
                         </div>
                     </div>
                 </div>
                 <Container
                     className={styles.featuredBooksSection}
-                    heading="Featured Books"
+                    heading={homePageStrings.featuredBooksLabel}
                 >
                     <ListView
                         className={styles.bookList}

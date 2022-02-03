@@ -8,7 +8,6 @@ import {
     ButtonLikeLink,
     useAlert,
 } from '@the-deep/deep-ui';
-
 import { gql, useMutation } from '@apollo/client';
 
 import {
@@ -24,6 +23,8 @@ import {
     removeNull,
 } from '@togglecorp/toggle-form';
 
+import { loginLang } from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
 import routes from '#base/configs/routes';
 import { LoginMutation, LoginMutationVariables } from '#generated/types';
 import { UserContext } from '#base/context/UserContext';
@@ -92,6 +93,8 @@ function LoginForm() {
         setError,
     } = useForm(schema, initialValue);
 
+    const t = useTranslation(loginLang);
+
     const { setUser } = useContext(UserContext);
 
     const error = getErrorObject(riskyError);
@@ -119,7 +122,7 @@ function LoginForm() {
                     const formError = transformToFormError(removeNull(errors) as ObjectError[]);
                     setError(formError);
                     alert.show(
-                        'Error logging in.',
+                        t.errorLoggingInLabel,
                         {
                             variant: 'error',
                         },
@@ -131,12 +134,6 @@ function LoginForm() {
                         displayName: safeUser.fullName,
                         type: safeUser.userType,
                     });
-                    alert.show(
-                        'Successfully logged in.',
-                        {
-                            variant: 'success',
-                        },
-                    );
                 }
             },
         },
@@ -159,7 +156,7 @@ function LoginForm() {
         >
             <Container
                 className={styles.loginFormContainer}
-                heading="Login"
+                heading={t.loginHeaderLabel}
                 headingSize="large"
                 headingClassName={styles.heading}
                 contentClassName={styles.inputContainer}
@@ -167,14 +164,14 @@ function LoginForm() {
                 footerContentClassName={styles.footerContent}
                 footerContent={(
                     <>
-                        Do not have an account yet?
+                        {t.donotHaveAccountYetLabel}
                         &nbsp;
                         <ButtonLikeLink
                             className={styles.registerLink}
                             to={generatePath(routes.register.path)}
                             variant="transparent"
                         >
-                            Register
+                            {t.registerlabel}
                         </ButtonLikeLink>
                     </>
                 )}
@@ -182,7 +179,7 @@ function LoginForm() {
                 <TextInput
                     name="email"
                     onChange={setFieldValue}
-                    label="Email"
+                    label={t.emailLabel}
                     value={value?.email}
                     error={error?.email}
                     placeholder="john.doe@gmail.com"
@@ -191,7 +188,7 @@ function LoginForm() {
                 <PasswordInput
                     name="password"
                     onChange={setFieldValue}
-                    label="Password"
+                    label={t.passwordLabel}
                     value={value?.password}
                     error={error?.password}
                     placeholder="****"
@@ -204,7 +201,7 @@ function LoginForm() {
                     variant="primary"
                     disabled={loginPending || pristine}
                 >
-                    Login
+                    {t.loginButtonLabel}
                 </Button>
             </Container>
         </form>

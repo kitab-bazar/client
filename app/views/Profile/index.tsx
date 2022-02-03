@@ -3,19 +3,21 @@ import React from 'react';
 import { useQuery, gql } from '@apollo/client';
 
 import {
-    MyProfileQuery,
-    MyProfileQueryVariables,
+    MyProfileTypeQuery,
+    MyProfileTypeQueryVariables,
 } from '#generated/types';
 
 import IndividualProfile from './IndividualProfile';
 import SchoolProfile from './SchoolProfile';
 import InstitutionProfile from './InstitutionProfile';
+import PublisherProfile from './PublisherProfile';
 
 import styles from './styles.css';
 
 const MY_PROFILE = gql`
-    query MyProfile {
+    query MyProfileType {
         me {
+            id
             userType
         }
     }
@@ -24,7 +26,7 @@ const MY_PROFILE = gql`
 function Profile() {
     const {
         data: profileData,
-    } = useQuery<MyProfileQuery, MyProfileQueryVariables>(
+    } = useQuery<MyProfileTypeQuery, MyProfileTypeQueryVariables>(
         MY_PROFILE,
     );
 
@@ -35,6 +37,9 @@ function Profile() {
             )}
             {profileData?.me?.userType === 'SCHOOL_ADMIN' && (
                 <SchoolProfile />
+            )}
+            {profileData?.me?.userType === 'PUBLISHER' && (
+                <PublisherProfile />
             )}
             {profileData?.me?.userType === 'INSTITUTIONAL_USER' && (
                 <InstitutionProfile />
