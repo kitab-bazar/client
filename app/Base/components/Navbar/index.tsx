@@ -1,6 +1,7 @@
 import React, { useContext, useCallback } from 'react';
 import { _cs } from '@togglecorp/fujs';
 import { useMutation, gql } from '@apollo/client';
+import { useLocation } from 'react-router-dom';
 import {
     ConfirmButton,
     SegmentInput,
@@ -47,6 +48,7 @@ interface Props {
 
 function Navbar(props: Props) {
     const { className } = props;
+    const location = useLocation();
 
     const {
         authenticated,
@@ -106,6 +108,7 @@ function Navbar(props: Props) {
             <Link
                 to="/"
                 className={styles.appBrand}
+                linkElementClassName={styles.link}
             >
                 <img
                     className={styles.logo}
@@ -117,17 +120,16 @@ function Navbar(props: Props) {
                 </div>
             </Link>
             <div className={styles.main}>
-                <div className={styles.navLinks}>
-                    <div className={styles.textInput}>
-                        <TextInput
-                            disabled
-                            icons={<IoSearchSharp />}
-                            onChange={undefined}
-                            placeholder={navbarStrings.searchAllBooksPlaceholder}
-                            name={undefined}
-                            value={undefined}
-                        />
-                    </div>
+                <div className={styles.searchInputContainer}>
+                    <TextInput
+                        className={styles.searchInput}
+                        disabled
+                        icons={<IoSearchSharp />}
+                        onChange={undefined}
+                        placeholder={navbarStrings.searchAllBooksPlaceholder}
+                        name={undefined}
+                        value={undefined}
+                    />
                 </div>
                 <div className={styles.actions}>
                     <SegmentInput
@@ -147,17 +149,18 @@ function Navbar(props: Props) {
                     <SmartButtonLikeLink
                         route={routes.login}
                         variant="primary"
+                        state={{ from: location.pathname }}
                     >
                         {navbarStrings.loginButtonLabel}
                     </SmartButtonLikeLink>
                     <SmartButtonLikeLink
-                        variant="secondary"
+                        variant="action"
                         route={routes.wishList}
                     >
                         <IoHeart />
                     </SmartButtonLikeLink>
                     <SmartButtonLikeLink
-                        variant="secondary"
+                        variant="action"
                         route={routes.cartPage}
                     >
                         <IoCart />

@@ -93,7 +93,7 @@ function LoginForm() {
         setError,
     } = useForm(schema, initialValue);
 
-    const t = useTranslation(loginLang);
+    const strings = useTranslation(loginLang);
 
     const { setUser } = useContext(UserContext);
 
@@ -121,8 +121,9 @@ function LoginForm() {
                 if (errors) {
                     const formError = transformToFormError(removeNull(errors) as ObjectError[]);
                     setError(formError);
+                    console.error(formError);
                     alert.show(
-                        t.errorLoggingInLabel,
+                        strings.errorLoggingInLabel,
                         {
                             variant: 'error',
                         },
@@ -156,7 +157,7 @@ function LoginForm() {
         >
             <Container
                 className={styles.loginFormContainer}
-                heading={t.loginHeaderLabel}
+                heading={strings.loginHeaderLabel}
                 headingSize="large"
                 headingClassName={styles.heading}
                 contentClassName={styles.inputContainer}
@@ -164,14 +165,14 @@ function LoginForm() {
                 footerContentClassName={styles.footerContent}
                 footerContent={(
                     <>
-                        {t.donotHaveAccountYetLabel}
+                        {strings.donotHaveAccountYetLabel}
                         &nbsp;
                         <ButtonLikeLink
                             className={styles.registerLink}
                             to={generatePath(routes.register.path)}
                             variant="transparent"
                         >
-                            {t.registerlabel}
+                            {strings.registerlabel}
                         </ButtonLikeLink>
                     </>
                 )}
@@ -179,7 +180,7 @@ function LoginForm() {
                 <TextInput
                     name="email"
                     onChange={setFieldValue}
-                    label={t.emailLabel}
+                    label={strings.emailLabel}
                     value={value?.email}
                     error={error?.email}
                     placeholder="john.doe@gmail.com"
@@ -188,7 +189,7 @@ function LoginForm() {
                 <PasswordInput
                     name="password"
                     onChange={setFieldValue}
-                    label={t.passwordLabel}
+                    label={strings.passwordLabel}
                     value={value?.password}
                     error={error?.password}
                     placeholder="****"
@@ -201,7 +202,7 @@ function LoginForm() {
                     variant="primary"
                     disabled={loginPending || pristine}
                 >
-                    {t.loginButtonLabel}
+                    {strings.loginButtonLabel}
                 </Button>
             </Container>
         </form>

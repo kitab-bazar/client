@@ -64,7 +64,7 @@ function BookDetail() {
     const { id } = useParams();
 
     const {
-        data: result,
+        data: bookDetail,
         loading,
     } = useQuery<
         BookDetailQuery,
@@ -114,21 +114,21 @@ function BookDetail() {
     const [activeTab, setActiveTab] = React.useState<'description' | 'content' | undefined>('description');
 
     const authorsDisplay = React.useMemo(() => (
-        result?.book?.authors?.map((d) => d.name).join(', ')
-    ), [result?.book?.authors]);
+        bookDetail?.book?.authors?.map((d) => d.name).join(', ')
+    ), [bookDetail?.book?.authors]);
 
     return (
         <div className={styles.bookDetail}>
             <div className={styles.container}>
-                {result?.book ? (
+                {bookDetail?.book ? (
                     <>
                         <div className={styles.metaData}>
                             <div className={styles.preview}>
-                                {result?.book?.image?.url ? (
+                                {bookDetail?.book?.image?.url ? (
                                     <img
                                         className={styles.image}
-                                        src={result.book.image.url}
-                                        alt={result.book.title}
+                                        src={bookDetail.book.image.url}
+                                        alt={bookDetail.book.title}
                                     />
                                 ) : (
                                     <Message
@@ -138,27 +138,27 @@ function BookDetail() {
                             </div>
                             <Container
                                 className={styles.details}
-                                heading={result.book.title}
+                                heading={bookDetail.book.title}
                                 headingDescription={authorsDisplay}
                                 headerDescription={(
                                     <div className={styles.headerDescription}>
                                         <TextOutput
                                             label="Price (NPR)"
-                                            value={result.book.price}
+                                            value={bookDetail.book.price}
                                             valueType="number"
                                         />
                                         <TextOutput
                                             label="Number of pages"
-                                            value={result.book.numberOfPages}
+                                            value={bookDetail.book.numberOfPages}
                                             valueType="number"
                                         />
                                         <TextOutput
                                             label="ISBN"
-                                            value={result.book.isbn}
+                                            value={bookDetail.book.isbn}
                                         />
                                         <TextOutput
                                             label="Language"
-                                            value={result.book.language}
+                                            value={bookDetail.book.language}
                                         />
                                     </div>
                                 )}
@@ -199,7 +199,7 @@ function BookDetail() {
                                     <div
                                         // eslint-disable-next-line react/no-danger
                                         dangerouslySetInnerHTML={
-                                            { __html: result.book.description ?? '' }
+                                            { __html: bookDetail.book.description ?? '' }
                                         }
                                     />
                                 </TabPanel>
@@ -223,10 +223,10 @@ function BookDetail() {
                     </div>
                 ))}
             </div>
-            {orderConfirmModalShown && result?.book && (
+            {orderConfirmModalShown && bookDetail?.book && (
                 <OrderConfirmModal
-                    bookId={result?.book?.id}
-                    book={result?.book}
+                    bookId={bookDetail?.book?.id}
+                    book={bookDetail?.book}
                     onClose={hideOrderConfirmModal}
                 />
             )}

@@ -9,7 +9,7 @@ import LoginForm from './LoginForm';
 import styles from './styles.css';
 
 function Login() {
-    const t = useTranslation(commonLang);
+    const strings = useTranslation(commonLang);
 
     return (
         <div className={styles.login}>
@@ -21,7 +21,7 @@ function Login() {
                         alt=""
                     />
                     <div className={styles.appName}>
-                        {t.kitabBazarAppLabel}
+                        {strings.kitabBazarAppLabel}
                     </div>
                 </div>
                 <div className={styles.right}>

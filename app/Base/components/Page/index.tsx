@@ -1,5 +1,8 @@
 import React, { useEffect, useContext } from 'react';
-import { Redirect } from 'react-router-dom';
+import {
+    Redirect,
+    useLocation,
+} from 'react-router-dom';
 
 import PreloadMessage from '#base/components/PreloadMessage';
 import { UserContext } from '#base/context/UserContext';
@@ -46,15 +49,11 @@ function Page<T extends { className?: string }>(props: Props<T>) {
         path,
     } = props;
 
-    const {
-        authenticated,
-    } = useContext(UserContext);
-    const {
-        setNavbarVisibility,
-    } = useContext(NavbarContext);
-    const {
-        project,
-    } = useContext(ProjectContext);
+    const location = useLocation();
+
+    const { authenticated } = useContext(UserContext);
+    const { setNavbarVisibility } = useContext(NavbarContext);
+    const { project } = useContext(ProjectContext);
 
     const redirectToSignIn = visibility === 'is-authenticated' && !authenticated;
     const redirectToHome = visibility === 'is-not-authenticated' && authenticated;
@@ -75,14 +74,28 @@ function Page<T extends { className?: string }>(props: Props<T>) {
     );
 
     if (redirectToSignIn) {
-        // console.warn('Redirecting to sign-in');
         return (
-            <Redirect to={loginPage} />
+            <Redirect
+                to={{
+                    pathname: loginPage,
+                    state: { from: location.pathname },
+                }}
+            />
         );
     }
 
     if (redirectToHome) {
-        // console.warn('Redirecting to dashboard');
+        const state = location.state as { from?: string }| undefined;
+        if (state?.from) {
+            return (
+                <Redirect
+                    to={{
+                        pathname: state.from,
+                        state: undefined,
+                    }}
+                />
+            );
+        }
         return (
             <Redirect to={defaultPage} />
         );

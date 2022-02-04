@@ -10,6 +10,7 @@ export type Props = Omit<ButtonLikeLinkProps, 'to'> & {
     route: RouteData;
     attrs?: Attrs;
     children?: React.ReactNode;
+    state?: unknown;
 };
 
 function SmartButtonLikeLink(props: Props) {
@@ -17,6 +18,7 @@ function SmartButtonLikeLink(props: Props) {
         route,
         attrs,
         children,
+        state,
         ...otherProps
     } = props;
 
@@ -28,7 +30,10 @@ function SmartButtonLikeLink(props: Props) {
     return (
         <ButtonLikeLink
             {...otherProps}
-            to={routeData.to}
+            to={{
+                pathname: routeData.to,
+                state,
+            }}
         >
             {children ?? routeData.children}
         </ButtonLikeLink>
