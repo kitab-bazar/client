@@ -2,14 +2,14 @@ import { Button } from '@the-deep/deep-ui';
 import React from 'react';
 
 import {
-    homePageLang,
+    homePage,
 } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 
 import styles from './styles.css';
 
 function Footer() {
-    const homePageStrings = useTranslation(homePageLang);
+    const homePageStrings = useTranslation(homePage);
 
     return (
         <div className={styles.footer}>

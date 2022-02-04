@@ -23,7 +23,7 @@ import {
     removeNull,
 } from '@togglecorp/toggle-form';
 
-import { loginLang } from '#base/configs/lang';
+import { login as loginStrings } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 import routes from '#base/configs/routes';
 import { LoginMutation, LoginMutationVariables } from '#generated/types';
@@ -93,7 +93,7 @@ function LoginForm() {
         setError,
     } = useForm(schema, initialValue);
 
-    const strings = useTranslation(loginLang);
+    const strings = useTranslation(loginStrings);
 
     const { setUser } = useContext(UserContext);
 
@@ -121,6 +121,7 @@ function LoginForm() {
                 if (errors) {
                     const formError = transformToFormError(removeNull(errors) as ObjectError[]);
                     setError(formError);
+                    // eslint-disable-next-line no-console
                     console.error(formError);
                     alert.show(
                         strings.errorLoggingInLabel,

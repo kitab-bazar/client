@@ -1,7 +1,7 @@
 import React from 'react';
 
 import KitabLogo from '#resources/img/KitabLogo.png';
-import { commonLang } from '#base/configs/lang';
+import { common } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 
 import LoginForm from './LoginForm';
@@ -9,7 +9,7 @@ import LoginForm from './LoginForm';
 import styles from './styles.css';
 
 function Login() {
-    const strings = useTranslation(commonLang);
+    const strings = useTranslation(common);
 
     return (
         <div className={styles.login}>
@@ -18,7 +18,7 @@ function Login() {
                     <img
                         className={styles.kitabLogo}
                         src={KitabLogo}
-                        alt=""
+                        alt="Kitab"
                     />
                     <div className={styles.appName}>
                         {strings.kitabBazarAppLabel}

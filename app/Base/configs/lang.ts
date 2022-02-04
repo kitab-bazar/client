@@ -1,11 +1,22 @@
-export const commonLang = {
+import { Lang } from '#base/context/LanguageContext';
+
+export type LangString = Record<Lang, string>;
+export type LangStringWithTemplate = LangString & {
+    var: string[];
+}
+
+export interface LangStrings {
+    [key: string]: LangString | LangStringWithTemplate;
+}
+
+export const common = {
     kitabBazarAppLabel: {
         en: 'Kitab Bazar',
         np: 'किताब बजार',
     },
 };
 
-export const navbarLang = {
+export const navbar = {
     searchAllBooksPlaceholder: {
         en: 'Search all books',
         np: 'किताब खोज्नु होस्',
@@ -18,9 +29,13 @@ export const navbarLang = {
         en: 'Login',
         np: 'लग इन',
     },
-    helloLabel: {
-        en: 'Hello',
-        np: 'नमस्कार',
+    greetings: {
+        en: 'Hello {name}!',
+        np: 'नमस्कार {name}!',
+    },
+    gotoProfile: {
+        en: 'Goto profile',
+        np: 'प्रोफाइलमा जानुहोस्',
     },
     logoutConfirmMessage: {
         en: 'Are you sure you want to logout?',
@@ -32,7 +47,7 @@ export const navbarLang = {
     },
 };
 
-export const loginLang = {
+export const login = {
     loginHeaderLabel: {
         en: 'Login',
         np: 'लग इन',
@@ -63,7 +78,7 @@ export const loginLang = {
     },
 };
 
-export const homePageLang = {
+export const homePage = {
     kitabLabel: {
         en: 'Kitab',
         np: 'किताब',

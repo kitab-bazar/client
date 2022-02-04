@@ -3,16 +3,19 @@ import { _cs } from '@togglecorp/fujs';
 import { useMutation, gql } from '@apollo/client';
 import { useLocation } from 'react-router-dom';
 import {
-    ConfirmButton,
     SegmentInput,
     TextInput,
     useAlert,
     Link,
+    DropdownMenu,
+    DropdownMenuItem,
+    useConfirmation,
 } from '@the-deep/deep-ui';
 import {
     IoSearchSharp,
     IoCart,
     IoHeart,
+    IoPerson,
 } from 'react-icons/io5';
 
 import routes from '#base/configs/routes';
@@ -22,15 +25,19 @@ import LanguageContext, {
     langLabelSelector,
 } from '#base/context/LanguageContext';
 import {
-    commonLang,
-    navbarLang,
+    common,
+    navbar,
 } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 import { UserContext } from '#base/context/UserContext';
-import { LogoutMutation, LogoutMutationVariables } from '#generated/types';
+import {
+    LogoutMutation,
+    LogoutMutationVariables,
+} from '#generated/types';
+import useRouteMatching from '#base/hooks/useRouteMatching';
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
-import SmartLink from '#base/components/SmartLink';
 import KitabLogo from '#resources/img/KitabLogo.png';
+import { resolveToString } from '#base/utils/lang';
 
 import styles from './styles.css';
 
@@ -62,8 +69,15 @@ function Navbar(props: Props) {
     } = useContext(LanguageContext);
 
     const alert = useAlert();
-    const commonStrings = useTranslation(commonLang);
-    const navbarStrings = useTranslation(navbarLang);
+    const commonStrings = useTranslation(common);
+    const navbarStrings = useTranslation(navbar);
+
+    const strings = {
+        ...commonStrings,
+        ...navbarStrings,
+    };
+
+    const profileUrl = useRouteMatching(routes.myProfile);
 
     const [logout] = useMutation<LogoutMutation, LogoutMutationVariables>(
         LOGOUT,
@@ -103,6 +117,10 @@ function Navbar(props: Props) {
         [setUser, logout],
     );
 
+    const [logoutConfirmationModal, setShowLogoutConfirmationTrue] = useConfirmation({
+        onConfirm: handleLogout,
+    });
+
     return (
         <nav className={_cs(className, styles.navbar)}>
             <Link
@@ -122,11 +140,12 @@ function Navbar(props: Props) {
             <div className={styles.main}>
                 <div className={styles.searchInputContainer}>
                     <TextInput
+                        variant="general"
                         className={styles.searchInput}
                         disabled
                         icons={<IoSearchSharp />}
                         onChange={undefined}
-                        placeholder={navbarStrings.searchAllBooksPlaceholder}
+                        placeholder={strings.searchAllBooksPlaceholder}
                         name={undefined}
                         value={undefined}
                     />
@@ -144,14 +163,14 @@ function Navbar(props: Props) {
                         route={routes.register}
                         variant="primary"
                     >
-                        {navbarStrings.signUpButtonLabel}
+                        {strings.signUpButtonLabel}
                     </SmartButtonLikeLink>
                     <SmartButtonLikeLink
                         route={routes.login}
                         variant="primary"
                         state={{ from: location.pathname }}
                     >
-                        {navbarStrings.loginButtonLabel}
+                        {strings.loginButtonLabel}
                     </SmartButtonLikeLink>
                     <SmartButtonLikeLink
                         variant="action"
@@ -166,26 +185,31 @@ function Navbar(props: Props) {
                         <IoCart />
                     </SmartButtonLikeLink>
                     {authenticated && user && (
-                        <div className={styles.userInfo}>
-                            <div>
-                                {navbarStrings.helloLabel}
-                            </div>
-                            <SmartLink
-                                route={routes.myProfile}
+                        <>
+                            <DropdownMenu
+                                label={<IoPerson />}
+                                variant="tertiary"
+                                className={styles.userDropdown}
                             >
-                                <strong>
-                                    {user.displayName}
-                                </strong>
-                                !
-                            </SmartLink>
-                            <ConfirmButton
-                                name={undefined}
-                                onConfirm={handleLogout}
-                                message={navbarStrings.logoutConfirmMessage}
-                            >
-                                {navbarStrings.logoutButtonLabel}
-                            </ConfirmButton>
-                        </div>
+                                <div className={styles.userInfo}>
+                                    <div className={styles.greetings}>
+                                        {resolveToString(strings.greetings, { name: user.displayName ?? 'Unnamed' })}
+                                    </div>
+                                    {profileUrl && (
+                                        <DropdownMenuItem href={profileUrl.to}>
+                                            {strings.gotoProfile}
+                                        </DropdownMenuItem>
+                                    )}
+                                    <DropdownMenuItem
+                                        name={undefined}
+                                        onClick={setShowLogoutConfirmationTrue}
+                                    >
+                                        {strings.logoutButtonLabel}
+                                    </DropdownMenuItem>
+                                </div>
+                            </DropdownMenu>
+                            {logoutConfirmationModal}
+                        </>
                     )}
                 </div>
             </div>
