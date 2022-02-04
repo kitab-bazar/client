@@ -23,6 +23,7 @@ function SmartButtonLikeLink(props: Props) {
     } = props;
 
     const routeData = useRouteMatching(route, attrs);
+
     if (!routeData) {
         return null;
     }

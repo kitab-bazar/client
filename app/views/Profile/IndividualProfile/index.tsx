@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo } from 'react';
-import { generatePath } from 'react-router-dom';
 import {
     IoPencil,
     IoHeart,
@@ -12,10 +11,10 @@ import {
     Button,
     TextOutput,
     ListView,
-    Card,
-    Link,
+    ContainerCard,
+    useModalState,
 } from '@the-deep/deep-ui';
-
+import { removeNull } from '@togglecorp/toggle-form';
 import {
     IndividualProfileQuery,
     IndividualProfileQueryVariables,
@@ -27,6 +26,7 @@ import {
 import routes from '#base/configs/routes';
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
 
+import EditProfileModal from './EditProfileModal';
 import styles from './styles.css';
 
 const INDIVIDUAL_PROFILE = gql`
@@ -34,6 +34,8 @@ const INDIVIDUAL_PROFILE = gql`
         me {
             email
             fullName
+            firstName
+            lastName
             id
             phoneNumber
             image {
@@ -95,42 +97,67 @@ function OrderListRenderer(props: OrderListProps) {
     } = props;
 
     return (
-        <Link to={generatePath(routes.orderList.path, { activeOrderId: orderCode })}>
-            <Card
-                className={styles.orderItem}
-            >
-                <TextOutput
-                    label="order number"
-                    value={orderCode}
-                />
-                <TextOutput
-                    label="Total book types"
-                    value={totalBookTypes}
-                />
-                <TextOutput
-                    label="total price"
-                    value={totalPrice}
-                />
-                <TextOutput
-                    label="status"
-                    value={status}
-                />
-            </Card>
-        </Link>
+        <ContainerCard
+            className={styles.orderItem}
+            heading={orderCode}
+            headingClassName={styles.heading}
+            headingSize="extraSmall"
+            footerActions={(
+                <SmartButtonLikeLink
+                    route={routes.orderList}
+                    state={{ orderId: orderCode }}
+                >
+                    View details
+                </SmartButtonLikeLink>
+            )}
+        >
+            <TextOutput
+                label="Books"
+                labelContainerClassName={styles.label}
+                valueType="number"
+                hideLabelColon
+                value={totalBookTypes}
+            />
+            <TextOutput
+                label="total price"
+                labelContainerClassName={styles.label}
+                valueType="number"
+                hideLabelColon
+                value={totalPrice}
+                valueProps={{
+                    prefix: 'Rs.',
+                }}
+            />
+            <TextOutput
+                label="status"
+                labelContainerClassName={styles.label}
+                hideLabelColon
+                value={status}
+            />
+        </ContainerCard>
     );
 }
 
 const orderListKeySelector = (o: OrderType) => o.id;
 
 function IndividualProfile() {
+    const [
+        editProfileModalShown,
+        showEditProfileModal,
+        hideEditProfileModal,
+    ] = useModalState(false);
+
     const {
-        data: profileDetails,
+        data,
+        refetch: refetchProfileDetails,
     } = useQuery<IndividualProfileQuery, IndividualProfileQueryVariables>(
         INDIVIDUAL_PROFILE,
     );
 
+    const profileDetails = removeNull(data);
+
     const orderVariables = useMemo(() => ({
-        pageSize: 20,
+        pageSize: 4,
         page: 1,
     }), []);
 
@@ -142,15 +169,11 @@ function IndividualProfile() {
         { variables: orderVariables },
     );
 
-    const handleEditProfile = useCallback(() => {
-        console.warn('handle me');
-    }, []);
-
-    const orderListRendererParams = useCallback((_, data: Omit<OrderType, 'createdBy'>): OrderListProps => ({
-        totalBookTypes: data.bookOrders?.totalCount ?? 0,
-        orderCode: data.orderCode,
-        status: data.status,
-        totalPrice: data.totalPrice,
+    const orderListRendererParams = useCallback((_, order: Omit<OrderType, 'createdBy'>): OrderListProps => ({
+        totalBookTypes: order.bookOrders?.totalCount ?? 0,
+        orderCode: order.orderCode,
+        status: order.status,
+        totalPrice: order.totalPrice,
     }), []);
 
     return (
@@ -173,7 +196,7 @@ function IndividualProfile() {
                         <Button
                             name={undefined}
                             variant="general"
-                            onClick={handleEditProfile}
+                            onClick={showEditProfileModal}
                             icons={<IoPencil />}
                         >
                             Edit Profile
@@ -181,10 +204,6 @@ function IndividualProfile() {
                         <TextOutput
                             label="Name"
                             value={profileDetails?.me?.fullName}
-                        />
-                        <TextOutput
-                            label="Address"
-                            value={profileDetails?.me?.email}
                         />
                         <TextOutput
                             label="Email"
@@ -229,6 +248,14 @@ function IndividualProfile() {
             <Container
                 heading="Order Details"
                 spacing="comfortable"
+                footerActions={(
+                    <SmartButtonLikeLink
+                        route={routes.orderList}
+                    >
+                        View More
+                        <IoArrowForward />
+                    </SmartButtonLikeLink>
+                )}
             >
                 <ListView
                     className={styles.orders}
@@ -240,11 +267,14 @@ function IndividualProfile() {
                     filtered={false}
                     pending={loading}
                 />
-                <Link to={generatePath(routes.orderList.path, {})}>
-                    View More
-                    <IoArrowForward />
-                </Link>
             </Container>
+            {editProfileModalShown && (
+                <EditProfileModal
+                    onModalClose={hideEditProfileModal}
+                    onEditSuccess={refetchProfileDetails}
+                    profileDetails={profileDetails?.me}
+                />
+            )}
         </div>
     );
 }

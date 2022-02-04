@@ -8,7 +8,7 @@ import {
     Pager,
     Container,
 } from '@the-deep/deep-ui';
-
+import { useLocation } from 'react-router-dom';
 import {
     OrderListWithBooksQuery,
     OrderListWithBooksQueryVariables,
@@ -77,10 +77,12 @@ function Book(props: BookProps) {
 
     return (
         <div className={styles.bookItem}>
-            <img
-                src={image}
-                alt="book cover"
-            />
+            <div className={styles.coverImage}>
+                <img
+                    src={image}
+                    alt="book cover"
+                />
+            </div>
             <div className={styles.description}>
                 <TextOutput
                     value={title}
@@ -164,6 +166,7 @@ function OrderListRenderer(props: OrderListProps) {
             onExpansionChange={onExpansionChange}
         >
             <ListView
+                className={styles.bookList}
                 data={books}
                 renderer={Book}
                 rendererParams={bookListRendererParams}
@@ -182,23 +185,26 @@ const MAX_ITEMS_PER_PAGE = 20;
 
 interface Props {
     className?: string;
-    activeOrderId?: string;
 }
 
 function OrderList(props: Props) {
     const {
         className,
-        activeOrderId,
     } = props;
+    const {
+        state,
+    } = useLocation();
+    const orderIdFromState = (state as { orderId?: string } | undefined)?.orderId;
 
-    const [pageSize, setPageSize] = useState<number>(MAX_ITEMS_PER_PAGE);
+    const [
+        pageSize, setPageSize] = useState<number>(MAX_ITEMS_PER_PAGE);
     const [page, setPage] = useState<number>(1);
     const orderVariables = useMemo(() => ({
         pageSize,
         page,
     }), [pageSize, page]);
 
-    const [expandedOrderId, setExpandedOrderId] = useState<string | undefined>(activeOrderId);
+    const [expandedOrderId, setExpandedOrderId] = useState<string | undefined>(orderIdFromState);
 
     const {
         data: orderList,
@@ -235,6 +241,8 @@ function OrderList(props: Props) {
                     itemsCount={orderList?.orders?.totalCount ?? 0}
                     onActivePageChange={setPage}
                     onItemsPerPageChange={setPageSize}
+                    itemsPerPageControlHidden
+
                 />
             )}
         >
