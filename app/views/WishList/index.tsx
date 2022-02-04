@@ -122,6 +122,7 @@ function WishListItem(props: WishProps) {
         <Container
             className={styles.container}
             heading={title}
+            headingSize="small"
             footerActions={(
                 <>
                     <Button

@@ -10,9 +10,7 @@ import {
 } from '@apollo/client';
 
 import Footer from '#components/Footer';
-import {
-    homePageLang,
-} from '#base/configs/lang';
+import { homePage } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 
 import {
@@ -106,7 +104,7 @@ function HomePage() {
     const bookItemRendererParams = React.useCallback((_, data) => ({
         book: data,
     }), []);
-    const homePageStrings = useTranslation(homePageLang);
+    const homePageStrings = useTranslation(homePage);
 
     return (
         <div className={styles.home}>

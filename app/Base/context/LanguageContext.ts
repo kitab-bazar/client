@@ -30,6 +30,7 @@ export const langLabelSelector = (d: LangOption) => d.label;
 export default createContext<LanguageContextInterface>({
     lang: 'en',
     setLang: (lang: Lang) => {
+        // eslint-disable-next-line no-console
         console.warn('Trying to set language before the language context was initialized.', lang);
     },
     debug: false,
