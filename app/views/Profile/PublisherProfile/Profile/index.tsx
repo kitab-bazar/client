@@ -4,6 +4,7 @@ import {
     IoPencil,
 } from 'react-icons/io5';
 import {
+    PendingMessage,
     Container,
     Button,
     Header,
@@ -65,6 +66,7 @@ function Profile() {
 
     const {
         data: profileDetails,
+        loading,
     } = useQuery<PublisherProfileQuery, PublisherProfileQueryVariables>(
         PUBLISHER_PROFILE,
     );
@@ -75,6 +77,7 @@ function Profile() {
             contentClassName={styles.content}
             spacing="comfortable"
         >
+            { loading && (<PendingMessage />)}
             <Container
                 className={styles.profileDetails}
                 spacing="comfortable"
