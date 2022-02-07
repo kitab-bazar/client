@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-export type Lang = 'en' | 'np';
+export type Lang = 'en' | 'ne';
 
 export interface LanguageContextInterface {
     lang: Lang;
@@ -19,7 +19,7 @@ export const langOptions: LangOption[] = [
         label: 'en',
     },
     {
-        key: 'np',
+        key: 'ne',
         label: 'ने.',
     },
 ];

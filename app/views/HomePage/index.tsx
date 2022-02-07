@@ -9,7 +9,6 @@ import {
     useQuery,
 } from '@apollo/client';
 
-import Footer from '#components/Footer';
 import { homePage } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 
@@ -145,7 +144,6 @@ function HomePage() {
                     />
                 </Container>
             </div>
-            <Footer />
         </div>
     );
 }

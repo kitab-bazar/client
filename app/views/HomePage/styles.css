@@ -80,12 +80,12 @@
             background-color: unset;
             padding: var(--dui-spacing-large);
             width: 100%;
-            max-width: 1400px;
+            max-width: var(--kitab-page-max-width);
 
             .book-list {
                 display: flex;
                 flex-wrap: wrap;
-                gap: var(--dui-spacing-medium);
+                gap: var(--dui-spacing-extra-large);
                 margin-top: var(--dui-spacing-large);
 
                 .book-item {
@@ -132,15 +132,16 @@
                             text-overflow: ellipsis;
                             white-space: nowrap;
                             color: var(--dui-color-primary);
-                            font-size: var(--dui-font-size-extra-large);
+                            font-size: var(--dui-font-size-large);
                             font-weight: var(--dui-font-weight-bold);
                         }
 
                         .author {
-                            font-weight: var(--dui-font-weight-bold);
+                            margin-bottom: var(--dui-spacing-small);
                         }
 
                         .price {
+                            font-size: var(--dui-font-size-medium);
                             font-weight: var(--dui-font-weight-bold);
                         }
                     }

@@ -1,18 +1,39 @@
 :root {
-    --dui-color-primary: #383d46;
+    --dui-font-weight-light: 400;
+    --dui-font-weight-medium: 400;
     --dui-font-weight-bold: 700;
+    --dui-color-primary: #383d46;
     --dui-color-accent: #00adb5;
     --dui-color-background: #eeeeee;
-    --dui-color-text: #222730;
+    --dui-color-text: #414141;
     --dui-font-family-sans-serif: 'PT Sans', 'Noto Serif Devanagari', sans-serif;
     --dui-color-background-hover-primary-button: #0098a6;
+
+    --dui-font-size-extra-small: 0.7rem;
+    --dui-font-size-small: 0.8rem;
+    --dui-font-size-medium: 1rem;
+    --dui-font-size-large: 1.2rem;
+    --dui-font-size-extra-large: 1.5rem;
+    --dui-font-size-super-large: 2rem;
+
+    --kitab-page-max-width: 90rem;
+
 }
+
 .base {
     display: flex;
     flex-direction: column;
     width: 100vw;
     height: 100vh;
     overflow: auto;
+
+    &.np {
+        line-height: 1.25;
+    }
+
+    .preload {
+        flex-grow: 1;
+    }
 
     .navbar {
         flex-shrink: 0;
@@ -22,16 +43,18 @@
         }
     }
 
-    .view,
-    .init {
+    .view {
         flex-grow: 1;
-        overflow: auto;
+    }
+
+    .footer {
+        flex-shrink: 0;
     }
 
     .alert-container {
         position: fixed;
-        top: var(--dui-spacing-large);
         right: var(--dui-spacing-large);
+        bottom: var(--dui-spacing-large);
         z-index: 1;
         width: 20rem;
     }

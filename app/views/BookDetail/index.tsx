@@ -1,16 +1,18 @@
 import React, { useCallback } from 'react';
 import {
     Container,
-    Tab,
-    Tabs,
-    TabPanel,
-    TabList,
     TextOutput,
     useAlert,
     Message,
     Button,
+    NumberInput,
     useModalState,
+    useInputState,
 } from '@the-deep/deep-ui';
+import {
+    isDefined,
+    isNotDefined,
+} from '@togglecorp/fujs';
 import {
     gql,
     useMutation,
@@ -23,7 +25,10 @@ import {
     BookDetailQueryVariables,
     CreateWishListMutation,
     CreateWishListMutationVariables,
+    DeleteWishListMutation,
+    DeleteWishListMutationVariables,
 } from '#generated/types';
+// import { UserContext } from '#base/context/UserContext';
 import OrderConfirmModal from './OrderConfirmModal';
 
 import styles from './styles.css';
@@ -46,7 +51,10 @@ query BookDetail($id: ID!) {
       authors {
         id
         name
+        aboutAuthor
       }
+      quantityInCart
+      wishlistId
     }
   }
 `;
@@ -56,12 +64,34 @@ mutation CreateWishList ($id: String!) {
     createWishlist(data: {book: $id}) {
         errors
         ok
+        result {
+            book {
+                id
+                wishlistId
+            }
+        }
+    }
+}
+`;
+
+const DELETE_WISH_LIST = gql`
+mutation DeleteWishList ($id: ID!) {
+    deleteWishlist(id: $id) {
+        errors
+        ok
+        result {
+            book {
+                id
+                wishlistId
+            }
+        }
     }
 }
 `;
 
 function BookDetail() {
     const { id } = useParams();
+    const [cartQuantity, setCartQuantity] = useInputState<number | undefined>(1);
 
     const {
         data: bookDetail,
@@ -72,11 +102,16 @@ function BookDetail() {
     >(BOOK_DETAIL, {
         skip: !id,
         variables: { id: id ?? '' },
+        onCompleted: (response) => {
+            if (response?.book?.quantityInCart) {
+                setCartQuantity(response.book.quantityInCart);
+            }
+        },
     });
 
     const [
         orderConfirmModalShown,
-        showOrderConfirmModal,
+        setShowOrderConfirmModal,
         hideOrderConfirmModal,
     ] = useModalState(false);
 
@@ -97,7 +132,7 @@ function BookDetail() {
                     );
                 } else {
                     alert.show(
-                        'Failed to add book to wishlist. It might already be in there.',
+                        'Failed to add book to wishlist.',
                         {
                             variant: 'error',
                         },
@@ -107,11 +142,42 @@ function BookDetail() {
         },
     );
 
-    const addToWishList = useCallback(() => {
-        createWishList({ variables: id ? { id } : undefined });
-    }, [id, createWishList]);
+    const [
+        removeWishList,
+    ] = useMutation<DeleteWishListMutation, DeleteWishListMutationVariables>(
+        DELETE_WISH_LIST,
+        {
+            onCompleted: (response) => {
+                if (response?.deleteWishlist?.ok) {
+                    alert.show(
+                        'Successfully removed the book from your wishlist.',
+                        {
+                            variant: 'success',
+                        },
+                    );
+                } else {
+                    alert.show(
+                        'Failed to remove book from your wishlist.',
+                        {
+                            variant: 'error',
+                        },
+                    );
+                }
+            },
+        },
+    );
 
-    const [activeTab, setActiveTab] = React.useState<'description' | 'content' | undefined>('description');
+    const addToWishList = useCallback((wishlistId: number | undefined) => {
+        if (!id) {
+            return;
+        }
+
+        if (isDefined(wishlistId)) {
+            removeWishList({ variables: { id: String(wishlistId) } });
+        } else {
+            createWishList({ variables: { id } });
+        }
+    }, [id, createWishList, removeWishList]);
 
     const authorsDisplay = React.useMemo(() => (
         bookDetail?.book?.authors?.map((d) => d.name).join(', ')
@@ -121,8 +187,8 @@ function BookDetail() {
         <div className={styles.bookDetail}>
             <div className={styles.container}>
                 {bookDetail?.book ? (
-                    <>
-                        <div className={styles.metaData}>
+                    <div className={styles.bookDetail}>
+                        <div className={styles.leftColumn}>
                             <div className={styles.preview}>
                                 {bookDetail?.book?.image?.url ? (
                                     <img
@@ -136,6 +202,68 @@ function BookDetail() {
                                     />
                                 )}
                             </div>
+                            <div className={styles.actions}>
+                                <div className={styles.primaryAction}>
+                                    <NumberInput
+                                        className={styles.quantityInput}
+                                        label="Quanitity"
+                                        name="number-of-items"
+                                        value={cartQuantity}
+                                        onChange={setCartQuantity}
+                                        variant="general"
+                                        type="number"
+                                        readOnly={!!bookDetail.book.quantityInCart}
+                                    />
+                                    <NumberInput
+                                        className={styles.pricePreview}
+                                        name="item-price"
+                                        label="Price (NPR)"
+                                        value={bookDetail.book.price}
+                                        variant="general"
+                                        type="number"
+                                        readOnly
+                                    />
+                                    <NumberInput
+                                        className={styles.totalPreview}
+                                        name="total-price"
+                                        label="Total (NPR)"
+                                        value={(
+                                            (cartQuantity && cartQuantity > 0)
+                                                ? bookDetail.book.price * cartQuantity
+                                                : undefined
+                                        )}
+                                        variant="general"
+                                        type="number"
+                                        readOnly
+                                    />
+                                </div>
+                                <div className={styles.otherActions}>
+                                    <Button
+                                        name="add-to-cart"
+                                        variant="primary"
+                                        disabled={isNotDefined(cartQuantity) || cartQuantity < 1}
+                                    >
+                                        { bookDetail.book.quantityInCart ? 'Remove from Cart' : 'Add to Cart' }
+                                    </Button>
+                                    <Button
+                                        name={undefined}
+                                        variant="secondary"
+                                        onClick={setShowOrderConfirmModal}
+                                        disabled={isNotDefined(cartQuantity) || cartQuantity < 1}
+                                    >
+                                        Buy Now
+                                    </Button>
+                                    <Button
+                                        name={bookDetail.book.wishlistId ?? undefined}
+                                        variant="secondary"
+                                        onClick={addToWishList}
+                                    >
+                                        {bookDetail.book.wishlistId ? 'Remove from wishilist' : 'Add to wishlist'}
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={styles.rightColumn}>
                             <Container
                                 className={styles.details}
                                 heading={bookDetail.book.title}
@@ -162,61 +290,38 @@ function BookDetail() {
                                         />
                                     </div>
                                 )}
-                                footerIcons={(
-                                    <>
-                                        <Button
-                                            name={undefined}
-                                            variant="secondary"
-                                            onClick={addToWishList}
-                                        >
-                                            Add to wishlist
-                                        </Button>
-                                        <Button
-                                            name={undefined}
-                                            variant="secondary"
-                                            onClick={showOrderConfirmModal}
-                                        >
-                                            Buy Now
-                                        </Button>
-                                    </>
-                                )}
                             />
-                        </div>
-                        <div className={styles.otherDetails}>
-                            <Tabs
-                                value={activeTab}
-                                onChange={setActiveTab}
+                            <Container
+                                heading="Description"
+                                headingSize="extraSmall"
                             >
-                                <TabList>
-                                    <Tab name="description">
-                                        Description
-                                    </Tab>
-                                    <Tab name="content">
-                                        Content
-                                    </Tab>
-                                </TabList>
-                                <TabPanel name="description">
-                                    <div
-                                        // eslint-disable-next-line react/no-danger
-                                        dangerouslySetInnerHTML={
-                                            { __html: bookDetail.book.description ?? '' }
-                                        }
-                                    />
-                                </TabPanel>
-                                <TabPanel name="content">
-                                    <div className={styles.bookContentPreview}>
-                                        Not available
-                                    </div>
-                                </TabPanel>
-                            </Tabs>
+                                <div
+                                    // eslint-disable-next-line react/no-danger
+                                    dangerouslySetInnerHTML={
+                                        { __html: bookDetail.book.description ?? '' }
+                                    }
+                                />
+                            </Container>
+                            <Container
+                                heading="About the author"
+                                headingSize="extraSmall"
+                            >
+                                {bookDetail.book.authors.map((a) => (
+                                    <React.Fragment key={a.name}>
+                                        <div>
+                                            {a.name}
+                                        </div>
+                                        <div
+                                            // eslint-disable-next-line react/no-danger
+                                            dangerouslySetInnerHTML={
+                                                { __html: a.aboutAuthor ?? '' }
+                                            }
+                                        />
+                                    </React.Fragment>
+                                ))}
+                            </Container>
                         </div>
-                        <Container
-                            heading="About the author"
-                            headingSize="small"
-                        >
-                            Author detail not available
-                        </Container>
-                    </>
+                    </div>
                 ) : (!loading && (
                     <div className={styles.noDetail}>
                         Book details not available

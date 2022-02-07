@@ -1,0 +1,44 @@
+.footer {
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--dui-color-background);
+    padding: var(--dui-spacing-extra-large);
+
+    .app-brand {
+        flex-shrink: 0;
+        text-decoration: none;
+        color: var(--dui-color-brand);
+
+        .link {
+            display: flex;
+            align-items: center;
+            gap: var(--dui-spacing-medium);
+
+            .logo {
+                width: auto;
+                height: 5rem;
+            }
+
+            .details {
+                .app-name {
+                    color: var(--dui-color-accent);
+                    font-size: var(--dui-font-size-super-large);
+                    font-weight: var(--dui-font-weight-bold);
+                }
+
+                .tagline {
+                    font-weight: var(--dui-font-weight-bold);
+                }
+            }
+        }
+    }
+
+    .actions {
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        justify-content: flex-end;
+        padding: var(--dui-spacing-medium);
+        gap: var(--dui-spacing-medium);
+    }
+}

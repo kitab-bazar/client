@@ -4,20 +4,28 @@ import React, {
 } from 'react';
 import {
     Button,
-    Container,
     ListView,
     Message,
     NumberInput,
     TextOutput,
     useAlert,
+    Heading,
 } from '@the-deep/deep-ui';
 import {
     gql,
     useQuery,
     useMutation,
 } from '@apollo/client';
-import { IoTrash, IoCart } from 'react-icons/io5';
-import { isDefined } from '@togglecorp/fujs';
+import {
+    IoTrash,
+    IoCart,
+    IoList,
+} from 'react-icons/io5';
+import {
+    isDefined,
+    isNotDefined,
+    _cs,
+} from '@togglecorp/fujs';
 
 import {
     CreateCartMutation,
@@ -106,7 +114,7 @@ function WishListItem(props: WishProps) {
     const [
         quantity,
         setQuantity,
-    ] = useState<number | undefined>(0);
+    ] = useState<number | undefined>(1);
 
     const handleAddToCart = useCallback(() => {
         if (isDefined(quantity) && quantity > 0) {
@@ -119,32 +127,7 @@ function WishListItem(props: WishProps) {
     ), [authors]);
 
     return (
-        <Container
-            className={styles.container}
-            heading={title}
-            headingSize="small"
-            footerActions={(
-                <>
-                    <Button
-                        name={bookId}
-                        onClick={handleAddToCart}
-                        variant="secondary"
-                        icons={<IoCart />}
-                    >
-                        Add to cart
-                    </Button>
-                    <Button
-                        name={id}
-                        onClick={onRemoveWishList}
-                        variant="secondary"
-                        icons={<IoTrash />}
-                    >
-                        Remove
-                    </Button>
-                </>
-            )}
-            contentClassName={styles.content}
-        >
+        <div className={styles.wishlistItem}>
             <div className={styles.imageContainer}>
                 {image?.url ? (
                     <img
@@ -158,28 +141,60 @@ function WishListItem(props: WishProps) {
                     />
                 )}
             </div>
-            <div className={styles.details}>
-                <TextOutput
-                    label="Author"
-                    value={authorsDisplay}
-                />
-                <TextOutput
-                    label="Price (NPR)"
-                    valueType="number"
-                    value={price}
-                />
-                <NumberInput
-                    label="Quantity"
-                    name="quantity"
-                    value={quantity}
-                    onChange={setQuantity}
-                />
+            <div className={styles.content}>
+                <div className={styles.details}>
+                    <Heading size="small">
+                        {title}
+                    </Heading>
+                    <TextOutput
+                        label="Author"
+                        value={authorsDisplay}
+                    />
+                    <TextOutput
+                        label="Price (NPR)"
+                        valueType="number"
+                        value={price}
+                    />
+                </div>
+                <div className={styles.actions}>
+                    <NumberInput
+                        className={styles.quantityInput}
+                        label="Quantity"
+                        name="quantity"
+                        value={quantity}
+                        onChange={setQuantity}
+                        type="number"
+                        variant="general"
+                    />
+                    <Button
+                        name={bookId}
+                        onClick={handleAddToCart}
+                        variant="primary"
+                        icons={<IoCart />}
+                        disabled={isNotDefined(quantity) || (quantity < 1)}
+                    >
+                        Add to cart
+                    </Button>
+                </div>
+                <Button
+                    name={id}
+                    onClick={onRemoveWishList}
+                    variant="tertiary"
+                    icons={<IoTrash />}
+                >
+                    Remove from Wishlist
+                </Button>
             </div>
-        </Container>
+        </div>
     );
 }
 
-function WishList() {
+interface Props {
+    className?: string;
+}
+
+function WishList(props: Props) {
+    const { className } = props;
     const [page, setPage] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(10);
     const alert = useAlert();
@@ -281,7 +296,7 @@ function WishList() {
         });
     }, [deleteWishlist]);
 
-    const wishes = data?.wishList?.results;
+    const wishes = data?.wishList?.results ?? [];
 
     const wishItemRendererParams = React.useCallback((_, d: Wish) => ({
         wish: d,
@@ -290,20 +305,40 @@ function WishList() {
     }), [deleteBook, addToCart]);
 
     return (
-        <Container
-            className={styles.wishlist}
-            heading="My Wishlist"
-        >
-            <ListView
-                data={wishes ?? undefined}
-                keySelector={wishKeySelector}
-                rendererParams={wishItemRendererParams}
-                renderer={WishListItem}
-                pending={loading}
-                errored={false}
-                filtered={false}
-            />
-        </Container>
+        <div className={_cs(styles.wishlist, className)}>
+            <div className={styles.container}>
+                <Heading
+                    className={styles.pageHeading}
+                    size="extraLarge"
+                >
+                    Wishlist
+                </Heading>
+                <ListView
+                    className={_cs(styles.list, wishes.length === 0 && styles.empty)}
+                    data={wishes}
+                    keySelector={wishKeySelector}
+                    rendererParams={wishItemRendererParams}
+                    renderer={WishListItem}
+                    pending={loading}
+                    errored={false}
+                    messageShown
+                    emptyMessage={(
+                        <div className={styles.emptyMessage}>
+                            <IoList className={styles.icon} />
+                            <div className={styles.text}>
+                                <div className={styles.primary}>
+                                    Your Wishlist is currently empty
+                                </div>
+                                <div className={styles.suggestion}>
+                                    Add Books that you want to buy later by clicking Add to Wishlist
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    filtered={false}
+                />
+            </div>
+        </div>
     );
 }
 

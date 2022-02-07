@@ -152,6 +152,7 @@ function Navbar(props: Props) {
                 </div>
                 <div className={styles.actions}>
                     <SegmentInput
+                        className={styles.languageSelection}
                         name={undefined}
                         options={langOptions}
                         keySelector={langKeySelector}
