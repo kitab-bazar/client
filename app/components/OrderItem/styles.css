@@ -1,0 +1,13 @@
+.order-item {
+    display: flex;
+    flex-direction: column;
+    border: var(--dui-width-separator-thin) solid transparent;
+
+    .heading {
+        color: var(--dui-color-accent);
+    }
+
+    .label {
+        width: 120px;
+    }
+}

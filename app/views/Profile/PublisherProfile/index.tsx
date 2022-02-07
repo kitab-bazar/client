@@ -8,6 +8,7 @@ import {
 
 import Profile from './Profile';
 import Books from './Books';
+import Orders from './Orders';
 import styles from './styles.css';
 
 function PublisherProfile() {
@@ -36,6 +37,9 @@ function PublisherProfile() {
                 </TabPanel>
                 <TabPanel name="books" className={styles.tabPanel}>
                     <Books />
+                </TabPanel>
+                <TabPanel name="orders" className={styles.tabPanel}>
+                    <Orders />
                 </TabPanel>
             </Tabs>
         </div>

@@ -45,19 +45,5 @@
         display: flex;
         flex-grow: 1;
         gap: var(--dui-spacing-large);
-
-        .order-item {
-            display: flex;
-            flex-direction: column;
-            border: var(--dui-width-separator-thin) solid transparent;
-
-            .heading {
-                color: var(--dui-color-accent);
-            }
-
-            .label {
-                width: 70px;
-            }
-        }
     }
 }

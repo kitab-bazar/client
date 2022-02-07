@@ -59,8 +59,8 @@ function Books() {
         {
             skip: isNotDefined(user?.id),
             variables: {
-                page: 1,
-                pageSize: 10,
+                page,
+                pageSize,
                 publisher: user?.id,
             },
         },
