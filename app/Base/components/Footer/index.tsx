@@ -46,7 +46,7 @@ function Footer(props: Props) {
                         {strings.kitabBazarAppLabel}
                     </div>
                     <div className={styles.tagline}>
-                        {strings.taglineLabel}
+                        {strings.tagLineLabel}
                     </div>
                 </div>
             </Link>

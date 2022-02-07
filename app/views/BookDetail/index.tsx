@@ -19,6 +19,7 @@ import {
     useQuery,
 } from '@apollo/client';
 import { useParams } from 'react-router-dom';
+import { IoTrash } from 'react-icons/io5';
 
 import {
     BookDetailQuery,
@@ -27,8 +28,13 @@ import {
     CreateWishListMutationVariables,
     DeleteWishListMutation,
     DeleteWishListMutationVariables,
+    AddToCartMutation,
+    AddToCartMutationVariables,
+    UpdateCartMutation,
+    UpdateCartMutationVariables,
+    DeleteCartItemMutation,
+    DeleteCartItemMutationVariables,
 } from '#generated/types';
-// import { UserContext } from '#base/context/UserContext';
 import OrderConfirmModal from './OrderConfirmModal';
 
 import styles from './styles.css';
@@ -36,27 +42,30 @@ import styles from './styles.css';
 const BOOK_DETAIL = gql`
 query BookDetail($id: ID!) {
     book(id: $id) {
-      description
-      id
-      image {
-        name
-        url
-      }
-      isbn
-      edition
-      language
-      price
-      title
-      numberOfPages
-      authors {
+        description
         id
-        name
-        aboutAuthor
-      }
-      quantityInCart
-      wishlistId
+        image {
+            name
+            url
+        }
+        isbn
+        edition
+        language
+        price
+        title
+        numberOfPages
+        authors {
+            id
+            name
+            aboutAuthor
+        }
+        cartDetails {
+            id
+            quantity
+        }
+        wishlistId
     }
-  }
+}
 `;
 
 const CREATE_WISH_LIST = gql`
@@ -89,6 +98,63 @@ mutation DeleteWishList ($id: ID!) {
 }
 `;
 
+const ADD_TO_CART = gql`
+mutation AddToCart($id: String!, $quantity: Int!) {
+    createCartItem(data: { book: $id, quantity: $quantity }) {
+        errors
+        ok
+        result {
+            id
+            book {
+                id
+                cartDetails {
+                    id
+                    quantity
+                }
+            }
+        }
+    }
+}
+`;
+
+const UPDATE_CART = gql`
+mutation UpdateCart($id: ID!, $bookId: String!, $quantity: Int!) {
+    updateCartItem(id: $id, data: { book: $bookId, quantity: $quantity }) {
+        errors
+        ok
+        result {
+            id
+            book {
+                id
+                cartDetails {
+                    id
+                    quantity
+                }
+            }
+        }
+    }
+}
+`;
+
+const DELETE_CART_ITEM = gql`
+mutation DeleteCartItem($id: ID!) {
+    deleteCartItem(id: $id) {
+        errors
+        ok
+        result {
+            id
+            book {
+                id
+                cartDetails {
+                    id
+                    quantity
+                }
+            }
+        }
+    }
+}
+`;
+
 function BookDetail() {
     const { id } = useParams();
     const [cartQuantity, setCartQuantity] = useInputState<number | undefined>(1);
@@ -103,8 +169,8 @@ function BookDetail() {
         skip: !id,
         variables: { id: id ?? '' },
         onCompleted: (response) => {
-            if (response?.book?.quantityInCart) {
-                setCartQuantity(response.book.quantityInCart);
+            if (response?.book?.cartDetails?.quantity) {
+                setCartQuantity(response.book.cartDetails?.quantity);
             }
         },
     });
@@ -117,52 +183,81 @@ function BookDetail() {
 
     const alert = useAlert();
 
-    const [
-        createWishList,
-    ] = useMutation<CreateWishListMutation, CreateWishListMutationVariables>(
-        CREATE_WISH_LIST,
+    const [addToCart] = useMutation<AddToCartMutation, AddToCartMutationVariables>(
+        ADD_TO_CART,
         {
             onCompleted: (response) => {
-                if (response?.createWishlist?.ok) {
-                    alert.show(
-                        'Successfully added book to your wishlist.',
-                        {
-                            variant: 'success',
-                        },
-                    );
-                } else {
-                    alert.show(
-                        'Failed to add book to wishlist.',
-                        {
-                            variant: 'error',
-                        },
-                    );
+                if (response?.createCartItem?.ok) {
+                    return;
                 }
+
+                alert.show(
+                    'Failed to add book to the cart.',
+                    { variant: 'error' },
+                );
             },
         },
     );
 
-    const [
-        removeWishList,
-    ] = useMutation<DeleteWishListMutation, DeleteWishListMutationVariables>(
+    const [updateCart] = useMutation<UpdateCartMutation, UpdateCartMutationVariables>(
+        UPDATE_CART,
+        {
+            onCompleted: (response) => {
+                if (response?.updateCartItem?.ok) {
+                    return;
+                }
+
+                alert.show(
+                    'Failed to update the cart.',
+                    { variant: 'error' },
+                );
+            },
+        },
+    );
+
+    const [createWishList] = useMutation<CreateWishListMutation, CreateWishListMutationVariables>(
+        CREATE_WISH_LIST,
+        {
+            onCompleted: (response) => {
+                if (response?.createWishlist?.ok) {
+                    return;
+                }
+
+                alert.show(
+                    'Failed to add book to wishlist.',
+                    { variant: 'error' },
+                );
+            },
+        },
+    );
+
+    const [removeWishList] = useMutation<DeleteWishListMutation, DeleteWishListMutationVariables>(
         DELETE_WISH_LIST,
         {
             onCompleted: (response) => {
                 if (response?.deleteWishlist?.ok) {
-                    alert.show(
-                        'Successfully removed the book from your wishlist.',
-                        {
-                            variant: 'success',
-                        },
-                    );
-                } else {
-                    alert.show(
-                        'Failed to remove book from your wishlist.',
-                        {
-                            variant: 'error',
-                        },
-                    );
+                    return;
                 }
+                alert.show(
+                    'Failed to remove book from your wishlist.',
+                    { variant: 'error' },
+                );
+            },
+        },
+    );
+
+    const [removeFromCart] = useMutation<DeleteCartItemMutation, DeleteCartItemMutationVariables>(
+        DELETE_CART_ITEM,
+        {
+            onCompleted: (response) => {
+                if (response?.deleteCartItem?.ok) {
+                    return;
+                }
+
+                alert.show(
+                    'Failed to remove current book from the cart',
+                    { variant: 'error' },
+                );
             },
         },
     );
@@ -182,6 +277,42 @@ function BookDetail() {
     const authorsDisplay = React.useMemo(() => (
         bookDetail?.book?.authors?.map((d) => d.name).join(', ')
     ), [bookDetail?.book?.authors]);
+
+    const handleAddToCartClick = React.useCallback((quantity: number | undefined) => {
+        const bookId = bookDetail?.book?.id;
+        if (isDefined(bookId) && quantity && quantity > 0) {
+            addToCart({
+                variables: {
+                    id: bookId,
+                    quantity,
+                },
+            });
+        }
+    }, [addToCart, bookDetail?.book?.id]);
+
+    const handleRemoveFromCart = React.useCallback(() => {
+        const cartId = bookDetail?.book?.cartDetails?.id;
+        if (isDefined(cartId)) {
+            removeFromCart({ variables: { id: cartId } });
+        }
+    }, [removeFromCart, bookDetail?.book?.cartDetails?.id]);
+
+    const handleUpdateQuantityClick = React.useCallback((quantity: number | undefined) => {
+        const cartId = bookDetail?.book?.cartDetails?.id;
+        const bookId = bookDetail?.book?.id;
+
+        if (isDefined(cartId) && isDefined(bookId) && quantity && quantity > 0) {
+            updateCart({
+                variables: {
+                    id: cartId,
+                    bookId,
+                    quantity,
+                },
+            });
+        }
+    }, [updateCart, bookDetail?.book?.id, bookDetail?.book?.cartDetails?.id]);
+
+    const isAlreadyInCart = (bookDetail?.book?.cartDetails?.quantity ?? 0) > 0;
 
     return (
         <div className={styles.bookDetail}>
@@ -203,6 +334,22 @@ function BookDetail() {
                                 )}
                             </div>
                             <div className={styles.actions}>
+                                {isAlreadyInCart && (
+                                    <div className={styles.cartDetails}>
+                                        <div className={styles.cartQuantityInfo}>
+                                            {`${bookDetail.book.cartDetails?.quantity} item(s) in the cart`}
+                                        </div>
+                                        <Button
+                                            className={styles.removeButton}
+                                            name="remove-from-cart"
+                                            variant="transparent"
+                                            icons={<IoTrash />}
+                                            onClick={handleRemoveFromCart}
+                                        >
+                                            Remove from Cart
+                                        </Button>
+                                    </div>
+                                )}
                                 <div className={styles.primaryAction}>
                                     <NumberInput
                                         className={styles.quantityInput}
@@ -212,53 +359,40 @@ function BookDetail() {
                                         onChange={setCartQuantity}
                                         variant="general"
                                         type="number"
-                                        readOnly={!!bookDetail.book.quantityInCart}
                                     />
-                                    <NumberInput
-                                        className={styles.pricePreview}
-                                        name="item-price"
-                                        label="Price (NPR)"
-                                        value={bookDetail.book.price}
-                                        variant="general"
-                                        type="number"
-                                        readOnly
-                                    />
-                                    <NumberInput
-                                        className={styles.totalPreview}
-                                        name="total-price"
-                                        label="Total (NPR)"
-                                        value={(
-                                            (cartQuantity && cartQuantity > 0)
-                                                ? bookDetail.book.price * cartQuantity
-                                                : undefined
-                                        )}
-                                        variant="general"
-                                        type="number"
-                                        readOnly
-                                    />
+                                    {isAlreadyInCart ? (
+                                        <Button
+                                            name={cartQuantity}
+                                            variant="primary"
+                                            disabled={isNotDefined(cartQuantity)
+                                                || cartQuantity < 1
+                                                || cartQuantity === bookDetail
+                                                    .book.cartDetails?.quantity}
+                                            onClick={handleUpdateQuantityClick}
+                                        >
+                                            Update Quantity
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            name={cartQuantity}
+                                            variant="primary"
+                                            disabled={isNotDefined(cartQuantity)
+                                                || cartQuantity < 1}
+                                            onClick={handleAddToCartClick}
+                                        >
+                                            Add to Cart
+                                        </Button>
+                                    )}
                                 </div>
                                 <div className={styles.otherActions}>
                                     <Button
-                                        name="add-to-cart"
-                                        variant="primary"
-                                        disabled={isNotDefined(cartQuantity) || cartQuantity < 1}
-                                    >
-                                        { bookDetail.book.quantityInCart ? 'Remove from Cart' : 'Add to Cart' }
-                                    </Button>
-                                    <Button
                                         name={undefined}
-                                        variant="secondary"
+                                        variant="tertiary"
                                         onClick={setShowOrderConfirmModal}
                                         disabled={isNotDefined(cartQuantity) || cartQuantity < 1}
+                                        title="Place order immediately without adding it to cart"
                                     >
-                                        Buy Now
-                                    </Button>
-                                    <Button
-                                        name={bookDetail.book.wishlistId ?? undefined}
-                                        variant="secondary"
-                                        onClick={addToWishList}
-                                    >
-                                        {bookDetail.book.wishlistId ? 'Remove from wishilist' : 'Add to wishlist'}
+                                        Quick Buy
                                     </Button>
                                 </div>
                             </div>
@@ -268,8 +402,18 @@ function BookDetail() {
                                 className={styles.details}
                                 heading={bookDetail.book.title}
                                 headingDescription={authorsDisplay}
+                                headerActions={(
+                                    <Button
+                                        name={bookDetail.book.wishlistId ?? undefined}
+                                        variant="tertiary"
+                                        onClick={addToWishList}
+                                        disabled={isAlreadyInCart}
+                                    >
+                                        {bookDetail.book.wishlistId ? 'Remove from Wishilist' : 'Add to Wishlist'}
+                                    </Button>
+                                )}
                                 headerDescription={(
-                                    <div className={styles.headerDescription}>
+                                    <div className={styles.bookMeta}>
                                         <TextOutput
                                             label="Price (NPR)"
                                             value={bookDetail.book.price}
@@ -330,6 +474,7 @@ function BookDetail() {
             </div>
             {orderConfirmModalShown && bookDetail?.book && (
                 <OrderConfirmModal
+                    initialQuantity={cartQuantity}
                     bookId={bookDetail?.book?.id}
                     book={bookDetail?.book}
                     onClose={hideOrderConfirmModal}

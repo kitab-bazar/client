@@ -6,7 +6,7 @@ import {
     Modal,
     useAlert,
     Button,
-    Container,
+    Message,
     NumberInput,
     TextOutput,
 } from '@the-deep/deep-ui';
@@ -18,6 +18,7 @@ import { isDefined } from '@togglecorp/fujs';
 import {
     SingleOrderMutation,
     SingleOrderMutationVariables,
+    BookDetailQuery,
 } from '#generated/types';
 
 import styles from './styles.css';
@@ -40,23 +41,19 @@ mutation SingleOrder($bookId: Int!, $qty: Int!) {
 interface Props {
     bookId: string;
     onClose: () => void;
-    book: {
-        title: string;
-        price: number;
-    };
+    book: NonNullable<BookDetailQuery['book']>;
+    initialQuantity: number | undefined,
 }
 
 function OrderPage(props: Props) {
     const {
         bookId,
-        book: {
-            title,
-            price,
-        },
+        book,
         onClose,
+        initialQuantity,
     } = props;
 
-    const [quantity, setQuantity] = useState<number>(1);
+    const [quantity, setQuantity] = useState<number>(initialQuantity || 1);
 
     const alert = useAlert();
 
@@ -71,24 +68,16 @@ function OrderPage(props: Props) {
         {
             onCompleted: (response) => {
                 if (response?.placeSingleOrder?.ok) {
-                    alert.show(
-                        `Order #
-                        ${response?.placeSingleOrder?.result?.orderCode}
-                        For Total Price: NPR
-                        ${response?.placeSingleOrder?.result?.totalPrice}
-                        Order Status:
-                        ${response?.placeSingleOrder?.result?.status}`,
-                        {
-                            variant: 'success',
-                        },
-                    );
+                    alert.show(`
+                        Order # ${response?.placeSingleOrder?.result?.orderCode}
+                        For Total Price: NPR ${response?.placeSingleOrder?.result?.totalPrice}
+                        Order Status: ${response?.placeSingleOrder?.result?.status}
+                    `, { variant: 'success' });
                     onClose();
                 } else {
                     alert.show(
                         'Failed to place order',
-                        {
-                            variant: 'error',
-                        },
+                        { variant: 'error' },
                     );
                 }
             },
@@ -116,61 +105,60 @@ function OrderPage(props: Props) {
 
     return (
         <Modal
+            size="small"
             onCloseButtonClick={onClose}
-            className={styles.orderList}
-            heading="Confirm Order"
+            className={styles.orderConfirmModal}
+            bodyClassName={styles.content}
+            heading={book.title}
+            headingSize="small"
             footerActions={(
                 <Button
                     name="submit"
-                    variant="secondary"
+                    variant="primary"
                     onClick={submit}
-                    disabled={loading}
+                    disabled={loading || !quantity || quantity < 1}
                 >
                     Confirm Order
                 </Button>
             )}
         >
-            <Container
-                className={styles.container}
-                heading={(
-                    <TextOutput
-                        label="Book Name"
-                        value={title}
+            <div className={styles.preview}>
+                {book?.image?.url ? (
+                    <img
+                        className={styles.image}
+                        src={book.image.url}
+                        alt={book.title}
+                    />
+                ) : (
+                    <Message
+                        message="Preview not available"
                     />
                 )}
-                spacing="loose"
-                borderBelowHeader
-                /*
-                footerActions={(
-                    <Button
-                        name={undefined}
-                        onClick={undefined}
-                        variant="secondary"
-                        icons={<IoCashOutline />}
-                    >
-                        Cash On Delivery
-                    </Button>
-                )}
-                */
-                contentClassName={styles.content}
-            >
-                <NumberInput
-                    name="quantity"
+            </div>
+            <div className={styles.details}>
+                <TextOutput
                     label="Quantity"
-                    value={quantity}
-                    onChange={handleQuantityChange}
+                    value={(
+                        <NumberInput
+                            className={styles.quantityInput}
+                            name="quantity"
+                            value={quantity}
+                            onChange={handleQuantityChange}
+                            type="number"
+                        />
+                    )}
                 />
                 <TextOutput
                     label="Price (NPR)"
                     valueType="number"
-                    value={price}
+                    value={book.price}
                 />
                 <TextOutput
                     label="Amount (NPR)"
                     valueType="number"
-                    value={isDefined(quantity) ? price * quantity : 0}
+                    value={isDefined(quantity) ? book.price * quantity : 0}
                 />
-            </Container>
+            </div>
         </Modal>
     );
 }

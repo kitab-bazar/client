@@ -49,11 +49,6 @@
             }
         }
 
-        .segment-label {
-            display: flex;
-            align-items: center;
-        }
-
         .search-input-container {
             display: flex;
             flex-grow: 1;

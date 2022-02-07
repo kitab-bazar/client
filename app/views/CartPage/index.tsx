@@ -1,8 +1,5 @@
-import React, {
-    useState,
-} from 'react';
+import React from 'react';
 import {
-    Pager,
     Button,
     ListView,
     Message,
@@ -11,6 +8,7 @@ import {
     Heading,
     Container,
     Checkbox,
+    useAlert,
 } from '@the-deep/deep-ui';
 import {
     _cs,
@@ -34,8 +32,8 @@ import {
 import styles from './styles.css';
 
 const CART_LIST = gql`
-query CartList($email: ID!, $page: Int!, $pageSize: Int!) {
-    cartItems(createdBy: $email, page: $page, pageSize: $pageSize) {
+query CartList {
+    cartItems {
         results {
             id
             totalPrice
@@ -62,8 +60,8 @@ query CartList($email: ID!, $page: Int!, $pageSize: Int!) {
 `;
 
 const ORDER_FROM_CART = gql`
-mutation CheckOutCart {
-    placeOrderFromCart {
+mutation CheckOutCart($cartItems: [Int!]!) {
+    placeOrderFromCart(data: { cartItemIds: $cartItems }) {
         errors
         ok
         result {
@@ -98,7 +96,6 @@ function CartItem(props: CartItemProps) {
 
     const {
         id,
-        // quantity,
         book,
     } = cart;
 
@@ -167,12 +164,11 @@ interface Props {
 
 function CartPage(props: Props) {
     const { className } = props;
-    const [page, setPage] = useState<number>(1);
-    const [pageSize, setPageSize] = useState<number>(10);
-    const [email] = useState<string>(''); // TODO: need to discuss
 
     const [selectedItems, setSelectedItems] = React.useState<Record<string, boolean>>({});
     const [itemCounts, setItemCounts] = React.useState<Record<string, number>>({});
+
+    const alert = useAlert();
 
     const {
         data: result,
@@ -181,11 +177,6 @@ function CartPage(props: Props) {
     } = useQuery<CartListQuery, CartListQueryVariables>(
         CART_LIST,
         {
-            variables: {
-                page,
-                pageSize,
-                email,
-            },
             onCompleted: (response) => {
                 if (!response?.cartItems) {
                     return;
@@ -202,22 +193,38 @@ function CartPage(props: Props) {
 
     const [
         placeOrderFromCart,
-        {
-            loading: submitting,
-        },
+        { loading: submitting },
     ] = useMutation<CheckOutCartMutation, CheckOutCartMutationVariables>(
         ORDER_FROM_CART,
         {
-            onCompleted: () => refetch(),
+            onCompleted: (response) => {
+                if (response?.placeOrderFromCart?.ok) {
+                    alert.show(
+                        'Your order was placed successfully!',
+                        { variant: 'success' },
+                    );
+                    refetch();
+                } else {
+                    alert.show(
+                        'Failed to place the Order!',
+                        { variant: 'error' },
+                    );
+                }
+            },
         },
     );
 
     const pending = loading || submitting;
     const carts = (result?.cartItems?.results) ? result.cartItems.results : [];
 
-    const checkout = () => {
-        placeOrderFromCart();
-    };
+    const handleOrderNowClick = React.useCallback(() => {
+        const selectedKeys = Object.keys(selectedItems)
+            .filter((k) => selectedItems[k])
+            .map((k) => Number(k));
+        if (selectedKeys.length > 0) {
+            placeOrderFromCart({ variables: { cartItems: selectedKeys } });
+        }
+    }, [placeOrderFromCart, selectedItems]);
 
     const handleCartSelectionChange = React.useCallback((newValue, id) => {
         setSelectedItems((oldValue) => ({
@@ -247,13 +254,21 @@ function CartPage(props: Props) {
     ] = React.useMemo(() => {
         const selectedItemKeys = Object.keys(itemCounts).filter((k) => selectedItems[k]);
         const totalCount = sum(selectedItemKeys.map((k) => itemCounts[k]));
-        // listToMap(cart, d => d.
+        const priceMap = listToMap(
+            result?.cartItems?.results,
+            (d) => d.id,
+            (d) => d.book.price,
+        );
+
+        const total = priceMap
+            ? sum(selectedItemKeys.map((k) => itemCounts[k] * priceMap[k]))
+            : undefined;
 
         return [
             totalCount,
-            undefined,
+            total,
         ];
-    }, [itemCounts, selectedItems]);
+    }, [itemCounts, selectedItems, result?.cartItems?.results]);
 
     return (
         <div className={_cs(styles.cartPage, className)}>
@@ -262,15 +277,8 @@ function CartPage(props: Props) {
                     className={styles.pageHeading}
                     size="extraLarge"
                 >
-                    Shopping Cart
+                    My Cart
                 </Heading>
-                <Pager
-                    activePage={page}
-                    maxItemsPerPage={pageSize}
-                    itemsCount={result?.cartItems?.totalCount ?? 0}
-                    onActivePageChange={setPage}
-                    onItemsPerPageChange={setPageSize}
-                />
                 <div className={styles.content}>
                     <ListView
                         className={_cs(styles.list, carts.length === 0 && styles.empty)}
@@ -305,20 +313,20 @@ function CartPage(props: Props) {
                     >
                         <TextOutput
                             label="Number of Items"
-                            value={0}
+                            value={totalItemCount}
                             valueType="number"
                         />
                         <TextOutput
                             label="Total Amount (NPR)"
-                            value={2000}
+                            value={totalPrice}
                             valueType="number"
                         />
                         <div className={styles.actions}>
                             <Button
                                 name={undefined}
                                 variant="secondary"
-                                onClick={checkout}
-                                disabled={loading}
+                                onClick={handleOrderNowClick}
+                                disabled={loading || !totalItemCount}
                             >
                                 Order Now
                             </Button>

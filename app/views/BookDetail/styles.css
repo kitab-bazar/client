@@ -20,7 +20,7 @@
                 gap: var(--dui-spacing-medium);
 
                 .preview {
-                    width: 20rem;
+                    width: calc(20rem + 5vw);
                     height: auto;
 
                     .image {
@@ -33,58 +33,56 @@
 
                 .actions {
                     display: flex;
-                    align-items: flex-end;
                     flex-direction: column;
-                    gap: var(--dui-spacing-medium);
+                    gap: var(--dui-spacing-large);
 
-                    .price-preview,
-                    .total-preview,
-                    .quantity-input {
-                        width: 5rem;
+                    .cart-details {
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+
+                        .cart-quantity-info {
+                            font-weight: var(--dui-font-weight-medium);
+                        }
+
+                        .remove-button {
+                            color: var(--dui-color-accent);
+                        }
                     }
 
                     .primary-action {
                         display: flex;
                         align-items: flex-end;
                         gap: var(--dui-spacing-small);
+
+                        .quantity-input {
+                            width: 4rem;
+                        }
                     }
 
                     .other-actions {
                         display: flex;
-                        align-items: flex-end;
                         flex-direction: column;
-                        gap: var(--dui-spacing-medium);
+                        gap: var(--dui-spacing-small);
                     }
                 }
             }
 
             .right-column {
                 flex-grow: 1;
-            }
-        }
 
-        .meta-data {
-            display: flex;
-            height: 20rem;
-            overflow: auto;
+                .details {
+                    overflow: auto;
 
-            .details {
-                flex-grow: 1;
-                overflow: auto;
-
-                .header-description {
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--dui-spacing-small);
+                    .book-meta {
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--dui-spacing-small);
+                    }
                 }
             }
         }
 
-        .other-details {
-            .book-content-preview {
-                padding: var(--dui-spacing-large);
-            }
-        }
     }
 
     .no-detail {

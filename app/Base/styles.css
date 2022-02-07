@@ -2,9 +2,10 @@
     --dui-font-weight-light: 400;
     --dui-font-weight-medium: 400;
     --dui-font-weight-bold: 700;
-    --dui-color-primary: #383d46;
+    --dui-color-primary: #122344;
+    --dui-color-brand: #122344;
     --dui-color-accent: #00adb5;
-    --dui-color-background: #eeeeee;
+    --dui-color-background: #f3f3f3;
     --dui-color-text: #414141;
     --dui-font-family-sans-serif: 'PT Sans', 'Noto Serif Devanagari', sans-serif;
     --dui-color-background-hover-primary-button: #0098a6;
@@ -16,7 +17,7 @@
     --dui-font-size-extra-large: 1.5rem;
     --dui-font-size-super-large: 2rem;
 
-    --kitab-page-max-width: 90rem;
+    --kitab-page-max-width: 76rem;
 
 }
 
