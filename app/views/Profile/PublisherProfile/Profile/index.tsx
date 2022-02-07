@@ -16,6 +16,7 @@ import {
     PublisherProfileQuery,
     PublisherProfileQueryVariables,
 } from '#generated/types';
+
 import EditPublisherProfileModal from './EditPublisherProfileModal';
 
 import styles from './styles.css';
@@ -66,10 +67,16 @@ function Profile() {
 
     const {
         data: profileDetails,
+        refetch: refetchProfileDetails,
         loading,
     } = useQuery<PublisherProfileQuery, PublisherProfileQueryVariables>(
         PUBLISHER_PROFILE,
     );
+
+    const publisherDetails = {
+        ...profileDetails?.me?.publisher,
+        municipality: profileDetails?.me?.publisher?.municipality.id,
+    };
 
     return (
         <Container
@@ -142,6 +149,8 @@ function Profile() {
             {editProfileModalShown && (
                 <EditPublisherProfileModal
                     onModalClose={hideEditProfileModal}
+                    onEditSuccess={refetchProfileDetails}
+                    profileDetails={publisherDetails}
                 />
             )}
         </Container>

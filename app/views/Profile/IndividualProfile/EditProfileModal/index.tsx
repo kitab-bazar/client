@@ -23,12 +23,6 @@ import {
 import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
 import styles from './styles.css';
 
-interface UpdateIndividualProfileFields {
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
-}
-
 const UPDATE_INDIVIDUAL_PROFILE = gql`
     mutation UpdateIndividualProfile(
         $firstName: String,
@@ -46,9 +40,9 @@ const UPDATE_INDIVIDUAL_PROFILE = gql`
     }
 `;
 
-type FormType = Partial<UpdateIndividualProfileFields>;
-
-type FormSchema = ObjectSchema<PartialForm<FormType>>;
+type FormType = NonNullable<UpdateIndividualProfileMutationVariables>;
+type PartialFormType = PartialForm<FormType>;
+type FormSchema = ObjectSchema<PartialFormType>;
 
 type FormSchemaFields = ReturnType<FormSchema['fields']>;
 
@@ -66,11 +60,7 @@ const schema: FormSchema = {
 interface Props {
     onModalClose: () => void;
     onEditSuccess: () => void;
-    profileDetails?: {
-        firstName?: string;
-        lastName?: string;
-        phoneNumber?: string;
-    };
+    profileDetails: PartialFormType | undefined | null;
 }
 
 function EditProfileModal(props: Props) {
@@ -80,10 +70,10 @@ function EditProfileModal(props: Props) {
         profileDetails,
     } = props;
 
-    const initialValue = useMemo((): FormType => ({
+    const initialValue: PartialFormType = useMemo(() => ({
         firstName: profileDetails?.firstName,
         lastName: profileDetails?.lastName,
-        phoneNumber: profileDetails?.phoneNumber ?? undefined,
+        phoneNumber: profileDetails?.phoneNumber,
     }), [
         profileDetails?.firstName,
         profileDetails?.lastName,
