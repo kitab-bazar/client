@@ -171,7 +171,7 @@ function Base() {
     }), [lang, setLang]);
 
     return (
-        <div className={_cs(styles.base, lang === 'ne' && styles.np)}>
+        <div className={_cs(styles.base, lang === 'ne' && styles.ne)}>
             <ErrorBoundary
                 showDialog
                 fallback={(

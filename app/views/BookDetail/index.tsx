@@ -341,7 +341,7 @@ function BookDetail() {
                                         </div>
                                         <Button
                                             className={styles.removeButton}
-                                            name="remove-from-cart"
+                                            name={undefined}
                                             variant="transparent"
                                             icons={<IoTrash />}
                                             onClick={handleRemoveFromCart}
@@ -354,7 +354,7 @@ function BookDetail() {
                                     <NumberInput
                                         className={styles.quantityInput}
                                         label="Quanitity"
-                                        name="number-of-items"
+                                        name={undefined}
                                         value={cartQuantity}
                                         onChange={setCartQuantity}
                                         variant="general"

@@ -81,7 +81,7 @@ interface CartItemProps {
     cart: Cart;
     isSelected: boolean;
     onSelectionChange: (newValue: boolean, id: string) => void;
-    quantity: number,
+    quantity: number | undefined;
     onQuantityChange: (newValue: number | undefined, id: string) => void;
 }
 
@@ -166,7 +166,7 @@ function CartPage(props: Props) {
     const { className } = props;
 
     const [selectedItems, setSelectedItems] = React.useState<Record<string, boolean>>({});
-    const [itemCounts, setItemCounts] = React.useState<Record<string, number>>({});
+    const [itemCounts, setItemCounts] = React.useState<Record<string, number | undefined>>({});
 
     const alert = useAlert();
 
@@ -181,12 +181,9 @@ function CartPage(props: Props) {
                 if (!response?.cartItems) {
                     return;
                 }
-                setSelectedItems({
-                    ...listToMap(response.cartItems.results, (d) => d.id, () => true),
-                });
-                setItemCounts({
-                    ...listToMap(response.cartItems.results, (d) => d.id, (d) => d.quantity),
-                });
+                const cartItems = response.cartItems.results ?? [];
+                setSelectedItems(listToMap(cartItems, (d) => d.id, () => true));
+                setItemCounts(listToMap(cartItems, (d) => d.id, (d) => d.quantity));
             },
         },
     );
@@ -226,21 +223,21 @@ function CartPage(props: Props) {
         }
     }, [placeOrderFromCart, selectedItems]);
 
-    const handleCartSelectionChange = React.useCallback((newValue, id) => {
+    const handleCartSelectionChange = React.useCallback((newValue: boolean, id: string) => {
         setSelectedItems((oldValue) => ({
             ...oldValue,
             [id]: newValue,
         }));
     }, []);
 
-    const handleQuantityChange = React.useCallback((newValue, id) => {
+    const handleQuantityChange = React.useCallback((newValue: number | undefined, id: string) => {
         setItemCounts((oldValue) => ({
             ...oldValue,
             [id]: newValue,
         }));
     }, []);
 
-    const cartItemRendererParams = React.useCallback((_, data: Cart) => ({
+    const cartItemRendererParams = React.useCallback((_, data: Cart): CartItemProps => ({
         cart: data,
         isSelected: selectedItems[data.id],
         quantity: itemCounts[data.id],
@@ -253,7 +250,7 @@ function CartPage(props: Props) {
         totalPrice,
     ] = React.useMemo(() => {
         const selectedItemKeys = Object.keys(itemCounts).filter((k) => selectedItems[k]);
-        const totalCount = sum(selectedItemKeys.map((k) => itemCounts[k]));
+        const totalCount = sum(selectedItemKeys.map((k) => itemCounts[k] ?? 0));
         const priceMap = listToMap(
             result?.cartItems?.results,
             (d) => d.id,
@@ -261,7 +258,7 @@ function CartPage(props: Props) {
         );
 
         const total = priceMap
-            ? sum(selectedItemKeys.map((k) => itemCounts[k] * priceMap[k]))
+            ? sum(selectedItemKeys.map((k) => (itemCounts[k] ?? 0) * priceMap[k]))
             : undefined;
 
         return [

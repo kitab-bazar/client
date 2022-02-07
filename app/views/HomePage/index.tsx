@@ -24,7 +24,7 @@ import {
     FeaturedBooksQueryVariables,
 } from '#generated/types';
 
-import coverImage from '#resources/img/cover.jpg';
+import coverImage from '#resources/img/cover.png';
 import styles from './styles.css';
 
 const FEATURED_BOOKS = gql`

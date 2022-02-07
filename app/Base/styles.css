@@ -28,7 +28,7 @@
     height: 100vh;
     overflow: auto;
 
-    &.np {
+    &.ne {
         line-height: 1.25;
     }
 
