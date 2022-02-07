@@ -22,8 +22,8 @@ import { _cs } from '@togglecorp/fujs';
 import {
     IndividualProfileQuery,
     IndividualProfileQueryVariables,
-    OrderListQuery,
-    OrderListQueryVariables,
+    OrderListIndividualQuery,
+    OrderListIndividualQueryVariables,
     OrderType,
 } from '#generated/types';
 import routes from '#base/configs/routes';
@@ -50,8 +50,8 @@ const INDIVIDUAL_PROFILE = gql`
     }
 `;
 
-const ORDER_LIST = gql`
-    query OrderList(
+const ORDER_LIST_INDIVIDUAL = gql`
+    query OrderListIndividual(
         $pageSize: Int,
         $page: Int,
     ) {
@@ -123,8 +123,8 @@ function IndividualProfile(props: Props) {
         data: orderList,
         loading,
         error,
-    } = useQuery<OrderListQuery, OrderListQueryVariables>(
-        ORDER_LIST,
+    } = useQuery<OrderListIndividualQuery, OrderListIndividualQueryVariables>(
+        ORDER_LIST_INDIVIDUAL,
         { variables: orderVariables },
     );
 
