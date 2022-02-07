@@ -1,36 +1,39 @@
-import React, {
-    useCallback,
-    useState,
-} from 'react';
+import React from 'react';
 import {
-    Pager,
     Button,
-    Container,
     ListView,
     Message,
     NumberInput,
     TextOutput,
+    Heading,
+    Container,
+    Checkbox,
+    useAlert,
 } from '@the-deep/deep-ui';
+import {
+    _cs,
+    listToMap,
+    sum,
+} from '@togglecorp/fujs';
 import {
     gql,
     useMutation,
     useQuery,
 } from '@apollo/client';
-import { IoTrash } from 'react-icons/io5';
+import { IoList } from 'react-icons/io5';
+
 import {
     CartListQuery,
     CartListQueryVariables,
     CheckOutCartMutation,
     CheckOutCartMutationVariables,
-    DeleteCartItemsMutation,
-    DeleteCartItemsMutationVariables,
 } from '#generated/types';
 
 import styles from './styles.css';
 
 const CART_LIST = gql`
-query CartList($email: ID!, $page: Int!, $pageSize: Int!) {
-    cartItems(createdBy: $email, page: $page, pageSize: $pageSize) {
+query CartList {
+    cartItems {
         results {
             id
             totalPrice
@@ -56,18 +59,9 @@ query CartList($email: ID!, $page: Int!, $pageSize: Int!) {
 }
 `;
 
-const DELETE_CART_ITEMS = gql`
-mutation DeleteCartItems($id: ID!) {
-    deleteCartItem(id: $id) {
-        errors
-        ok
-    }
-}
-`;
-
 const ORDER_FROM_CART = gql`
-mutation CheckOutCart {
-    placeOrderFromCart {
+mutation CheckOutCart($cartItems: [ID!]) {
+    placeOrderFromCart(data: { cartItemIds: $cartItems }) {
         errors
         ok
         result {
@@ -83,25 +77,31 @@ mutation CheckOutCart {
 type Cart = NonNullable<NonNullable<CartListQuery['cartItems']>['results']>[number];
 const cartKeySelector = (c: Cart) => c.id;
 
-interface CartProps {
+interface CartItemProps {
     cart: Cart;
-    deleteCart: (id: string) => void;
+    isSelected: boolean;
+    onSelectionChange: (newValue: boolean, id: string) => void;
+    quantity: number | undefined;
+    onQuantityChange: (newValue: number | undefined, id: string) => void;
 }
 
-function CartContent(props: CartProps) {
+function CartItem(props: CartItemProps) {
     const {
         cart,
-        deleteCart,
+        onSelectionChange,
+        isSelected,
+        quantity,
+        onQuantityChange,
     } = props;
 
     const {
         id,
-        quantity,
         book,
     } = cart;
 
     const {
-        title, image,
+        title,
+        image,
         authors,
         price,
     } = book;
@@ -111,21 +111,13 @@ function CartContent(props: CartProps) {
     ), [authors]);
 
     return (
-        <Container
-            className={styles.container}
-            heading={title}
-            footerActions={(
-                <Button
-                    name={id}
-                    variant="secondary"
-                    icons={<IoTrash />}
-                    onClick={deleteCart}
-                >
-                    Remove
-                </Button>
-            )}
-            contentClassName={styles.content}
-        >
+        <div className={styles.cartItem}>
+            <Checkbox
+                className={styles.isSelectedCheckbox}
+                name={id}
+                value={isSelected}
+                onChange={onSelectionChange}
+            />
             <div className={styles.imageContainer}>
                 {image?.url ? (
                     <img
@@ -140,8 +132,11 @@ function CartContent(props: CartProps) {
                 )}
             </div>
             <div className={styles.details}>
+                <div className={styles.title}>
+                    {title}
+                </div>
                 <TextOutput
-                    label="author"
+                    label="Author"
                     value={authorsDisplay}
                 />
                 <TextOutput
@@ -150,20 +145,30 @@ function CartContent(props: CartProps) {
                     value={price}
                 />
                 <NumberInput
+                    className={styles.quantityInput}
                     label="Quantity"
                     name="quantity"
                     value={quantity}
-                    onChange={undefined}
+                    variant="general"
+                    onChange={onQuantityChange}
+                    type="number"
                 />
             </div>
-        </Container>
+        </div>
     );
 }
 
-function CartPage() {
-    const [page, setPage] = useState<number>(1);
-    const [pageSize, setPageSize] = useState<number>(10);
-    const [email] = useState<string>(''); // TODO: need to discuss
+interface Props {
+    className?: string;
+}
+
+function CartPage(props: Props) {
+    const { className } = props;
+
+    const [selectedItems, setSelectedItems] = React.useState<Record<string, boolean>>({});
+    const [itemCounts, setItemCounts] = React.useState<Record<string, number | undefined>>({});
+
+    const alert = useAlert();
 
     const {
         data: result,
@@ -172,85 +177,161 @@ function CartPage() {
     } = useQuery<CartListQuery, CartListQueryVariables>(
         CART_LIST,
         {
-            variables: {
-                page,
-                pageSize,
-                email,
+            onCompleted: (response) => {
+                if (!response?.cartItems) {
+                    return;
+                }
+                const cartItems = response.cartItems.results ?? [];
+                setSelectedItems(listToMap(cartItems, (d) => d.id, () => true));
+                setItemCounts(listToMap(cartItems, (d) => d.id, (d) => d.quantity));
             },
-        },
-    );
-
-    const [deleteCartItem] = useMutation<DeleteCartItemsMutation, DeleteCartItemsMutationVariables>(
-        DELETE_CART_ITEMS,
-        {
-            onCompleted: () => refetch(),
         },
     );
 
     const [
         placeOrderFromCart,
-        {
-            loading: submitting,
-        },
+        { loading: submitting },
     ] = useMutation<CheckOutCartMutation, CheckOutCartMutationVariables>(
         ORDER_FROM_CART,
         {
-            onCompleted: () => refetch(),
+            onCompleted: (response) => {
+                if (response?.placeOrderFromCart?.ok) {
+                    alert.show(
+                        'Your order was placed successfully!',
+                        { variant: 'success' },
+                    );
+                    refetch();
+                } else {
+                    alert.show(
+                        'Failed to place the Order!',
+                        { variant: 'error' },
+                    );
+                }
+            },
         },
     );
 
     const pending = loading || submitting;
     const carts = (result?.cartItems?.results) ? result.cartItems.results : [];
 
-    const removeCartItem = useCallback((id: string) => {
-        deleteCartItem({
-            variables: { id },
-        });
-    }, [deleteCartItem]);
+    const handleOrderNowClick = React.useCallback(() => {
+        const selectedKeys = Object.keys(selectedItems)
+            .filter((k) => selectedItems[k])
+            .map((k) => Number(k));
+        if (selectedKeys.length > 0) {
+            placeOrderFromCart({ variables: { cartItems: selectedKeys } });
+        }
+    }, [placeOrderFromCart, selectedItems]);
 
-    const checkout = () => {
-        placeOrderFromCart();
-    };
+    const handleCartSelectionChange = React.useCallback((newValue: boolean, id: string) => {
+        setSelectedItems((oldValue) => ({
+            ...oldValue,
+            [id]: newValue,
+        }));
+    }, []);
 
-    const cartItemRendererParams = React.useCallback((_, data: Cart) => ({
+    const handleQuantityChange = React.useCallback((newValue: number | undefined, id: string) => {
+        setItemCounts((oldValue) => ({
+            ...oldValue,
+            [id]: newValue,
+        }));
+    }, []);
+
+    const cartItemRendererParams = React.useCallback((_, data: Cart): CartItemProps => ({
         cart: data,
-        deleteCart: removeCartItem,
-    }), [removeCartItem]);
+        isSelected: selectedItems[data.id],
+        quantity: itemCounts[data.id],
+        onQuantityChange: handleQuantityChange,
+        onSelectionChange: handleCartSelectionChange,
+    }), [handleCartSelectionChange, selectedItems, handleQuantityChange, itemCounts]);
+
+    const [
+        totalItemCount,
+        totalPrice,
+    ] = React.useMemo(() => {
+        const selectedItemKeys = Object.keys(itemCounts).filter((k) => selectedItems[k]);
+        const totalCount = sum(selectedItemKeys.map((k) => itemCounts[k] ?? 0));
+        const priceMap = listToMap(
+            result?.cartItems?.results,
+            (d) => d.id,
+            (d) => d.book.price,
+        );
+
+        const total = priceMap
+            ? sum(selectedItemKeys.map((k) => (itemCounts[k] ?? 0) * priceMap[k]))
+            : undefined;
+
+        return [
+            totalCount,
+            total,
+        ];
+    }, [itemCounts, selectedItems, result?.cartItems?.results]);
 
     return (
-        <Container
-            className={styles.wishList}
-            heading="My Cart"
-            footerIcons={(
-                <Pager
-                    activePage={page}
-                    maxItemsPerPage={pageSize}
-                    itemsCount={result?.cartItems?.totalCount ?? 0}
-                    onActivePageChange={setPage}
-                    onItemsPerPageChange={setPageSize}
-                />
-            )}
-            footerActions={carts.length > 0 && (
-                <Button
-                    name={undefined}
-                    variant="secondary"
-                    onClick={checkout}
-                    disabled={loading}
+        <div className={_cs(styles.cartPage, className)}>
+            <div className={styles.container}>
+                <Heading
+                    className={styles.pageHeading}
+                    size="extraLarge"
                 >
-                    Order
-                </Button>
-            )}
-        >
-            <ListView
-                data={carts}
-                keySelector={cartKeySelector}
-                rendererParams={cartItemRendererParams}
-                renderer={CartContent}
-                errored={false}
-                pending={pending}
-                filtered={false}
-            />
-        </Container>
+                    My Cart
+                </Heading>
+                <div className={styles.content}>
+                    <ListView
+                        className={_cs(styles.list, carts.length === 0 && styles.empty)}
+                        data={carts}
+                        keySelector={cartKeySelector}
+                        rendererParams={cartItemRendererParams}
+                        renderer={CartItem}
+                        errored={false}
+                        pending={pending}
+                        filtered={false}
+                        messageShown
+                        emptyMessage={(
+                            <div className={styles.emptyMessage}>
+                                <IoList className={styles.icon} />
+                                <div className={styles.text}>
+                                    <div className={styles.primary}>
+                                        Your Shopping Cart is currently empty
+                                    </div>
+                                    <div className={styles.suggestion}>
+                                        Add Books that you want to buy by clicking on Add to Cart
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    />
+                    <Container
+                        className={styles.summary}
+                        heading="Order Summary"
+                        headingSize="extraSmall"
+                        contentClassName={styles.summaryContent}
+                        spacing="loose"
+                    >
+                        <TextOutput
+                            label="Number of Items"
+                            value={totalItemCount}
+                            valueType="number"
+                        />
+                        <TextOutput
+                            label="Total Amount (NPR)"
+                            value={totalPrice}
+                            valueType="number"
+                        />
+                        <div className={styles.actions}>
+                            <Button
+                                name={undefined}
+                                variant="secondary"
+                                onClick={handleOrderNowClick}
+                                disabled={loading || !totalItemCount}
+                            >
+                                Order Now
+                            </Button>
+                        </div>
+                    </Container>
+                </div>
+            </div>
+        </div>
     );
 }
 

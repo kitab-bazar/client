@@ -53,6 +53,7 @@ const LOGIN = gql`
                 fullName
                 id
                 userType
+                allowedPermissions
             }
         }
     }
@@ -135,6 +136,7 @@ function LoginForm() {
                         id: safeUser.id,
                         displayName: safeUser.fullName,
                         type: safeUser.userType,
+                        permissions: safeUser.allowedPermissions,
                     });
                 }
             },

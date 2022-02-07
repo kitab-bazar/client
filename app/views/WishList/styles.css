@@ -1,31 +1,101 @@
 .wishlist {
     display: flex;
+    align-items: center;
     flex-direction: column;
-    margin-right: auto;
-    margin-left: auto;
+    background-color: var(--dui-foreground);
+    padding: var(--dui-spacing-large);
 
     .container {
-        display: flex;
-        flex-direction: column;
-        min-width: 720px;
-        max-width: 1200px;
-        overflow: auto;
-        gap: var(--dui-spacing-extra-large);
+        width: 100%;
+        max-width: var(--kitab-page-max-width);
 
-        .content {
+        .page-heading {
+            padding: var(--dui-spacing-medium);
+        }
+
+        .list {
             display: flex;
-            gap: var(--dui-spacing-small);
+            flex-wrap: wrap;
+            padding: var(--dui-spacing-medium);
+            gap: var(--dui-spacing-super-large);
 
-            .image-container {
-                .image {
-                    width: 56px;
-                }
+            &.empty {
+                align-items: center;
+                justify-content: center;
             }
 
-            .details {
+            .wishlist-item {
+                display: flex;
+                border: var(--dui-width-separator-thin) solid var(--dui-color-separator);
+                gap: var(--dui-spacing-small);
+
+                .image-container {
+                    display: flex;
+                    align-items: center;
+
+                    .image {
+                        margin: 0;
+                        padding: 0;
+                        height: 16rem;
+                        object-fit: cover;
+                        object-position: center center;
+                    }
+                }
+
+                .content {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    padding: var(--dui-spacing-large);
+                    gap: var(--dui-spacing-large);
+
+                    .details {
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--dui-spacing-small);
+                    }
+
+                    .actions {
+                        display: flex;
+                        align-items: flex-end;
+                        gap: var(--dui-spacing-small);
+
+                        .quantity-input {
+                            width: 5rem;
+                        }
+                    }
+                }
+            }
+        }
+
+        .empty-message {
+            display: flex;
+            align-items: center;
+            flex-basis: 100%;
+            flex-direction: column;
+            justify-content: center;
+            padding-top: 8vh;
+
+            .icon {
+                opacity: 0.2;
+                font-size: 15rem;
+            }
+
+            .text {
                 display: flex;
                 flex-direction: column;
+                text-align: center;
                 gap: var(--dui-spacing-small);
+
+                .primary {
+                    opacity: 0.7;
+                    font-size: var(--dui-font-size-extra-large);
+                    font-weight: var(--dui-font-weight-bold);
+                }
+
+                .suggestion {
+                    opacity: 0.5;
+                }
             }
         }
     }

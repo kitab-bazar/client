@@ -1,13 +1,14 @@
 .order-item {
-    display: flex;
-    flex-direction: column;
-    border: var(--dui-width-separator-thin) solid transparent;
+    background-color: unset;
+    padding: var(--dui-spacing-medium) 0;
 
     .heading {
-        color: var(--dui-color-accent);
+        font-weight: var(--dui-font-weight-medium);
     }
 
-    .label {
-        width: 120px;
+    .order-meta {
+        display: flex;
+        flex-direction: column;
+        gap: var(--dui-spacing-small);
     }
 }

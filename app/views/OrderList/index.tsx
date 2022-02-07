@@ -79,14 +79,17 @@ function Book(props: BookProps) {
         <div className={styles.bookItem}>
             <div className={styles.coverImage}>
                 <img
+                    className={styles.image}
                     src={image}
-                    alt="book cover"
+                    alt="Preview not available"
                 />
             </div>
-            <div className={styles.description}>
-                <TextOutput
-                    value={title}
-                />
+            <Container
+                heading={title}
+                headingSize="extraSmall"
+                className={styles.bookDetails}
+                contentClassName={styles.metaList}
+            >
                 <TextOutput
                     label="Quantity"
                     value={quantity}
@@ -100,15 +103,15 @@ function Book(props: BookProps) {
                     value={edition}
                 />
                 <TextOutput
-                    label="price"
+                    label="Price (NPR)"
                     value={price}
                 />
-            </div>
+            </Container>
         </div>
     );
 }
 
-interface OrderListProps {
+interface OrderListItemProps {
     orderCode: string;
     totalPrice: number;
     status: OrderStatus;
@@ -118,7 +121,7 @@ interface OrderListProps {
     books: BookOrderType[] | undefined;
 }
 
-function OrderListRenderer(props: OrderListProps) {
+function OrderListRenderer(props: OrderListItemProps) {
     const {
         orderCode,
         totalPrice,
@@ -142,12 +145,10 @@ function OrderListRenderer(props: OrderListProps) {
         <ControlledExpandableContainer
             className={styles.orderItem}
             name={orderCode}
-            heading={(
+            heading={orderCode}
+            headingSize="extraSmall"
+            headerDescription={(
                 <>
-                    <TextOutput
-                        // label="order number"
-                        value={orderCode}
-                    />
                     <TextOutput
                         label="Total book types"
                         value={totalBooks}
@@ -218,7 +219,7 @@ function OrderList(props: Props) {
         setExpandedOrderId(orderExpanded ? key : undefined);
     }, []);
 
-    const orderListRendererParams = useCallback((_, data: Omit<OrderType, 'createdBy'>): OrderListProps => ({
+    const orderListRendererParams = useCallback((_, data: Omit<OrderType, 'createdBy'>): OrderListItemProps => ({
         totalBooks: data?.bookOrders?.totalCount ?? 0,
         orderCode: data.orderCode,
         status: data.status,
@@ -234,6 +235,7 @@ function OrderList(props: Props) {
     return (
         <Container
             className={_cs(styles.orderList, className)}
+            contentClassName={styles.mainContent}
             footerContent={(
                 <Pager
                     activePage={page}
@@ -242,7 +244,6 @@ function OrderList(props: Props) {
                     onActivePageChange={setPage}
                     onItemsPerPageChange={setPageSize}
                     itemsPerPageControlHidden
-
                 />
             )}
         >

@@ -20,6 +20,7 @@ import Init from '#base/components/Init';
 import PreloadMessage from '#base/components/PreloadMessage';
 import AuthPopup from '#base/components/AuthPopup';
 import Navbar from '#base/components/Navbar';
+import Footer from '#base/components/Footer';
 import useLocalStorage from '#base/hooks/useLocalStorage';
 import Routes from '#base/components/Routes';
 import { User } from '#base/types/user';
@@ -45,7 +46,13 @@ function Base() {
     const [user, setUser] = useState<User | undefined>();
 
     const [navbarVisibility, setNavbarVisibility] = useState(false);
-    const [lang, setLang] = useLocalStorage<Lang>('lang', 'np');
+    const [lang, setLang] = useLocalStorage<Lang>('lang', 'ne', false);
+
+    React.useEffect(() => {
+        apolloClient.refetchQueries({
+            include: 'active',
+        });
+    }, [lang]);
 
     const authenticated = !!user;
 
@@ -164,7 +171,7 @@ function Base() {
     }), [lang, setLang]);
 
     return (
-        <div className={styles.base}>
+        <div className={_cs(styles.base, lang === 'ne' && styles.ne)}>
             <ErrorBoundary
                 showDialog
                 fallback={(
@@ -175,16 +182,14 @@ function Base() {
                 )}
             >
                 <ApolloProvider client={apolloClient}>
-                    <LanguageContext.Provider
-                        value={languageContext}
-                    >
+                    <LanguageContext.Provider value={languageContext}>
                         <UserContext.Provider value={userContext}>
                             <NavbarContext.Provider value={navbarContext}>
                                 <AlertContext.Provider value={alertContext}>
                                     <AuthPopup />
                                     <AlertContainer className={styles.alertContainer} />
                                     <Router history={browserHistory}>
-                                        <Init className={styles.init}>
+                                        <Init preloadClassName={styles.preload}>
                                             <Navbar
                                                 className={_cs(
                                                     styles.navbar,
@@ -192,6 +197,7 @@ function Base() {
                                                 )}
                                             />
                                             <Routes className={styles.view} />
+                                            <Footer className={styles.footer} />
                                         </Init>
                                     </Router>
                                 </AlertContext.Provider>
