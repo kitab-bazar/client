@@ -11,7 +11,6 @@ import {
     Button,
     TextOutput,
     ListView,
-    ContainerCard,
     useModalState,
 } from '@the-deep/deep-ui';
 import { removeNull } from '@togglecorp/toggle-form';
@@ -21,10 +20,10 @@ import {
     OrderListQuery,
     OrderListQueryVariables,
     OrderType,
-    OrderStatus,
 } from '#generated/types';
 import routes from '#base/configs/routes';
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
+import OrderItem from '#components/OrderItem';
 
 import EditProfileModal from './EditProfileModal';
 import styles from './styles.css';
@@ -81,63 +80,6 @@ const ORDER_LIST = gql`
     }
 `;
 
-interface OrderListProps {
-    orderCode: string;
-    totalPrice: number;
-    status: OrderStatus;
-    totalBookTypes: number;
-}
-
-function OrderListRenderer(props: OrderListProps) {
-    const {
-        orderCode,
-        totalPrice,
-        status,
-        totalBookTypes,
-    } = props;
-
-    return (
-        <ContainerCard
-            className={styles.orderItem}
-            heading={orderCode}
-            headingClassName={styles.heading}
-            headingSize="extraSmall"
-            footerActions={(
-                <SmartButtonLikeLink
-                    route={routes.orderList}
-                    state={{ orderId: orderCode }}
-                >
-                    View details
-                </SmartButtonLikeLink>
-            )}
-        >
-            <TextOutput
-                label="Books"
-                labelContainerClassName={styles.label}
-                valueType="number"
-                hideLabelColon
-                value={totalBookTypes}
-            />
-            <TextOutput
-                label="total price"
-                labelContainerClassName={styles.label}
-                valueType="number"
-                hideLabelColon
-                value={totalPrice}
-                valueProps={{
-                    prefix: 'Rs.',
-                }}
-            />
-            <TextOutput
-                label="status"
-                labelContainerClassName={styles.label}
-                hideLabelColon
-                value={status}
-            />
-        </ContainerCard>
-    );
-}
-
 const orderListKeySelector = (o: OrderType) => o.id;
 
 function IndividualProfile() {
@@ -169,11 +111,8 @@ function IndividualProfile() {
         { variables: orderVariables },
     );
 
-    const orderListRendererParams = useCallback((_, order: Omit<OrderType, 'createdBy'>): OrderListProps => ({
-        totalBookTypes: order.bookOrders?.totalCount ?? 0,
-        orderCode: order.orderCode,
-        status: order.status,
-        totalPrice: order.totalPrice,
+    const orderListRendererParams = useCallback((_, order: Omit<OrderType, 'createdBy'>) => ({
+        order,
     }), []);
 
     return (
@@ -261,7 +200,7 @@ function IndividualProfile() {
                     className={styles.orders}
                     data={orderList?.orders?.results ?? undefined}
                     keySelector={orderListKeySelector}
-                    renderer={OrderListRenderer}
+                    renderer={OrderItem}
                     rendererParams={orderListRendererParams}
                     errored={false}
                     filtered={false}

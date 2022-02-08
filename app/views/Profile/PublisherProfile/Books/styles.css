@@ -1,0 +1,17 @@
+.publisher-books {
+    display: flex;
+    flex-grow: 1;
+
+    .content {
+        display: flex;
+        flex-grow: 1;
+
+        .book-list {
+            display: flex;
+            flex-grow: 1;
+            flex-wrap: wrap;
+            gap: var(--dui-spacing-medium);
+            margin-top: var(--dui-spacing-large);
+        }
+    }
+}

@@ -1,3 +1,15 @@
 .publisher-profile {
     display: flex;
+    width: 100%;
+
+    .tab-list {
+        display: flex;
+        flex-basis: 10%;
+        flex-direction: column;
+    }
+
+    .tab-panel {
+        display: flex;
+        flex-basis: 90%;
+    }
 }

@@ -3,12 +3,12 @@ import {
     ListView,
     Container,
 } from '@the-deep/deep-ui';
-import { Link } from 'react-router-dom';
 import {
     gql,
     useQuery,
 } from '@apollo/client';
 
+import BookItem from '#components/BookItem';
 import Footer from '#components/Footer';
 import { homePage } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
@@ -46,49 +46,6 @@ query FeaturedBooks($page: Int!, $pageSize: Int!) {
 
 type Book = NonNullable<NonNullable<FeaturedBooksQuery['books']>['results']>[number]
 const bookKeySelector = (b: Book) => b.id;
-
-interface BookProps {
-    book: Book;
-}
-
-function BookItem(props: BookProps) {
-    const { book } = props;
-
-    return (
-        <Link
-            to={`/book/${book.id}/`}
-            className={styles.bookItem}
-            title={book.title}
-        >
-            <div className={styles.imageWrapper}>
-                {book.image?.url ? (
-                    <img
-                        className={styles.image}
-                        src={book.image.url}
-                        alt={book.title}
-                    />
-                ) : (
-                    <div className={styles.noPreview}>
-                        Preview not available
-                    </div>
-                )}
-            </div>
-            <div className={styles.details}>
-                <div
-                    className={styles.title}
-                >
-                    {book.title}
-                </div>
-                <div className={styles.author}>
-                    {book.authors[0].name}
-                </div>
-                <div className={styles.price}>
-                    {`NPR ${book.price}`}
-                </div>
-            </div>
-        </Link>
-    );
-}
 
 function HomePage() {
     const { data: result, loading } = useQuery<

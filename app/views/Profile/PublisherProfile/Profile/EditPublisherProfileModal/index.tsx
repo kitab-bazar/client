@@ -1,11 +1,4 @@
 import React, { useMemo } from 'react';
-
-import {
-    Modal,
-    Button,
-    TextInput,
-    useAlert,
-} from '@the-deep/deep-ui';
 import { useMutation, gql } from '@apollo/client';
 import {
     ObjectSchema,
@@ -15,32 +8,23 @@ import {
     getErrorObject,
     removeNull,
 } from '@togglecorp/toggle-form';
+import {
+    Modal,
+    Button,
+    TextInput,
+    NumberInput,
+    useAlert,
+} from '@the-deep/deep-ui';
 
 import {
-    UpdateIndividualProfileMutation,
-    UpdateIndividualProfileMutationVariables,
+    UpdatePublisherProfileMutation,
+    UpdatePublisherProfileMutationVariables,
 } from '#generated/types';
 import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
-import styles from './styles.css';
 
-const UPDATE_INDIVIDUAL_PROFILE = gql`
-    mutation UpdateIndividualProfile(
-        $firstName: String,
-        $lastName: String,
-        $phoneNumber: String,
-    ){
-        updateProfile(data: {
-            firstName: $firstName,
-            lastName: $lastName,
-            phoneNumber: $phoneNumber,
-        }) {
-            ok
-            errors
-        }
-    }
-`;
+import LocationInput from '#views/Register/RegisterForm/LocationInput';
 
-type FormType = NonNullable<UpdateIndividualProfileMutationVariables>;
+type FormType = NonNullable<UpdatePublisherProfileMutationVariables>;
 type PartialFormType = PartialForm<FormType>;
 type FormSchema = ObjectSchema<PartialFormType>;
 
@@ -49,35 +33,57 @@ type FormSchemaFields = ReturnType<FormSchema['fields']>;
 const schema: FormSchema = {
     fields: (): FormSchemaFields => {
         const basicFields: FormSchemaFields = {
-            firstName: [],
-            lastName: [],
-            phoneNumber: [],
+            name: [],
+            municipality: [],
+            wardNumber: [],
+            localAddress: [],
         };
         return basicFields;
     },
 };
-
 interface Props {
-    onModalClose: () => void;
     onEditSuccess: () => void;
     profileDetails: PartialFormType | undefined | null;
+    onModalClose: () => void;
 }
 
+const UPDATE_PUBLISHER_PROFILE = gql`
+    mutation UpdatePublisherProfile(
+        $name: String!,
+        $municipality: String!,
+        $wardNumber: Int!,
+        $localAddress: String,
+    ){
+        updateProfile(data: {
+            publisher: {
+                name: $name,
+                municipality: $municipality,
+                wardNumber: $wardNumber,
+                localAddress: $localAddress,
+            }
+        }) {
+            ok
+            errors
+        }
+    }
+`;
 function EditProfileModal(props: Props) {
     const {
-        onEditSuccess,
         onModalClose,
+        onEditSuccess,
         profileDetails,
     } = props;
 
     const initialValue: PartialFormType = useMemo(() => ({
-        firstName: profileDetails?.firstName,
-        lastName: profileDetails?.lastName,
-        phoneNumber: profileDetails?.phoneNumber,
+        name: profileDetails?.name,
+        municipality: profileDetails?.municipality,
+        wardNumber: profileDetails?.wardNumber,
+        localAddress: profileDetails?.localAddress,
     }), [
-        profileDetails?.firstName,
-        profileDetails?.lastName,
-        profileDetails?.phoneNumber,
+        profileDetails?.name,
+        profileDetails?.municipality,
+        profileDetails?.wardNumber,
+        profileDetails?.localAddress,
     ]);
 
     const {
@@ -95,8 +101,8 @@ function EditProfileModal(props: Props) {
     const [
         updateProfile,
         { loading: updateProfilePending },
-    ] = useMutation<UpdateIndividualProfileMutation, UpdateIndividualProfileMutationVariables>(
-        UPDATE_INDIVIDUAL_PROFILE,
+    ] = useMutation<UpdatePublisherProfileMutation, UpdatePublisherProfileMutationVariables>(
+        UPDATE_PUBLISHER_PROFILE,
         {
             onCompleted: (response) => {
                 const { updateProfile: profileRes } = response;
@@ -145,23 +151,17 @@ function EditProfileModal(props: Props) {
             setError,
             (finalValue) => {
                 updateProfile({
-                    variables: {
-                        firstName: finalValue?.firstName,
-                        lastName: finalValue?.lastName,
-                        phoneNumber: finalValue?.phoneNumber,
-                    },
+                    variables: finalValue as FormType,
                 });
             },
         )
     ), [setError, validate, updateProfile]);
-
     return (
         <Modal
             heading="Edit Profile"
             onCloseButtonClick={onModalClose}
             size="small"
             freeHeight
-            bodyClassName={styles.editModalContent}
             footerActions={(
                 <>
                     <Button
@@ -183,27 +183,34 @@ function EditProfileModal(props: Props) {
             )}
         >
             <TextInput
-                name="firstName"
+                name="name"
+                label="Name of the Publisher"
+                value={value?.name}
+                error={error?.name}
                 onChange={setFieldValue}
-                label="First Name"
-                value={value?.firstName}
-                error={error?.firstName}
+                placeholder="Togglecorp"
+                disabled={updateProfilePending}
+            />
+            <LocationInput
+                name="municipality"
+                error={error?.municipality}
+                onChange={setFieldValue}
+                disabled={updateProfilePending}
+            />
+            <NumberInput
+                name="wardNumber"
+                label="Ward Number"
+                value={value?.wardNumber}
+                error={error?.wardNumber}
+                onChange={setFieldValue}
                 disabled={updateProfilePending}
             />
             <TextInput
-                name="lastName"
+                name="localAddress"
+                label="Local Address"
+                value={value?.localAddress}
+                error={error?.localAddress}
                 onChange={setFieldValue}
-                label="Last Name"
-                value={value?.lastName}
-                error={error?.lastName}
-                disabled={updateProfilePending}
-            />
-            <TextInput
-                name="phoneNumber"
-                label="Phone Number"
-                onChange={setFieldValue}
-                value={value?.phoneNumber}
-                error={error?.phoneNumber}
                 disabled={updateProfilePending}
             />
         </Modal>
