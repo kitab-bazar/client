@@ -1,11 +1,14 @@
 import React, { useContext, useCallback, useState } from 'react';
 import { isNotDefined } from '@togglecorp/fujs';
 import { useQuery, gql } from '@apollo/client';
+import { IoAdd } from 'react-icons/io5';
 
 import {
     Pager,
+    Button,
     ListView,
     Container,
+    useModalState,
 } from '@the-deep/deep-ui';
 
 import BookItem, { Props as BookItemsProps } from '#components/BookItem';
@@ -15,6 +18,7 @@ import {
     PublisherBooksQueryVariables,
 } from '#generated/types';
 
+import UploadBookModal from './UploadBookModal';
 import styles from './styles.css';
 
 type Book = NonNullable<NonNullable<PublisherBooksQuery['books']>['results']>[number];
@@ -54,6 +58,7 @@ function Books() {
     const {
         data: publisherBooksResult,
         loading,
+        refetch: refetchPublisherBooks,
     } = useQuery<PublisherBooksQuery, PublisherBooksQueryVariables>(
         PUBLISHER_BOOKS,
         {
@@ -72,12 +77,28 @@ function Books() {
         book: data,
     }), []);
 
+    const [
+        uploadBookModalShown,
+        showUploadBookModal,
+        hideUploadBookModal,
+    ] = useModalState(false);
+
     return (
         <Container
             className={styles.publisherBooks}
             heading="Books"
             contentClassName={styles.content}
-            footerIcons={(
+            headerActions={(
+                <Button
+                    name={undefined}
+                    variant="general"
+                    onClick={showUploadBookModal}
+                    icons={<IoAdd />}
+                >
+                    Upload Book
+                </Button>
+            )}
+            footerActions={(
                 <Pager
                     activePage={page}
                     maxItemsPerPage={pageSize}
@@ -97,6 +118,13 @@ function Books() {
                 pending={loading}
                 filtered={false}
             />
+            {uploadBookModalShown && user?.id && (
+                <UploadBookModal
+                    publisher={user.id}
+                    onModalClose={hideUploadBookModal}
+                    onUploadSuccess={refetchPublisherBooks}
+                />
+            )}
         </Container>
     );
 }
