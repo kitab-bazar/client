@@ -38,7 +38,7 @@ export const navbar = {
         ne: 'किताब खोज्नु होस्',
     },
     signUpButtonLabel: {
-        en: 'Sign Up',
+        en: 'Register',
         ne: 'नया दर्ता',
     },
     loginButtonLabel: {

@@ -85,6 +85,7 @@ interface CartItemProps {
     onSelectionChange: (newValue: boolean, id: string) => void;
     quantity: number | undefined;
     onQuantityChange: (newValue: number | undefined, id: string) => void;
+    disabled?: boolean;
 }
 
 function CartItem(props: CartItemProps) {
@@ -94,6 +95,7 @@ function CartItem(props: CartItemProps) {
         isSelected,
         quantity,
         onQuantityChange,
+        disabled,
     } = props;
 
     const {
@@ -112,6 +114,7 @@ function CartItem(props: CartItemProps) {
                 name={id}
                 value={isSelected}
                 onChange={onSelectionChange}
+                disabled={disabled}
             />
             <div className={styles.imageContainer}>
                 {book.image?.url ? (
@@ -151,6 +154,8 @@ function CartItem(props: CartItemProps) {
                     variant="general"
                     onChange={onQuantityChange}
                     type="number"
+                    disabled={disabled}
+                    min={1}
                 />
             </div>
         </div>
@@ -183,6 +188,7 @@ function CartPage(props: Props) {
         data: result,
         loading,
         error,
+        refetch,
     } = useQuery<CartListQuery, CartListQueryVariables>(
         CART_LIST,
         {
@@ -211,6 +217,11 @@ function CartPage(props: Props) {
                         'Your order was placed successfully!',
                         { variant: 'success' },
                     );
+                    setSelectedItems({});
+                    setItemCounts({});
+                    setPage(1);
+                    // NOTE: call refetch because page may already be 1
+                    refetch();
                 } else {
                     alert.show(
                         'Failed to place the Order!',
@@ -226,8 +237,6 @@ function CartPage(props: Props) {
             },
         },
     );
-
-    const pending = loading || submitting;
 
     const handleOrderNowClick = React.useCallback(() => {
         const selectedKeys = Object.keys(selectedItems)
@@ -260,7 +269,8 @@ function CartPage(props: Props) {
         quantity: itemCounts[data.id],
         onQuantityChange: handleQuantityChange,
         onSelectionChange: handleCartSelectionChange,
-    }), [handleCartSelectionChange, selectedItems, handleQuantityChange, itemCounts]);
+        disabled: submitting,
+    }), [handleCartSelectionChange, selectedItems, handleQuantityChange, itemCounts, submitting]);
 
     const [
         totalItemCount,
@@ -305,7 +315,7 @@ function CartPage(props: Props) {
                         rendererParams={cartItemRendererParams}
                         renderer={CartItem}
                         errored={!!error}
-                        pending={pending}
+                        pending={loading}
                         filtered={false}
                         messageShown
                         emptyMessage={(
@@ -361,7 +371,7 @@ function CartPage(props: Props) {
                                 name={undefined}
                                 variant="secondary"
                                 onClick={handleOrderNowClick}
-                                disabled={loading || totalItemCount <= 0}
+                                disabled={submitting || totalItemCount <= 0}
                                 // FIXME: translate
                             >
                                 Order Now

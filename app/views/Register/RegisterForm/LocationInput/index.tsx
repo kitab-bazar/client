@@ -1,197 +1,108 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import {
     useQuery,
-    useLazyQuery,
     gql,
 } from '@apollo/client';
-import { SelectInput } from '@the-deep/deep-ui';
-import { isDefined } from '@togglecorp/fujs';
+import {
+    SearchSelectInput,
+    SearchSelectInputProps,
+} from '@the-deep/deep-ui';
 
 import {
-    ProvinceListQuery,
-    ProvinceListQueryVariables,
-    DistrictListQuery,
-    DistrictListQueryVariables,
     MunicipalityListQuery,
     MunicipalityListQueryVariables,
 } from '#generated/types';
 
-const PROVINCE_LIST = gql`
-    query ProvinceList {
-        provinces {
-            results {
-                id
-                name
-            }
-            totalCount
-        }
-    }
-`;
-
-const DISTRICT_LIST = gql`
-    query DistrictList($provinceIds: [ID!]) {
-        districts(provinces: $provinceIds) {
-            results {
-                id
-                name
-            }
-            totalCount
-        }
-    }
-`;
-
 const MUNICIPALITY_LIST = gql`
     query MunicipalityList(
-        $provinceIds: [ID!],
-        $districtIds: [ID!],
+        $name: String,
+        $ordering: String,
     ) {
         municipalities(
-            provinces: $provinceIds,
-            districts: $districtIds,
+            name: $name,
+            ordering: $ordering,
         ) {
             results {
                 id
                 name
+                district {
+                    id
+                    name
+                }
             }
             totalCount
         }
     }
 `;
 
-type Province = NonNullable<NonNullable<ProvinceListQuery['provinces']>['results']>[number];
-type District = NonNullable<NonNullable<DistrictListQuery['districts']>['results']>[number];
-type Municipality = NonNullable<NonNullable<MunicipalityListQuery['municipalities']>['results']>[number];
+export type MunicipalityOption = NonNullable<NonNullable<MunicipalityListQuery['municipalities']>['results']>[number];
 
-const provinceKeySelector = (d: Province) => d.id;
-const provinceLabelSelector = (d: Province) => d.name;
+const keySelector = (d: MunicipalityOption) => d.id;
+const labelSelector = (d: MunicipalityOption) => d.name;
+const groupKeySelector = (d: MunicipalityOption) => d.district.id;
+const groupLabelSelector = (d: MunicipalityOption) => d.district.name;
 
-const districtKeySelector = (d: District) => d.id;
-const districtLabelSelector = (d: District) => d.name;
+type Def = { containerClassName?: string };
+type SelectInputProps<
+    K extends string,
+> = SearchSelectInputProps<
+    string,
+    K,
+    MunicipalityOption,
+    Def,
+    'onSearchValueChange' | 'searchOptions' | 'optionsPending' | 'keySelector' | 'labelSelector' | 'totalCount'
+>;
 
-const municipalityKeySelector = (d: Municipality) => d.id;
-const municipalityLabelSelector = (d: Municipality) => d.name;
-
-// FIXME: This component should take 'value'
-interface Props<K extends string> {
-    name: K;
-    onChange: (value: Municipality['id'] | undefined, name: K) => void;
-    error?: string;
-    disabled?: boolean;
-}
-
-function LocationInput<K extends string>(props: Props<K>) {
+function LocationInput<K extends string>(props: SelectInputProps<K>) {
     const {
-        name,
-        onChange,
-        error,
-        disabled,
+        className,
+        ...otherProps
     } = props;
 
+    const [searchText, setSearchText] = useState('');
+    const [opened, setOpened] = useState(false);
+
+    // TODO: debounce after merging sameer'safter merging sameer's code
+    // const debouncedSearchText = useDebouncedValue(searchText);
+    const debouncedSearchText = searchText;
+
+    const searchVariables = useMemo(
+        (): MunicipalityListQueryVariables => (
+            debouncedSearchText ? { name: debouncedSearchText } : { ordering: 'id' }
+        ),
+        [debouncedSearchText],
+    );
+
     const {
-        data: provinceList,
-        loading: provincesPending,
-    } = useQuery<ProvinceListQuery, ProvinceListQueryVariables>(
-        PROVINCE_LIST,
-    );
-
-    const [province, setProvince] = React.useState<Province['id'] | undefined>();
-    const [district, setDistrict] = React.useState<District['id'] | undefined>();
-    const [municipality, setMunicipality] = React.useState<Municipality['id'] | undefined>();
-
-    const handleMunicipalityChange = React.useCallback((newMunicipality: Municipality['id'] | undefined) => {
-        if (onChange) {
-            onChange(newMunicipality, name);
-            setMunicipality(newMunicipality);
-        }
-    }, [onChange, name, setMunicipality]);
-
-    const districtVariables = React.useMemo(() => ({
-        provinceIds: province ? [province] : undefined,
-    }), [province]);
-
-    const [
-        loadDistricts,
-        {
-            data: districtList,
-            loading: districtsPending,
-        },
-    ] = useLazyQuery<DistrictListQuery, DistrictListQueryVariables>(
-        DISTRICT_LIST,
-        { variables: districtVariables },
-    );
-
-    const handleProvinceChange = React.useCallback((newProvince: Province['id'] | undefined) => {
-        setProvince(newProvince);
-        if (isDefined(newProvince)) {
-            loadDistricts();
-        } else {
-            setDistrict(undefined);
-            handleMunicipalityChange(undefined);
-        }
-    }, [loadDistricts, handleMunicipalityChange]);
-
-    const municipalityVariables = React.useMemo(() => ({
-        provinceIds: province ? [province] : undefined,
-        districtIds: district ? [district] : undefined,
-    }), [province, district]);
-
-    const [
-        loadMunicipalities,
-        {
-            data: municipalityList,
-            loading: municipalitiesPending,
-        },
-    ] = useLazyQuery<MunicipalityListQuery, MunicipalityListQueryVariables>(
+        previousData,
+        data = previousData,
+        loading,
+    } = useQuery<MunicipalityListQuery, MunicipalityListQueryVariables>(
         MUNICIPALITY_LIST,
-        { variables: municipalityVariables },
+        {
+            variables: searchVariables,
+            skip: !opened,
+        },
     );
 
-    const handleDistrictChange = React.useCallback((newDistrict: District['id'] | undefined) => {
-        setDistrict(newDistrict);
-        if (isDefined(newDistrict)) {
-            loadMunicipalities();
-        } else {
-            handleMunicipalityChange(undefined);
-        }
-    }, [loadMunicipalities, handleMunicipalityChange]);
+    const searchOptions = data?.municipalities?.results;
+    const totalOptionsCount = data?.municipalities?.totalCount;
 
     return (
-        <>
-            <SelectInput
-                // FIXME: translate
-                label="Province"
-                name="province"
-                options={provinceList?.provinces?.results}
-                keySelector={provinceKeySelector}
-                labelSelector={provinceLabelSelector}
-                value={province}
-                onChange={handleProvinceChange}
-                disabled={disabled || provincesPending}
-            />
-            <SelectInput
-                // FIXME: translate
-                label="District"
-                name="district"
-                options={districtList?.districts?.results}
-                keySelector={districtKeySelector}
-                labelSelector={districtLabelSelector}
-                value={district}
-                onChange={handleDistrictChange}
-                disabled={disabled || !province || districtsPending}
-            />
-            <SelectInput
-                // FIXME: translate
-                label="Municipality"
-                name={municipality}
-                options={municipalityList?.municipalities?.results}
-                keySelector={municipalityKeySelector}
-                labelSelector={municipalityLabelSelector}
-                value={municipality}
-                onChange={handleMunicipalityChange}
-                disabled={disabled || !province || !district || municipalitiesPending}
-                error={error}
-            />
-        </>
+        <SearchSelectInput
+            {...otherProps}
+            className={className}
+            keySelector={keySelector}
+            labelSelector={labelSelector}
+            groupKeySelector={groupKeySelector}
+            groupLabelSelector={groupLabelSelector}
+            grouped
+            onSearchValueChange={setSearchText}
+            onShowDropdownChange={setOpened}
+            searchOptions={searchOptions}
+            optionsPending={loading}
+            totalOptionsCount={totalOptionsCount ?? undefined}
+        />
     );
 }
 

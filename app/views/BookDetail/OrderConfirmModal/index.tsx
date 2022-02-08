@@ -64,11 +64,12 @@ function OrderPage(props: Props) {
             onCompleted: (response) => {
                 if (response?.placeSingleOrder?.ok) {
                     // FIXME: translate
-                    alert.show(`
-                        Order # ${response?.placeSingleOrder?.result?.orderCode}
+                    alert.show(
+                        `Order # ${response?.placeSingleOrder?.result?.orderCode}
                         For Total Price: NPR ${response?.placeSingleOrder?.result?.totalPrice}
-                        Order Status: ${response?.placeSingleOrder?.result?.status}
-                    `, { variant: 'success' });
+                        Order Status: ${response?.placeSingleOrder?.result?.status}`,
+                        { variant: 'success' },
+                    );
                     onClose();
                 } else {
                     // FIXME: translate
@@ -147,6 +148,8 @@ function OrderPage(props: Props) {
                             value={quantity}
                             onChange={handleQuantityChange}
                             type="number"
+                            disabled={loading}
+                            min={1}
                         />
                     )}
                 />

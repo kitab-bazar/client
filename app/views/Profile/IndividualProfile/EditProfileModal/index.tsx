@@ -112,9 +112,7 @@ function EditProfileModal(props: Props) {
                 if (ok) {
                     alert.show(
                         'Successfully updated profile',
-                        {
-                            variant: 'success',
-                        },
+                        { variant: 'success' },
                     );
                     onEditSuccess();
                     onModalClose();
@@ -123,9 +121,7 @@ function EditProfileModal(props: Props) {
                     setError(formError);
                     alert.show(
                         'Error updating profile',
-                        {
-                            variant: 'error',
-                        },
+                        { variant: 'error' },
                     );
                 }
             },

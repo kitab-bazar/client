@@ -79,7 +79,10 @@ function Navbar(props: Props) {
 
     const profileUrl = useRouteMatching(routes.myProfile);
 
-    const [logout] = useMutation<LogoutMutation, LogoutMutationVariables>(
+    const [
+        logout,
+        // { loading: logoutLoading },
+    ] = useMutation<LogoutMutation, LogoutMutationVariables>(
         LOGOUT,
         {
             onCompleted: (data) => {
@@ -108,9 +111,8 @@ function Navbar(props: Props) {
     const handleLogout = useCallback(
         () => {
             logout();
-            setUser(undefined);
         },
-        [setUser, logout],
+        [logout],
     );
 
     const [logoutConfirmationModal, setShowLogoutConfirmationTrue] = useConfirmation({
@@ -200,6 +202,8 @@ function Navbar(props: Props) {
                                     <DropdownMenuItem
                                         name={undefined}
                                         onClick={setShowLogoutConfirmationTrue}
+                                        // TODO: disable dropdown menu item
+                                        // disabled={logoutLoading}
                                     >
                                         {strings.logoutButtonLabel}
                                     </DropdownMenuItem>

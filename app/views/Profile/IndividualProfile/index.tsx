@@ -246,7 +246,6 @@ function IndividualProfile(props: Props) {
                             itemsCount={orderList?.orders?.totalCount ?? 0}
                             onActivePageChange={setPage}
                             onItemsPerPageChange={setPageSize}
-                            itemsPerPageControlHidden
                         />
                     )}
                 >

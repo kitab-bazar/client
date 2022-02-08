@@ -92,6 +92,7 @@ interface WishProps {
     wish: Wish;
     onRemoveWishList: (id: string) => void;
     onCreateCart: (id: string, quantity: number) => void;
+    disabled?: boolean;
 }
 
 function WishListItem(props: WishProps) {
@@ -99,6 +100,7 @@ function WishListItem(props: WishProps) {
         wish,
         onRemoveWishList,
         onCreateCart,
+        disabled,
     } = props;
 
     const {
@@ -172,13 +174,15 @@ function WishListItem(props: WishProps) {
                         onChange={setQuantity}
                         type="number"
                         variant="general"
+                        disabled={disabled}
+                        min={1}
                     />
                     <Button
                         name={bookId}
                         onClick={handleAddToCart}
                         variant="primary"
                         icons={<IoCart />}
-                        disabled={isNotDefined(quantity) || (quantity < 1)}
+                        disabled={disabled || isNotDefined(quantity) || (quantity < 1)}
                         // FIXME: translate
                     >
                         Add to cart
@@ -189,6 +193,7 @@ function WishListItem(props: WishProps) {
                     onClick={onRemoveWishList}
                     variant="tertiary"
                     icons={<IoTrash />}
+                    disabled={disabled}
                     // FIXME: translate
                 >
                     Remove from Wishlist
@@ -227,6 +232,7 @@ function WishList(props: Props) {
 
     const [
         deleteWishlist,
+        { loading: deleteWishlistLoading },
     ] = useMutation<RemoveWishListMutation, RemoveWishListMutationVariables>(
         REMOVE_WISH_LIST,
         {
@@ -235,25 +241,19 @@ function WishList(props: Props) {
                     refetch();
                     alert.show(
                         'Item deleted from wishlist successfully',
-                        {
-                            variant: 'success',
-                        },
+                        { variant: 'success' },
                     );
                 } else {
                     alert.show(
                         'Failed to delete item from wishlist',
-                        {
-                            variant: 'error',
-                        },
+                        { variant: 'error' },
                     );
                 }
             },
             onError: (errors) => {
                 alert.show(
                     errors.message,
-                    {
-                        variant: 'error',
-                    },
+                    { variant: 'error' },
                 );
             },
         },
@@ -269,16 +269,12 @@ function WishList(props: Props) {
                     refetch();
                     alert.show(
                         'The book was successfully added to your cart.',
-                        {
-                            variant: 'success',
-                        },
+                        { variant: 'success' },
                     );
                 } else {
                     alert.show(
                         'There was an error while adding this to your cart. It might already be there.',
-                        {
-                            variant: 'error',
-                        },
+                        { variant: 'error' },
                     );
                 }
             },
@@ -311,7 +307,8 @@ function WishList(props: Props) {
         wish: d,
         onRemoveWishList: deleteBook,
         onCreateCart: addToCart,
-    }), [deleteBook, addToCart]);
+        disabled: deleteWishlistLoading,
+    }), [deleteBook, addToCart, deleteWishlistLoading]);
 
     return (
         <div className={_cs(styles.wishlist, className)}>
@@ -323,7 +320,6 @@ function WishList(props: Props) {
                     Wishlist
                 </Heading>
                 <ListView
-                    // FIXME: add pager
                     // eslint-disable-next-line max-len
                     className={_cs(styles.list, (data?.wishList?.results?.length ?? 0) === 0 && styles.empty)}
                     data={data?.wishList?.results ?? undefined}
@@ -360,7 +356,6 @@ function WishList(props: Props) {
                     itemsCount={data?.wishList?.totalCount ?? 0}
                     onActivePageChange={setPage}
                     onItemsPerPageChange={setPageSize}
-                    itemsPerPageControlHidden
                 />
             </div>
         </div>

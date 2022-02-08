@@ -50,9 +50,8 @@ const myProfile = wrap({
     visibility: 'is-authenticated',
 });
 
-// FIXME: change :id to :bookId
 const bookDetail = wrap({
-    path: '/book/:id/',
+    path: '/book/:id(\\d+)/',
     title: 'Book',
     navbarVisibility: true,
     component: lazy(() => import('#views/BookDetail')),

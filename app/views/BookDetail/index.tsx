@@ -10,7 +10,6 @@ import {
     useInputState,
 } from '@the-deep/deep-ui';
 import {
-    isDefined,
     isNotDefined,
 } from '@togglecorp/fujs';
 import {
@@ -156,24 +155,28 @@ mutation DeleteCartItem($id: ID!) {
 `;
 
 function BookDetail() {
-    const { id } = useParams();
+    // const { id } = useParams<{ id: string }>();
+    // NOTE: use proper react router to avoid casting
+    const { id } = useParams() as { id: string };
     const [cartQuantity, setCartQuantity] = useInputState<number | undefined>(1);
 
     const {
         data: bookDetail,
-        loading,
+        loading: bookDetailLoading,
+        error,
     } = useQuery<
         BookDetailQuery,
         BookDetailQueryVariables
     >(BOOK_DETAIL, {
-        skip: !id,
-        variables: { id: id ?? '' },
+        variables: { id },
         onCompleted: (response) => {
             if (response?.book?.cartDetails?.quantity) {
-                setCartQuantity(response.book.cartDetails?.quantity);
+                setCartQuantity(response.book.cartDetails.quantity);
             }
         },
     });
+
+    const errored = !!error;
 
     const [
         orderConfirmModalShown,
@@ -183,7 +186,10 @@ function BookDetail() {
 
     const alert = useAlert();
 
-    const [addToCart] = useMutation<AddToCartMutation, AddToCartMutationVariables>(
+    const [
+        addToCart,
+        { loading: addToCartLoading },
+    ] = useMutation<AddToCartMutation, AddToCartMutationVariables>(
         ADD_TO_CART,
         {
             onCompleted: (response) => {
@@ -204,7 +210,10 @@ function BookDetail() {
         },
     );
 
-    const [updateCart] = useMutation<UpdateCartMutation, UpdateCartMutationVariables>(
+    const [
+        updateCart,
+        { loading: updateCartLoading },
+    ] = useMutation<UpdateCartMutation, UpdateCartMutationVariables>(
         UPDATE_CART,
         {
             onCompleted: (response) => {
@@ -225,7 +234,10 @@ function BookDetail() {
         },
     );
 
-    const [removeFromCart] = useMutation<DeleteCartItemMutation, DeleteCartItemMutationVariables>(
+    const [
+        removeFromCart,
+        { loading: removeFromCartLoading },
+    ] = useMutation<DeleteCartItemMutation, DeleteCartItemMutationVariables>(
         DELETE_CART_ITEM,
         {
             onCompleted: (response) => {
@@ -246,7 +258,10 @@ function BookDetail() {
         },
     );
 
-    const [createWishList] = useMutation<CreateWishListMutation, CreateWishListMutationVariables>(
+    const [
+        createWishList,
+        { loading: createWishListLoading },
+    ] = useMutation<CreateWishListMutation, CreateWishListMutationVariables>(
         CREATE_WISH_LIST,
         {
             onCompleted: (response) => {
@@ -267,7 +282,10 @@ function BookDetail() {
         },
     );
 
-    const [removeWishList] = useMutation<DeleteWishListMutation, DeleteWishListMutationVariables>(
+    const [
+        removeWishList,
+        { loading: removeWishListLoading },
+    ] = useMutation<DeleteWishListMutation, DeleteWishListMutationVariables>(
         DELETE_WISH_LIST,
         {
             onCompleted: (response) => {
@@ -288,90 +306,77 @@ function BookDetail() {
         },
     );
 
-    const addToWishList = useCallback((wishlistId: string | undefined) => {
-        if (!id) {
-            // TODO: may need to return for create wishlist only
-            // eslint-disable-next-line no-console
-            console.error('Book id is not defined to add to wishlist');
-            return;
-        }
-
-        if (isDefined(wishlistId)) {
-            removeWishList({ variables: { id: wishlistId } });
-        } else {
-            createWishList({ variables: { id } });
-        }
-    }, [id, createWishList, removeWishList]);
-
     const authorsDisplay = React.useMemo(() => (
         bookDetail?.book?.authors?.map((d) => d.name).join(', ')
     ), [bookDetail?.book?.authors]);
 
-    const handleAddToCartClick = React.useCallback((quantity: number | undefined) => {
-        const bookId = bookDetail?.book?.id;
-        if (isNotDefined(bookId)) {
+    const handleAddToWishList = useCallback(() => {
+        createWishList({ variables: { id } });
+    }, [createWishList, id]);
+
+    const handleRemoveFromWishList = useCallback((wishlistId: string) => {
+        removeWishList({ variables: { id: wishlistId } });
+    }, [removeWishList]);
+
+    const handleAddToCart = React.useCallback(() => {
+        if (isNotDefined(cartQuantity)) {
             // eslint-disable-next-line no-console
-            console.error('Cannot add to card because book id is not defined');
-            return;
-        }
-        if (isNotDefined(quantity)) {
-            // eslint-disable-next-line no-console
-            console.error('Cannot add to card because quantity is not defined');
+            console.error('Cannot update cart quantity because it is not defined');
             return;
         }
         addToCart({
             variables: {
-                id: bookId,
-                quantity,
+                id,
+                quantity: cartQuantity,
             },
         });
-    }, [addToCart, bookDetail?.book?.id]);
+    }, [addToCart, cartQuantity, id]);
 
-    const handleRemoveFromCart = React.useCallback(() => {
-        // NOTE: this is not exactly cart id
-        const cartId = bookDetail?.book?.cartDetails?.id;
-        if (isNotDefined(cartId)) {
+    const handleUpdateQuantityClick = React.useCallback((cartId: string) => {
+        if (isNotDefined(cartQuantity)) {
             // eslint-disable-next-line no-console
-            console.error('Cannot remove book from cart because cardId is not defined');
+            console.error('Cannot update cart quantity because it is not defined');
             return;
         }
-        removeFromCart({ variables: { id: cartId } });
-    }, [removeFromCart, bookDetail?.book?.cartDetails?.id]);
-
-    const handleUpdateQuantityClick = React.useCallback((quantity: number | undefined) => {
-        const cartId = bookDetail?.book?.cartDetails?.id;
-        const bookId = bookDetail?.book?.id;
-        if (isNotDefined(cartId)) {
-            // eslint-disable-next-line no-console
-            console.error('Cannot update book on cart because cardId is not defined');
-            return;
-        }
-        if (isNotDefined(bookId)) {
-            // eslint-disable-next-line no-console
-            console.error('Cannot update book on cart because bookId is not defined');
-            return;
-        }
-        if (isNotDefined(quantity)) {
-            // eslint-disable-next-line no-console
-            console.error('Cannot update book on cart because quantity is not defined');
-            return;
-        }
-
         updateCart({
             variables: {
                 id: cartId,
-                bookId,
-                quantity,
+                bookId: id,
+                quantity: cartQuantity,
             },
         });
-    }, [updateCart, bookDetail?.book?.id, bookDetail?.book?.cartDetails?.id]);
+    }, [updateCart, cartQuantity, id]);
 
-    const isAlreadyInCart = (bookDetail?.book?.cartDetails?.quantity ?? 0) > 0;
+    const handleRemoveFromCart = React.useCallback((cartId: string) => {
+        removeFromCart({ variables: { id: cartId } });
+    }, [removeFromCart]);
+
+    const loading = addToCartLoading
+        || updateCartLoading
+        || removeFromCartLoading
+        || createWishListLoading
+        || removeWishListLoading;
 
     return (
         <div className={styles.bookDetail}>
             <div className={styles.container}>
-                {bookDetail?.book ? (
+                {errored && (
+                    <div
+                        className={styles.noDetail}
+                        // FIXME: translate
+                    >
+                        Some error occurred
+                    </div>
+                )}
+                {!errored && bookDetailLoading && (
+                    <div
+                        className={styles.noDetail}
+                        // FIXME: translate
+                    >
+                        Loading
+                    </div>
+                )}
+                {!errored && !bookDetailLoading && bookDetail?.book && (
                     <div className={styles.bookDetail}>
                         <div className={styles.leftColumn}>
                             <div className={styles.preview}>
@@ -389,7 +394,7 @@ function BookDetail() {
                                 )}
                             </div>
                             <div className={styles.actions}>
-                                {isAlreadyInCart && (
+                                {bookDetail.book.cartDetails && (
                                     <div className={styles.cartDetails}>
                                         <div
                                             className={styles.cartQuantityInfo}
@@ -399,9 +404,10 @@ function BookDetail() {
                                         </div>
                                         <Button
                                             className={styles.removeButton}
-                                            name={undefined}
+                                            name={bookDetail.book.cartDetails.id}
                                             variant="transparent"
                                             icons={<IoTrash />}
+                                            disabled={loading}
                                             onClick={handleRemoveFromCart}
                                             // FIXME: translate
                                         >
@@ -419,16 +425,19 @@ function BookDetail() {
                                         onChange={setCartQuantity}
                                         variant="general"
                                         type="number"
+                                        disabled={loading}
+                                        min={1}
                                     />
-                                    {isAlreadyInCart ? (
+                                    {bookDetail.book.cartDetails ? (
                                         <Button
-                                            name={cartQuantity}
+                                            name={bookDetail.book.cartDetails.id}
                                             variant="primary"
                                             disabled={
-                                                isNotDefined(cartQuantity)
+                                                loading
+                                                || isNotDefined(cartQuantity)
                                                 || cartQuantity < 1
                                                 // eslint-disable-next-line max-len
-                                                || cartQuantity === bookDetail.book.cartDetails?.quantity
+                                                || cartQuantity === bookDetail.book.cartDetails.quantity
                                             }
                                             onClick={handleUpdateQuantityClick}
                                             // FIXME: translate
@@ -437,13 +446,14 @@ function BookDetail() {
                                         </Button>
                                     ) : (
                                         <Button
-                                            name={cartQuantity}
+                                            name={undefined}
                                             variant="primary"
                                             disabled={
-                                                isNotDefined(cartQuantity)
+                                                loading
+                                                || isNotDefined(cartQuantity)
                                                 || cartQuantity < 1
                                             }
-                                            onClick={handleAddToCartClick}
+                                            onClick={handleAddToCart}
                                             // FIXME: translate
                                         >
                                             Add to Cart
@@ -455,7 +465,11 @@ function BookDetail() {
                                         name={undefined}
                                         variant="tertiary"
                                         onClick={setShowOrderConfirmModal}
-                                        disabled={isNotDefined(cartQuantity) || cartQuantity < 1}
+                                        disabled={
+                                            loading
+                                            || isNotDefined(cartQuantity)
+                                            || cartQuantity < 1
+                                        }
                                         // FIXME: translate
                                         title="Place order immediately without adding it to cart"
                                     >
@@ -470,15 +484,29 @@ function BookDetail() {
                                 heading={bookDetail.book.title}
                                 headingDescription={authorsDisplay}
                                 headerActions={(
-                                    <Button
-                                        name={bookDetail.book.wishlistId ?? undefined}
-                                        variant="tertiary"
-                                        onClick={addToWishList}
-                                        disabled={isAlreadyInCart}
-                                        // FIXME: translate
-                                    >
-                                        {bookDetail.book.wishlistId ? 'Remove from Wishlist' : 'Add to Wishlist'}
-                                    </Button>
+                                    <>
+                                        {bookDetail.book.wishlistId ? (
+                                            <Button
+                                                name={bookDetail.book.wishlistId}
+                                                variant="tertiary"
+                                                onClick={handleRemoveFromWishList}
+                                                disabled={loading || !!bookDetail.book.cartDetails}
+                                                // FIXME: translate
+                                            >
+                                                Remove from Wishlist
+                                            </Button>
+                                        ) : (
+                                            <Button
+                                                name={id}
+                                                variant="tertiary"
+                                                onClick={handleAddToWishList}
+                                                disabled={loading || !!bookDetail.book.cartDetails}
+                                                // FIXME: translate
+                                            >
+                                                Add to Wishlist
+                                            </Button>
+                                        )}
+                                    </>
                                 )}
                                 headerDescription={(
                                     <div className={styles.bookMeta}>
@@ -525,7 +553,7 @@ function BookDetail() {
                                 headingSize="extraSmall"
                             >
                                 {bookDetail.book.authors.map((a) => (
-                                    // FIXME: use ListView
+                                    // TODO: use ListView
                                     <div key={a.name}>
                                         <div>
                                             {a.name}
@@ -541,25 +569,16 @@ function BookDetail() {
                                 ))}
                             </Container>
                         </div>
+                        {orderConfirmModalShown && (
+                            <OrderConfirmModal
+                                initialQuantity={cartQuantity}
+                                book={bookDetail.book}
+                                onClose={hideOrderConfirmModal}
+                            />
+                        )}
                     </div>
-                ) : (!loading && (
-                    <div
-                        // FIXME: handle loading state
-                        // FIXME: handle error state
-                        className={styles.noDetail}
-                        // FIXME: translate
-                    >
-                        Book details not available
-                    </div>
-                ))}
+                )}
             </div>
-            {orderConfirmModalShown && bookDetail?.book && (
-                <OrderConfirmModal
-                    initialQuantity={cartQuantity}
-                    book={bookDetail.book}
-                    onClose={hideOrderConfirmModal}
-                />
-            )}
         </div>
     );
 }

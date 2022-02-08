@@ -130,9 +130,7 @@ function LoginForm() {
                     console.error(formError);
                     alert.show(
                         strings.errorLoggingInLabel,
-                        {
-                            variant: 'error',
-                        },
+                        { variant: 'error' },
                     );
                 }
             },
@@ -145,9 +143,8 @@ function LoginForm() {
     );
 
     const handleSubmit = useCallback((finalValue: PartialFormType) => {
-        const formValue = finalValue as FormType;
         login({
-            variables: formValue,
+            variables: finalValue as FormType,
         });
     }, [login]);
 

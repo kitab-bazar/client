@@ -79,16 +79,15 @@ function GoalPoint(props: GoalPointProps) {
     );
 }
 
-const MAX_ITEMS_PER_PAGE = 20;
+const MAX_ITEMS_PER_PAGE = 4;
 
 function HomePage() {
-    const [pageSize, setPageSize] = useState<number>(MAX_ITEMS_PER_PAGE);
     const [page, setPage] = useState<number>(1);
 
     const orderVariables = useMemo(() => ({
-        pageSize,
+        pageSize: MAX_ITEMS_PER_PAGE,
         page,
-    }), [pageSize, page]);
+    }), [page]);
 
     const {
         data: result,
@@ -194,10 +193,9 @@ function HomePage() {
                         footerContent={(
                             <Pager
                                 activePage={page}
-                                maxItemsPerPage={pageSize}
+                                maxItemsPerPage={MAX_ITEMS_PER_PAGE}
                                 itemsCount={result?.books?.totalCount ?? 0}
                                 onActivePageChange={setPage}
-                                onItemsPerPageChange={setPageSize}
                                 itemsPerPageControlHidden
                             />
                         )}

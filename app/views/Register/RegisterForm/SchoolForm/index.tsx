@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import {
     TextInput,
     NumberInput,
@@ -14,7 +14,7 @@ import {
 import NonFieldError from '#components/NonFieldError';
 
 import { SchoolType } from '../common';
-import LocationInput from '../LocationInput';
+import LocationInput, { MunicipalityOption } from '../LocationInput';
 
 // import styles from './styles.css';
 
@@ -27,6 +27,9 @@ interface Props<K extends string> {
     error: Error<SchoolType>;
     onChange: (value: SetValueArg<SchoolInputValue> | undefined, name: K) => void;
     disabled?: boolean;
+
+    municipalityOptions: MunicipalityOption[] | null | undefined;
+    onMunicipalityOptionsChange: Dispatch<SetStateAction<MunicipalityOption[] | null | undefined>>;
 }
 
 function SchoolForm<K extends string>(props: Props<K>) {
@@ -36,6 +39,9 @@ function SchoolForm<K extends string>(props: Props<K>) {
         error: formError,
         onChange,
         disabled,
+
+        municipalityOptions,
+        onMunicipalityOptionsChange,
     } = props;
 
     const setFieldValue = useFormObject(name, onChange, defaultSchoolValue);
@@ -55,8 +61,12 @@ function SchoolForm<K extends string>(props: Props<K>) {
             />
             <LocationInput
                 name="municipality"
+                label="Municipality"
                 error={error?.municipality}
+                value={value?.municipality}
                 onChange={setFieldValue}
+                options={municipalityOptions}
+                onOptionsChange={onMunicipalityOptionsChange}
                 disabled={disabled}
             />
             <NumberInput
@@ -67,6 +77,7 @@ function SchoolForm<K extends string>(props: Props<K>) {
                 error={error?.wardNumber}
                 onChange={setFieldValue}
                 disabled={disabled}
+                min={1}
             />
             <TextInput
                 name="localAddress"

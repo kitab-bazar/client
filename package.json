@@ -24,15 +24,15 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/togglecorp/kitab-client.git"
+        "url": "git+https://github.com/kitab-bazar/client.git"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/togglecorp/kitab-client/issues"
+        "url": "https://github.com/kitab-bazar/client/issues"
     },
-    "homepage": "https://github.com/togglecorp/kitab-client#readme",
+    "homepage": "https://github.com/kitab-bazar/client#readme",
     "dependencies": {
         "@apollo/client": "^3.5.7",
         "@sentry/react": "^6.9.0",

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Container,
     RadioInput,
@@ -8,6 +8,7 @@ import {
     Button,
     useAlert,
 } from '@the-deep/deep-ui';
+import { useHistory } from 'react-router-dom';
 import {
     useForm,
     getErrorObject,
@@ -36,6 +37,7 @@ import {
     schema,
 } from './common';
 
+import { MunicipalityOption } from './LocationInput';
 import InstitutionForm from './InstitutionForm';
 import PublisherForm from './PublisherForm';
 import SchoolForm from './SchoolForm';
@@ -95,7 +97,14 @@ function RegisterForm() {
 
     const error = getErrorObject(formError);
 
+    const history = useHistory();
+
     const [confirmPassword, setConfirmPassword] = useInputState<string | undefined>(undefined);
+
+    const [
+        municipalityOptions,
+        setMunicipalityOptions,
+    ] = useState<MunicipalityOption[] | undefined | null>();
 
     const [
         register,
@@ -106,8 +115,6 @@ function RegisterForm() {
             onCompleted: (response) => {
                 const { register: registerResponse } = response;
                 if (!registerResponse) {
-                    // FIXME: translate
-                    alert.show('No response from server!');
                     return;
                 }
 
@@ -119,9 +126,10 @@ function RegisterForm() {
                 if (ok) {
                     alert.show(
                         // FIXME: translate
-                        'Registration completed successfully! Please validate your account before loggin in',
+                        'Registration completed successfully! Please validate your account before logging in',
                         { variant: 'success' },
                     );
+                    history.replace(routes.login.path);
                 } else if (errors) {
                     const formErrorFromServer = transformToFormError(
                         removeNull(registerResponse?.errors) as ObjectError[],
@@ -188,18 +196,6 @@ function RegisterForm() {
                 onSubmit={createSubmitHandler(validate, setError, handleSubmit)}
             >
                 <NonFieldError error={error} />
-                <RadioInput
-                    name="userType"
-                    options={userTypes}
-                    // FIXME: translate
-                    label="Select User Type"
-                    keySelector={userKeySelector}
-                    labelSelector={userLabelSelector}
-                    onChange={setFieldValue}
-                    value={value.userType}
-                    error={error?.userType}
-                    disabled={registerPending}
-                />
                 <TextInput
                     name="email"
                     // FIXME: translate
@@ -236,6 +232,18 @@ function RegisterForm() {
                     onChange={setFieldValue}
                     disabled={registerPending}
                 />
+                <RadioInput
+                    name="userType"
+                    options={userTypes}
+                    // FIXME: translate
+                    label="User Type"
+                    keySelector={userKeySelector}
+                    labelSelector={userLabelSelector}
+                    onChange={setFieldValue}
+                    value={value.userType}
+                    error={error?.userType}
+                    disabled={registerPending}
+                />
                 {value.userType === 'INDIVIDUAL_USER' && (
                     <>
                         <TextInput
@@ -265,6 +273,8 @@ function RegisterForm() {
                         onChange={setFieldValue}
                         error={error?.institution}
                         disabled={registerPending}
+                        municipalityOptions={municipalityOptions}
+                        onMunicipalityOptionsChange={setMunicipalityOptions}
                     />
                 )}
                 {value.userType === 'PUBLISHER' && (
@@ -274,6 +284,8 @@ function RegisterForm() {
                         onChange={setFieldValue}
                         error={error?.publisher}
                         disabled={registerPending}
+                        municipalityOptions={municipalityOptions}
+                        onMunicipalityOptionsChange={setMunicipalityOptions}
                     />
                 )}
                 {value.userType === 'SCHOOL_ADMIN' && (
@@ -283,6 +295,8 @@ function RegisterForm() {
                         onChange={setFieldValue}
                         error={error?.school}
                         disabled={registerPending}
+                        municipalityOptions={municipalityOptions}
+                        onMunicipalityOptionsChange={setMunicipalityOptions}
                     />
                 )}
                 <Button
