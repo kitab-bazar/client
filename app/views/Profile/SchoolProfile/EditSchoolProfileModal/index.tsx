@@ -15,14 +15,11 @@ import {
     createSubmitHandler,
     getErrorObject,
     removeNull,
-    requiredStringCondition,
-    requiredCondition,
 } from '@togglecorp/toggle-form';
 
 import {
     UpdateSchoolProfileDetailsMutation,
     UpdateSchoolProfileDetailsMutationVariables,
-    SchoolType,
 } from '#generated/types';
 import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
 import MunicipalitySelectInput, { SearchMunicipalityType } from '#components/MunicipalitySelectInput';
@@ -53,30 +50,18 @@ const UPDATE_SCHOOL_PROFILE_DETAILS = gql`
     }
 `;
 
-interface UpdateSchoolProfileDetailsFields {
-    name: string;
-    municipality: string;
-    localAddress: string;
-    wardNumber: number;
-    panNumber: string;
-    vatNumber: string;
-}
-
-type FormType = Partial<UpdateSchoolProfileDetailsFields>;
-
-type FormSchema = ObjectSchema<PartialForm<FormType>>;
-
+type FormType = Partial<UpdateSchoolProfileDetailsMutationVariables>;
+type PartialFormType = PartialForm<FormType>;
+type FormSchema = ObjectSchema<PartialFormType>;
 type FormSchemaFields = ReturnType<FormSchema['fields']>;
 
 const schema: FormSchema = {
     fields: (): FormSchemaFields => {
         const basicFields: FormSchemaFields = {
-            name: [requiredStringCondition],
-            municipality: [requiredStringCondition],
-            wardNumber: [requiredCondition],
+            name: [],
+            municipality: [],
+            wardNumber: [],
             localAddress: [],
-            panNumber: [],
-            vatNumber: [],
         };
         return basicFields;
     },
@@ -85,7 +70,7 @@ const schema: FormSchema = {
 interface Props {
     onModalClose: () => void;
     onEditSuccess: () => void;
-    profileDetails: SchoolType,
+    profileDetails: PartialFormType,
 }
 
 function EditSchoolProfileModal(props: Props) {
@@ -98,7 +83,7 @@ function EditSchoolProfileModal(props: Props) {
     const strings = useTranslation(school);
 
     const initialValue = useMemo((): FormType => ({
-        municipality: profileDetails.municipality?.id,
+        municipality: profileDetails.municipality,
         wardNumber: profileDetails.wardNumber,
         localAddress: profileDetails.localAddress ?? undefined,
         name: profileDetails.name,
@@ -178,14 +163,16 @@ function EditSchoolProfileModal(props: Props) {
             setError,
             (finalValue) => {
                 // FIXME: cast finalValue
-                updateSchoolProfile({
-                    variables: {
-                        municipality: finalValue.municipality,
-                        wardNumber: finalValue.wardNumber,
-                        localAddress: finalValue.localAddress,
-                        name: finalValue.name,
-                    },
-                });
+                if (finalValue.municipality && finalValue.wardNumber && finalValue.name) {
+                    updateSchoolProfile({
+                        variables: {
+                            municipality: finalValue.municipality,
+                            wardNumber: finalValue.wardNumber,
+                            localAddress: finalValue.localAddress,
+                            name: finalValue.name,
+                        },
+                    });
+                }
             },
         )
     ), [setError, validate, updateSchoolProfile]);

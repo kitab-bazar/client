@@ -29,7 +29,6 @@ import {
 import { school } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 
-import EditProfileModal from './EditProfileModal';
 import EditSchoolProfileModal from './EditSchoolProfileModal';
 import styles from './styles.css';
 
@@ -168,12 +167,6 @@ const orderListKeySelector = (o: OrderType) => o.id;
 
 function SchoolProfile() {
     const [
-        editProfileModalShown,
-        showEditProfileModal,
-        hideEditProfileModal,
-    ] = useModalState(false);
-
-    const [
         editSchoolProfileModalShown,
         showEditSchoolProfileModal,
         hideEditSchoolProfileModal,
@@ -210,6 +203,11 @@ function SchoolProfile() {
         totalPrice: order.totalPrice,
     }), []);
 
+    const schoolDetails = {
+        ...profileDetails?.me?.school,
+        municipality: profileDetails?.me?.school?.municipality?.id,
+    };
+
     return (
         <div className={styles.schoolProfile}>
             <Container
@@ -227,14 +225,6 @@ function SchoolProfile() {
                         />
                     </div>
                     <div className={styles.description}>
-                        <Button
-                            name={undefined}
-                            variant="general"
-                            onClick={showEditProfileModal}
-                            icons={<IoPencil />}
-                        >
-                            {strings.editProfileButtonContent}
-                        </Button>
                         <Button
                             name={undefined}
                             variant="general"
@@ -342,18 +332,11 @@ function SchoolProfile() {
                     pending={loading}
                 />
             </Container>
-            {editProfileModalShown && (
-                <EditProfileModal
-                    onModalClose={hideEditProfileModal}
-                    onEditSuccess={refetchProfileDetails}
-                    profileDetails={profileDetails?.me}
-                />
-            )}
             {editSchoolProfileModalShown && (
                 <EditSchoolProfileModal
                     onModalClose={hideEditSchoolProfileModal}
                     onEditSuccess={refetchProfileDetails}
-                    profileDetails={profileDetails?.me?.school}
+                    profileDetails={schoolDetails}
                 />
             )}
         </div>
