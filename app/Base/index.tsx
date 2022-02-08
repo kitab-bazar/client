@@ -1,10 +1,12 @@
 import React, { useState, useMemo, useCallback } from 'react';
+import { IntlProvider } from 'react-intl';
 import { Router } from 'react-router-dom';
 import { init, ErrorBoundary, setUser as setUserOnSentry } from '@sentry/react';
 import { unique, _cs } from '@togglecorp/fujs';
-import { AlertContainer, AlertContext, AlertOptions } from '@the-deep/deep-ui';
+import { AlertContainer, AlertContext, AlertOptions, Button } from '@the-deep/deep-ui';
 import { ApolloClient, ApolloProvider } from '@apollo/client';
 import ReactGA from 'react-ga';
+import { FormattedMessage } from 'react-inlt';
 
 import '@the-deep/deep-ui/build/index.css';
 
@@ -21,6 +23,8 @@ import AuthPopup from '#base/components/AuthPopup';
 import Navbar from '#base/components/Navbar';
 import Routes from '#base/components/Routes';
 import { User } from '#base/types/user';
+
+import { messages, SupportedLang } from '#base/configs/i18n-messages';
 
 import styles from './styles.css';
 
@@ -154,6 +158,8 @@ function Base() {
         [alerts, addAlert, updateAlertContent, removeAlert],
     );
 
+    const [locale, setLocale] = useState<SupportedLang>('en');
+
     return (
         <div className={styles.base}>
             <ErrorBoundary
@@ -165,27 +171,53 @@ function Base() {
                     />
                 )}
             >
-                <ApolloProvider client={apolloClient}>
-                    <UserContext.Provider value={userContext}>
-                        <NavbarContext.Provider value={navbarContext}>
-                            <AlertContext.Provider value={alertContext}>
-                                <AuthPopup />
-                                <AlertContainer className={styles.alertContainer} />
-                                <Router history={browserHistory}>
-                                    <Init className={styles.init}>
-                                        <Navbar
-                                            className={_cs(
-                                                styles.navbar,
-                                                !navbarVisibility && styles.hidden,
-                                            )}
-                                        />
-                                        <Routes className={styles.view} />
-                                    </Init>
-                                </Router>
-                            </AlertContext.Provider>
-                        </NavbarContext.Provider>
-                    </UserContext.Provider>
-                </ApolloProvider>
+                <IntlProvider
+                    messages={messages[locale]}
+                    locale={locale}
+                    defaultLocale="en"
+                >
+                    <ApolloProvider client={apolloClient}>
+                        <UserContext.Provider value={userContext}>
+                            <NavbarContext.Provider value={navbarContext}>
+                                <AlertContext.Provider value={alertContext}>
+                                    <AuthPopup />
+                                    <AlertContainer className={styles.alertContainer} />
+                                    <Button
+                                        onClick={setLocale}
+                                        name="ne"
+                                    >
+                                        Nepali
+                                    </Button>
+                                    <Button
+                                        onClick={setLocale}
+                                        name="en"
+                                    >
+                                        English
+                                    </Button>
+                                    <FormattedMessage
+                                        description="Text for Hello"
+                                        defaultMessage="Hello"
+                                    />
+                                    <FormattedMessage
+                                        description="Text for World"
+                                        defaultMessage="World!"
+                                    />
+                                    <Router history={browserHistory}>
+                                        <Init className={styles.init}>
+                                            <Navbar
+                                                className={_cs(
+                                                    styles.navbar,
+                                                    !navbarVisibility && styles.hidden,
+                                                )}
+                                            />
+                                            <Routes className={styles.view} />
+                                        </Init>
+                                    </Router>
+                                </AlertContext.Provider>
+                            </NavbarContext.Provider>
+                        </UserContext.Provider>
+                    </ApolloProvider>
+                </IntlProvider>
             </ErrorBoundary>
         </div>
     );

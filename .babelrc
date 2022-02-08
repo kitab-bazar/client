@@ -21,6 +21,14 @@
             },
         }],
 
+        [
+            "formatjs",
+            {
+                "idInterpolationPattern": "[sha512:contenthash:base64:6]",
+                "ast": true
+            }
+        ],
+
         // Extends javascript support
         "@babel/plugin-syntax-dynamic-import",
         "@babel/plugin-proposal-do-expressions",

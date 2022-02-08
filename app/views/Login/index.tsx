@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 
 import KitabLogo from '#resources/img/KitabLogo.png';
 
@@ -19,6 +20,10 @@ function Login() {
                     <div className={styles.appName}>
                         Kitab Bazar
                     </div>
+                    <FormattedMessage
+                        description="Text for bazaar"
+                        defaultMessage="Bazaar"
+                    />
                 </div>
                 <div className={styles.right}>
                     <LoginForm />

@@ -1,0 +1,16 @@
+import { FormattedMessage as ReactIntlFormattedMessage } from 'react-intl';
+import { SupportedKeys } from '#base/configs/i18n-messages';
+
+// Our new union type of all available message IDs.
+type IntlMessageKeys = SupportedKeys;
+
+// Extend the original FormattedMessage props.
+type FormattedMessageProps = Omit<Parameters<typeof ReactIntlFormattedMessage>[0], 'id'> & {
+  id: IntlMessageKeys;
+};
+type FormattedMessageReturn = ReturnType<typeof ReactIntlFormattedMessage>;
+
+// eslint-disable-next-line import/prefer-default-export
+export const FormattedMessage = ReactIntlFormattedMessage as (
+  (props: FormattedMessageProps) => FormattedMessageReturn
+);

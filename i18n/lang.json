@@ -1,0 +1,22 @@
+{
+    "hello": {
+        "en": "Hello!",
+        "ne": "Namaste!"
+    },
+    "world": {
+        "en": "World!",
+        "ne": "Sansar!"
+    },
+    "hajar": {
+        "en": "Thousand Sunny",
+        "ne": "Hazar"
+    },
+    "bazar": {
+        "en": "Market",
+        "ne": "bazar k bazar"
+    },
+    "unused": {
+        "en": "no-use!",
+        "ne": "kaam-chaina!"
+    }
+}

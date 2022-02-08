@@ -4,6 +4,7 @@ import {
     Container,
 } from '@the-deep/deep-ui';
 import { Link } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
 import {
     gql,
     useQuery,
@@ -126,6 +127,10 @@ function HomePage() {
                         </div>
                     </div>
                 </div>
+                <FormattedMessage
+                    description="Text for hajur"
+                    defaultMessage="Hajur"
+                />
                 <Container
                     className={styles.featuredBooksSection}
                     heading="Featured Books"

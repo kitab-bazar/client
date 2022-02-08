@@ -65,6 +65,15 @@ module.exports = () => {
                     loader: 'babel-loader',
                     options: {
                         plugins: [
+                            [
+                                'inline-i18n-messages',
+                                {
+                                    extractKeysType: 'formatjs',
+                                    addMessagesSource: getPath('app/Base/configs/i18n-messages.ts'),
+                                    getMessageFile: getPath('i18n/getMessage.js'),
+                                    locale: ['en', 'np'],
+                                },
+                            ],
                             !isProduction && require.resolve('react-refresh/babel'),
                         ].filter(Boolean),
                     },
@@ -187,7 +196,7 @@ module.exports = () => {
             }),
             new ESLintPlugin({
                 extensions: ['.js', '.jsx', '.ts', '.tsx'],
-                reportUnusedDisableDirectives: "warn",
+                reportUnusedDisableDirectives: 'warn',
             }),
         ],
     };
