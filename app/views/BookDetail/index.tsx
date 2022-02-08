@@ -225,6 +225,27 @@ function BookDetail() {
         },
     );
 
+    const [removeFromCart] = useMutation<DeleteCartItemMutation, DeleteCartItemMutationVariables>(
+        DELETE_CART_ITEM,
+        {
+            onCompleted: (response) => {
+                if (!response?.deleteCartItem?.ok) {
+                    // FIXME: translate
+                    alert.show(
+                        'Failed to remove current book from the cart',
+                        { variant: 'error' },
+                    );
+                }
+            },
+            onError: (errors) => {
+                alert.show(
+                    errors.message,
+                    { variant: 'error' },
+                );
+            },
+        },
+    );
+
     const [createWishList] = useMutation<CreateWishListMutation, CreateWishListMutationVariables>(
         CREATE_WISH_LIST,
         {
@@ -250,32 +271,10 @@ function BookDetail() {
         DELETE_WISH_LIST,
         {
             onCompleted: (response) => {
-                if (response?.deleteWishlist?.ok) {
-                    return;
-                }
-                // FIXME: translate
-                alert.show(
-                    'Failed to remove book from your wishlist.',
-                    { variant: 'error' },
-                );
-            },
-            onError: (errors) => {
-                alert.show(
-                    errors.message,
-                    { variant: 'error' },
-                );
-            },
-        },
-    );
-
-    const [removeFromCart] = useMutation<DeleteCartItemMutation, DeleteCartItemMutationVariables>(
-        DELETE_CART_ITEM,
-        {
-            onCompleted: (response) => {
-                if (!response?.deleteCartItem?.ok) {
+                if (!response?.deleteWishlist?.ok) {
                     // FIXME: translate
                     alert.show(
-                        'Failed to remove current book from the cart',
+                        'Failed to remove book from your wishlist.',
                         { variant: 'error' },
                     );
                 }
@@ -526,6 +525,7 @@ function BookDetail() {
                                 headingSize="extraSmall"
                             >
                                 {bookDetail.book.authors.map((a) => (
+                                    // FIXME: use ListView
                                     <div key={a.name}>
                                         <div>
                                             {a.name}

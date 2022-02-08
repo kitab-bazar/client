@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import {
     Button,
     ListView,
@@ -9,6 +9,7 @@ import {
     Container,
     Checkbox,
     useAlert,
+    Pager,
 } from '@the-deep/deep-ui';
 import {
     _cs,
@@ -32,8 +33,8 @@ import {
 import styles from './styles.css';
 
 const CART_LIST = gql`
-query CartList {
-    cartItems {
+query CartList($page: Int!, $pageSize: Int!) {
+    cartItems(page: $page, pageSize: $pageSize) {
         results {
             id
             totalPrice
@@ -156,6 +157,8 @@ function CartItem(props: CartItemProps) {
     );
 }
 
+const MAX_ITEMS_PER_PAGE = 20;
+
 interface Props {
     className?: string;
 }
@@ -166,19 +169,29 @@ function CartPage(props: Props) {
     const [selectedItems, setSelectedItems] = React.useState<Record<string, boolean>>({});
     const [itemCounts, setItemCounts] = React.useState<Record<string, number | undefined>>({});
 
+    const [pageSize, setPageSize] = useState<number>(MAX_ITEMS_PER_PAGE);
+    const [page, setPage] = useState<number>(1);
+
     const alert = useAlert();
+
+    const orderVariables = useMemo(() => ({
+        pageSize,
+        page,
+    }), [pageSize, page]);
 
     const {
         data: result,
-        refetch,
         loading,
+        error,
     } = useQuery<CartListQuery, CartListQueryVariables>(
         CART_LIST,
         {
+            variables: orderVariables,
             onCompleted: (response) => {
                 if (!response?.cartItems) {
                     return;
                 }
+                // FIXME: We should think about how to handle paginations
                 const cartItems = response.cartItems.results ?? [];
                 setSelectedItems(listToMap(cartItems, (d) => d.id, () => true));
                 setItemCounts(listToMap(cartItems, (d) => d.id, (d) => d.quantity));
@@ -194,7 +207,6 @@ function CartPage(props: Props) {
         {
             onCompleted: (response) => {
                 if (response?.placeOrderFromCart?.ok) {
-                    refetch();
                     alert.show(
                         'Your order was placed successfully!',
                         { variant: 'success' },
@@ -216,7 +228,6 @@ function CartPage(props: Props) {
     );
 
     const pending = loading || submitting;
-    const carts = (result?.cartItems?.results) ? result.cartItems.results : [];
 
     const handleOrderNowClick = React.useCallback(() => {
         const selectedKeys = Object.keys(selectedItems)
@@ -287,14 +298,13 @@ function CartPage(props: Props) {
                 </Heading>
                 <div className={styles.content}>
                     <ListView
-                        // FIXME: handle pagination
-                        className={_cs(styles.list, carts.length === 0 && styles.empty)}
-                        data={carts}
+                        // eslint-disable-next-line max-len
+                        className={_cs(styles.list, (result?.cartItems?.totalCount ?? 0) === 0 && styles.empty)}
+                        data={result?.cartItems?.results ?? undefined}
                         keySelector={cartKeySelector}
                         rendererParams={cartItemRendererParams}
                         renderer={CartItem}
-                        // FIXME: handle error
-                        errored={false}
+                        errored={!!error}
                         pending={pending}
                         filtered={false}
                         messageShown
@@ -317,6 +327,14 @@ function CartPage(props: Props) {
                                 </div>
                             </div>
                         )}
+                    />
+                    <Pager
+                        activePage={page}
+                        maxItemsPerPage={pageSize}
+                        itemsCount={result?.cartItems?.totalCount ?? 0}
+                        onActivePageChange={setPage}
+                        onItemsPerPageChange={setPageSize}
+                        itemsPerPageControlHidden
                     />
                     <Container
                         className={styles.summary}

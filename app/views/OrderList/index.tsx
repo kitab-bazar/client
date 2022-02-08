@@ -217,6 +217,7 @@ function OrderList(props: Props) {
     const {
         data: orderList,
         loading,
+        error,
     } = useQuery<OrderListWithBooksQuery, OrderListWithBooksQueryVariables>(
         ORDER_LIST_WITH_BOOKS,
         { variables: orderVariables },
@@ -260,8 +261,7 @@ function OrderList(props: Props) {
                 keySelector={orderListKeySelector}
                 renderer={OrderListRenderer}
                 rendererParams={orderListRendererParams}
-                // FIXME: set errored properly
-                errored={false}
+                errored={!!error}
                 filtered={false}
                 pending={loading}
             />

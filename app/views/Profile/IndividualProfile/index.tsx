@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
     IoPencil,
     IoHeart,
@@ -13,6 +13,7 @@ import {
     Button,
     TextOutput,
     ListView,
+    Pager,
     useModalState,
 } from '@the-deep/deep-ui';
 import { removeNull } from '@togglecorp/toggle-form';
@@ -86,6 +87,8 @@ const ORDER_LIST = gql`
 
 const orderListKeySelector = (o: OrderType) => o.id;
 
+const MAX_ITEMS_PER_PAGE = 3;
+
 interface Props {
     className?: string;
 }
@@ -108,14 +111,18 @@ function IndividualProfile(props: Props) {
 
     const profileDetails = removeNull(data);
 
+    const [pageSize, setPageSize] = useState<number>(MAX_ITEMS_PER_PAGE);
+    const [page, setPage] = useState<number>(1);
+
     const orderVariables = useMemo(() => ({
-        pageSize: 3,
-        page: 1,
-    }), []);
+        pageSize,
+        page,
+    }), [pageSize, page]);
 
     const {
         data: orderList,
         loading,
+        error,
     } = useQuery<OrderListQuery, OrderListQueryVariables>(
         ORDER_LIST,
         { variables: orderVariables },
@@ -232,6 +239,16 @@ function IndividualProfile(props: Props) {
                             View all
                         </SmartButtonLikeLink>
                     )}
+                    footerContent={(
+                        <Pager
+                            activePage={page}
+                            maxItemsPerPage={pageSize}
+                            itemsCount={orderList?.orders?.totalCount ?? 0}
+                            onActivePageChange={setPage}
+                            onItemsPerPageChange={setPageSize}
+                            itemsPerPageControlHidden
+                        />
+                    )}
                 >
                     <ListView
                         className={styles.orderList}
@@ -255,7 +272,7 @@ function IndividualProfile(props: Props) {
                                 </div>
                             </div>
                         )}
-                        errored={false}
+                        errored={!!error}
                         filtered={false}
                         pending={loading}
                     />

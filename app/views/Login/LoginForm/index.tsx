@@ -115,7 +115,15 @@ function LoginForm() {
                     ok,
                 } = loginRes;
 
-                if (errors) {
+                if (ok) {
+                    const safeUser = removeNull(result);
+                    setUser({
+                        id: safeUser.id,
+                        displayName: safeUser.fullName,
+                        type: safeUser.userType,
+                        permissions: safeUser.allowedPermissions,
+                    });
+                } else if (errors) {
                     const formError = transformToFormError(removeNull(errors) as ObjectError[]);
                     setError(formError);
                     // eslint-disable-next-line no-console
@@ -126,14 +134,6 @@ function LoginForm() {
                             variant: 'error',
                         },
                     );
-                } else if (ok) {
-                    const safeUser = removeNull(result);
-                    setUser({
-                        id: safeUser.id,
-                        displayName: safeUser.fullName,
-                        type: safeUser.userType,
-                        permissions: safeUser.allowedPermissions,
-                    });
                 }
             },
             onError: (errors) => {

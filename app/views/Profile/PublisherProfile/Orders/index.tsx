@@ -52,13 +52,16 @@ const PUBLISHER_BOOK_ORDERS = gql`
 type PublisherOrder = NonNullable<NonNullable<PublisherBookOrdersQuery['orders']>['results']>[number];
 const orderKeySelector = (d: PublisherOrder) => d.id;
 
+const MAX_ITEMS_PER_PAGE = 20;
+
 function Orders() {
-    const [pageSize, setPageSize] = useState<number>(25);
+    const [pageSize, setPageSize] = useState<number>(MAX_ITEMS_PER_PAGE);
     const [page, setPage] = useState<number>(1);
 
     const {
         data: publisherBookOrdersResult,
         loading,
+        error,
     } = useQuery<PublisherBookOrdersQuery, PublisherBookOrdersQueryVariables>(
         PUBLISHER_BOOK_ORDERS,
         {
@@ -99,7 +102,7 @@ function Orders() {
                 keySelector={orderKeySelector}
                 renderer={OrderItem}
                 rendererParams={orderItemRendererParams}
-                errored={false}
+                errored={!!error}
                 filtered={false}
                 pending={loading}
             />

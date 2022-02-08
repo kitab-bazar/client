@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import {
     ListView,
     ButtonLikeLink,
     Container,
+    Pager,
 } from '@the-deep/deep-ui';
 import {
     gql,
@@ -30,6 +31,7 @@ import styles from './styles.css';
 const FEATURED_BOOKS = gql`
 query FeaturedBooks($page: Int!, $pageSize: Int!) {
     books(page: $page , pageSize: $pageSize) {
+        totalCount
         results {
             id
             isbn
@@ -77,18 +79,27 @@ function GoalPoint(props: GoalPointProps) {
     );
 }
 
+const MAX_ITEMS_PER_PAGE = 20;
+
 function HomePage() {
-    const { data: result, loading } = useQuery<FeaturedBooksQuery, FeaturedBooksQueryVariables>(
+    const [pageSize, setPageSize] = useState<number>(MAX_ITEMS_PER_PAGE);
+    const [page, setPage] = useState<number>(1);
+
+    const orderVariables = useMemo(() => ({
+        pageSize,
+        page,
+    }), [pageSize, page]);
+
+    const {
+        data: result,
+        loading,
+        error,
+    } = useQuery<FeaturedBooksQuery, FeaturedBooksQueryVariables>(
         FEATURED_BOOKS,
         {
-            variables: {
-                page: 1,
-                pageSize: 10,
-            },
+            variables: orderVariables,
         },
     );
-    const books = result?.books?.results ?? undefined;
-
     const bookItemRendererParams = React.useCallback((_: string, data: Book) => ({
         book: data,
     }), []);
@@ -180,15 +191,24 @@ function HomePage() {
                     <Container
                         className={styles.featuredBooksSection}
                         heading={strings.featuredBooksLabel}
+                        footerContent={(
+                            <Pager
+                                activePage={page}
+                                maxItemsPerPage={pageSize}
+                                itemsCount={result?.books?.totalCount ?? 0}
+                                onActivePageChange={setPage}
+                                onItemsPerPageChange={setPageSize}
+                                itemsPerPageControlHidden
+                            />
+                        )}
                     >
                         <ListView
                             className={styles.bookList}
-                            data={books}
+                            data={result?.books?.results ?? undefined}
                             keySelector={bookKeySelector}
                             rendererParams={bookItemRendererParams}
                             renderer={BookItem}
-                            // FIXME: handle error
-                            errored={false}
+                            errored={!!error}
                             pending={loading}
                             filtered={false}
                         />

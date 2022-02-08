@@ -109,16 +109,7 @@ function EditProfileModal(props: Props) {
                     ok,
                 } = profileRes;
 
-                if (errors) {
-                    const formError = transformToFormError(removeNull(errors) as ObjectError[]);
-                    setError(formError);
-                    alert.show(
-                        'Error updating profile',
-                        {
-                            variant: 'error',
-                        },
-                    );
-                } else if (ok) {
+                if (ok) {
                     alert.show(
                         'Successfully updated profile',
                         {
@@ -127,6 +118,15 @@ function EditProfileModal(props: Props) {
                     );
                     onEditSuccess();
                     onModalClose();
+                } else if (errors) {
+                    const formError = transformToFormError(removeNull(errors) as ObjectError[]);
+                    setError(formError);
+                    alert.show(
+                        'Error updating profile',
+                        {
+                            variant: 'error',
+                        },
+                    );
                 }
             },
             onError: (errors) => {

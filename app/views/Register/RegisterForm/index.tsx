@@ -111,13 +111,18 @@ function RegisterForm() {
                     return;
                 }
 
-                if (registerResponse?.ok) {
+                const {
+                    ok,
+                    errors,
+                } = registerResponse;
+
+                if (ok) {
                     alert.show(
                         // FIXME: translate
                         'Registration completed successfully! Please validate your account before loggin in',
                         { variant: 'success' },
                     );
-                } else if (registerResponse?.errors) {
+                } else if (errors) {
                     const formErrorFromServer = transformToFormError(
                         removeNull(registerResponse?.errors) as ObjectError[],
                     );

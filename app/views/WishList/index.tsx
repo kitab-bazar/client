@@ -10,6 +10,7 @@ import {
     TextOutput,
     useAlert,
     Heading,
+    Pager,
 } from '@the-deep/deep-ui';
 import {
     gql,
@@ -41,6 +42,7 @@ import styles from './styles.css';
 const WISH_LIST = gql`
 query WishList($pageSize: Int!, $page: Int!) {
     wishList(pageSize: $pageSize, page: $page) {
+        totalCount
         results {
             id
             book {
@@ -196,20 +198,23 @@ function WishListItem(props: WishProps) {
     );
 }
 
+const MAX_ITEMS_PER_PAGE = 20;
+
 interface Props {
     className?: string;
 }
 
 function WishList(props: Props) {
     const { className } = props;
-    const [page] = useState<number>(1);
-    const [pageSize] = useState<number>(10);
+    const [pageSize, setPageSize] = useState<number>(MAX_ITEMS_PER_PAGE);
+    const [page, setPage] = useState<number>(1);
     const alert = useAlert();
 
     const {
         data,
         refetch,
         loading,
+        error,
     } = useQuery<WishListQuery, WishListQueryVariables>(
         WISH_LIST,
         {
@@ -302,8 +307,6 @@ function WishList(props: Props) {
         });
     }, [deleteWishlist]);
 
-    const wishes = data?.wishList?.results ?? [];
-
     const wishItemRendererParams = React.useCallback((_: string, d: Wish) => ({
         wish: d,
         onRemoveWishList: deleteBook,
@@ -321,14 +324,14 @@ function WishList(props: Props) {
                 </Heading>
                 <ListView
                     // FIXME: add pager
-                    className={_cs(styles.list, wishes.length === 0 && styles.empty)}
-                    data={wishes}
+                    // eslint-disable-next-line max-len
+                    className={_cs(styles.list, (data?.wishList?.results?.length ?? 0) === 0 && styles.empty)}
+                    data={data?.wishList?.results ?? undefined}
                     keySelector={wishKeySelector}
                     rendererParams={wishItemRendererParams}
                     renderer={WishListItem}
                     pending={loading}
-                    // FIXME: handle error
-                    errored={false}
+                    errored={!!error}
                     messageShown
                     emptyMessage={(
                         <div className={styles.emptyMessage}>
@@ -350,6 +353,14 @@ function WishList(props: Props) {
                         </div>
                     )}
                     filtered={false}
+                />
+                <Pager
+                    activePage={page}
+                    maxItemsPerPage={pageSize}
+                    itemsCount={data?.wishList?.totalCount ?? 0}
+                    onActivePageChange={setPage}
+                    onItemsPerPageChange={setPageSize}
+                    itemsPerPageControlHidden
                 />
             </div>
         </div>
