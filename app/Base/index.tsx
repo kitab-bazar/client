@@ -25,6 +25,8 @@ import useLocalStorage from '#base/hooks/useLocalStorage';
 import Routes from '#base/components/Routes';
 import { User } from '#base/types/user';
 
+import OrdersBar, { OrdersBarContext } from '#components/OrdersBar';
+
 import styles from './styles.css';
 
 if (sentryConfig) {
@@ -104,6 +106,12 @@ function Base() {
     );
 
     const [alerts, setAlerts] = React.useState<AlertOptions[]>([]);
+    const [updateBar, setUpdateBar] = React.useState(
+        () => {
+            // eslint-disable-next-line no-console
+            console.warn('OrdersBar::updateBar has not been set yet');
+        },
+    );
 
     const addAlert = React.useCallback(
         (alert: AlertOptions) => {
@@ -164,6 +172,14 @@ function Base() {
         [alerts, addAlert, updateAlertContent, removeAlert],
     );
 
+    const ordersBarContext = React.useMemo(
+        () => ({
+            updateBar,
+            setUpdateFn: setUpdateBar,
+        }),
+        [updateBar],
+    );
+
     const languageContext = React.useMemo(() => ({
         lang,
         setLang,
@@ -186,20 +202,23 @@ function Base() {
                         <UserContext.Provider value={userContext}>
                             <NavbarContext.Provider value={navbarContext}>
                                 <AlertContext.Provider value={alertContext}>
-                                    <AuthPopup />
-                                    <AlertContainer className={styles.alertContainer} />
-                                    <Router history={browserHistory}>
-                                        <Init preloadClassName={styles.preload}>
-                                            <Navbar
-                                                className={_cs(
-                                                    styles.navbar,
-                                                    !navbarVisibility && styles.hidden,
-                                                )}
-                                            />
-                                            <Routes className={styles.view} />
-                                            <Footer className={styles.footer} />
-                                        </Init>
-                                    </Router>
+                                    <OrdersBarContext.Provider value={ordersBarContext}>
+                                        <AuthPopup />
+                                        <AlertContainer className={styles.alertContainer} />
+                                        <Router history={browserHistory}>
+                                            <Init preloadClassName={styles.preload}>
+                                                <Navbar
+                                                    className={_cs(
+                                                        styles.navbar,
+                                                        !navbarVisibility && styles.hidden,
+                                                    )}
+                                                />
+                                                <Routes className={styles.view} />
+                                                <Footer className={styles.footer} />
+                                                <OrdersBar className={styles.ordersBar} />
+                                            </Init>
+                                        </Router>
+                                    </OrdersBarContext.Provider>
                                 </AlertContext.Provider>
                             </NavbarContext.Provider>
                         </UserContext.Provider>

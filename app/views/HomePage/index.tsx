@@ -128,9 +128,8 @@ function HomePage() {
                         </div>
                         <div className={styles.actions}>
                             <ButtonLikeLink
-                                to="#"
-                                // TODO: implement page
                                 // TODO: use SmartButtonLikeLink
+                                to="/explore/"
                                 variant="secondary"
                                 spacing="loose"
                                 // FIXME: translate

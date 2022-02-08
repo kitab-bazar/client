@@ -65,6 +65,12 @@ function Routes(props: Props) {
                 </Route>
                 <Route
                     exact
+                    path={routes.explore.path}
+                >
+                    {routes.explore.load({ className })}
+                </Route>
+                <Route
+                    exact
                     path={routes.myProfile.path}
                 >
                     {routes.myProfile.load({ className })}

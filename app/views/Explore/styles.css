@@ -1,0 +1,42 @@
+.explore {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    .container {
+        display: flex;
+        width: 100%;
+        max-width: var(--kitab-page-max-width);
+
+        .side-bar {
+            display: flex;
+            flex-basis: 20rem;
+            flex-direction: column;
+            flex-shrink: 0;
+            gap: var(--dui-spacing-extra-large);
+            padding: var(--dui-spacing-extra-large) 0;
+
+            .publisher-input {
+                .publisher-list {
+                    display: flex;
+                    flex-direction: column;
+                }
+            }
+
+            .categories-input {
+                .category-list {
+                    display: flex;
+                    flex-direction: column;
+                }
+            }
+        }
+
+        .book-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--dui-spacing-medium);
+            flex-grow: 1;
+            padding: var(--dui-spacing-extra-large) 0;
+        }
+    }
+}
