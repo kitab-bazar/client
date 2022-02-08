@@ -67,6 +67,27 @@
             justify-content: center;
             gap: var(--dui-spacing-medium);
 
+            .notification-button {
+                position: relative;
+                overflow: visible;
+
+                .notification-count {
+                    display: flex;
+                    position: absolute;
+                    top: -0.5em;
+                    right: -0.5em;
+                    align-items: center;
+                    justify-content: center;
+                    /* NOTE: Want to move this a bit up */
+                    border-radius: 1em;
+                    background-color: var(--dui-color-danger);
+                    padding: 2px;
+                    min-width: 1.4em;
+                    min-height: 1.4em;
+                    color: var(--dui-color-text-on-dark);
+                    font-size: var(--dui-font-size-extra-small);
+                }
+            }
         }
 
         .user-dropdown {
@@ -86,3 +107,7 @@
     }
 }
 
+
+.popup {
+    max-height: unset!important;
+}
