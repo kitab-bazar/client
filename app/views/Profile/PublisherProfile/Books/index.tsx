@@ -1,20 +1,23 @@
-import React, { useContext, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { isNotDefined } from '@togglecorp/fujs';
 import { useQuery, gql } from '@apollo/client';
+import { IoAdd } from 'react-icons/io5';
 
 import {
     Pager,
+    Button,
     ListView,
     Container,
+    useModalState,
 } from '@the-deep/deep-ui';
 
 import BookItem, { Props as BookItemsProps } from '#components/BookItem';
-import { UserContext } from '#base/context/UserContext';
 import {
     PublisherBooksQuery,
     PublisherBooksQueryVariables,
 } from '#generated/types';
 
+import UploadBookModal from './UploadBookModal';
 import styles from './styles.css';
 
 type Book = NonNullable<NonNullable<PublisherBooksQuery['books']>['results']>[number];
@@ -44,24 +47,30 @@ const PUBLISHER_BOOKS = gql`
     }
 `;
 
-function Books() {
+interface Props {
+    publisherId?: string;
+}
+
+function Books(props: Props) {
+    const {
+        publisherId,
+    } = props;
+
     const [pageSize, setPageSize] = useState<number>(25);
     const [page, setPage] = useState<number>(1);
-    const {
-        user,
-    } = useContext(UserContext);
 
     const {
         data: publisherBooksResult,
         loading,
+        refetch: refetchPublisherBooks,
     } = useQuery<PublisherBooksQuery, PublisherBooksQueryVariables>(
         PUBLISHER_BOOKS,
         {
-            skip: isNotDefined(user?.id),
+            skip: isNotDefined(publisherId),
             variables: {
                 page,
                 pageSize,
-                publisher: user?.id,
+                publisher: publisherId,
             },
         },
     );
@@ -72,12 +81,28 @@ function Books() {
         book: data,
     }), []);
 
+    const [
+        uploadBookModalShown,
+        showUploadBookModal,
+        hideUploadBookModal,
+    ] = useModalState(false);
+
     return (
         <Container
             className={styles.publisherBooks}
             heading="Books"
             contentClassName={styles.content}
-            footerIcons={(
+            headerActions={(
+                <Button
+                    name={undefined}
+                    variant="general"
+                    onClick={showUploadBookModal}
+                    icons={<IoAdd />}
+                >
+                    Upload Book
+                </Button>
+            )}
+            footerActions={(
                 <Pager
                     activePage={page}
                     maxItemsPerPage={pageSize}
@@ -97,6 +122,13 @@ function Books() {
                 pending={loading}
                 filtered={false}
             />
+            {uploadBookModalShown && publisherId && (
+                <UploadBookModal
+                    publisher={publisherId}
+                    onModalClose={hideUploadBookModal}
+                    onUploadSuccess={refetchPublisherBooks}
+                />
+            )}
         </Container>
     );
 }

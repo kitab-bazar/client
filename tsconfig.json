@@ -20,6 +20,8 @@
             "#views/*": ["./app/views/*"],
             "#base/*": ["./app/Base/*"],
             "#resources/*": ["./app/resources/*"],
+            "#utils/*": ["./app/utils/*"],
+            "#hooks/*": ["./app/hooks/*"]
         },
 
         "noFallthroughCasesInSwitch": true,
