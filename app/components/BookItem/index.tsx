@@ -7,9 +7,9 @@ import {
 
 import styles from './styles.css';
 
-interface Props {
+export interface Props {
     className?: string;
-    book: BookType;
+    book: Pick<BookType, 'title' | 'id' | 'image' | 'authors' | 'price'>;
 }
 function BookItem(props: Props) {
     const {

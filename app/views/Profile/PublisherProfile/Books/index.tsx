@@ -8,7 +8,7 @@ import {
     Container,
 } from '@the-deep/deep-ui';
 
-import BookItem from '#components/BookItem';
+import BookItem, { Props as BookItemsProps } from '#components/BookItem';
 import { UserContext } from '#base/context/UserContext';
 import {
     PublisherBooksQuery,
@@ -67,7 +67,8 @@ function Books() {
     );
 
     const books = publisherBooksResult?.books?.results ?? undefined;
-    const bookItemRendererParams = useCallback((_, data) => ({
+
+    const bookItemRendererParams = useCallback((_, data: Book): BookItemsProps => ({
         book: data,
     }), []);
 

@@ -70,7 +70,7 @@ function Orders() {
     );
 
     const orders = publisherBookOrdersResult?.orders?.results ?? undefined;
-    const orderItemRendererParams = useCallback((_, data) => ({
+    const orderItemRendererParams = useCallback((_, data: PublisherOrder) => ({
         className: styles.order,
         order: data,
     }), []);
