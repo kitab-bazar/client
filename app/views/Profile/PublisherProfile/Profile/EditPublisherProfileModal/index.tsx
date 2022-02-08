@@ -16,6 +16,7 @@ import {
     useAlert,
 } from '@the-deep/deep-ui';
 
+import NonFieldError from '#components/NonFieldError';
 import {
     UpdatePublisherProfileMutation,
     UpdatePublisherProfileMutationVariables,
@@ -134,12 +135,10 @@ function EditProfileModal(props: Props) {
                     onModalClose();
                 }
             },
-            onError: () => {
+            onError: (errors) => {
                 alert.show(
-                    'Error updating profile.',
-                    {
-                        variant: 'error',
-                    },
+                    errors.message,
+                    { variant: 'error' },
                 );
             },
         },
@@ -182,6 +181,7 @@ function EditProfileModal(props: Props) {
                 </>
             )}
         >
+            <NonFieldError error={error} />
             <TextInput
                 name="name"
                 label="Name of the Publisher"

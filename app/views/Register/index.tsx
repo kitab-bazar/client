@@ -1,9 +1,11 @@
 import React from 'react';
 import { _cs } from '@togglecorp/fujs';
 
-import RegisterForm from './RegisterForm';
 import KitabLogo from '#resources/img/KitabLogo.png';
+import { common } from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
 
+import RegisterForm from './RegisterForm';
 import styles from './styles.css';
 
 interface Props {
@@ -15,6 +17,8 @@ function Register(props: Props) {
         className,
     } = props;
 
+    const strings = useTranslation(common);
+
     return (
         <div className={_cs(styles.register, className)}>
             <div className={styles.container}>
@@ -24,7 +28,7 @@ function Register(props: Props) {
                         alt=""
                     />
                     <div className={styles.appName}>
-                        Kitab Bazar
+                        {strings.kitabBazarAppLabel}
                     </div>
                 </div>
                 <div className={styles.right}>

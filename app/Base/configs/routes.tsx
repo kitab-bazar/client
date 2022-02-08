@@ -36,7 +36,8 @@ const home = wrap({
     title: 'Home',
     navbarVisibility: true,
     component: lazy(() => import('#views/HomePage')),
-    componentProps: {},
+    componentProps: {
+    },
     visibility: 'is-anything',
 });
 const myProfile = wrap({
@@ -48,9 +49,11 @@ const myProfile = wrap({
     },
     visibility: 'is-authenticated',
 });
+
+// FIXME: change :id to :bookId
 const bookDetail = wrap({
     path: '/book/:id/',
-    title: 'My Book Detail',
+    title: 'Book',
     navbarVisibility: true,
     component: lazy(() => import('#views/BookDetail')),
     componentProps: {

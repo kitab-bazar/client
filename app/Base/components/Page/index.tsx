@@ -4,6 +4,7 @@ import {
     useLocation,
 } from 'react-router-dom';
 
+import useTranslation from '#base/hooks/useTranslation';
 import PreloadMessage from '#base/components/PreloadMessage';
 import { UserContext } from '#base/context/UserContext';
 import { NavbarContext } from '#base/context/NavbarContext';
@@ -11,6 +12,7 @@ import { ProjectContext } from '#base/context/ProjectContext';
 import PageTitle from '#base/components/PageTitle';
 import { Project } from '#base/types/project';
 import ErrorBoundary from '#base/components/ErrorBoundary';
+import { common } from '#base/configs/lang';
 
 import styles from './styles.css';
 
@@ -48,6 +50,8 @@ function Page<T extends { className?: string }>(props: Props<T>) {
         defaultPage = '/',
         path,
     } = props;
+
+    const commonStrings = useTranslation(common);
 
     const location = useLocation();
 
@@ -109,8 +113,8 @@ function Page<T extends { className?: string }>(props: Props<T>) {
             <>
                 <PageTitle value={`403 - ${title}`} />
                 <PreloadMessage
-                    heading="Oh no!"
-                    content="The page does not exist or you do not have permissions to view this page."
+                    heading={commonStrings.unathenticatedPageHeader}
+                    content={commonStrings.unathenticatedPageContent}
                 />
             </>
         );

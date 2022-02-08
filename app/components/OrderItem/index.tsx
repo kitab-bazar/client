@@ -14,20 +14,26 @@ import styles from './styles.css';
 
 export interface Props {
     className?: string;
-    orderCode: string;
-    totalPrice: number;
-    status: OrderStatus;
-    totalBookTypes: number;
+    order: {
+        orderCode: string;
+        totalPrice: number;
+        status: OrderStatus;
+        totalQuantity?: number | null | undefined;
+    }
 }
 
 function OrderItem(props: Props) {
     const {
-        orderCode,
         className,
-        totalPrice,
-        status,
-        totalBookTypes,
+        order,
     } = props;
+
+    const {
+        orderCode,
+        totalPrice,
+        totalQuantity,
+        status,
+    } = order;
 
     return (
         <Container
@@ -51,7 +57,7 @@ function OrderItem(props: Props) {
             <TextOutput
                 label="Books"
                 valueType="number"
-                value={totalBookTypes}
+                value={totalQuantity}
             />
             <TextOutput
                 label="Total price"

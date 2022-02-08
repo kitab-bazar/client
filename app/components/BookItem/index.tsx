@@ -1,10 +1,11 @@
 import React from 'react';
 import { _cs } from '@togglecorp/fujs';
-import { Link } from 'react-router-dom';
 import {
     BookType,
 } from '#generated/types';
 
+import routes from '#base/configs/routes';
+import SmartLink from '#base/components/SmartLink';
 import styles from './styles.css';
 
 export interface Props {
@@ -19,8 +20,9 @@ function BookItem(props: Props) {
     } = props;
 
     return (
-        <Link
-            to={`/book/${book.id}/`}
+        <SmartLink
+            route={routes.bookDetail}
+            attrs={{ id: book.id }}
             className={_cs(styles.bookItem, className)}
             title={book.title}
         >
@@ -50,7 +52,7 @@ function BookItem(props: Props) {
                     {`NPR ${book.price}`}
                 </div>
             </div>
-        </Link>
+        </SmartLink>
     );
 }
 

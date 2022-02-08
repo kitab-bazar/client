@@ -75,6 +75,7 @@ mutation CheckOutCart($cartItems: [ID!]) {
 `;
 
 type Cart = NonNullable<NonNullable<CartListQuery['cartItems']>['results']>[number];
+
 const cartKeySelector = (c: Cart) => c.id;
 
 interface CartItemProps {
@@ -99,16 +100,9 @@ function CartItem(props: CartItemProps) {
         book,
     } = cart;
 
-    const {
-        title,
-        image,
-        authors,
-        price,
-    } = book;
-
     const authorsDisplay = React.useMemo(() => (
-        authors?.map((d) => d.name).join(', ')
-    ), [authors]);
+        book.authors?.map((d) => d.name).join(', ')
+    ), [book.authors]);
 
     return (
         <div className={styles.cartItem}>
@@ -119,33 +113,37 @@ function CartItem(props: CartItemProps) {
                 onChange={onSelectionChange}
             />
             <div className={styles.imageContainer}>
-                {image?.url ? (
+                {book.image?.url ? (
                     <img
                         className={styles.image}
-                        src={image.url}
-                        alt={title}
+                        src={book.image.url}
+                        alt={book.title}
                     />
                 ) : (
                     <Message
+                        // FIXME: translate
                         message="Preview not available"
                     />
                 )}
             </div>
             <div className={styles.details}>
                 <div className={styles.title}>
-                    {title}
+                    {book.title}
                 </div>
                 <TextOutput
+                    // FIXME: translate
                     label="Author"
                     value={authorsDisplay}
                 />
                 <TextOutput
+                    // FIXME: translate
                     label="Price (NPR)"
                     valueType="number"
-                    value={price}
+                    value={book.price}
                 />
                 <NumberInput
                     className={styles.quantityInput}
+                    // FIXME: translate
                     label="Quantity"
                     name="quantity"
                     value={quantity}
@@ -196,17 +194,23 @@ function CartPage(props: Props) {
         {
             onCompleted: (response) => {
                 if (response?.placeOrderFromCart?.ok) {
+                    refetch();
                     alert.show(
                         'Your order was placed successfully!',
                         { variant: 'success' },
                     );
-                    refetch();
                 } else {
                     alert.show(
                         'Failed to place the Order!',
                         { variant: 'error' },
                     );
                 }
+            },
+            onError: (errors) => {
+                alert.show(
+                    errors.message,
+                    { variant: 'error' },
+                );
             },
         },
     );
@@ -216,10 +220,12 @@ function CartPage(props: Props) {
 
     const handleOrderNowClick = React.useCallback(() => {
         const selectedKeys = Object.keys(selectedItems)
-            .filter((k) => selectedItems[k])
-            .map((k) => Number(k));
+            .filter((k) => selectedItems[k]);
         if (selectedKeys.length > 0) {
             placeOrderFromCart({ variables: { cartItems: selectedKeys } });
+        } else {
+            // eslint-disable-next-line no-console
+            console.error('There are no selected keys to order');
         }
     }, [placeOrderFromCart, selectedItems]);
 
@@ -237,7 +243,7 @@ function CartPage(props: Props) {
         }));
     }, []);
 
-    const cartItemRendererParams = React.useCallback((_, data: Cart): CartItemProps => ({
+    const cartItemRendererParams = React.useCallback((_: string, data: Cart): CartItemProps => ({
         cart: data,
         isSelected: selectedItems[data.id],
         quantity: itemCounts[data.id],
@@ -250,7 +256,9 @@ function CartPage(props: Props) {
         totalPrice,
     ] = React.useMemo(() => {
         const selectedItemKeys = Object.keys(itemCounts).filter((k) => selectedItems[k]);
+
         const totalCount = sum(selectedItemKeys.map((k) => itemCounts[k] ?? 0));
+
         const priceMap = listToMap(
             result?.cartItems?.results,
             (d) => d.id,
@@ -273,16 +281,19 @@ function CartPage(props: Props) {
                 <Heading
                     className={styles.pageHeading}
                     size="extraLarge"
+                    // FIXME: translate
                 >
                     My Cart
                 </Heading>
                 <div className={styles.content}>
                     <ListView
+                        // FIXME: handle pagination
                         className={_cs(styles.list, carts.length === 0 && styles.empty)}
                         data={carts}
                         keySelector={cartKeySelector}
                         rendererParams={cartItemRendererParams}
                         renderer={CartItem}
+                        // FIXME: handle error
                         errored={false}
                         pending={pending}
                         filtered={false}
@@ -291,10 +302,16 @@ function CartPage(props: Props) {
                             <div className={styles.emptyMessage}>
                                 <IoList className={styles.icon} />
                                 <div className={styles.text}>
-                                    <div className={styles.primary}>
+                                    <div
+                                        className={styles.primary}
+                                        // FIXME: translate
+                                    >
                                         Your Shopping Cart is currently empty
                                     </div>
-                                    <div className={styles.suggestion}>
+                                    <div
+                                        className={styles.suggestion}
+                                        // FIXME: translate
+                                    >
                                         Add Books that you want to buy by clicking on Add to Cart
                                     </div>
                                 </div>
@@ -303,17 +320,20 @@ function CartPage(props: Props) {
                     />
                     <Container
                         className={styles.summary}
+                        // FIXME: translate
                         heading="Order Summary"
                         headingSize="extraSmall"
                         contentClassName={styles.summaryContent}
                         spacing="loose"
                     >
                         <TextOutput
+                            // FIXME: translate
                             label="Number of Items"
                             value={totalItemCount}
                             valueType="number"
                         />
                         <TextOutput
+                            // FIXME: translate
                             label="Total Amount (NPR)"
                             value={totalPrice}
                             valueType="number"
@@ -323,7 +343,8 @@ function CartPage(props: Props) {
                                 name={undefined}
                                 variant="secondary"
                                 onClick={handleOrderNowClick}
-                                disabled={loading || !totalItemCount}
+                                disabled={loading || totalItemCount <= 0}
+                                // FIXME: translate
                             >
                                 Order Now
                             </Button>

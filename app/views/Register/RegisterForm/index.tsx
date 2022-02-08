@@ -1,5 +1,4 @@
 import React from 'react';
-import { generatePath } from 'react-router-dom';
 import {
     Container,
     RadioInput,
@@ -8,10 +7,8 @@ import {
     useInputState,
     Button,
     useAlert,
-    ButtonLikeLink,
 } from '@the-deep/deep-ui';
 import {
-    PartialForm,
     useForm,
     getErrorObject,
     createSubmitHandler,
@@ -19,6 +16,8 @@ import {
 } from '@togglecorp/toggle-form';
 import { useMutation, gql } from '@apollo/client';
 
+import NonFieldError from '#components/NonFieldError';
+import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
 import {
     UserUserType,
     RegisterMutation,
@@ -32,8 +31,8 @@ import {
 } from '#base/utils/errorTransform';
 
 import {
+    PartialRegisterFormType,
     RegisterFormType,
-    RegistrationFields,
     schema,
 } from './common';
 
@@ -47,8 +46,8 @@ interface UserType {
     title: string;
 }
 
-// FIXME: fetch this from the server
-const userType: UserType[] = [
+// TODO: fetch this from the server
+const userTypes: UserType[] = [
     {
         id: 'INDIVIDUAL_USER',
         title: 'Individual User',
@@ -67,7 +66,7 @@ const userType: UserType[] = [
     },
 ];
 
-const defaultFormValues: PartialForm<RegisterFormType> = {
+const defaultFormValues: PartialRegisterFormType = {
     userType: 'INDIVIDUAL_USER',
 };
 
@@ -91,9 +90,11 @@ function RegisterForm() {
         validate,
         setError,
     } = useForm(schema, defaultFormValues);
+
     const alert = useAlert();
 
     const error = getErrorObject(formError);
+
     const [confirmPassword, setConfirmPassword] = useInputState<string | undefined>(undefined);
 
     const [
@@ -105,12 +106,14 @@ function RegisterForm() {
             onCompleted: (response) => {
                 const { register: registerResponse } = response;
                 if (!registerResponse) {
+                    // FIXME: translate
                     alert.show('No response from server!');
                     return;
                 }
 
                 if (registerResponse?.ok) {
                     alert.show(
+                        // FIXME: translate
                         'Registration completed successfully! Please validate your account before loggin in',
                         { variant: 'success' },
                     );
@@ -121,18 +124,26 @@ function RegisterForm() {
                     setError(formErrorFromServer);
 
                     alert.show(
+                        // FIXME: translate
                         'Error during registration!',
                         { variant: 'error' },
                     );
                 }
             },
+            onError: (errors) => {
+                alert.show(
+                    errors.message,
+                    { variant: 'error' },
+                );
+            },
         },
     );
 
-    const handleSubmit = React.useCallback((formValues: Partial<RegisterFormType>) => {
-        const finalValues = { ...formValues } as RegistrationFields;
-
-        register({ variables: { data: finalValues } });
+    const handleSubmit = React.useCallback((formValues: PartialRegisterFormType) => {
+        const finalValues = formValues as RegisterFormType;
+        register({
+            variables: { data: finalValues },
+        });
     }, [register]);
 
     const confirmationError = React.useMemo(() => {
@@ -140,27 +151,30 @@ function RegisterForm() {
             return undefined;
         }
 
+        // FIXME: translate
         return 'Password doesn\'t match';
     }, [confirmPassword, value?.password]);
 
     return (
         <Container
             className={styles.registerForm}
+            // FIXME: translate
             heading="Register new User"
             headingSize="large"
             spacing="loose"
             footerContentClassName={styles.footerContent}
+            // FIXME: translate
             footerContent={(
                 <>
                     Already have an account?
                     &nbsp;
-                    <ButtonLikeLink
+                    <SmartButtonLikeLink
                         className={styles.loginLink}
-                        to={generatePath(routes.login.path)}
+                        route={routes.login}
                         variant="transparent"
                     >
                         Login
-                    </ButtonLikeLink>
+                    </SmartButtonLikeLink>
                 </>
             )}
         >
@@ -168,9 +182,11 @@ function RegisterForm() {
                 className={styles.form}
                 onSubmit={createSubmitHandler(validate, setError, handleSubmit)}
             >
+                <NonFieldError error={error} />
                 <RadioInput
                     name="userType"
-                    options={userType}
+                    options={userTypes}
+                    // FIXME: translate
                     label="Select User Type"
                     keySelector={userKeySelector}
                     labelSelector={userLabelSelector}
@@ -181,15 +197,16 @@ function RegisterForm() {
                 />
                 <TextInput
                     name="email"
+                    // FIXME: translate
                     label="Email"
                     value={value?.email}
                     error={error?.email}
                     onChange={setFieldValue}
-                    placeholder="johndoe@email.com"
                     disabled={registerPending}
                 />
                 <PasswordInput
                     name="password"
+                    // FIXME: translate
                     label="Password"
                     value={value?.password}
                     error={error?.password}
@@ -197,7 +214,8 @@ function RegisterForm() {
                     disabled={registerPending}
                 />
                 <PasswordInput
-                    name="confirm-password"
+                    name={undefined}
+                    // FIXME: translate
                     label="Confirm Password"
                     value={confirmPassword}
                     error={confirmationError}
@@ -206,6 +224,7 @@ function RegisterForm() {
                 />
                 <TextInput
                     name="phoneNumber"
+                    // FIXME: translate
                     label="Phone Number"
                     value={value?.phoneNumber}
                     error={error?.phoneNumber}
@@ -216,6 +235,7 @@ function RegisterForm() {
                     <>
                         <TextInput
                             name="firstName"
+                            // FIXME: translate
                             label="First Name"
                             value={value?.firstName}
                             error={error?.firstName}
@@ -224,6 +244,7 @@ function RegisterForm() {
                         />
                         <TextInput
                             name="lastName"
+                            // FIXME: translate
                             label="Last Name"
                             value={value?.lastName}
                             error={error?.lastName}
@@ -264,6 +285,7 @@ function RegisterForm() {
                     name={undefined}
                     type="submit"
                     disabled={registerPending}
+                    // FIXME: translate
                 >
                     Register
                 </Button>

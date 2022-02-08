@@ -71,6 +71,7 @@ const districtLabelSelector = (d: District) => d.name;
 const municipalityKeySelector = (d: Municipality) => d.id;
 const municipalityLabelSelector = (d: Municipality) => d.name;
 
+// FIXME: This component should take 'value'
 interface Props<K extends string> {
     name: K;
     onChange: (value: Municipality['id'] | undefined, name: K) => void;
@@ -157,6 +158,7 @@ function LocationInput<K extends string>(props: Props<K>) {
     return (
         <>
             <SelectInput
+                // FIXME: translate
                 label="Province"
                 name="province"
                 options={provinceList?.provinces?.results}
@@ -167,6 +169,7 @@ function LocationInput<K extends string>(props: Props<K>) {
                 disabled={disabled || provincesPending}
             />
             <SelectInput
+                // FIXME: translate
                 label="District"
                 name="district"
                 options={districtList?.districts?.results}
@@ -174,9 +177,10 @@ function LocationInput<K extends string>(props: Props<K>) {
                 labelSelector={districtLabelSelector}
                 value={district}
                 onChange={handleDistrictChange}
-                disabled={disabled || !province || districtsPending || !districtList}
+                disabled={disabled || !province || districtsPending}
             />
             <SelectInput
+                // FIXME: translate
                 label="Municipality"
                 name={municipality}
                 options={municipalityList?.municipalities?.results}
@@ -184,7 +188,7 @@ function LocationInput<K extends string>(props: Props<K>) {
                 labelSelector={municipalityLabelSelector}
                 value={municipality}
                 onChange={handleMunicipalityChange}
-                disabled={disabled || !district || municipalitiesPending || !municipalityList}
+                disabled={disabled || !province || !district || municipalitiesPending}
                 error={error}
             />
         </>

@@ -1,11 +1,9 @@
 import React, { useCallback, useContext } from 'react';
-import { generatePath } from 'react-router-dom';
 import {
     TextInput,
     Container,
     PasswordInput,
     Button,
-    ButtonLikeLink,
     useAlert,
 } from '@the-deep/deep-ui';
 import { gql, useMutation } from '@apollo/client';
@@ -15,6 +13,7 @@ import {
     PartialForm,
     requiredStringCondition,
     useForm,
+    internal,
     createSubmitHandler,
     emailCondition,
     lengthGreaterThanCondition,
@@ -23,6 +22,8 @@ import {
     removeNull,
 } from '@togglecorp/toggle-form';
 
+import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
+import NonFieldError from '#components/NonFieldError';
 import { login as loginStrings } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 import routes from '#base/configs/routes';
@@ -31,12 +32,6 @@ import { UserContext } from '#base/context/UserContext';
 import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
 
 import styles from './styles.css';
-
-interface LoginFields {
-    email: string;
-    password: string;
-    // captcha?: string;
-}
 
 const LOGIN = gql`
     mutation Login(
@@ -59,9 +54,10 @@ const LOGIN = gql`
     }
 `;
 
-type FormType = Partial<LoginFields>;
+type FormType = LoginMutationVariables;
+type PartialFormType = PartialForm<FormType>;
 
-type FormSchema = ObjectSchema<PartialForm<FormType>>;
+type FormSchema = ObjectSchema<PartialFormType>;
 
 type FormSchemaFields = ReturnType<FormSchema['fields']>;
 
@@ -82,7 +78,7 @@ const schema: FormSchema = {
     },
 };
 
-const initialValue: FormType = {};
+const initialValue: PartialFormType = {};
 
 function LoginForm() {
     const {
@@ -140,16 +136,18 @@ function LoginForm() {
                     });
                 }
             },
+            onError: (errors) => {
+                setError({
+                    [internal]: errors.message,
+                });
+            },
         },
     );
 
-    const handleSubmit = useCallback((finalValue) => {
-        // elementRef.current?.resetCaptcha();
+    const handleSubmit = useCallback((finalValue: PartialFormType) => {
+        const formValue = finalValue as FormType;
         login({
-            variables: {
-                email: finalValue?.email,
-                password: finalValue?.password,
-            },
+            variables: formValue,
         });
     }, [login]);
 
@@ -170,23 +168,23 @@ function LoginForm() {
                     <>
                         {strings.donotHaveAccountYetLabel}
                         &nbsp;
-                        <ButtonLikeLink
+                        <SmartButtonLikeLink
                             className={styles.registerLink}
-                            to={generatePath(routes.register.path)}
+                            route={routes.register}
                             variant="transparent"
                         >
                             {strings.registerlabel}
-                        </ButtonLikeLink>
+                        </SmartButtonLikeLink>
                     </>
                 )}
             >
+                <NonFieldError error={error} />
                 <TextInput
                     name="email"
                     onChange={setFieldValue}
                     label={strings.emailLabel}
                     value={value?.email}
                     error={error?.email}
-                    placeholder="john.doe@gmail.com"
                     disabled={loginPending}
                 />
                 <PasswordInput
@@ -195,7 +193,6 @@ function LoginForm() {
                     label={strings.passwordLabel}
                     value={value?.password}
                     error={error?.password}
-                    placeholder="****"
                     disabled={loginPending}
                 />
                 <Button

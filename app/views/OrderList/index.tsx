@@ -49,7 +49,6 @@ const ORDER_LIST_WITH_BOOKS = gql`
                     }
                 }
             }
-
         }
     }
 `;
@@ -81,7 +80,7 @@ function Book(props: BookProps) {
                 <img
                     className={styles.image}
                     src={image}
-                    alt="Preview not available"
+                    alt=""
                 />
             </div>
             <Container
@@ -91,18 +90,22 @@ function Book(props: BookProps) {
                 contentClassName={styles.metaList}
             >
                 <TextOutput
+                    // FIXME: translate
                     label="Quantity"
                     value={quantity}
                 />
                 <TextOutput
+                    // FIXME: translate
                     label="ISBN"
                     value={isbn}
                 />
                 <TextOutput
+                    // FIXME: translate
                     label="Edition"
                     value={edition}
                 />
                 <TextOutput
+                    // FIXME: translate
                     label="Price (NPR)"
                     value={price}
                 />
@@ -150,14 +153,17 @@ function OrderListRenderer(props: OrderListItemProps) {
             headerDescription={(
                 <>
                     <TextOutput
+                        // FIXME: translate
                         label="Total book types"
                         value={totalBooks}
                     />
                     <TextOutput
+                        // FIXME: translate
                         label="total price"
                         value={totalPrice}
                     />
                     <TextOutput
+                        // FIXME: translate
                         label="status"
                         value={status}
                     />
@@ -195,17 +201,18 @@ function OrderList(props: Props) {
     const {
         state,
     } = useLocation();
+
+    // TODO: remove this logic altogether
     const orderIdFromState = (state as { orderId?: string } | undefined)?.orderId;
 
-    const [
-        pageSize, setPageSize] = useState<number>(MAX_ITEMS_PER_PAGE);
+    const [pageSize, setPageSize] = useState<number>(MAX_ITEMS_PER_PAGE);
     const [page, setPage] = useState<number>(1);
+    const [expandedOrderId, setExpandedOrderId] = useState<string | undefined>(orderIdFromState);
+
     const orderVariables = useMemo(() => ({
         pageSize,
         page,
     }), [pageSize, page]);
-
-    const [expandedOrderId, setExpandedOrderId] = useState<string | undefined>(orderIdFromState);
 
     const {
         data: orderList,
@@ -253,6 +260,7 @@ function OrderList(props: Props) {
                 keySelector={orderListKeySelector}
                 renderer={OrderListRenderer}
                 rendererParams={orderListRendererParams}
+                // FIXME: set errored properly
                 errored={false}
                 filtered={false}
                 pending={loading}

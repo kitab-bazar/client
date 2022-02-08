@@ -51,6 +51,7 @@ query FeaturedBooks($page: Int!, $pageSize: Int!) {
 `;
 
 type Book = NonNullable<NonNullable<FeaturedBooksQuery['books']>['results']>[number]
+
 const bookKeySelector = (b: Book) => b.id;
 
 interface GoalPointProps {
@@ -77,17 +78,18 @@ function GoalPoint(props: GoalPointProps) {
 }
 
 function HomePage() {
-    const { data: result, loading } = useQuery<
-        FeaturedBooksQuery,
-        FeaturedBooksQueryVariables
-    >(FEATURED_BOOKS, {
-        variables: {
-            page: 1,
-            pageSize: 10,
+    const { data: result, loading } = useQuery<FeaturedBooksQuery, FeaturedBooksQueryVariables>(
+        FEATURED_BOOKS,
+        {
+            variables: {
+                page: 1,
+                pageSize: 10,
+            },
         },
-    });
+    );
     const books = result?.books?.results ?? undefined;
-    const bookItemRendererParams = React.useCallback((_, data) => ({
+
+    const bookItemRendererParams = React.useCallback((_: string, data: Book) => ({
         book: data,
     }), []);
 
@@ -117,8 +119,11 @@ function HomePage() {
                         <div className={styles.actions}>
                             <ButtonLikeLink
                                 to="#"
+                                // TODO: implement page
+                                // TODO: use SmartButtonLikeLink
                                 variant="secondary"
                                 spacing="loose"
+                                // FIXME: translate
                             >
                                 Explore the Platform
                             </ButtonLikeLink>
@@ -182,6 +187,7 @@ function HomePage() {
                             keySelector={bookKeySelector}
                             rendererParams={bookItemRendererParams}
                             renderer={BookItem}
+                            // FIXME: handle error
                             errored={false}
                             pending={loading}
                             filtered={false}

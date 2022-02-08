@@ -83,6 +83,7 @@ mutation CreateCart($id: String!, $quantity: Int!) {
 `;
 
 type Wish = NonNullable<NonNullable<WishListQuery['wishList']>['results']>[number]
+
 const wishKeySelector = (w: Wish) => w.id;
 
 interface WishProps {
@@ -137,6 +138,7 @@ function WishListItem(props: WishProps) {
                     />
                 ) : (
                     <Message
+                        // FIXME: translate
                         message="Preview not available"
                     />
                 )}
@@ -147,10 +149,12 @@ function WishListItem(props: WishProps) {
                         {title}
                     </Heading>
                     <TextOutput
+                        // FIXME: translate
                         label="Author"
                         value={authorsDisplay}
                     />
                     <TextOutput
+                        // FIXME: translate
                         label="Price (NPR)"
                         valueType="number"
                         value={price}
@@ -159,6 +163,7 @@ function WishListItem(props: WishProps) {
                 <div className={styles.actions}>
                     <NumberInput
                         className={styles.quantityInput}
+                        // FIXME: translate
                         label="Quantity"
                         name="quantity"
                         value={quantity}
@@ -172,6 +177,7 @@ function WishListItem(props: WishProps) {
                         variant="primary"
                         icons={<IoCart />}
                         disabled={isNotDefined(quantity) || (quantity < 1)}
+                        // FIXME: translate
                     >
                         Add to cart
                     </Button>
@@ -181,6 +187,7 @@ function WishListItem(props: WishProps) {
                     onClick={onRemoveWishList}
                     variant="tertiary"
                     icons={<IoTrash />}
+                    // FIXME: translate
                 >
                     Remove from Wishlist
                 </Button>
@@ -195,8 +202,8 @@ interface Props {
 
 function WishList(props: Props) {
     const { className } = props;
-    const [page, setPage] = useState<number>(1);
-    const [pageSize, setPageSize] = useState<number>(10);
+    const [page] = useState<number>(1);
+    const [pageSize] = useState<number>(10);
     const alert = useAlert();
 
     const {
@@ -210,10 +217,6 @@ function WishList(props: Props) {
                 page,
                 pageSize,
             },
-            onCompleted: (res: WishListQuery) => {
-                setPage(res.wishList?.page ? res.wishList.page : page);
-                setPageSize(res.wishList?.pageSize ? res.wishList.pageSize : pageSize);
-            },
         },
     );
 
@@ -223,8 +226,8 @@ function WishList(props: Props) {
         REMOVE_WISH_LIST,
         {
             onCompleted: (response) => {
-                refetch();
                 if (response?.deleteWishlist?.ok) {
+                    refetch();
                     alert.show(
                         'Item deleted from wishlist successfully',
                         {
@@ -240,9 +243,9 @@ function WishList(props: Props) {
                     );
                 }
             },
-            onError: () => {
+            onError: (errors) => {
                 alert.show(
-                    'Failed to delete item from wishlist',
+                    errors.message,
                     {
                         variant: 'error',
                     },
@@ -258,24 +261,27 @@ function WishList(props: Props) {
         {
             onCompleted: (response) => {
                 if (response?.createCartItem?.ok) {
+                    refetch();
                     alert.show(
                         'The book was successfully added to your cart.',
                         {
                             variant: 'success',
                         },
                     );
-                    // TODO: Delete book from wishlist from backend after item is added
-                    refetch();
                 } else {
                     alert.show(
                         'There was an error while adding this to your cart. It might already be there.',
                         {
-                            variant: 'success',
+                            variant: 'error',
                         },
                     );
-                    // TODO: Delete book from wishlist from backend after item is added
-                    refetch();
                 }
+            },
+            onError: (errors) => {
+                alert.show(
+                    errors.message,
+                    { variant: 'error' },
+                );
             },
         },
     );
@@ -298,7 +304,7 @@ function WishList(props: Props) {
 
     const wishes = data?.wishList?.results ?? [];
 
-    const wishItemRendererParams = React.useCallback((_, d: Wish) => ({
+    const wishItemRendererParams = React.useCallback((_: string, d: Wish) => ({
         wish: d,
         onRemoveWishList: deleteBook,
         onCreateCart: addToCart,
@@ -314,22 +320,30 @@ function WishList(props: Props) {
                     Wishlist
                 </Heading>
                 <ListView
+                    // FIXME: add pager
                     className={_cs(styles.list, wishes.length === 0 && styles.empty)}
                     data={wishes}
                     keySelector={wishKeySelector}
                     rendererParams={wishItemRendererParams}
                     renderer={WishListItem}
                     pending={loading}
+                    // FIXME: handle error
                     errored={false}
                     messageShown
                     emptyMessage={(
                         <div className={styles.emptyMessage}>
                             <IoList className={styles.icon} />
                             <div className={styles.text}>
-                                <div className={styles.primary}>
+                                <div
+                                    className={styles.primary}
+                                    // FIXME: translate
+                                >
                                     Your Wishlist is currently empty
                                 </div>
-                                <div className={styles.suggestion}>
+                                <div
+                                    className={styles.suggestion}
+                                    // FIXME: translate
+                                >
                                     Add Books that you want to buy later by clicking Add to Wishlist
                                 </div>
                             </div>

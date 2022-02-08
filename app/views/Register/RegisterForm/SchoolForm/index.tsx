@@ -11,6 +11,8 @@ import {
     SetValueArg,
 } from '@togglecorp/toggle-form';
 
+import NonFieldError from '#components/NonFieldError';
+
 import { SchoolType } from '../common';
 import LocationInput from '../LocationInput';
 
@@ -41,13 +43,14 @@ function SchoolForm<K extends string>(props: Props<K>) {
 
     return (
         <>
+            <NonFieldError error={error} />
             <TextInput
                 name="name"
+                // FIXME: translate
                 label="Name of the School"
                 value={value?.name}
                 error={error?.name}
                 onChange={setFieldValue}
-                placeholder="Togglecorp"
                 disabled={disabled}
             />
             <LocationInput
@@ -58,6 +61,7 @@ function SchoolForm<K extends string>(props: Props<K>) {
             />
             <NumberInput
                 name="wardNumber"
+                // FIXME: translate
                 label="Ward Number"
                 value={value?.wardNumber}
                 error={error?.wardNumber}
@@ -66,6 +70,7 @@ function SchoolForm<K extends string>(props: Props<K>) {
             />
             <TextInput
                 name="localAddress"
+                // FIXME: translate
                 label="Local Address"
                 value={value?.localAddress}
                 error={error?.localAddress}
@@ -74,6 +79,7 @@ function SchoolForm<K extends string>(props: Props<K>) {
             />
             <TextInput
                 name="panNumber"
+                // FIXME: translate
                 label="PAN"
                 value={value?.panNumber}
                 error={error?.panNumber}
@@ -82,6 +88,7 @@ function SchoolForm<K extends string>(props: Props<K>) {
             />
             <TextInput
                 name="vatNumber"
+                // FIXME: translate
                 label="VAT Number"
                 value={value?.vatNumber}
                 error={error?.vatNumber}

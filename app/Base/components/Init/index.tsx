@@ -39,21 +39,24 @@ const ME = gql`
     }
 `;
 
-function getDisplayName(data: NonNullable<MeQuery['me']>) {
+// TODO: this should come from server or move to utils
+function getDisplayName(data: NonNullable<MeQuery['me']>): string {
     if (data.userType === 'ADMIN' || data.userType === 'INDIVIDUAL_USER') {
-        if (!data.firstName || !data.lastName) {
-            return data.email;
-        }
-
         return [
             data.firstName,
             data.lastName,
-        ].filter(Boolean).join(' ');
+        ].filter(Boolean).join(' ') || data.email;
     }
-
-    return data?.institution?.name
-        ?? data?.publisher?.name
-        ?? data?.school?.name ?? 'Unnamed';
+    if (data.userType === 'INSTITUTIONAL_USER') {
+        return data.institution?.name || data.email;
+    }
+    if (data.userType === 'PUBLISHER') {
+        return data.publisher?.name || data.email;
+    }
+    if (data.userType === 'SCHOOL_ADMIN') {
+        return data.school?.name || data.email;
+    }
+    return data.email;
 }
 
 interface Props {

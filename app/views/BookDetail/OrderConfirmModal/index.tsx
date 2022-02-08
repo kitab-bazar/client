@@ -39,7 +39,6 @@ mutation SingleOrder($bookId: ID!, $qty: Int!) {
 `;
 
 interface Props {
-    bookId: string;
     onClose: () => void;
     book: NonNullable<BookDetailQuery['book']>;
     initialQuantity: number | undefined,
@@ -47,27 +46,24 @@ interface Props {
 
 function OrderPage(props: Props) {
     const {
-        bookId,
         book,
         onClose,
         initialQuantity,
     } = props;
 
-    const [quantity, setQuantity] = useState<number>(initialQuantity || 1);
+    const [quantity, setQuantity] = useState<number>(initialQuantity ?? 1);
 
     const alert = useAlert();
 
     const [
         placeSingleOrder,
         { loading },
-    ] = useMutation<
-            SingleOrderMutation,
-            SingleOrderMutationVariables
-    >(
+    ] = useMutation<SingleOrderMutation, SingleOrderMutationVariables>(
         ORDER,
         {
             onCompleted: (response) => {
                 if (response?.placeSingleOrder?.ok) {
+                    // FIXME: translate
                     alert.show(`
                         Order # ${response?.placeSingleOrder?.result?.orderCode}
                         For Total Price: NPR ${response?.placeSingleOrder?.result?.totalPrice}
@@ -75,28 +71,30 @@ function OrderPage(props: Props) {
                     `, { variant: 'success' });
                     onClose();
                 } else {
+                    // FIXME: translate
                     alert.show(
                         'Failed to place order',
                         { variant: 'error' },
                     );
                 }
             },
+            onError: (errors) => {
+                alert.show(
+                    errors.message,
+                    { variant: 'error' },
+                );
+            },
         },
     );
 
     const submit = useCallback(() => {
-        if (!bookId) {
-            return;
-        }
-
         placeSingleOrder({
             variables: {
-                // FIXME: bookId should always be string, fix on backend
-                bookId: Number(bookId),
+                bookId: book.id,
                 qty: quantity,
             },
         });
-    }, [bookId, quantity, placeSingleOrder]);
+    }, [book, quantity, placeSingleOrder]);
 
     const handleQuantityChange = useCallback((value: number | undefined) => {
         const qty = isDefined(value) ? value : 1;
@@ -116,7 +114,8 @@ function OrderPage(props: Props) {
                     name="submit"
                     variant="primary"
                     onClick={submit}
-                    disabled={loading || !quantity || quantity < 1}
+                    disabled={loading || quantity < 1}
+                    // FIXME: translate
                 >
                     Confirm Order
                 </Button>
@@ -125,23 +124,26 @@ function OrderPage(props: Props) {
             <div className={styles.preview}>
                 {book?.image?.url ? (
                     <img
+                        // FIXME: use Image component
                         className={styles.image}
                         src={book.image.url}
                         alt={book.title}
                     />
                 ) : (
                     <Message
+                        // FIXME: translate
                         message="Preview not available"
                     />
                 )}
             </div>
             <div className={styles.details}>
                 <TextOutput
+                    // FIXME: translate
                     label="Quantity"
                     value={(
                         <NumberInput
                             className={styles.quantityInput}
-                            name="quantity"
+                            name={undefined}
                             value={quantity}
                             onChange={handleQuantityChange}
                             type="number"
@@ -149,11 +151,13 @@ function OrderPage(props: Props) {
                     )}
                 />
                 <TextOutput
+                    // FIXME: translate
                     label="Price (NPR)"
                     valueType="number"
                     value={book.price}
                 />
                 <TextOutput
+                    // FIXME: translate
                     label="Amount (NPR)"
                     valueType="number"
                     value={isDefined(quantity) ? book.price * quantity : 0}

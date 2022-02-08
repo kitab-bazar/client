@@ -28,8 +28,8 @@ interface PublisherFields extends BaseExtraFields {
 interface SchoolFields extends BaseExtraFields {
 }
 
-// FIXME: use generated typing
-export interface RegistrationFields {
+// TODO: use generated typing
+export interface RegisterFormType {
     email: string;
     firstName?: string;
     lastName?: string;
@@ -41,21 +41,21 @@ export interface RegistrationFields {
     school?: SchoolFields;
 }
 
-export type RegisterFormType = PartialForm<RegistrationFields>;
+export type PartialRegisterFormType = PartialForm<RegisterFormType>;
 
-export type RegisterFormSchema = ObjectSchema<RegisterFormType, RegisterFormType>;
+export type RegisterFormSchema = ObjectSchema<PartialRegisterFormType, PartialRegisterFormType>;
 export type RegisterFormSchemaFields = ReturnType<RegisterFormSchema['fields']>;
 
-export type InstitutionType = NonNullable<RegisterFormType['institution']>;
-export type InstitutionSchema = ObjectSchema<PartialForm<InstitutionType>, RegisterFormType>;
+export type InstitutionType = NonNullable<PartialRegisterFormType['institution']>;
+export type InstitutionSchema = ObjectSchema<PartialForm<InstitutionType>, PartialRegisterFormType>;
 export type InstitutionSchemaFields = ReturnType<InstitutionSchema['fields']>;
 
-export type PublisherType = NonNullable<RegisterFormType['publisher']>;
-export type PublisherSchema = ObjectSchema<PartialForm<PublisherType>, RegisterFormType>;
+export type PublisherType = NonNullable<PartialRegisterFormType['publisher']>;
+export type PublisherSchema = ObjectSchema<PartialForm<PublisherType>, PartialRegisterFormType>;
 export type PublisherSchemaFields = ReturnType<PublisherSchema['fields']>;
 
-export type SchoolType = NonNullable<RegisterFormType['school']>;
-export type SchoolSchema = ObjectSchema<PartialForm<SchoolType>, RegisterFormType>;
+export type SchoolType = NonNullable<PartialRegisterFormType['school']>;
+export type SchoolSchema = ObjectSchema<PartialForm<SchoolType>, PartialRegisterFormType>;
 export type SchoolSchemaFields = ReturnType<SchoolSchema['fields']>;
 
 export const schema: RegisterFormSchema = {

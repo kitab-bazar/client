@@ -21,6 +21,7 @@ import {
     UpdateIndividualProfileMutationVariables,
 } from '#generated/types';
 import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
+import NonFieldError from '#components/NonFieldError';
 import styles from './styles.css';
 
 const UPDATE_INDIVIDUAL_PROFILE = gql`
@@ -128,12 +129,10 @@ function EditProfileModal(props: Props) {
                     onModalClose();
                 }
             },
-            onError: () => {
+            onError: (errors) => {
                 alert.show(
-                    'Error updating profile.',
-                    {
-                        variant: 'error',
-                    },
+                    errors.message,
+                    { variant: 'error' },
                 );
             },
         },
@@ -182,6 +181,7 @@ function EditProfileModal(props: Props) {
                 </>
             )}
         >
+            <NonFieldError error={error} />
             <TextInput
                 name="firstName"
                 onChange={setFieldValue}

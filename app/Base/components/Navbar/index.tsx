@@ -86,23 +86,19 @@ function Navbar(props: Props) {
                 if (data.logout?.ok) {
                     setUser(undefined);
                     alert.show(
-                        'Successfully logged out',
-                        {
-                            variant: 'success',
-                        },
+                        strings.logoutSuccessMessage,
+                        { variant: 'success' },
                     );
                 } else {
                     alert.show(
-                        'Error logging out',
-                        {
-                            variant: 'error',
-                        },
+                        strings.logoutErrorMessage,
+                        { variant: 'error' },
                     );
                 }
             },
-            onError: () => {
+            onError: (errors) => {
                 alert.show(
-                    'Failed to send logout.',
+                    errors.message,
                     { variant: 'error' },
                 );
             },

@@ -122,10 +122,7 @@ function IndividualProfile(props: Props) {
     );
 
     const orderListRendererParams = useCallback((_, order: Omit<OrderType, 'createdBy'>): OrderItemProps => ({
-        totalBookTypes: order.bookOrders?.totalCount ?? 0,
-        orderCode: order.orderCode,
-        status: order.status,
-        totalPrice: order.totalPrice,
+        order,
     }), []);
 
     return (
