@@ -1,4 +1,4 @@
-import React, { useContext, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { isNotDefined } from '@togglecorp/fujs';
 import { useQuery, gql } from '@apollo/client';
 import { IoAdd } from 'react-icons/io5';
@@ -12,7 +12,6 @@ import {
 } from '@the-deep/deep-ui';
 
 import BookItem, { Props as BookItemsProps } from '#components/BookItem';
-import { UserContext } from '#base/context/UserContext';
 import {
     PublisherBooksQuery,
     PublisherBooksQueryVariables,
@@ -48,12 +47,17 @@ const PUBLISHER_BOOKS = gql`
     }
 `;
 
-function Books() {
+interface Props {
+    publisherId?: string;
+}
+
+function Books(props: Props) {
+    const {
+        publisherId,
+    } = props;
+
     const [pageSize, setPageSize] = useState<number>(25);
     const [page, setPage] = useState<number>(1);
-    const {
-        user,
-    } = useContext(UserContext);
 
     const {
         data: publisherBooksResult,
@@ -62,11 +66,11 @@ function Books() {
     } = useQuery<PublisherBooksQuery, PublisherBooksQueryVariables>(
         PUBLISHER_BOOKS,
         {
-            skip: isNotDefined(user?.id),
+            skip: isNotDefined(publisherId),
             variables: {
                 page,
                 pageSize,
-                publisher: user?.id,
+                publisher: publisherId,
             },
         },
     );
@@ -118,9 +122,9 @@ function Books() {
                 pending={loading}
                 filtered={false}
             />
-            {uploadBookModalShown && user?.id && (
+            {uploadBookModalShown && publisherId && (
                 <UploadBookModal
-                    publisher={user.id}
+                    publisher={publisherId}
                     onModalClose={hideUploadBookModal}
                     onUploadSuccess={refetchPublisherBooks}
                 />

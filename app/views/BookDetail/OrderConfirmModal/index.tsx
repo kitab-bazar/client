@@ -24,7 +24,7 @@ import {
 import styles from './styles.css';
 
 const ORDER = gql`
-mutation SingleOrder($bookId: Int!, $qty: Int!) {
+mutation SingleOrder($bookId: ID!, $qty: Int!) {
     placeSingleOrder(data: { bookId: $bookId, quantity: $qty }) {
         errors
         ok

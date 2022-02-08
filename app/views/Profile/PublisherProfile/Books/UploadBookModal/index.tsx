@@ -187,7 +187,6 @@ function UploadBookModal(props: Props) {
                             data: {
                                 ...val as CreateBookMutationVariables['data'],
                                 publisher,
-
                             },
                         },
                     });

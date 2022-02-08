@@ -4,78 +4,38 @@ import {
     IoPencil,
 } from 'react-icons/io5';
 import {
-    PendingMessage,
     Container,
     Button,
     Header,
     TextOutput,
     useModalState,
 } from '@the-deep/deep-ui';
-import { useQuery, gql } from '@apollo/client';
-import {
-    PublisherProfileQuery,
-    PublisherProfileQueryVariables,
-} from '#generated/types';
 
 import EditPublisherProfileModal from './EditPublisherProfileModal';
+import { ProfileDetails } from '../index';
 
 import styles from './styles.css';
 
-const PUBLISHER_PROFILE = gql`
-    query PublisherProfile {
-        me {
-            id
-            firstName
-            lastName
-            fullName
-            phoneNumber
-            email
-            image {
-                name
-                url
-            }
-            publisher {
-                id
-                localAddress
-                name
-                panNumber
-                vatNumber
-                wardNumber
-                municipality {
-                    id
-                    name
-                    district {
-                        id
-                        name
-                        province {
-                            id
-                            name
-                        }
-                    }
-                }
-            }
-        }
-    }
-`;
+interface Props {
+    profileDetails?: ProfileDetails;
+    onEditSuccess: () => void;
+}
 
-function Profile() {
+function Profile(props: Props) {
+    const {
+        profileDetails,
+        onEditSuccess,
+    } = props;
+
     const [
         editProfileModalShown,
         showEditProfileModal,
         hideEditProfileModal,
     ] = useModalState(false);
 
-    const {
-        data: profileDetails,
-        refetch: refetchProfileDetails,
-        loading,
-    } = useQuery<PublisherProfileQuery, PublisherProfileQueryVariables>(
-        PUBLISHER_PROFILE,
-    );
-
     const publisherDetails = {
-        ...profileDetails?.me?.publisher,
-        municipality: profileDetails?.me?.publisher?.municipality.id,
+        ...profileDetails?.publisher,
+        municipality: profileDetails?.publisher?.municipality.id,
     };
 
     return (
@@ -84,7 +44,6 @@ function Profile() {
             contentClassName={styles.content}
             spacing="comfortable"
         >
-            { loading && (<PendingMessage />)}
             <Container
                 className={styles.profileDetails}
                 spacing="comfortable"
@@ -105,39 +64,35 @@ function Profile() {
                                 Edit Profile
                             </Button>
                         )}
-                        icons={isTruthyString(profileDetails?.me?.image?.url) && (
+                        icons={isTruthyString(profileDetails?.image?.url) && (
                             <div
                                 className={styles.displayPicture}
                             >
                                 <img
-                                    src={profileDetails?.me?.image?.url ?? undefined}
-                                    alt={profileDetails?.me?.image?.name ?? ''}
+                                    src={profileDetails?.image?.url ?? undefined}
+                                    alt={profileDetails?.fullName ?? ''}
                                 />
                             </div>
                         )}
-                        heading={profileDetails?.me?.fullName}
+                        heading={profileDetails?.fullName}
                     />
                 </div>
                 <div className={styles.bottom}>
                     <TextOutput
                         label="Address"
-                        value={profileDetails?.me?.publisher?.localAddress}
-                    />
-                    <TextOutput
-                        label="Email"
-                        value={profileDetails?.me?.email}
+                        value={profileDetails?.publisher?.localAddress}
                     />
                     <TextOutput
                         label="Phone Number"
-                        value={profileDetails?.me?.phoneNumber}
+                        value={profileDetails?.phoneNumber}
                     />
                     <TextOutput
                         label="PAN Number"
-                        value={profileDetails?.me?.publisher?.panNumber}
+                        value={profileDetails?.publisher?.panNumber}
                     />
                     <TextOutput
                         label="VAT Number"
-                        value={profileDetails?.me?.publisher?.vatNumber}
+                        value={profileDetails?.publisher?.vatNumber}
                     />
                 </div>
             </Container>
@@ -149,7 +104,7 @@ function Profile() {
             {editProfileModalShown && (
                 <EditPublisherProfileModal
                     onModalClose={hideEditProfileModal}
-                    onEditSuccess={refetchProfileDetails}
+                    onEditSuccess={onEditSuccess}
                     profileDetails={publisherDetails}
                 />
             )}
