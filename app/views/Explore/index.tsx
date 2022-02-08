@@ -5,6 +5,7 @@ import {
     RadioInput,
     useInputState,
     ListView,
+    Button,
 } from '@the-deep/deep-ui';
 import {
     gql,
@@ -147,6 +148,14 @@ function Explore(props: Props) {
                         value={publisher}
                         onChange={setPublisher}
                     />
+                    <Button
+                        name={undefined}
+                        onClick={setPublisher}
+                        variant="transparent"
+                        spacing="none"
+                    >
+                        Clear publisher filter
+                    </Button>
                 </div>
                 <ListView
                     className={styles.bookList}

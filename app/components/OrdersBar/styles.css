@@ -3,8 +3,36 @@
     align-items: center;
     justify-content: space-between;
     padding: var(--dui-spacing-large);
+
+    &.hidden {
+        animation: disappear-to-bottom .2s ease-in forwards;
+    }
 }
 
-.orders-modal {
-    align-self: flex-end;
+.modal-backdrop {
+    align-items: stretch;
+    justify-content: flex-end;
+
+    .orders-modal {
+        border-radius: unset;
+        height: 100%;
+        max-height: unset;
+        animation: appear-from-right .3s ease-in forwards;
+
+        .cart-item-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--dui-spacing-small);
+        }
+    }
+}
+
+@keyframes appear-from-right {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+@keyframes disappear-to-bottom {
+    from { transform: translateY(0); }
+    to { transform: translateY(100%); }
 }
