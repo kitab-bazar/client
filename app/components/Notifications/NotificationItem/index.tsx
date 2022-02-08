@@ -16,13 +16,13 @@ import styles from './styles.css';
 interface Props {
     className?: string;
     notification: Notification;
-    onClick: (id: string) => void;
+    onReload: (id: string) => void;
 }
 
 function NotificationItem(props: Props) {
     const {
         notification,
-        onClick,
+        onReload,
         className,
     } = props;
 
@@ -32,15 +32,15 @@ function NotificationItem(props: Props) {
     } = notification;
     const strings = useTranslation(notifications);
 
-    const handleOnClick = useCallback(() => {
-        onClick(id);
-    }, [id, onClick]);
+    const handleOnReloadClick = useCallback(() => {
+        onReload(id);
+    }, [id, onReload]);
 
     const orderLink = useMemo(() => (
         notification.order ? (
             <SmartButtonLikeLink
                 route={routes.orderList}
-                state={{ orderId: order.orderCode }}
+                state={{ orderId: notification.order.orderCode }}
             >
                 View details
             </SmartButtonLikeLink>
@@ -108,7 +108,7 @@ function NotificationItem(props: Props) {
         <Message
             className={_cs(className, styles.notificationItem)}
             message={title}
-            onReload={handleOnClick}
+            onReload={handleOnReloadClick}
         />
     );
 }

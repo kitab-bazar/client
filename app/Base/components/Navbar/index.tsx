@@ -93,6 +93,7 @@ function Navbar(props: Props) {
         USER_NOTIFICATIONS_COUNT,
         {
             pollInterval: NOTIFICATION_POLL_INTERVAL,
+            skip: !authenticated,
         },
     );
 
@@ -229,7 +230,7 @@ function Navbar(props: Props) {
                                 persistent
                             >
                                 <Notifications
-                                    closeNotification={handleCloseNotificationClick}
+                                    onNotificationClose={handleCloseNotificationClick}
                                 />
                             </QuickActionDropdownMenu>
 

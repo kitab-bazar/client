@@ -46,13 +46,13 @@ const notificationKeySelector = (n: Notification) => n.id;
 
 interface Props {
     className?: string;
-    closeNotification: () => void;
+    onNotificationClose: () => void;
 }
 
-function Notification(props: Props) {
+function Notifications(props: Props) {
     const {
         className,
-        closeNotification,
+        onNotificationClose,
     } = props;
 
     const [page, setPage] = useState<number>(1);
@@ -61,6 +61,7 @@ function Notification(props: Props) {
         data,
         loading,
         refetch,
+        error,
     } = useQuery<MyNotificationsQuery, MyNotificationsQueryVariables>(
         NOTIFICATIONS,
         {
@@ -71,18 +72,18 @@ function Notification(props: Props) {
         },
     );
 
-    const readMessage = useCallback(() => {
-        closeNotification();
+    const reloadNotifications = useCallback(() => {
         refetch({
             page,
             pageSize: PAGE_SIZE,
         });
-    }, [page, refetch, closeNotification]);
+        onNotificationClose();
+    }, [page, refetch, onNotificationClose]);
 
     const notificationRendererParams = React.useCallback((_, n: Notification) => ({
         notification: n,
-        onClick: readMessage,
-    }), [readMessage]);
+        onReload: reloadNotifications,
+    }), [reloadNotifications]);
 
     const notifications = data?.notifications?.results ?? undefined;
 
@@ -110,7 +111,7 @@ function Notification(props: Props) {
                 keySelector={notificationKeySelector}
                 rendererParams={notificationRendererParams}
                 renderer={NotificationItem}
-                errored={false}
+                errored={!!error}
                 pending={loading}
                 filtered={false}
             />
@@ -119,4 +120,4 @@ function Notification(props: Props) {
     );
 }
 
-export default Notification;
+export default Notifications;

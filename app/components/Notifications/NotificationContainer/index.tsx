@@ -7,7 +7,6 @@ import {
 } from 'react-icons/io5';
 import {
     QuickActionButton,
-    PendingMessage,
     useAlert,
     Container,
     DateOutput,
@@ -71,32 +70,28 @@ function NotificationContainer(props: Props) {
     ] = useMutation<NotificationStatusUpdateMutation, NotificationStatusUpdateMutationVariables>(
         NOTIFICATION_STATUS_UPDATE,
         {
+            // FIXME: it's better to import the query instead as this name can
+            // change
             refetchQueries: ['UserNotificationsCount'],
             onCompleted: (response) => {
                 if (response?.toggleNotification?.ok) {
                     const newStatus = response.toggleNotification?.result?.read;
                     alert.show(
                         `Successfully updated notification status to ${newStatus ? 'read' : 'unread'}.`,
-                        {
-                            variant: 'success',
-                        },
+                        { variant: 'success' },
                     );
                 } else {
                     alert.show(
                         'Failed to update notification status.',
-                        {
-                            variant: 'error',
-                        },
+                        { variant: 'error' },
                     );
                 }
             },
 
-            onError: () => {
+            onError: (errors) => {
                 alert.show(
-                    'Failed to update notification status.',
-                    {
-                        variant: 'error',
-                    },
+                    errors.message,
+                    { variant: 'error' },
                 );
             },
         },
@@ -129,7 +124,6 @@ function NotificationContainer(props: Props) {
             )}
             contentClassName={styles.content}
         >
-            {loading && (<PendingMessage />)}
             {/*
             <Avatar
                 className={styles.displayPicture}
@@ -154,6 +148,7 @@ function NotificationContainer(props: Props) {
                 className={styles.button}
                 title={read ? 'Mark as unread' : 'Mark as read'}
                 onClick={read ? handleUnseenClick : handleSeenClick}
+                disabled={loading}
             >
                 {read ? <IoArrowUndoSharp /> : <IoCheckmark />}
             </QuickActionButton>

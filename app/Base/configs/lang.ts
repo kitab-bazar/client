@@ -183,18 +183,18 @@ export const footer = {
 export const notifications = {
     newOrderReceived: {
         en: 'You have just received a new {orderLink}',
-        np: 'तपाईंले भर्खरै एउटा {orderLink} प्राप्त गर्नुभएको छ',
+        ne: 'तपाईंले भर्खरै एउटा {orderLink} प्राप्त गर्नुभएको छ',
     },
     orderCancelled: {
         en: 'Your {orderLink} has been cancelled.',
-        np: 'तपाईंको {orderLink} रद्द गरिएको छ।',
+        ne: 'तपाईंको {orderLink} रद्द गरिएको छ।',
     },
     orderPacked: {
         en: 'Your {orderLink} has been packed.',
-        np: 'तपाईंको {orderLink} प्याक गरिएको छ।',
+        ne: 'तपाईंको {orderLink} प्याक गरिएको छ।',
     },
     orderCompleted: {
         en: 'Your {orderLink} has been packed.',
-        np: 'तपाईंको {orderLink} पूरा भएको छ।',
+        ne: 'तपाईंको {orderLink} पूरा भएको छ।',
     },
 };
