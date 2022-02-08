@@ -1,5 +1,4 @@
-import React from 'react';
-import { generatePath } from 'react-router-dom';
+import React, { useState } from 'react';
 import {
     Container,
     RadioInput,
@@ -8,10 +7,9 @@ import {
     useInputState,
     Button,
     useAlert,
-    ButtonLikeLink,
 } from '@the-deep/deep-ui';
+import { useHistory } from 'react-router-dom';
 import {
-    PartialForm,
     useForm,
     getErrorObject,
     createSubmitHandler,
@@ -19,6 +17,8 @@ import {
 } from '@togglecorp/toggle-form';
 import { useMutation, gql } from '@apollo/client';
 
+import NonFieldError from '#components/NonFieldError';
+import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
 import {
     UserUserType,
     RegisterMutation,
@@ -32,11 +32,12 @@ import {
 } from '#base/utils/errorTransform';
 
 import {
+    PartialRegisterFormType,
     RegisterFormType,
-    RegistrationFields,
     schema,
 } from './common';
 
+import { MunicipalityOption } from './LocationInput';
 import InstitutionForm from './InstitutionForm';
 import PublisherForm from './PublisherForm';
 import SchoolForm from './SchoolForm';
@@ -47,8 +48,8 @@ interface UserType {
     title: string;
 }
 
-// FIXME: fetch this from the server
-const userType: UserType[] = [
+// TODO: fetch this from the server
+const userTypes: UserType[] = [
     {
         id: 'INDIVIDUAL_USER',
         title: 'Individual User',
@@ -67,7 +68,7 @@ const userType: UserType[] = [
     },
 ];
 
-const defaultFormValues: PartialForm<RegisterFormType> = {
+const defaultFormValues: PartialRegisterFormType = {
     userType: 'INDIVIDUAL_USER',
 };
 
@@ -91,10 +92,19 @@ function RegisterForm() {
         validate,
         setError,
     } = useForm(schema, defaultFormValues);
+
     const alert = useAlert();
 
     const error = getErrorObject(formError);
+
+    const history = useHistory();
+
     const [confirmPassword, setConfirmPassword] = useInputState<string | undefined>(undefined);
+
+    const [
+        municipalityOptions,
+        setMunicipalityOptions,
+    ] = useState<MunicipalityOption[] | undefined | null>();
 
     const [
         register,
@@ -105,34 +115,48 @@ function RegisterForm() {
             onCompleted: (response) => {
                 const { register: registerResponse } = response;
                 if (!registerResponse) {
-                    alert.show('No response from server!');
                     return;
                 }
 
-                if (registerResponse?.ok) {
+                const {
+                    ok,
+                    errors,
+                } = registerResponse;
+
+                if (ok) {
                     alert.show(
-                        'Registration completed successfully! Please validate your account before loggin in',
+                        // FIXME: translate
+                        'Registration completed successfully! Please validate your account before logging in',
                         { variant: 'success' },
                     );
-                } else if (registerResponse?.errors) {
+                    history.replace(routes.login.path);
+                } else if (errors) {
                     const formErrorFromServer = transformToFormError(
                         removeNull(registerResponse?.errors) as ObjectError[],
                     );
                     setError(formErrorFromServer);
 
                     alert.show(
+                        // FIXME: translate
                         'Error during registration!',
                         { variant: 'error' },
                     );
                 }
             },
+            onError: (errors) => {
+                alert.show(
+                    errors.message,
+                    { variant: 'error' },
+                );
+            },
         },
     );
 
-    const handleSubmit = React.useCallback((formValues: Partial<RegisterFormType>) => {
-        const finalValues = { ...formValues } as RegistrationFields;
-
-        register({ variables: { data: finalValues } });
+    const handleSubmit = React.useCallback((formValues: PartialRegisterFormType) => {
+        const finalValues = formValues as RegisterFormType;
+        register({
+            variables: { data: finalValues },
+        });
     }, [register]);
 
     const confirmationError = React.useMemo(() => {
@@ -140,27 +164,30 @@ function RegisterForm() {
             return undefined;
         }
 
+        // FIXME: translate
         return 'Password doesn\'t match';
     }, [confirmPassword, value?.password]);
 
     return (
         <Container
             className={styles.registerForm}
+            // FIXME: translate
             heading="Register new User"
             headingSize="large"
             spacing="loose"
             footerContentClassName={styles.footerContent}
+            // FIXME: translate
             footerContent={(
                 <>
                     Already have an account?
                     &nbsp;
-                    <ButtonLikeLink
+                    <SmartButtonLikeLink
                         className={styles.loginLink}
-                        to={generatePath(routes.login.path)}
+                        route={routes.login}
                         variant="transparent"
                     >
                         Login
-                    </ButtonLikeLink>
+                    </SmartButtonLikeLink>
                 </>
             )}
         >
@@ -168,28 +195,19 @@ function RegisterForm() {
                 className={styles.form}
                 onSubmit={createSubmitHandler(validate, setError, handleSubmit)}
             >
-                <RadioInput
-                    name="userType"
-                    options={userType}
-                    label="Select User Type"
-                    keySelector={userKeySelector}
-                    labelSelector={userLabelSelector}
-                    onChange={setFieldValue}
-                    value={value.userType}
-                    error={error?.userType}
-                    disabled={registerPending}
-                />
+                <NonFieldError error={error} />
                 <TextInput
                     name="email"
+                    // FIXME: translate
                     label="Email"
                     value={value?.email}
                     error={error?.email}
                     onChange={setFieldValue}
-                    placeholder="johndoe@email.com"
                     disabled={registerPending}
                 />
                 <PasswordInput
                     name="password"
+                    // FIXME: translate
                     label="Password"
                     value={value?.password}
                     error={error?.password}
@@ -197,7 +215,8 @@ function RegisterForm() {
                     disabled={registerPending}
                 />
                 <PasswordInput
-                    name="confirm-password"
+                    name={undefined}
+                    // FIXME: translate
                     label="Confirm Password"
                     value={confirmPassword}
                     error={confirmationError}
@@ -206,16 +225,30 @@ function RegisterForm() {
                 />
                 <TextInput
                     name="phoneNumber"
+                    // FIXME: translate
                     label="Phone Number"
                     value={value?.phoneNumber}
                     error={error?.phoneNumber}
                     onChange={setFieldValue}
                     disabled={registerPending}
                 />
+                <RadioInput
+                    name="userType"
+                    options={userTypes}
+                    // FIXME: translate
+                    label="User Type"
+                    keySelector={userKeySelector}
+                    labelSelector={userLabelSelector}
+                    onChange={setFieldValue}
+                    value={value.userType}
+                    error={error?.userType}
+                    disabled={registerPending}
+                />
                 {value.userType === 'INDIVIDUAL_USER' && (
                     <>
                         <TextInput
                             name="firstName"
+                            // FIXME: translate
                             label="First Name"
                             value={value?.firstName}
                             error={error?.firstName}
@@ -224,6 +257,7 @@ function RegisterForm() {
                         />
                         <TextInput
                             name="lastName"
+                            // FIXME: translate
                             label="Last Name"
                             value={value?.lastName}
                             error={error?.lastName}
@@ -239,6 +273,8 @@ function RegisterForm() {
                         onChange={setFieldValue}
                         error={error?.institution}
                         disabled={registerPending}
+                        municipalityOptions={municipalityOptions}
+                        onMunicipalityOptionsChange={setMunicipalityOptions}
                     />
                 )}
                 {value.userType === 'PUBLISHER' && (
@@ -248,6 +284,8 @@ function RegisterForm() {
                         onChange={setFieldValue}
                         error={error?.publisher}
                         disabled={registerPending}
+                        municipalityOptions={municipalityOptions}
+                        onMunicipalityOptionsChange={setMunicipalityOptions}
                     />
                 )}
                 {value.userType === 'SCHOOL_ADMIN' && (
@@ -257,6 +295,8 @@ function RegisterForm() {
                         onChange={setFieldValue}
                         error={error?.school}
                         disabled={registerPending}
+                        municipalityOptions={municipalityOptions}
+                        onMunicipalityOptionsChange={setMunicipalityOptions}
                     />
                 )}
                 <Button
@@ -264,6 +304,7 @@ function RegisterForm() {
                     name={undefined}
                     type="submit"
                     disabled={registerPending}
+                    // FIXME: translate
                 >
                     Register
                 </Button>

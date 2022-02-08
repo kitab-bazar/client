@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import {
     ListView,
     ButtonLikeLink,
     Container,
+    Pager,
 } from '@the-deep/deep-ui';
 import {
     gql,
@@ -30,6 +31,7 @@ import styles from './styles.css';
 const FEATURED_BOOKS = gql`
 query FeaturedBooks($page: Int!, $pageSize: Int!) {
     books(page: $page , pageSize: $pageSize) {
+        totalCount
         results {
             id
             isbn
@@ -51,6 +53,7 @@ query FeaturedBooks($page: Int!, $pageSize: Int!) {
 `;
 
 type Book = NonNullable<NonNullable<FeaturedBooksQuery['books']>['results']>[number]
+
 const bookKeySelector = (b: Book) => b.id;
 
 interface GoalPointProps {
@@ -76,18 +79,27 @@ function GoalPoint(props: GoalPointProps) {
     );
 }
 
+const MAX_ITEMS_PER_PAGE = 4;
+
 function HomePage() {
-    const { data: result, loading } = useQuery<
-        FeaturedBooksQuery,
-        FeaturedBooksQueryVariables
-    >(FEATURED_BOOKS, {
-        variables: {
-            page: 1,
-            pageSize: 10,
+    const [page, setPage] = useState<number>(1);
+
+    const orderVariables = useMemo(() => ({
+        pageSize: MAX_ITEMS_PER_PAGE,
+        page,
+    }), [page]);
+
+    const {
+        data: result,
+        loading,
+        error,
+    } = useQuery<FeaturedBooksQuery, FeaturedBooksQueryVariables>(
+        FEATURED_BOOKS,
+        {
+            variables: orderVariables,
         },
-    });
-    const books = result?.books?.results ?? undefined;
-    const bookItemRendererParams = React.useCallback((_, data) => ({
+    );
+    const bookItemRendererParams = React.useCallback((_: string, data: Book) => ({
         book: data,
     }), []);
 
@@ -117,8 +129,11 @@ function HomePage() {
                         <div className={styles.actions}>
                             <ButtonLikeLink
                                 to="#"
+                                // TODO: implement page
+                                // TODO: use SmartButtonLikeLink
                                 variant="secondary"
                                 spacing="loose"
+                                // FIXME: translate
                             >
                                 Explore the Platform
                             </ButtonLikeLink>
@@ -175,14 +190,23 @@ function HomePage() {
                     <Container
                         className={styles.featuredBooksSection}
                         heading={strings.featuredBooksLabel}
+                        footerContent={(
+                            <Pager
+                                activePage={page}
+                                maxItemsPerPage={MAX_ITEMS_PER_PAGE}
+                                itemsCount={result?.books?.totalCount ?? 0}
+                                onActivePageChange={setPage}
+                                itemsPerPageControlHidden
+                            />
+                        )}
                     >
                         <ListView
                             className={styles.bookList}
-                            data={books}
+                            data={result?.books?.results ?? undefined}
                             keySelector={bookKeySelector}
                             rendererParams={bookItemRendererParams}
                             renderer={BookItem}
-                            errored={false}
+                            errored={!!error}
                             pending={loading}
                             filtered={false}
                         />

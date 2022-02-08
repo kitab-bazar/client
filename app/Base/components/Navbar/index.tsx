@@ -79,30 +79,29 @@ function Navbar(props: Props) {
 
     const profileUrl = useRouteMatching(routes.myProfile);
 
-    const [logout] = useMutation<LogoutMutation, LogoutMutationVariables>(
+    const [
+        logout,
+        // { loading: logoutLoading },
+    ] = useMutation<LogoutMutation, LogoutMutationVariables>(
         LOGOUT,
         {
             onCompleted: (data) => {
                 if (data.logout?.ok) {
                     setUser(undefined);
                     alert.show(
-                        'Successfully logged out',
-                        {
-                            variant: 'success',
-                        },
+                        strings.logoutSuccessMessage,
+                        { variant: 'success' },
                     );
                 } else {
                     alert.show(
-                        'Error logging out',
-                        {
-                            variant: 'error',
-                        },
+                        strings.logoutErrorMessage,
+                        { variant: 'error' },
                     );
                 }
             },
-            onError: () => {
+            onError: (errors) => {
                 alert.show(
-                    'Failed to send logout.',
+                    errors.message,
                     { variant: 'error' },
                 );
             },
@@ -112,9 +111,8 @@ function Navbar(props: Props) {
     const handleLogout = useCallback(
         () => {
             logout();
-            setUser(undefined);
         },
-        [setUser, logout],
+        [logout],
     );
 
     const [logoutConfirmationModal, setShowLogoutConfirmationTrue] = useConfirmation({
@@ -204,6 +202,8 @@ function Navbar(props: Props) {
                                     <DropdownMenuItem
                                         name={undefined}
                                         onClick={setShowLogoutConfirmationTrue}
+                                        // TODO: disable dropdown menu item
+                                        // disabled={logoutLoading}
                                     >
                                         {strings.logoutButtonLabel}
                                     </DropdownMenuItem>

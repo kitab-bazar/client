@@ -14,6 +14,7 @@ import PublisherProfile from './PublisherProfile';
 
 import styles from './styles.css';
 
+// FIXME: do not use this small request
 const MY_PROFILE = gql`
     query MyProfileType {
         me {
@@ -30,18 +31,22 @@ function Profile() {
         MY_PROFILE,
     );
 
+    const userType = profileData?.me?.userType;
+
+    // FIXME: handle error handling and loading states
+
     return (
         <div className={styles.profile}>
-            {profileData?.me?.userType === 'INDIVIDUAL_USER' && (
+            {userType === 'INDIVIDUAL_USER' && (
                 <IndividualProfile />
             )}
-            {profileData?.me?.userType === 'SCHOOL_ADMIN' && (
+            {userType === 'SCHOOL_ADMIN' && (
                 <SchoolProfile />
             )}
-            {profileData?.me?.userType === 'PUBLISHER' && (
+            {userType === 'PUBLISHER' && (
                 <PublisherProfile />
             )}
-            {profileData?.me?.userType === 'INSTITUTIONAL_USER' && (
+            {userType === 'INSTITUTIONAL_USER' && (
                 <InstitutionProfile />
             )}
         </div>

@@ -14,6 +14,22 @@ export const common = {
         en: 'Kitab Bazar',
         ne: 'किताब बजार',
     },
+    logoutErrorMessage: {
+        en: 'Error logging out',
+        ne: 'Error logging out',
+    },
+    logoutSuccessMessage: {
+        en: 'Successfully logged out',
+        ne: 'Successfully logged out',
+    },
+    unathenticatedPageHeader: {
+        en: 'Oh no!',
+        ne: 'Oh no!',
+    },
+    unathenticatedPageContent: {
+        en: 'The page does not exist or you do not have permissions to view this page.',
+        ne: 'The page does not exist or you do not have permissions to view this page.',
+    },
 };
 
 export const navbar = {
@@ -22,7 +38,7 @@ export const navbar = {
         ne: 'किताब खोज्नु होस्',
     },
     signUpButtonLabel: {
-        en: 'Sign Up',
+        en: 'Register',
         ne: 'नया दर्ता',
     },
     loginButtonLabel: {

@@ -10,6 +10,7 @@ import {
     TextOutput,
     useAlert,
     Heading,
+    Pager,
 } from '@the-deep/deep-ui';
 import {
     gql,
@@ -41,6 +42,7 @@ import styles from './styles.css';
 const WISH_LIST = gql`
 query WishList($pageSize: Int!, $page: Int!) {
     wishList(pageSize: $pageSize, page: $page) {
+        totalCount
         results {
             id
             book {
@@ -83,12 +85,14 @@ mutation CreateCart($id: String!, $quantity: Int!) {
 `;
 
 type Wish = NonNullable<NonNullable<WishListQuery['wishList']>['results']>[number]
+
 const wishKeySelector = (w: Wish) => w.id;
 
 interface WishProps {
     wish: Wish;
     onRemoveWishList: (id: string) => void;
     onCreateCart: (id: string, quantity: number) => void;
+    disabled?: boolean;
 }
 
 function WishListItem(props: WishProps) {
@@ -96,6 +100,7 @@ function WishListItem(props: WishProps) {
         wish,
         onRemoveWishList,
         onCreateCart,
+        disabled,
     } = props;
 
     const {
@@ -137,6 +142,7 @@ function WishListItem(props: WishProps) {
                     />
                 ) : (
                     <Message
+                        // FIXME: translate
                         message="Preview not available"
                     />
                 )}
@@ -147,10 +153,12 @@ function WishListItem(props: WishProps) {
                         {title}
                     </Heading>
                     <TextOutput
+                        // FIXME: translate
                         label="Author"
                         value={authorsDisplay}
                     />
                     <TextOutput
+                        // FIXME: translate
                         label="Price (NPR)"
                         valueType="number"
                         value={price}
@@ -159,19 +167,23 @@ function WishListItem(props: WishProps) {
                 <div className={styles.actions}>
                     <NumberInput
                         className={styles.quantityInput}
+                        // FIXME: translate
                         label="Quantity"
                         name="quantity"
                         value={quantity}
                         onChange={setQuantity}
                         type="number"
                         variant="general"
+                        disabled={disabled}
+                        min={1}
                     />
                     <Button
                         name={bookId}
                         onClick={handleAddToCart}
                         variant="primary"
                         icons={<IoCart />}
-                        disabled={isNotDefined(quantity) || (quantity < 1)}
+                        disabled={disabled || isNotDefined(quantity) || (quantity < 1)}
+                        // FIXME: translate
                     >
                         Add to cart
                     </Button>
@@ -181,6 +193,8 @@ function WishListItem(props: WishProps) {
                     onClick={onRemoveWishList}
                     variant="tertiary"
                     icons={<IoTrash />}
+                    disabled={disabled}
+                    // FIXME: translate
                 >
                     Remove from Wishlist
                 </Button>
@@ -189,20 +203,23 @@ function WishListItem(props: WishProps) {
     );
 }
 
+const MAX_ITEMS_PER_PAGE = 20;
+
 interface Props {
     className?: string;
 }
 
 function WishList(props: Props) {
     const { className } = props;
+    const [pageSize, setPageSize] = useState<number>(MAX_ITEMS_PER_PAGE);
     const [page, setPage] = useState<number>(1);
-    const [pageSize, setPageSize] = useState<number>(10);
     const alert = useAlert();
 
     const {
         data,
         refetch,
         loading,
+        error,
     } = useQuery<WishListQuery, WishListQueryVariables>(
         WISH_LIST,
         {
@@ -210,42 +227,33 @@ function WishList(props: Props) {
                 page,
                 pageSize,
             },
-            onCompleted: (res: WishListQuery) => {
-                setPage(res.wishList?.page ? res.wishList.page : page);
-                setPageSize(res.wishList?.pageSize ? res.wishList.pageSize : pageSize);
-            },
         },
     );
 
     const [
         deleteWishlist,
+        { loading: deleteWishlistLoading },
     ] = useMutation<RemoveWishListMutation, RemoveWishListMutationVariables>(
         REMOVE_WISH_LIST,
         {
             onCompleted: (response) => {
-                refetch();
                 if (response?.deleteWishlist?.ok) {
+                    refetch();
                     alert.show(
                         'Item deleted from wishlist successfully',
-                        {
-                            variant: 'success',
-                        },
+                        { variant: 'success' },
                     );
                 } else {
                     alert.show(
                         'Failed to delete item from wishlist',
-                        {
-                            variant: 'error',
-                        },
+                        { variant: 'error' },
                     );
                 }
             },
-            onError: () => {
+            onError: (errors) => {
                 alert.show(
-                    'Failed to delete item from wishlist',
-                    {
-                        variant: 'error',
-                    },
+                    errors.message,
+                    { variant: 'error' },
                 );
             },
         },
@@ -258,24 +266,23 @@ function WishList(props: Props) {
         {
             onCompleted: (response) => {
                 if (response?.createCartItem?.ok) {
+                    refetch();
                     alert.show(
                         'The book was successfully added to your cart.',
-                        {
-                            variant: 'success',
-                        },
+                        { variant: 'success' },
                     );
-                    // TODO: Delete book from wishlist from backend after item is added
-                    refetch();
                 } else {
                     alert.show(
                         'There was an error while adding this to your cart. It might already be there.',
-                        {
-                            variant: 'success',
-                        },
+                        { variant: 'error' },
                     );
-                    // TODO: Delete book from wishlist from backend after item is added
-                    refetch();
                 }
+            },
+            onError: (errors) => {
+                alert.show(
+                    errors.message,
+                    { variant: 'error' },
+                );
             },
         },
     );
@@ -296,13 +303,12 @@ function WishList(props: Props) {
         });
     }, [deleteWishlist]);
 
-    const wishes = data?.wishList?.results ?? [];
-
-    const wishItemRendererParams = React.useCallback((_, d: Wish) => ({
+    const wishItemRendererParams = React.useCallback((_: string, d: Wish) => ({
         wish: d,
         onRemoveWishList: deleteBook,
         onCreateCart: addToCart,
-    }), [deleteBook, addToCart]);
+        disabled: deleteWishlistLoading,
+    }), [deleteBook, addToCart, deleteWishlistLoading]);
 
     return (
         <div className={_cs(styles.wishlist, className)}>
@@ -314,28 +320,42 @@ function WishList(props: Props) {
                     Wishlist
                 </Heading>
                 <ListView
-                    className={_cs(styles.list, wishes.length === 0 && styles.empty)}
-                    data={wishes}
+                    // eslint-disable-next-line max-len
+                    className={_cs(styles.list, (data?.wishList?.results?.length ?? 0) === 0 && styles.empty)}
+                    data={data?.wishList?.results ?? undefined}
                     keySelector={wishKeySelector}
                     rendererParams={wishItemRendererParams}
                     renderer={WishListItem}
                     pending={loading}
-                    errored={false}
+                    errored={!!error}
                     messageShown
                     emptyMessage={(
                         <div className={styles.emptyMessage}>
                             <IoList className={styles.icon} />
                             <div className={styles.text}>
-                                <div className={styles.primary}>
+                                <div
+                                    className={styles.primary}
+                                    // FIXME: translate
+                                >
                                     Your Wishlist is currently empty
                                 </div>
-                                <div className={styles.suggestion}>
+                                <div
+                                    className={styles.suggestion}
+                                    // FIXME: translate
+                                >
                                     Add Books that you want to buy later by clicking Add to Wishlist
                                 </div>
                             </div>
                         </div>
                     )}
                     filtered={false}
+                />
+                <Pager
+                    activePage={page}
+                    maxItemsPerPage={pageSize}
+                    itemsCount={data?.wishList?.totalCount ?? 0}
+                    onActivePageChange={setPage}
+                    onItemsPerPageChange={setPageSize}
                 />
             </div>
         </div>

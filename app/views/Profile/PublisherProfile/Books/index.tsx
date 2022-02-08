@@ -24,7 +24,7 @@ type Book = NonNullable<NonNullable<PublisherBooksQuery['books']>['results']>[nu
 const bookKeySelector = (b: Book) => b.id;
 
 const PUBLISHER_BOOKS = gql`
-    query PublisherBooks( $page: Int!, $pageSize: Int!, $publisher: ID ) {
+    query PublisherBooks($page: Int!, $pageSize: Int!, $publisher: ID ) {
         books (page: $page, pageSize: $pageSize, publisher: $publisher) {
             results {
                 id
@@ -47,6 +47,8 @@ const PUBLISHER_BOOKS = gql`
     }
 `;
 
+const MAX_ITEMS_PER_PAGE = 20;
+
 interface Props {
     publisherId?: string;
 }
@@ -56,13 +58,14 @@ function Books(props: Props) {
         publisherId,
     } = props;
 
-    const [pageSize, setPageSize] = useState<number>(25);
+    const [pageSize, setPageSize] = useState<number>(MAX_ITEMS_PER_PAGE);
     const [page, setPage] = useState<number>(1);
 
     const {
         data: publisherBooksResult,
         loading,
         refetch: refetchPublisherBooks,
+        error,
     } = useQuery<PublisherBooksQuery, PublisherBooksQueryVariables>(
         PUBLISHER_BOOKS,
         {
@@ -118,7 +121,7 @@ function Books(props: Props) {
                 keySelector={bookKeySelector}
                 rendererParams={bookItemRendererParams}
                 renderer={BookItem}
-                errored={false}
+                errored={!!error}
                 pending={loading}
                 filtered={false}
             />

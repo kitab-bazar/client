@@ -4,6 +4,8 @@
     "description": "Client application for KITAB bazar",
     "scripts": {
         "generate": "graphql-codegen --config codegen.yml",
+        "initialize": "mkdir -p generated && yes n | cp -i type.template.tsx generated/types.tsx 2>/dev/null",
+        "css-lint": "stylelint 'app/**/*.css' --config stylelint.config.js",
         "lint": "eslint ./app --report-unused-disable-directives",
         "typecheck": "tsc",
         "build": "webpack --mode=production --node-env=production",
@@ -11,9 +13,8 @@
         "build:prod": "webpack --mode=production --node-env=production",
         "watch": "webpack --watch",
         "start": "webpack serve --mode=development",
-        "initialize": "mkdir -p generated && yes n | cp -i type.template.tsx generated/types.tsx 2>/dev/null",
-        "css-lint": "stylelint 'app/**/*.css' --config stylelint.config.js",
         "prelint": "yarn initialize",
+        "prewatch": "yarn intialize",
         "pretypecheck": "yarn initialize",
         "prebuild": "yarn initialize",
         "prestart": "yarn initialize"
@@ -23,15 +24,15 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/togglecorp/base-react-app.git"
+        "url": "git+https://github.com/kitab-bazar/client.git"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/togglecorp/base-react-app/issues"
+        "url": "https://github.com/kitab-bazar/client/issues"
     },
-    "homepage": "https://github.com/togglecorp/base-react-app#readme",
+    "homepage": "https://github.com/kitab-bazar/client#readme",
     "dependencies": {
         "@apollo/client": "^3.5.7",
         "@sentry/react": "^6.9.0",

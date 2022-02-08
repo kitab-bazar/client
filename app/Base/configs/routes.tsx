@@ -36,7 +36,8 @@ const home = wrap({
     title: 'Home',
     navbarVisibility: true,
     component: lazy(() => import('#views/HomePage')),
-    componentProps: {},
+    componentProps: {
+    },
     visibility: 'is-anything',
 });
 const myProfile = wrap({
@@ -48,9 +49,10 @@ const myProfile = wrap({
     },
     visibility: 'is-authenticated',
 });
+
 const bookDetail = wrap({
-    path: '/book/:id/',
-    title: 'My Book Detail',
+    path: '/book/:id(\\d+)/',
+    title: 'Book',
     navbarVisibility: true,
     component: lazy(() => import('#views/BookDetail')),
     componentProps: {

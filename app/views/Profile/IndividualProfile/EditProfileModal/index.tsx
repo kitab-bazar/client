@@ -21,6 +21,7 @@ import {
     UpdateIndividualProfileMutationVariables,
 } from '#generated/types';
 import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
+import NonFieldError from '#components/NonFieldError';
 import styles from './styles.css';
 
 const UPDATE_INDIVIDUAL_PROFILE = gql`
@@ -108,32 +109,26 @@ function EditProfileModal(props: Props) {
                     ok,
                 } = profileRes;
 
-                if (errors) {
+                if (ok) {
+                    alert.show(
+                        'Successfully updated profile',
+                        { variant: 'success' },
+                    );
+                    onEditSuccess();
+                    onModalClose();
+                } else if (errors) {
                     const formError = transformToFormError(removeNull(errors) as ObjectError[]);
                     setError(formError);
                     alert.show(
                         'Error updating profile',
-                        {
-                            variant: 'error',
-                        },
+                        { variant: 'error' },
                     );
-                } else if (ok) {
-                    alert.show(
-                        'Successfully updated profile',
-                        {
-                            variant: 'success',
-                        },
-                    );
-                    onEditSuccess();
-                    onModalClose();
                 }
             },
-            onError: () => {
+            onError: (errors) => {
                 alert.show(
-                    'Error updating profile.',
-                    {
-                        variant: 'error',
-                    },
+                    errors.message,
+                    { variant: 'error' },
                 );
             },
         },
@@ -182,6 +177,7 @@ function EditProfileModal(props: Props) {
                 </>
             )}
         >
+            <NonFieldError error={error} />
             <TextInput
                 name="firstName"
                 onChange={setFieldValue}

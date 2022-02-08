@@ -5,7 +5,6 @@ import { common } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 
 import LoginForm from './LoginForm';
-
 import styles from './styles.css';
 
 function Login() {

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useMutation, gql } from '@apollo/client';
 import {
     ObjectSchema,
@@ -16,13 +16,14 @@ import {
     useAlert,
 } from '@the-deep/deep-ui';
 
+import NonFieldError from '#components/NonFieldError';
 import {
     UpdatePublisherProfileMutation,
     UpdatePublisherProfileMutationVariables,
 } from '#generated/types';
 import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
 
-import LocationInput from '#views/Register/RegisterForm/LocationInput';
+import LocationInput, { MunicipalityOption } from '#views/Register/RegisterForm/LocationInput';
 
 type FormType = NonNullable<UpdatePublisherProfileMutationVariables>;
 type PartialFormType = PartialForm<FormType>;
@@ -86,6 +87,11 @@ function EditProfileModal(props: Props) {
         profileDetails?.localAddress,
     ]);
 
+    const [
+        municipalityOptions,
+        onMunicipalityOptionsChange,
+    ] = useState<MunicipalityOption[] | undefined | null>();
+
     const {
         pristine,
         value,
@@ -114,32 +120,26 @@ function EditProfileModal(props: Props) {
                     ok,
                 } = profileRes;
 
-                if (errors) {
+                if (ok) {
+                    alert.show(
+                        'Successfully updated profile',
+                        { variant: 'success' },
+                    );
+                    onEditSuccess();
+                    onModalClose();
+                } else if (errors) {
                     const formError = transformToFormError(removeNull(errors) as ObjectError[]);
                     setError(formError);
                     alert.show(
                         'Error updating profile',
-                        {
-                            variant: 'error',
-                        },
+                        { variant: 'error' },
                     );
-                } else if (ok) {
-                    alert.show(
-                        'Successfully updated profile',
-                        {
-                            variant: 'success',
-                        },
-                    );
-                    onEditSuccess();
-                    onModalClose();
                 }
             },
-            onError: () => {
+            onError: (errors) => {
                 alert.show(
-                    'Error updating profile.',
-                    {
-                        variant: 'error',
-                    },
+                    errors.message,
+                    { variant: 'error' },
                 );
             },
         },
@@ -156,6 +156,7 @@ function EditProfileModal(props: Props) {
             },
         )
     ), [setError, validate, updateProfile]);
+
     return (
         <Modal
             heading="Edit Profile"
@@ -182,6 +183,7 @@ function EditProfileModal(props: Props) {
                 </>
             )}
         >
+            <NonFieldError error={error} />
             <TextInput
                 name="name"
                 label="Name of the Publisher"
@@ -193,8 +195,12 @@ function EditProfileModal(props: Props) {
             />
             <LocationInput
                 name="municipality"
+                label="Municipality"
                 error={error?.municipality}
+                value={value?.municipality}
                 onChange={setFieldValue}
+                options={municipalityOptions}
+                onOptionsChange={onMunicipalityOptionsChange}
                 disabled={updateProfilePending}
             />
             <NumberInput
@@ -204,6 +210,7 @@ function EditProfileModal(props: Props) {
                 error={error?.wardNumber}
                 onChange={setFieldValue}
                 disabled={updateProfilePending}
+                min={1}
             />
             <TextInput
                 name="localAddress"
