@@ -179,3 +179,22 @@ export const footer = {
         ne: 'सम्पर्क गर्नुहोस',
     },
 };
+
+export const notifications = {
+    newOrderReceived: {
+        en: 'You have just received a new {orderLink}',
+        np: 'तपाईंले भर्खरै एउटा {orderLink} प्राप्त गर्नुभएको छ',
+    },
+    orderCancelled: {
+        en: 'Your {orderLink} has been cancelled.',
+        np: 'तपाईंको {orderLink} रद्द गरिएको छ।',
+    },
+    orderPacked: {
+        en: 'Your {orderLink} has been packed.',
+        np: 'तपाईंको {orderLink} प्याक गरिएको छ।',
+    },
+    orderCompleted: {
+        en: 'Your {orderLink} has been packed.',
+        np: 'तपाईंको {orderLink} पूरा भएको छ।',
+    },
+};

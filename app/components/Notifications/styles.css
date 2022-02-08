@@ -3,8 +3,7 @@
     width: 480px;
     height: 60vh;
 
-    .header-actions {
-        align-self: center;
+    .header {
         padding: var(--dui-spacing-small) var(--dui-spacing-medium);
     }
 }

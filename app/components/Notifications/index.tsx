@@ -2,16 +2,16 @@ import React, { useCallback, useState } from 'react';
 import {
     Container,
     ListView,
-    Message,
     Pager,
 } from '@the-deep/deep-ui';
-
 import { _cs } from '@togglecorp/fujs';
 import { gql, useQuery } from '@apollo/client';
 import {
     MyNotificationsQuery,
     MyNotificationsQueryVariables,
 } from '#generated/types';
+
+import NotificationItem from './NotificationItem';
 
 import styles from './styles.css';
 
@@ -24,6 +24,10 @@ query MyNotifications ($page: Int!, $pageSize: Int!){
             id
             notificationType
             createdAt
+            order {
+                id
+                orderCode
+            }
         }
         unreadCount
         totalCount
@@ -36,7 +40,7 @@ query MyNotifications ($page: Int!, $pageSize: Int!){
 
 const PAGE_SIZE = 25;
 
-type Notification = NonNullable<NonNullable<MyNotificationsQuery['notifications']>['results']>[number];
+export type Notification = NonNullable<NonNullable<MyNotificationsQuery['notifications']>['results']>[number];
 
 const notificationKeySelector = (n: Notification) => n.id;
 
@@ -86,8 +90,9 @@ function Notification(props: Props) {
         <Container
             className={_cs(styles.notifications, className)}
             heading="Notifications"
+            spacing="none"
             headingSize="extraSmall"
-            headerActionsContainerClassName={styles.headerActions}
+            headerClassName={styles.header}
             borderBelowHeader
             footerActions={(
                 <Pager
