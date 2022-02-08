@@ -1,33 +1,37 @@
-import { ApolloClientOptions, NormalizedCacheObject, InMemoryCache, ApolloLink as ApolloLinkFromClient, HttpLink } from '@apollo/client';
+import {
+    ApolloClientOptions,
+    NormalizedCacheObject,
+    InMemoryCache,
+    ApolloLink as ApolloLinkFromClient,
+    HttpLink,
+} from '@apollo/client';
 
 const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT as string;
 
-const link = new HttpLink({
-    uri: GRAPHQL_ENDPOINT,
-    credentials: 'include',
-}) as unknown as ApolloLinkFromClient;
-
-/*
-const link: ApolloLinkFromClient = ApolloLink.from([
-    new RetryLink(),
-    ApolloLink.split(
-        (operation) => operation.getContext().hasUpload,
-        createUploadLink({
-            uri: GRAPHQL_ENDPOINT,
-            credentials: 'include',
-        }) as unknown as ApolloLink,
-        ApolloLink.from([
-            new RestLink({
-                uri: 'https://osmnames.idmcdb.org',
-            }) as unknown as ApolloLink,
-            new BatchHttpLink({
-                uri: GRAPHQL_ENDPOINT,
-                credentials: 'include',
-            }),
-        ]),
-    ),
-]) as unknown as ApolloLinkFromClient;
-*/
+const link: ApolloLinkFromClient = ApolloLinkFromClient.concat(
+    new ApolloLinkFromClient((operation, forward) => {
+        // add the authorization to the headers
+        operation.setContext(({ headers = {} }) => {
+            const langValueFromStorage = localStorage.getItem('lang');
+            let lang = 'np';
+            if (langValueFromStorage) {
+                lang = JSON.parse(langValueFromStorage);
+            }
+            return {
+                headers: {
+                    ...headers,
+                    'Accept-Language': lang,
+                },
+            };
+        });
+        return forward(operation);
+    }),
+    // new RetryLink(),
+    new HttpLink({
+        uri: GRAPHQL_ENDPOINT,
+        credentials: 'include',
+    }),
+) as unknown as ApolloLinkFromClient;
 
 const apolloOptions: ApolloClientOptions<NormalizedCacheObject> = {
     link,

@@ -1,15 +1,21 @@
 import React from 'react';
 import {
     ListView,
+    ButtonLikeLink,
     Container,
 } from '@the-deep/deep-ui';
 import {
     gql,
     useQuery,
 } from '@apollo/client';
+import {
+    FaTruck,
+    FaBookReader,
+    FaHandshake,
+    FaGift,
+} from 'react-icons/fa';
 
 import BookItem from '#components/BookItem';
-import Footer from '#components/Footer';
 import { homePage } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 
@@ -18,7 +24,7 @@ import {
     FeaturedBooksQueryVariables,
 } from '#generated/types';
 
-import coverImage from '#resources/img/cover.jpg';
+import coverImage from '#resources/img/cover.png';
 import styles from './styles.css';
 
 const FEATURED_BOOKS = gql`
@@ -47,6 +53,29 @@ query FeaturedBooks($page: Int!, $pageSize: Int!) {
 type Book = NonNullable<NonNullable<FeaturedBooksQuery['books']>['results']>[number]
 const bookKeySelector = (b: Book) => b.id;
 
+interface GoalPointProps {
+    icon: React.ReactNode;
+    description: string;
+}
+
+function GoalPoint(props: GoalPointProps) {
+    const {
+        icon,
+        description,
+    } = props;
+
+    return (
+        <div className={styles.goalPoint}>
+            <div className={styles.icon}>
+                {icon}
+            </div>
+            <div className={styles.goalDescription}>
+                {description}
+            </div>
+        </div>
+    );
+}
+
 function HomePage() {
     const { data: result, loading } = useQuery<
         FeaturedBooksQuery,
@@ -61,7 +90,8 @@ function HomePage() {
     const bookItemRendererParams = React.useCallback((_, data) => ({
         book: data,
     }), []);
-    const homePageStrings = useTranslation(homePage);
+
+    const strings = useTranslation(homePage);
 
     return (
         <div className={styles.home}>
@@ -75,34 +105,90 @@ function HomePage() {
                     <div className={styles.topLayer}>
                         <div className={styles.appName}>
                             <div className={styles.kitab}>
-                                {homePageStrings.kitabLabel}
+                                {strings.kitabLabel}
                             </div>
                             <div className={styles.bazar}>
-                                {homePageStrings.bazarLabel}
+                                {strings.bazarLabel}
                             </div>
                         </div>
                         <div className={styles.appDescription}>
-                            {homePageStrings.tagLineLabel}
+                            {strings.tagLineLabel}
+                        </div>
+                        <div className={styles.actions}>
+                            <ButtonLikeLink
+                                to="#"
+                                variant="secondary"
+                                spacing="loose"
+                            >
+                                Explore the Platform
+                            </ButtonLikeLink>
                         </div>
                     </div>
                 </div>
-                <Container
-                    className={styles.featuredBooksSection}
-                    heading={homePageStrings.featuredBooksLabel}
-                >
-                    <ListView
-                        className={styles.bookList}
-                        data={books}
-                        keySelector={bookKeySelector}
-                        rendererParams={bookItemRendererParams}
-                        renderer={BookItem}
-                        errored={false}
-                        pending={loading}
-                        filtered={false}
-                    />
-                </Container>
+                <div className={styles.pageContainer}>
+                    <div className={styles.description}>
+                        <Container
+                            className={styles.whoAreWe}
+                            heading={strings.whoAreWeLabel}
+                        >
+                            {strings.whoAreWeDescription}
+                        </Container>
+                        <Container
+                            className={styles.platformBackground}
+                            heading={strings.backgroundLabel}
+                        >
+                            {strings.platformBackground}
+                        </Container>
+                        <Container
+                            className={styles.goals}
+                            heading={strings.goalsLabel}
+                        >
+                            <p>
+                                {strings.firstGoalDescription}
+                            </p>
+                            <p>
+                                {strings.secondGoalDescription}
+                            </p>
+                        </Container>
+                        <Container
+                            className={styles.goalPoints}
+                            contentClassName={styles.goalPointList}
+                        >
+                            <GoalPoint
+                                icon={<FaBookReader />}
+                                description={strings.accessToReadingMaterialText}
+                            />
+                            <GoalPoint
+                                icon={<FaGift />}
+                                description={strings.bookCornerIncentiveText}
+                            />
+                            <GoalPoint
+                                icon={<FaHandshake />}
+                                description={strings.relationshipEnhacementText}
+                            />
+                            <GoalPoint
+                                icon={<FaTruck />}
+                                description={strings.supplyChainText}
+                            />
+                        </Container>
+                    </div>
+                    <Container
+                        className={styles.featuredBooksSection}
+                        heading={strings.featuredBooksLabel}
+                    >
+                        <ListView
+                            className={styles.bookList}
+                            data={books}
+                            keySelector={bookKeySelector}
+                            rendererParams={bookItemRendererParams}
+                            renderer={BookItem}
+                            errored={false}
+                            pending={loading}
+                            filtered={false}
+                        />
+                    </Container>
+                </div>
             </div>
-            <Footer />
         </div>
     );
 }

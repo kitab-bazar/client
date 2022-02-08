@@ -34,6 +34,7 @@ const ME = gql`
                 id
                 name
             }
+            allowedPermissions
         }
     }
 `;
@@ -56,12 +57,12 @@ function getDisplayName(data: NonNullable<MeQuery['me']>) {
 }
 
 interface Props {
-    className?: string;
+    preloadClassName?: string;
     children: React.ReactNode;
 }
 function Init(props: Props) {
     const {
-        className,
+        preloadClassName,
         children,
     } = props;
 
@@ -83,6 +84,7 @@ function Init(props: Props) {
                         id: safeMe.id,
                         displayName: getDisplayName(safeMe),
                         type: safeMe.userType,
+                        permissions: safeMe.allowedPermissions,
                     });
                 } else {
                     setUser(undefined);
@@ -107,7 +109,7 @@ function Init(props: Props) {
     if (errored) {
         return (
             <PreloadMessage
-                className={className}
+                className={preloadClassName}
                 heading="Oh no!"
                 content="Some error occurred"
             />
@@ -116,7 +118,7 @@ function Init(props: Props) {
     if (!ready) {
         return (
             <PreloadMessage
-                className={className}
+                className={preloadClassName}
                 content="Checking user session..."
             />
         );
@@ -128,4 +130,5 @@ function Init(props: Props) {
         </>
     );
 }
+
 export default Init;

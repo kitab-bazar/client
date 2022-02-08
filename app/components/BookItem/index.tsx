@@ -11,6 +11,7 @@ export interface Props {
     className?: string;
     book: Pick<BookType, 'title' | 'id' | 'image' | 'authors' | 'price'>;
 }
+
 function BookItem(props: Props) {
     const {
         className,

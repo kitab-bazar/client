@@ -5,8 +5,7 @@
     flex-wrap: wrap;
     border-bottom: var(--dui-width-separator-thin) solid var(--dui-color-separator);
     background-color: var(--dui-color-foreground);
-    padding: var(--dui-spacing-medium);
-    overflow: auto;
+    padding: var(--dui-spacing-medium) var(--dui-spacing-extra-large);
     color: var(--dui-color-text);
     gap: var(--dui-spacing-medium);
 
@@ -26,9 +25,11 @@
             }
 
             .app-name {
-                text-transform: uppercase;
+                display: flex;
+                align-items: center;
+                line-height: 1;
                 color: var(--dui-color-accent);
-                font-size: var(--dui-font-size-large);
+                font-size: var(--dui-font-size-extra-large);
             }
         }
     }
@@ -41,6 +42,12 @@
         flex-wrap: wrap;
         overflow: auto;
         gap: var(--dui-spacing-medium);
+
+        .language-selection {
+            button {
+                line-height: 1.2;
+            }
+        }
 
         .search-input-container {
             display: flex;
@@ -59,6 +66,7 @@
             flex-shrink: 0;
             justify-content: center;
             gap: var(--dui-spacing-medium);
+
         }
 
         .user-dropdown {

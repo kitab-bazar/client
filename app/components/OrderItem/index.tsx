@@ -1,67 +1,71 @@
 import React from 'react';
 import { _cs } from '@togglecorp/fujs';
 import {
-    ContainerCard,
+    Container,
     TextOutput,
 } from '@the-deep/deep-ui';
 import {
-    OrderType,
+    OrderStatus,
 } from '#generated/types';
 import routes from '#base/configs/routes';
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
+
 import styles from './styles.css';
 
-type Order = Omit<OrderType, 'createdBy'>;
-
-interface Props {
+export interface Props {
     className?: string;
-    order: Order;
+    orderCode: string;
+    totalPrice: number;
+    status: OrderStatus;
+    totalBookTypes: number;
 }
+
 function OrderItem(props: Props) {
     const {
+        orderCode,
         className,
-        order,
+        totalPrice,
+        status,
+        totalBookTypes,
     } = props;
 
     return (
-        <ContainerCard
-            className={_cs(className, styles.orderItem)}
-            heading={order.orderCode}
+        <Container
+            className={_cs(styles.orderItem, className)}
+            contentClassName={styles.orderMeta}
+            heading={orderCode}
             headingClassName={styles.heading}
             headingSize="extraSmall"
+            headingContainerClassName={styles.heading}
+            withoutExternalPadding
             footerActions={(
                 <SmartButtonLikeLink
                     route={routes.orderList}
-                    state={{ orderId: order.orderCode }}
+                    state={{ orderId: orderCode }}
+                    variant="transparent"
                 >
-                    View details
+                    View order details
                 </SmartButtonLikeLink>
             )}
         >
             <TextOutput
-                label="Books Quantity"
-                labelContainerClassName={styles.label}
+                label="Books"
                 valueType="number"
-                hideLabelColon
-                value={order.totalQuantity}
+                value={totalBookTypes}
             />
             <TextOutput
-                label="Total Price"
-                labelContainerClassName={styles.label}
+                label="Total price"
                 valueType="number"
-                hideLabelColon
-                value={order.totalPrice}
+                value={totalPrice}
                 valueProps={{
-                    prefix: 'Rs.',
+                    prefix: 'NPR. ',
                 }}
             />
             <TextOutput
-                label="Status"
-                labelContainerClassName={styles.label}
-                hideLabelColon
-                value={order.status}
+                label="status"
+                value={status}
             />
-        </ContainerCard>
+        </Container>
     );
 }
 

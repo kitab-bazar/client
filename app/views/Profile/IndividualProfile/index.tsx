@@ -4,6 +4,8 @@ import {
     IoHeart,
     IoCart,
     IoArrowForward,
+    IoPerson,
+    IoList,
 } from 'react-icons/io5';
 import { useQuery, gql } from '@apollo/client';
 import {
@@ -14,6 +16,8 @@ import {
     useModalState,
 } from '@the-deep/deep-ui';
 import { removeNull } from '@togglecorp/toggle-form';
+import { _cs } from '@togglecorp/fujs';
+
 import {
     IndividualProfileQuery,
     IndividualProfileQueryVariables,
@@ -23,7 +27,7 @@ import {
 } from '#generated/types';
 import routes from '#base/configs/routes';
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
-import OrderItem from '#components/OrderItem';
+import OrderItem, { Props as OrderItemProps } from '#components/OrderItem';
 
 import EditProfileModal from './EditProfileModal';
 import styles from './styles.css';
@@ -82,7 +86,13 @@ const ORDER_LIST = gql`
 
 const orderListKeySelector = (o: OrderType) => o.id;
 
-function IndividualProfile() {
+interface Props {
+    className?: string;
+}
+
+function IndividualProfile(props: Props) {
+    const { className } = props;
+
     const [
         editProfileModalShown,
         showEditProfileModal,
@@ -99,7 +109,7 @@ function IndividualProfile() {
     const profileDetails = removeNull(data);
 
     const orderVariables = useMemo(() => ({
-        pageSize: 4,
+        pageSize: 3,
         page: 1,
     }), []);
 
@@ -111,27 +121,27 @@ function IndividualProfile() {
         { variables: orderVariables },
     );
 
-    const orderListRendererParams = useCallback((_, order: Omit<OrderType, 'createdBy'>) => ({
-        order,
+    const orderListRendererParams = useCallback((_, order: Omit<OrderType, 'createdBy'>): OrderItemProps => ({
+        totalBookTypes: order.bookOrders?.totalCount ?? 0,
+        orderCode: order.orderCode,
+        status: order.status,
+        totalPrice: order.totalPrice,
     }), []);
 
     return (
-        <div className={styles.individualProfile}>
-            <Container
-                contentClassName={styles.profileDetails}
-                heading="Profile Details"
-                spacing="comfortable"
-            >
-                <div className={styles.left}>
-                    <div
-                        className={styles.displayPicture}
-                    >
-                        <img
-                            src={profileDetails?.me?.image?.url ?? undefined}
-                            alt={profileDetails?.me?.image?.name ?? ''}
-                        />
-                    </div>
-                    <div className={styles.description}>
+        <div
+            className={_cs(
+                styles.individualProfile,
+                className,
+            )}
+        >
+            <div className={styles.pageContainer}>
+                <Container
+                    className={styles.userDetails}
+                    contentClassName={styles.userDetailContent}
+                    heading="User Details"
+                    spacing="comfortable"
+                    headerActions={(
                         <Button
                             name={undefined}
                             variant="general"
@@ -140,22 +150,45 @@ function IndividualProfile() {
                         >
                             Edit Profile
                         </Button>
-                        <TextOutput
-                            label="Name"
-                            value={profileDetails?.me?.fullName}
-                        />
-                        <TextOutput
-                            label="Email"
-                            value={profileDetails?.me?.email}
-                        />
-                        <TextOutput
-                            label="Phone Number"
-                            value={profileDetails?.me?.phoneNumber}
-                        />
+                    )}
+                >
+                    <div className={styles.personalDetails}>
+                        <div className={styles.displayPicture}>
+                            {profileDetails?.me?.image?.url ? (
+                                <img
+                                    className={styles.image}
+                                    src={profileDetails.me.image.url}
+                                    alt={profileDetails.me.image.name}
+                                />
+                            ) : (
+                                <IoPerson className={styles.fallbackIcon} />
+                            )}
+                        </div>
+                        <div className={styles.attributes}>
+                            <TextOutput
+                                spacing="none"
+                                block
+                                valueContainerClassName={styles.value}
+                                label="Name"
+                                value={profileDetails?.me?.fullName}
+                            />
+                            <TextOutput
+                                spacing="none"
+                                block
+                                valueContainerClassName={styles.value}
+                                label="Email"
+                                value={profileDetails?.me?.email}
+                            />
+                            <TextOutput
+                                spacing="none"
+                                block
+                                valueContainerClassName={styles.value}
+                                label="Phone Number"
+                                value={profileDetails?.me?.phoneNumber ?? 'Not available'}
+                            />
+                        </div>
                     </div>
-                </div>
-                <div>
-                    <div className={styles.buttons}>
+                    <div className={styles.usefulLinks}>
                         <SmartButtonLikeLink
                             route={routes.wishList}
                             variant="general"
@@ -171,49 +204,73 @@ function IndividualProfile() {
                             My Cart
                         </SmartButtonLikeLink>
                     </div>
-                    <div>
-                        <h4>Order Details</h4>
+                    <Container
+                        className={styles.orderSummary}
+                        contentClassName={styles.summaryItemList}
+                        withoutExternalPadding
+                        heading="Order Summary"
+                        headingSize="small"
+                    >
                         <TextOutput
-                            label="total orders"
+                            label="Total orders"
                             value={orderList?.orders?.totalCount}
                         />
                         <TextOutput
                             label="Orders this week"
                             value="2 (will come from server soon)"
                         />
-                    </div>
-                </div>
-            </Container>
-            <Container
-                heading="Order Details"
-                spacing="comfortable"
-                footerActions={(
-                    <SmartButtonLikeLink
-                        route={routes.orderList}
-                    >
-                        View More
-                        <IoArrowForward />
-                    </SmartButtonLikeLink>
+                    </Container>
+                </Container>
+                <Container
+                    className={styles.orderDetails}
+                    headingSize="small"
+                    heading="Recent Orders"
+                    spacing="comfortable"
+                    headerActions={(
+                        <SmartButtonLikeLink
+                            route={routes.orderList}
+                            actions={<IoArrowForward />}
+                            variant="tertiary"
+                        >
+                            View all
+                        </SmartButtonLikeLink>
+                    )}
+                >
+                    <ListView
+                        className={styles.orderList}
+                        data={orderList?.orders?.results ?? undefined}
+                        keySelector={orderListKeySelector}
+                        renderer={OrderItem}
+                        rendererParams={orderListRendererParams}
+                        messageShown
+                        emptyMessage={(
+                            <div className={styles.emptyMessage}>
+                                <IoList className={styles.icon} />
+                                <div className={styles.text}>
+                                    <div className={styles.primary}>
+                                        You dont have any Recent Orders
+                                    </div>
+                                    <div className={styles.suggestion}>
+                                        Add Books that you want to buy
+                                        later by clicking Add to Wishlist
+                                        and then goto your Cart to place your Order
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        errored={false}
+                        filtered={false}
+                        pending={loading}
+                    />
+                </Container>
+                {editProfileModalShown && (
+                    <EditProfileModal
+                        onModalClose={hideEditProfileModal}
+                        onEditSuccess={refetchProfileDetails}
+                        profileDetails={profileDetails?.me}
+                    />
                 )}
-            >
-                <ListView
-                    className={styles.orders}
-                    data={orderList?.orders?.results ?? undefined}
-                    keySelector={orderListKeySelector}
-                    renderer={OrderItem}
-                    rendererParams={orderListRendererParams}
-                    errored={false}
-                    filtered={false}
-                    pending={loading}
-                />
-            </Container>
-            {editProfileModalShown && (
-                <EditProfileModal
-                    onModalClose={hideEditProfileModal}
-                    onEditSuccess={refetchProfileDetails}
-                    profileDetails={profileDetails?.me}
-                />
-            )}
+            </div>
         </div>
     );
 }

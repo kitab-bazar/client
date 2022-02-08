@@ -5,47 +5,84 @@
     .container {
         display: flex;
         flex-direction: column;
-        padding: var(--dui-spacing-large);
+        padding: var(--dui-spacing-extra-large);
         width: 100%;
-        max-width: 1200px;
+        max-width: var(--kitab-page-max-width);
         overflow: auto;
-        gap: var(--dui-spacing-extra-large);
 
-        .meta-data {
+        .book-detail {
             display: flex;
-            height: 20rem;
-            overflow: auto;
+            gap: var(--dui-spacing-extra-large);
 
-            .preview {
-                flex-basis: 13rem;
-                flex-shrink: 0;
-                height: 100%;
+            .left-column {
+                display: flex;
+                flex-direction: column;
+                gap: var(--dui-spacing-medium);
 
-                .image {
-                    width: 100%;
-                    height: 100%;
-                    object-position: top center;
-                    object-fit: cover;
+                .preview {
+                    width: calc(20rem + 5vw);
+                    height: auto;
+
+                    .image {
+                        width: 100%;
+                        height: 100%;
+                        object-position: top center;
+                        object-fit: cover;
+                    }
                 }
-            }
 
-            .details {
-                flex-grow: 1;
-                overflow: auto;
-
-                .header-description {
+                .actions {
                     display: flex;
                     flex-direction: column;
-                    gap: var(--dui-spacing-small);
+                    gap: var(--dui-spacing-large);
+
+                    .cart-details {
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+
+                        .cart-quantity-info {
+                            font-weight: var(--dui-font-weight-medium);
+                        }
+
+                        .remove-button {
+                            color: var(--dui-color-accent);
+                        }
+                    }
+
+                    .primary-action {
+                        display: flex;
+                        align-items: flex-end;
+                        gap: var(--dui-spacing-small);
+
+                        .quantity-input {
+                            width: 4rem;
+                        }
+                    }
+
+                    .other-actions {
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--dui-spacing-small);
+                    }
+                }
+            }
+
+            .right-column {
+                flex-grow: 1;
+
+                .details {
+                    overflow: auto;
+
+                    .book-meta {
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--dui-spacing-small);
+                    }
                 }
             }
         }
 
-        .other-details {
-            .book-content-preview {
-                padding: var(--dui-spacing-large);
-            }
-        }
     }
 
     .no-detail {
