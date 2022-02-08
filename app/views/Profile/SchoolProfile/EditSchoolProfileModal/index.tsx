@@ -26,8 +26,6 @@ import MunicipalitySelectInput, { SearchMunicipalityType } from '#components/Mun
 import { school } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 
-import styles from './styles.css';
-
 const UPDATE_SCHOOL_PROFILE_DETAILS = gql`
     mutation UpdateSchoolProfileDetails(
         $name: String!,
@@ -100,12 +98,17 @@ function EditSchoolProfileModal(props: Props) {
 
     const error = getErrorObject(riskyError);
     const alert = useAlert();
+
     const [
         municipalityOptions,
         setMunicipalityOptions,
-    ] = useState<SearchMunicipalityType[] | null | undefined>(() => (
-        profileDetails ? [profileDetails.municipality] : undefined
-    ));
+    ] = useState<SearchMunicipalityType[] | null | undefined>(
+        /*
+        () => (
+            profileDetails?.municipality ? [profileDetails.municipality] : undefined
+        ),
+        */
+    );
 
     const [
         updateSchoolProfile,
@@ -183,7 +186,6 @@ function EditSchoolProfileModal(props: Props) {
             onCloseButtonClick={onModalClose}
             size="small"
             freeHeight
-            bodyClassName={styles.editModalContent}
             footerActions={(
                 <>
                     <Button
