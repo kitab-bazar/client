@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
     IoPencil,
     IoArrowForward,
@@ -26,6 +26,7 @@ import {
     OrderType,
     OrderStatus,
 } from '#generated/types';
+
 import { school } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 
@@ -36,10 +37,10 @@ const SCHOOL_PROFILE = gql`
     query SchoolProfile {
         me {
             id
+            email
+            fullName
             firstName
             lastName
-            fullName
-            email
             phoneNumber
             image {
               name
@@ -104,6 +105,8 @@ const ORDER_LIST_SCHOOL = gql`
     }
 `;
 
+const orderListKeySelector = (o: OrderType) => o.id;
+
 interface OrderListProps {
     orderCode: string;
     totalPrice: number;
@@ -127,14 +130,6 @@ function OrderListRenderer(props: OrderListProps) {
             heading={orderCode}
             headingClassName={styles.heading}
             headingSize="extraSmall"
-            footerActions={(
-                <SmartButtonLikeLink
-                    route={routes.orderList}
-                    state={{ orderId: orderCode }}
-                >
-                    View details
-                </SmartButtonLikeLink>
-            )}
         >
             <TextOutput
                 label={strings.booksLabel}
@@ -162,8 +157,6 @@ function OrderListRenderer(props: OrderListProps) {
         </ContainerCard>
     );
 }
-
-const orderListKeySelector = (o: OrderType) => o.id;
 
 function SchoolProfile() {
     const [
@@ -209,7 +202,9 @@ function SchoolProfile() {
     };
 
     return (
-        <div className={styles.schoolProfile}>
+        <div
+            className={styles.schoolProfile}
+        >
             <Container
                 contentClassName={styles.profileDetails}
                 spacing="comfortable"

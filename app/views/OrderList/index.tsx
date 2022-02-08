@@ -8,7 +8,6 @@ import {
     Pager,
     Container,
 } from '@the-deep/deep-ui';
-import { useLocation } from 'react-router-dom';
 import {
     OrderListWithBooksQuery,
     OrderListWithBooksQueryVariables,
@@ -198,16 +197,10 @@ function OrderList(props: Props) {
     const {
         className,
     } = props;
-    const {
-        state,
-    } = useLocation();
-
-    // TODO: remove this logic altogether
-    const orderIdFromState = (state as { orderId?: string } | undefined)?.orderId;
 
     const [pageSize, setPageSize] = useState<number>(MAX_ITEMS_PER_PAGE);
     const [page, setPage] = useState<number>(1);
-    const [expandedOrderId, setExpandedOrderId] = useState<string | undefined>(orderIdFromState);
+    const [expandedOrderId, setExpandedOrderId] = useState<string | undefined>();
 
     const orderVariables = useMemo(() => ({
         pageSize,

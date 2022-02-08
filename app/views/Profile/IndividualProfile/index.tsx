@@ -1,24 +1,26 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import {
     IoPencil,
+    IoArrowForward,
     IoHeart,
     IoCart,
-    IoArrowForward,
     IoPerson,
     IoList,
 } from 'react-icons/io5';
 import { useQuery, gql } from '@apollo/client';
 import {
-    Container,
     Button,
-    TextOutput,
+    Container,
     ListView,
     Pager,
+    TextOutput,
     useModalState,
 } from '@the-deep/deep-ui';
 import { removeNull } from '@togglecorp/toggle-form';
 import { _cs } from '@togglecorp/fujs';
 
+import routes from '#base/configs/routes';
+import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
 import {
     IndividualProfileQuery,
     IndividualProfileQueryVariables,
@@ -26,8 +28,7 @@ import {
     OrderListIndividualQueryVariables,
     OrderType,
 } from '#generated/types';
-import routes from '#base/configs/routes';
-import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
+
 import OrderItem, { Props as OrderItemProps } from '#components/OrderItem';
 
 import EditProfileModal from './EditProfileModal';
@@ -36,11 +37,11 @@ import styles from './styles.css';
 const INDIVIDUAL_PROFILE = gql`
     query IndividualProfile {
         me {
+            id
             email
             fullName
             firstName
             lastName
-            id
             phoneNumber
             image {
                 name
@@ -219,10 +220,12 @@ function IndividualProfile(props: Props) {
                             label="Total orders"
                             value={orderList?.orders?.totalCount}
                         />
+                        {/*
                         <TextOutput
                             label="Orders this week"
-                            value="2 (will come from server soon)"
+                            value="2"
                         />
+                        */}
                     </Container>
                 </Container>
                 <Container

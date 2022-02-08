@@ -41,6 +41,7 @@ export function municipalityTitleSelector(m: SearchMunicipalityType) {
     return m.name;
 }
 
+// FIXME: remove this component
 function MunicipalitySelectInput<K extends string>(props: MunicipalitySelectInputProps<K>) {
     const {
         className,

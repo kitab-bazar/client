@@ -13,6 +13,8 @@ import {
     MunicipalityListQueryVariables,
 } from '#generated/types';
 
+import useDebouncedValue from '#hooks/useDebouncedValue';
+
 const MUNICIPALITY_LIST = gql`
     query MunicipalityList(
         $name: String,
@@ -62,9 +64,7 @@ function LocationInput<K extends string>(props: SelectInputProps<K>) {
     const [searchText, setSearchText] = useState('');
     const [opened, setOpened] = useState(false);
 
-    // TODO: debounce after merging sameer'safter merging sameer's code
-    // const debouncedSearchText = useDebouncedValue(searchText);
-    const debouncedSearchText = searchText;
+    const debouncedSearchText = useDebouncedValue(searchText);
 
     const searchVariables = useMemo(
         (): MunicipalityListQueryVariables => (
