@@ -12,7 +12,7 @@ import {
 
 import useDebouncedValue from '#hooks/useDebouncedValue';
 
-type SearchMunicipalityType = Pick<MunicipalityType, 'id' | 'name'>;
+export type SearchMunicipalityType = Pick<MunicipalityType, 'id' | 'name'>;
 
 const MUNICIPALITIES = gql`
     query MunicipalityOptions($name: String) {

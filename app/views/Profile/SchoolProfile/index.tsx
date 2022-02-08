@@ -26,8 +26,11 @@ import {
     OrderType,
     OrderStatus,
 } from '#generated/types';
+import { school } from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
 
 import EditProfileModal from './EditProfileModal';
+import EditSchoolProfileModal from './EditSchoolProfileModal';
 import styles from './styles.css';
 
 const SCHOOL_PROFILE = gql`
@@ -49,6 +52,7 @@ const SCHOOL_PROFILE = gql`
                 localAddress
                 panNumber
                 vatNumber
+                wardNumber
                 municipality {
                     id
                     name
@@ -116,6 +120,8 @@ function OrderListRenderer(props: OrderListProps) {
         totalBookTypes,
     } = props;
 
+    const strings = useTranslation(school);
+
     return (
         <ContainerCard
             className={styles.orderItem}
@@ -132,24 +138,24 @@ function OrderListRenderer(props: OrderListProps) {
             )}
         >
             <TextOutput
-                label="Books"
+                label={strings.booksLabel}
                 labelContainerClassName={styles.label}
                 valueType="number"
                 hideLabelColon
                 value={totalBookTypes}
             />
             <TextOutput
-                label="total price"
+                label={strings.totalPriceLabel}
                 labelContainerClassName={styles.label}
                 valueType="number"
                 hideLabelColon
                 value={totalPrice}
                 valueProps={{
-                    prefix: 'Rs.',
+                    prefix: strings.rsLabel,
                 }}
             />
             <TextOutput
-                label="status"
+                label={strings.statusLabel}
                 labelContainerClassName={styles.label}
                 hideLabelColon
                 value={status}
@@ -166,6 +172,14 @@ function SchoolProfile() {
         showEditProfileModal,
         hideEditProfileModal,
     ] = useModalState(false);
+
+    const [
+        editSchoolProfileModalShown,
+        showEditSchoolProfileModal,
+        hideEditSchoolProfileModal,
+    ] = useModalState(false);
+
+    const strings = useTranslation(school);
 
     const {
         data,
@@ -201,7 +215,7 @@ function SchoolProfile() {
             <Container
                 contentClassName={styles.profileDetails}
                 spacing="comfortable"
-                heading="Profile Details"
+                heading={strings.profileDetailsHeading}
             >
                 <div className={styles.left}>
                     <div
@@ -219,26 +233,34 @@ function SchoolProfile() {
                             onClick={showEditProfileModal}
                             icons={<IoPencil />}
                         >
-                            Edit Profile
+                            {strings.editProfileButtonContent}
+                        </Button>
+                        <Button
+                            name={undefined}
+                            variant="general"
+                            onClick={showEditSchoolProfileModal}
+                            icons={<IoPencil />}
+                        >
+                            {strings.editSchoolProfileButtonContent}
                         </Button>
                         <TextOutput
-                            label="School Name"
+                            label={strings.schoolNameLabel}
                             value={profileDetails?.me?.school?.name}
                         />
                         <TextOutput
-                            label="Name"
+                            label={strings.nameLabel}
                             value={profileDetails?.me?.fullName}
                         />
                         <TextOutput
-                            label="Email"
+                            label={strings.emailLabel}
                             value={profileDetails?.me?.email}
                         />
                         <TextOutput
-                            label="Phone Number"
+                            label={strings.phoneNumberLabel}
                             value={profileDetails?.me?.phoneNumber}
                         />
                         <TextOutput
-                            label="Address"
+                            label={strings.addressLabel}
                             value={`${
                                 profileDetails
                                     ?.me
@@ -254,11 +276,15 @@ function SchoolProfile() {
                             }`}
                         />
                         <TextOutput
-                            label="PAN Number"
+                            label={strings.wardNumberLabel}
+                            value={profileDetails?.me?.school?.wardNumber}
+                        />
+                        <TextOutput
+                            label={strings.panNumberLabel}
                             value={profileDetails?.me?.school?.panNumber}
                         />
                         <TextOutput
-                            label="VAT Number"
+                            label={strings.vatNumberLabel}
                             value={profileDetails?.me?.school?.vatNumber}
                         />
                     </div>
@@ -270,37 +296,37 @@ function SchoolProfile() {
                             variant="general"
                             actions={<IoHeart />}
                         >
-                            My Wishlist
+                            {strings.myWishlistLabel}
                         </SmartButtonLikeLink>
                         <SmartButtonLikeLink
                             route={routes.cartPage}
                             variant="general"
                             actions={<IoCart />}
                         >
-                            My Cart
+                            {strings.myCartLabel}
                         </SmartButtonLikeLink>
                     </div>
                     <div>
                         <h4>Order Details</h4>
                         <TextOutput
-                            label="total orders"
+                            label={strings.totalOrdersLabel}
                             value={orderList?.orders?.totalCount}
                         />
                         <TextOutput
-                            label="Orders this week"
+                            label={strings.weeksOrderLabel}
                             value="2 (will come from server soon)"
                         />
                     </div>
                 </div>
             </Container>
             <Container
-                heading="Order Details"
+                heading={strings.orderDetailsHeading}
                 spacing="comfortable"
                 footerActions={(
                     <SmartButtonLikeLink
                         route={routes.orderList}
                     >
-                        View More
+                        {strings.viewMoreButtonContent}
                         <IoArrowForward />
                     </SmartButtonLikeLink>
                 )}
@@ -321,6 +347,13 @@ function SchoolProfile() {
                     onModalClose={hideEditProfileModal}
                     onEditSuccess={refetchProfileDetails}
                     profileDetails={profileDetails?.me}
+                />
+            )}
+            {editSchoolProfileModalShown && (
+                <EditSchoolProfileModal
+                    onModalClose={hideEditSchoolProfileModal}
+                    onEditSuccess={refetchProfileDetails}
+                    profileDetails={profileDetails?.me?.school}
                 />
             )}
         </div>

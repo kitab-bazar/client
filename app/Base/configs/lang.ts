@@ -198,3 +198,127 @@ export const notifications = {
         ne: 'तपाईंको {orderLink} पूरा भएको छ।',
     },
 };
+
+export const school = {
+    profileUpdateErrorLabel: {
+        en: 'Error updating school profile',
+        np: 'प्रोफाइल अपडेट गर्दा समस्या ',
+    },
+    profileUpdateSuccessLabel: {
+        en: 'Successfully updated school profile',
+        np: 'प्रोफाइल अपडेट सफलतापुर्व सम्पन्न ',
+    },
+    editSchoolProfileModalHeading: {
+        en: 'Edit School Details',
+        np: 'विद्यालय विवरण सम्पादन गर्नुहोस्',
+    },
+    cancelLabel: {
+        en: 'Cancel',
+        np: 'रद्द गर्नुहोस्',
+    },
+    saveLabel: {
+        en: 'Save',
+        np: 'बचत गर्नुहोस्',
+        // TODO: Find better word for 'save'
+    },
+    schoolNameLabel: {
+        en: 'School Name',
+        np: 'विद्यालयको नाम',
+    },
+    municipalityLabel: {
+        en: 'Municipality',
+        np: 'नगरपालिका',
+    },
+    wardNumberLabel: {
+        en: 'Ward Number',
+        np: 'वडा नम्बर ',
+    },
+    localAddressLabel: {
+        en: 'Local Address',
+        np: 'स्थानीय ठेगाना',
+    },
+    firstNameLabel: {
+        en: 'First Name',
+        np: 'पहिलो नाम',
+    },
+    lastNameLabel: {
+        en: 'Last Name',
+        np: 'थर',
+    },
+    phoneNumberLabel: {
+        en: 'Phone Number',
+        np: 'फोन नम्बर',
+    },
+    panNumberLabel: {
+        en: 'PAN Number',
+        np: 'प्यान नम्बर',
+    },
+    vatNumberLabel: {
+        en: 'VAT Number',
+        np: 'भ्याट नम्बर',
+    },
+    booksLabel: {
+        en: 'Books',
+        np: 'किताबहरु ',
+    },
+    totalPriceLabel: {
+        en: 'Total Price',
+        np: 'कुल रकम',
+    },
+    rsLabel: {
+        en: 'Rs. ',
+        np: 'रु.',
+    },
+    statusLabel: {
+        en: 'Status',
+        np: 'स्थिति',
+    },
+    profileDetailsHeading: {
+        en: 'Profile Details',
+        np: 'प्रोफाइल विवरण',
+    },
+    editProfileButtonContent: {
+        en: 'Edit Profile',
+        np: 'प्रोफाइल सम्पादन गर्नुहोस',
+    },
+    editSchoolProfileButtonContent: {
+        en: 'Edit School Profile',
+        np: 'विद्यालय प्रोफाइल सम्पादन गर्नुहोस्',
+    },
+    nameLabel: {
+        en: 'Name',
+        np: 'नाम',
+    },
+    emailLabel: {
+        en: 'Email',
+        np: 'इमेल',
+    },
+    addressLabel: {
+        en: 'Address',
+        np: 'ठेगाना',
+    },
+    myWishlistLabel: {
+        en: 'My Wishlist',
+        np: 'मेरो इच्छा सूची',
+    },
+    myCartLabel: {
+        en: 'My Cart',
+        np: 'मेरो कार्ट',
+    },
+    totalOrdersLabel: {
+        en: 'Total Orders',
+        np: 'कुल अर्डरहरु ',
+    },
+    weeksOrderLabel: {
+        en: 'This week\'s order',
+        np: 'यो हप्ताको अर्डरहरु ',
+    },
+    orderDetailsHeading: {
+        en: 'Order Details',
+        np: 'अर्डर विवरण ',
+    },
+    viewMoreButtonContent: {
+        en: 'View More',
+        np: 'अझ धेरै हेर्नुहोस्',
+    },
+};

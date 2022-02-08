@@ -1,9 +1,10 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import {
     Modal,
     Button,
     TextInput,
+    NumberInput,
     useAlert,
 } from '@the-deep/deep-ui';
 import { useMutation, gql } from '@apollo/client';
@@ -14,56 +15,54 @@ import {
     createSubmitHandler,
     getErrorObject,
     removeNull,
-    requiredCondition,
     requiredStringCondition,
+    requiredCondition,
 } from '@togglecorp/toggle-form';
 
 import {
-    UpdateSchoolProfileMutation,
-    UpdateSchoolProfileMutationVariables,
+    UpdateSchoolProfileDetailsMutation,
+    UpdateSchoolProfileDetailsMutationVariables,
     SchoolType,
 } from '#generated/types';
 import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
+import MunicipalitySelectInput, { SearchMunicipalityType } from '#components/MunicipalitySelectInput';
 import { school } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 
 import styles from './styles.css';
 
-const UPDATE_SCHOOL_PROFILE = gql`
-    mutation UpdateSchoolProfile(
-        $firstName: String,
-        $lastName: String,
-        $phoneNumber: String,
-        $municipality: String!,
+const UPDATE_SCHOOL_PROFILE_DETAILS = gql`
+    mutation UpdateSchoolProfileDetails(
         $name: String!,
+        $municipality: String!,
         $wardNumber: Int!,
+        $localAddress: String,
     ){
-        updateProfile(data: {
-            firstName: $firstName,
-            lastName: $lastName,
-            phoneNumber: $phoneNumber,
-            school: {
-                name: $name,
-                wardNumber: $wardNumber,
-                municipality: $municipality,
-            },
-        }) {
+        updateProfile(
+            data: {
+                school: {
+                    name: $name,
+                    municipality: $municipality,
+                    wardNumber: $wardNumber,
+                    localAddress: $localAddress,
+                },
+            }) {
             ok
             errors
         }
     }
 `;
 
-interface UpdateSchoolProfileFields {
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
+interface UpdateSchoolProfileDetailsFields {
     name: string;
     municipality: string;
+    localAddress: string;
     wardNumber: number;
+    panNumber: string;
+    vatNumber: string;
 }
 
-type FormType = Partial<UpdateSchoolProfileFields>;
+type FormType = Partial<UpdateSchoolProfileDetailsFields>;
 
 type FormSchema = ObjectSchema<PartialForm<FormType>>;
 
@@ -72,12 +71,12 @@ type FormSchemaFields = ReturnType<FormSchema['fields']>;
 const schema: FormSchema = {
     fields: (): FormSchemaFields => {
         const basicFields: FormSchemaFields = {
-            firstName: [],
-            lastName: [],
-            phoneNumber: [],
             name: [requiredStringCondition],
             municipality: [requiredStringCondition],
             wardNumber: [requiredCondition],
+            localAddress: [],
+            panNumber: [],
+            vatNumber: [],
         };
         return basicFields;
     },
@@ -86,15 +85,10 @@ const schema: FormSchema = {
 interface Props {
     onModalClose: () => void;
     onEditSuccess: () => void;
-    profileDetails: {
-        firstName?: string;
-        lastName?: string;
-        phoneNumber?: string;
-        school: SchoolType;
-    };
+    profileDetails: SchoolType,
 }
 
-function EditProfileModal(props: Props) {
+function EditSchoolProfileModal(props: Props) {
     const {
         onEditSuccess,
         onModalClose,
@@ -104,12 +98,10 @@ function EditProfileModal(props: Props) {
     const strings = useTranslation(school);
 
     const initialValue = useMemo((): FormType => ({
-        firstName: profileDetails.firstName,
-        lastName: profileDetails.lastName,
-        phoneNumber: profileDetails.phoneNumber ?? undefined,
-        name: profileDetails.school?.name,
-        municipality: profileDetails.school?.municipality,
-        wardNumber: profileDetails.school?.wardNumber,
+        municipality: profileDetails.municipality?.id,
+        wardNumber: profileDetails.wardNumber,
+        localAddress: profileDetails.localAddress ?? undefined,
+        name: profileDetails.name,
     }), [profileDetails]);
 
     const {
@@ -123,12 +115,21 @@ function EditProfileModal(props: Props) {
 
     const error = getErrorObject(riskyError);
     const alert = useAlert();
+    const [
+        municipalityOptions,
+        setMunicipalityOptions,
+    ] = useState<SearchMunicipalityType[] | null | undefined>(() => (
+        profileDetails ? [profileDetails.municipality] : undefined
+    ));
 
     const [
-        updateProfile,
+        updateSchoolProfile,
         { loading: updateProfilePending },
-    ] = useMutation<UpdateSchoolProfileMutation, UpdateSchoolProfileMutationVariables>(
-        UPDATE_SCHOOL_PROFILE,
+    ] = useMutation<
+        UpdateSchoolProfileDetailsMutation,
+        UpdateSchoolProfileDetailsMutationVariables
+    >(
+        UPDATE_SCHOOL_PROFILE_DETAILS,
         {
             onCompleted: (response) => {
                 const { updateProfile: profileRes } = response;
@@ -177,23 +178,21 @@ function EditProfileModal(props: Props) {
             setError,
             (finalValue) => {
                 // FIXME: cast finalValue
-                updateProfile({
+                updateSchoolProfile({
                     variables: {
-                        firstName: finalValue.firstName,
-                        lastName: finalValue.lastName,
-                        phoneNumber: finalValue.phoneNumber,
                         municipality: finalValue.municipality,
-                        name: finalValue.name,
                         wardNumber: finalValue.wardNumber,
+                        localAddress: finalValue.localAddress,
+                        name: finalValue.name,
                     },
                 });
             },
         )
-    ), [setError, validate, updateProfile]);
+    ), [setError, validate, updateSchoolProfile]);
 
     return (
         <Modal
-            heading="Edit Profile"
+            heading={strings.editSchoolProfileModalHeading}
             onCloseButtonClick={onModalClose}
             size="small"
             freeHeight
@@ -219,31 +218,40 @@ function EditProfileModal(props: Props) {
             )}
         >
             <TextInput
-                name="firstName"
+                name="name"
                 onChange={setFieldValue}
-                label={strings.firstNameLabel}
-                value={value?.firstName}
-                error={error?.firstName}
+                label={strings.schoolNameLabel}
+                value={value?.name}
+                error={error?.name}
                 disabled={updateProfilePending}
             />
             <TextInput
-                name="lastName"
+                name="localAddress"
+                label={strings.localAddressLabel}
                 onChange={setFieldValue}
-                label={strings.lastNameLabel}
-                value={value?.lastName}
-                error={error?.lastName}
+                value={value?.localAddress}
+                error={error?.localAddress}
                 disabled={updateProfilePending}
             />
-            <TextInput
-                name="phoneNumber"
-                label={strings.phoneNumberLabel}
+            <MunicipalitySelectInput
+                name="municipality"
+                label={strings.municipalityLabel}
                 onChange={setFieldValue}
-                value={value?.phoneNumber}
-                error={error?.phoneNumber}
+                value={value?.municipality}
+                error={error?.municipality}
+                options={municipalityOptions}
+                onOptionsChange={setMunicipalityOptions}
+            />
+            <NumberInput
+                name="wardNumber"
+                label={strings.wardNumberLabel}
+                onChange={setFieldValue}
+                value={value?.wardNumber}
+                error={error?.wardNumber}
                 disabled={updateProfilePending}
             />
         </Modal>
     );
 }
 
-export default EditProfileModal;
+export default EditSchoolProfileModal;
