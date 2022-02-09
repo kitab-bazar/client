@@ -58,8 +58,8 @@ query CartItemsList($page: Int!, $pageSize: Int!) {
 `;
 
 const ORDER_FROM_CART = gql`
-mutation OrderFromCart($cartItems: [ID!]) {
-    placeOrderFromCart(data: { cartItemIds: $cartItems }) {
+mutation OrderFromCart {
+    placeOrderFromCart {
         errors
         ok
         result {
@@ -137,8 +137,6 @@ function OrdersModal(props: Props) {
         },
     );
 
-    const cartList = cartItemList?.cartItems?.results ?? undefined;
-
     const cartItemRendererParams = (
         _: string,
         cartDetails: Cart,
@@ -147,13 +145,8 @@ function OrdersModal(props: Props) {
     });
 
     const handleOrderBooksClick = React.useCallback(() => {
-        // FIXME: this breaks when using pagination
-        if (cartList) {
-            placeOrderFromCart({
-                variables: { cartItems: cartList.map((c) => c.id) },
-            });
-        }
-    }, [cartList, placeOrderFromCart]);
+        placeOrderFromCart();
+    }, [placeOrderFromCart]);
 
     return (
         <Modal
@@ -183,7 +176,7 @@ function OrdersModal(props: Props) {
         >
             <ListView
                 className={styles.cartItemList}
-                data={cartList}
+                data={cartItemList?.cartItems?.results ?? undefined}
                 renderer={CartItem}
                 rendererParams={cartItemRendererParams}
                 keySelector={keySelector}
