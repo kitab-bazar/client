@@ -4,7 +4,6 @@ import {
     Container,
     TextOutput,
     Button,
-    Link,
     useAlert,
 } from '@the-deep/deep-ui';
 import {
@@ -15,10 +14,16 @@ import {
     useMutation,
 } from '@apollo/client';
 
+import SmartLink from '#base/components/SmartLink';
+import routes from '#base/configs/routes';
 import {
     ExploreBooksQuery,
     AddToOrderMutation,
     AddToOrderMutationVariables,
+    AddToWishListMutation,
+    AddToWishListMutationVariables,
+    RemoveFromWishListMutation,
+    RemoveFromWishListMutationVariables,
 } from '#generated/types';
 import { OrdersBarContext } from '#components/OrdersBar';
 
@@ -37,6 +42,45 @@ mutation AddToOrder($id: String!, $quantity: Int!) {
                     id
                     quantity
                 }
+                wishlistId
+            }
+        }
+    }
+}
+`;
+
+const ADD_TO_WISH_LIST = gql`
+mutation AddToWishList($id: String!) {
+    createWishlist(data: {book: $id}) {
+        errors
+        ok
+        result {
+            book {
+                id
+                cartDetails {
+                    id
+                    quantity
+                }
+                wishlistId
+            }
+        }
+    }
+}
+`;
+
+const REMOVE_FROM_WISH_LIST = gql`
+mutation RemoveFromWishList($id: ID!) {
+    deleteWishlist(id: $id) {
+        errors
+        ok
+        result {
+            book {
+                id
+                cartDetails {
+                    id
+                    quantity
+                }
+                wishlistId
             }
         }
     }
@@ -59,7 +103,10 @@ function BookItem(props: Props) {
     const alert = useAlert();
     const { updateBar } = React.useContext(OrdersBarContext);
 
-    const [addToOrder] = useMutation<AddToOrderMutation, AddToOrderMutationVariables>(
+    const [
+        addToOrder,
+        { loading: addToOrderLoading },
+    ] = useMutation<AddToOrderMutation, AddToOrderMutationVariables>(
         ADD_TO_ORDER,
         {
             onCompleted: (response) => {
@@ -72,10 +119,58 @@ function BookItem(props: Props) {
                     updateBar();
                 }
             },
-            onError: (e) => {
-                // eslint-disable-next-line no-console
-                console.error(e);
-                alert.show(e.message, { variant: 'error' });
+            onError: (errors) => {
+                alert.show(
+                    errors.message,
+                    { variant: 'error' },
+                );
+            },
+        },
+    );
+
+    const [
+        addToWishList,
+        { loading: addToWishListLoading },
+    ] = useMutation<AddToWishListMutation, AddToWishListMutationVariables>(
+        ADD_TO_WISH_LIST,
+        {
+            onCompleted: (response) => {
+                if (!response?.createWishlist?.ok) {
+                    alert.show(
+                        // FIXME: translate
+                        'Failed to add book to the wish list.',
+                        { variant: 'error' },
+                    );
+                }
+            },
+            onError: (errors) => {
+                alert.show(
+                    errors.message,
+                    { variant: 'error' },
+                );
+            },
+        },
+    );
+
+    const [
+        removeFromWishList,
+        { loading: removeFromWishListLoading },
+    ] = useMutation<RemoveFromWishListMutation, RemoveFromWishListMutationVariables>(
+        REMOVE_FROM_WISH_LIST,
+        {
+            onCompleted: (response) => {
+                if (!response?.deleteWishlist?.ok) {
+                    alert.show(
+                        'Failed to delete item from wish list',
+                        { variant: 'error' },
+                    );
+                }
+            },
+            onError: (errors) => {
+                alert.show(
+                    errors.message,
+                    { variant: 'error' },
+                );
             },
         },
     );
@@ -88,9 +183,7 @@ function BookItem(props: Props) {
         book.categories?.map((d) => d.name).join(', ')
     ), [book.categories]);
 
-    const alreadyInOrder = (book.cartDetails?.quantity ?? 0) > 0;
-
-    const handleAddToOrderClick = React.useCallback(() => {
+    const handleAddToOrder = React.useCallback(() => {
         addToOrder({
             variables: {
                 id: book.id,
@@ -98,6 +191,24 @@ function BookItem(props: Props) {
             },
         });
     }, [book.id, addToOrder]);
+
+    const handleAddToWishList = React.useCallback(() => {
+        addToWishList({
+            variables: {
+                id: book.id,
+            },
+        });
+    }, [book.id, addToWishList]);
+
+    const handleRemoveFromWishList = React.useCallback((id: string) => {
+        removeFromWishList({
+            variables: {
+                id,
+            },
+        });
+    }, [removeFromWishList]);
+
+    const disabled = addToOrderLoading || addToWishListLoading || removeFromWishListLoading;
 
     return (
         <div className={_cs(styles.bookItem, className)}>
@@ -113,9 +224,14 @@ function BookItem(props: Props) {
             <Container
                 className={styles.details}
                 heading={(
-                    <Link to={`/book/${book.id}/`}>
+                    <SmartLink
+                        route={routes.bookDetail}
+                        attrs={{
+                            id: book.id,
+                        }}
+                    >
                         {book.title}
-                    </Link>
+                    </SmartLink>
                 )}
                 headingSize="extraSmall"
                 headingDescription={authorsDisplay}
@@ -131,7 +247,7 @@ function BookItem(props: Props) {
                 footerIcons={(
                     <>
                         <TextOutput
-                            label="Langauge"
+                            label="Language"
                             value={book.language}
                         />
                         <TextOutput
@@ -144,26 +260,50 @@ function BookItem(props: Props) {
                     </>
                 )}
                 footerActionsContainerClassName={styles.actions}
-                footerActions={
-                    alreadyInOrder ? (
-                        <Button
-                            variant="secondary"
-                            name={undefined}
-                            icons={<IoCheckmark />}
-                            readOnly
-                        >
-                            Added to Order
-                        </Button>
-                    ) : (
-                        <Button
-                            name={undefined}
-                            variant="primary"
-                            onClick={handleAddToOrderClick}
-                        >
-                            Add to Order
-                        </Button>
-                    )
-                }
+                footerActions={(
+                    <>
+                        {book.wishlistId ? (
+                            <Button
+                                name={book.wishlistId}
+                                variant="primary"
+                                onClick={handleRemoveFromWishList}
+                                disabled={disabled}
+                            >
+                                Remove from Wish list
+                            </Button>
+                        ) : (
+                            !book.cartDetails && (
+                                <Button
+                                    name={undefined}
+                                    variant="primary"
+                                    onClick={handleAddToWishList}
+                                    disabled={disabled}
+                                >
+                                    Add to Wish list
+                                </Button>
+                            )
+                        )}
+                        {book.cartDetails ? (
+                            <Button
+                                variant="secondary"
+                                name={undefined}
+                                icons={<IoCheckmark />}
+                                readOnly
+                            >
+                                In order list
+                            </Button>
+                        ) : (
+                            <Button
+                                name={undefined}
+                                variant="primary"
+                                onClick={handleAddToOrder}
+                                disabled={disabled}
+                            >
+                                Add to Order
+                            </Button>
+                        )}
+                    </>
+                )}
             />
         </div>
     );

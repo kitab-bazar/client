@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import {
     ListView,
-    ButtonLikeLink,
     Container,
     Pager,
 } from '@the-deep/deep-ui';
@@ -16,10 +15,12 @@ import {
     FaGift,
 } from 'react-icons/fa';
 
+import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
 import BookItem from '#components/BookItem';
 import { homePage } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 
+import routes from '#base/configs/routes';
 import {
     FeaturedBooksQuery,
     FeaturedBooksQueryVariables,
@@ -127,15 +128,14 @@ function HomePage() {
                             {strings.tagLineLabel}
                         </div>
                         <div className={styles.actions}>
-                            <ButtonLikeLink
-                                // TODO: use SmartButtonLikeLink
-                                to="/explore/"
+                            <SmartButtonLikeLink
+                                route={routes.explore}
                                 variant="secondary"
                                 spacing="loose"
                                 // FIXME: translate
                             >
                                 Explore the Platform
-                            </ButtonLikeLink>
+                            </SmartButtonLikeLink>
                         </div>
                     </div>
                 </div>
