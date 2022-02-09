@@ -81,15 +81,16 @@ function Orders() {
     return (
         <Container
             className={styles.publisherOrders}
-            heading="Orders"
             contentClassName={styles.content}
-            footerIcons={(
+            heading="Orders"
+            footerContent={(
                 <Pager
                     activePage={page}
                     maxItemsPerPage={pageSize}
                     itemsCount={publisherBookOrdersResult?.orders?.totalCount ?? 0}
                     onActivePageChange={setPage}
                     onItemsPerPageChange={setPageSize}
+                    itemsPerPageControlHidden
                 />
             )}
         >

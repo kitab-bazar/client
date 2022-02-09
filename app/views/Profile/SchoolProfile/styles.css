@@ -1,3 +1,63 @@
 .school-profile {
     display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    width: 100%;
+    gap: var(--dui-spacing-large);
+
+    .profile-details {
+        display: flex;
+        justify-content: space-between;
+        gap: var(--dui-spacing-medium);
+
+        .left {
+            display: flex;
+            gap: var(--dui-spacing-large);
+
+            .display-picture {
+                border-radius: 100%;
+                background-color: var(--dui-color-foreground);
+                width: 200px;
+                height: 200px;
+                overflow: hidden;
+                object-fit: cover;
+
+                img {
+                    width: 100%;
+                    height: auto;
+                }
+            }
+
+            .description {
+                display: flex;
+                align-self: center;
+                flex-direction: column;
+                gap: var(--dui-spacing-small);
+            }
+        }
+
+        .buttons {
+            display: flex;
+        }
+    }
+
+    .orders {
+        display: flex;
+        flex-grow: 1;
+        gap: var(--dui-spacing-large);
+
+        .order-item {
+            display: flex;
+            flex-direction: column;
+            border: var(--dui-width-separator-thin) solid transparent;
+
+            .heading {
+                color: var(--dui-color-accent);
+            }
+
+            .label {
+                width: 70px;
+            }
+        }
+    }
 }
