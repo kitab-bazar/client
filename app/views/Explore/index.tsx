@@ -143,7 +143,6 @@ function Explore(props: Props) {
     const [publisher, setPublisher] = useInputState<string | undefined>(undefined);
     const [selectedBookId, setSelectedBookId] = React.useState<string | undefined>();
 
-    const [pageSize, setPageSize] = useState<number>(MAX_ITEMS_PER_PAGE);
     const [page, setPage] = useState<number>(1);
 
     const pageTitle = React.useMemo(() => {
@@ -177,7 +176,9 @@ function Explore(props: Props) {
                 ordering: selectedSortKey,
                 categories,
                 publisher: publisherFromProps ?? publisher,
-                title: (search ?? '').length > 3 ? search : undefined,
+                title: (search && search.length > 3) ? search : undefined,
+                pageSize: MAX_ITEMS_PER_PAGE,
+                page,
                 // inWishList: wishListFromProps
             },
         },
@@ -299,10 +300,9 @@ function Explore(props: Props) {
                     />
                     <Pager
                         activePage={page}
-                        maxItemsPerPage={pageSize}
+                        maxItemsPerPage={MAX_ITEMS_PER_PAGE}
                         itemsCount={bookResponse?.books?.totalCount ?? 0}
                         onActivePageChange={setPage}
-                        onItemsPerPageChange={setPageSize}
                         itemsPerPageControlHidden
                     />
                 </div>

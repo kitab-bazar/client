@@ -1,16 +1,7 @@
 import React from 'react';
-
 import {
-    Container,
-    TextOutput,
     Modal,
-    Message,
-    Button,
 } from '@the-deep/deep-ui';
-import {
-    IoCheckmark,
-    IoClose,
-} from 'react-icons/io5';
 import {
     gql,
     useQuery,
@@ -57,6 +48,7 @@ query Book($id: ID!) {
             id
             quantity
         }
+        wishlistId
     }
 }
 `;
@@ -73,11 +65,16 @@ function BookDetailModal(props: Props) {
     } = props;
 
     const {
-        data: queryResponse,
+        data,
+        error,
+        loading,
     } = useQuery<BookQuery, BookQueryVariables>(
         BOOK,
         { variables: { id: bookId } },
     );
+
+    const errored = !!error;
+
     return (
         <Modal
             hideCloseButton
@@ -85,12 +82,20 @@ function BookDetailModal(props: Props) {
             bodyClassName={styles.container}
             size="large"
         >
-            {queryResponse?.book && (
+            {errored && (
+                // FIXME: style this
+                <div>Errored!</div>
+            )}
+            {!errored && loading && (
+                // FIXME: style this
+                <div>Loading!</div>
+            )}
+            {!errored && !loading && data?.book && (
                 <BookItem
                     className={styles.detail}
                     onCloseButtonClick={onCloseButtonClick}
                     variant="detail"
-                    book={queryResponse.book}
+                    book={data.book}
                 />
             )}
         </Modal>

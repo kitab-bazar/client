@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     gql,
     useQuery,
     useMutation,
 } from '@apollo/client';
+import { getOperationName } from 'apollo-link';
 import {
     Button,
     Modal,
     ListView,
     TextOutput,
     useAlert,
+    Pager,
 } from '@the-deep/deep-ui';
 
 import {
@@ -19,9 +21,12 @@ import {
     OrderFromCartMutationVariables,
 } from '#generated/types';
 
-import CartItem, { Props as CartItemProps } from '../CartItem';
+import CartItem, { Props as CartItemProps } from './CartItem';
+import { CART_ITEMS } from '../queries';
 
 import styles from './styles.css';
+
+const CART_ITEMS_NAME = getOperationName(CART_ITEMS);
 
 const CART_ITEMS_LIST = gql`
 query CartItemsList($page: Int!, $pageSize: Int!) {
@@ -71,6 +76,8 @@ type Cart = NonNullable<NonNullable<NonNullable<CartItemsListQuery>['cartItems']
 
 const keySelector = (d: Cart) => d.id;
 
+const MAX_ITEMS_PER_PAGE = 20;
+
 interface Props {
     onClose: () => void;
 }
@@ -82,27 +89,29 @@ function OrdersModal(props: Props) {
 
     const alert = useAlert();
 
+    const [page, setPage] = useState<number>(1);
+
     const {
         loading: cartLoading,
         data: cartItemList,
+        error,
     } = useQuery<CartItemsListQuery, CartItemsListQueryVariables>(
         CART_ITEMS_LIST,
         {
-            // FIXME: use actual pagination
             variables: {
-                page: 1,
-                pageSize: 20,
+                page,
+                pageSize: MAX_ITEMS_PER_PAGE,
             },
         },
     );
 
     const [
         placeOrderFromCart,
-        // FIXME:
-        // { loading: submitting },
+        { loading: placeOrderLoading },
     ] = useMutation<OrderFromCartMutation, OrderFromCartMutationVariables>(
         ORDER_FROM_CART,
         {
+            refetchQueries: CART_ITEMS_NAME ? [CART_ITEMS_NAME] : undefined,
             onCompleted: (response) => {
                 if (response?.placeOrderFromCart?.ok) {
                     alert.show(
@@ -114,7 +123,7 @@ function OrdersModal(props: Props) {
                     // refetchCartItemMeta();
                 } else {
                     alert.show(
-                        'Failed to place the Order!',
+                        'Failed to place the order!',
                         { variant: 'error' },
                     );
                 }
@@ -138,7 +147,7 @@ function OrdersModal(props: Props) {
     });
 
     const handleOrderBooksClick = React.useCallback(() => {
-        // FIXME: this breaks for pagination
+        // FIXME: this breaks when using pagination
         if (cartList) {
             placeOrderFromCart({
                 variables: { cartItems: cartList.map((c) => c.id) },
@@ -166,6 +175,7 @@ function OrdersModal(props: Props) {
                     name={undefined}
                     variant="primary"
                     onClick={handleOrderBooksClick}
+                    disabled={placeOrderLoading}
                 >
                     Order Books
                 </Button>
@@ -178,8 +188,15 @@ function OrdersModal(props: Props) {
                 rendererParams={cartItemRendererParams}
                 keySelector={keySelector}
                 filtered={false}
-                errored={false}
+                errored={!!error}
                 pending={cartLoading}
+            />
+            <Pager
+                activePage={page}
+                maxItemsPerPage={MAX_ITEMS_PER_PAGE}
+                itemsCount={cartItemList?.cartItems?.totalCount ?? 0}
+                onActivePageChange={setPage}
+                itemsPerPageControlHidden
             />
         </Modal>
     );

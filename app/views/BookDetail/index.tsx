@@ -110,6 +110,7 @@ mutation AddToCart($id: String!, $quantity: Int!) {
                     id
                     quantity
                 }
+                wishlistId
             }
         }
     }
@@ -129,6 +130,7 @@ mutation UpdateCart($id: ID!, $bookId: String!, $quantity: Int!) {
                     id
                     quantity
                 }
+                wishlistId
             }
         }
     }
@@ -148,6 +150,7 @@ mutation DeleteCartItem($id: ID!) {
                     id
                     quantity
                 }
+                wishlistId
             }
         }
     }

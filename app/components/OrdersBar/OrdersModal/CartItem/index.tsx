@@ -23,7 +23,6 @@ import {
     RemoveCartItemMutation,
     RemoveCartItemMutationVariables,
 } from '#generated/types';
-import { OrdersBarContext } from '#components/OrdersBar';
 
 import styles from './styles.css';
 
@@ -42,6 +41,7 @@ mutation UpdateCartBookQuantity($id: ID!, $bookId: String!, $quantity: Int!) {
                     id
                     quantity
                 }
+                wishlistId
             }
         }
     }
@@ -61,6 +61,7 @@ mutation RemoveCartItem($id: ID!) {
                     id
                     quantity
                 }
+                wishlistId
             }
         }
     }
@@ -88,14 +89,14 @@ function CartItem(props: Props) {
     } = cartDetails;
 
     const alert = useAlert();
-    const { updateBar } = React.useContext(OrdersBarContext);
 
     const [removeCartItem] = useMutation<RemoveCartItemMutation, RemoveCartItemMutationVariables>(
         REMOVE_CART_ITEM,
         {
             onCompleted: (response) => {
                 if (response?.deleteCartItem?.ok) {
-                    updateBar();
+                    console.warn('refetch cart info here');
+                    // updateBar();
                 } else {
                     // FIXME: translate
                     alert.show(
@@ -120,13 +121,13 @@ function CartItem(props: Props) {
         UPDATE_CART_BOOK_QUANTITY,
         {
             onCompleted: (response) => {
-                if (!response?.updateCartItem?.ok) {
+                if (response?.updateCartItem?.ok) {
+                    console.warn('refetch cart info here');
+                } else {
                     alert.show(
                         'Failed to update the cart',
                         { variant: 'error' },
                     );
-                } else {
-                    updateBar();
                 }
             },
             onError: (e) => {

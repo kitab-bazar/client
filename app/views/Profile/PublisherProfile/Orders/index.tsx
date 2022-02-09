@@ -55,7 +55,6 @@ const orderKeySelector = (d: PublisherOrder) => d.id;
 const MAX_ITEMS_PER_PAGE = 20;
 
 function Orders() {
-    const [pageSize, setPageSize] = useState<number>(MAX_ITEMS_PER_PAGE);
     const [page, setPage] = useState<number>(1);
 
     const {
@@ -67,7 +66,7 @@ function Orders() {
         {
             variables: {
                 page,
-                pageSize,
+                pageSize: MAX_ITEMS_PER_PAGE,
             },
         },
     );
@@ -86,10 +85,9 @@ function Orders() {
             footerContent={(
                 <Pager
                     activePage={page}
-                    maxItemsPerPage={pageSize}
+                    maxItemsPerPage={MAX_ITEMS_PER_PAGE}
                     itemsCount={publisherBookOrdersResult?.orders?.totalCount ?? 0}
                     onActivePageChange={setPage}
-                    onItemsPerPageChange={setPageSize}
                     itemsPerPageControlHidden
                 />
             )}

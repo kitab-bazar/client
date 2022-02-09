@@ -174,15 +174,14 @@ function CartPage(props: Props) {
     const [selectedItems, setSelectedItems] = React.useState<Record<string, boolean>>({});
     const [itemCounts, setItemCounts] = React.useState<Record<string, number | undefined>>({});
 
-    const [pageSize, setPageSize] = useState<number>(MAX_ITEMS_PER_PAGE);
     const [page, setPage] = useState<number>(1);
 
     const alert = useAlert();
 
     const orderVariables = useMemo(() => ({
-        pageSize,
+        pageSize: MAX_ITEMS_PER_PAGE,
         page,
-    }), [pageSize, page]);
+    }), [page]);
 
     const {
         data: result,
@@ -340,10 +339,9 @@ function CartPage(props: Props) {
                     />
                     <Pager
                         activePage={page}
-                        maxItemsPerPage={pageSize}
+                        maxItemsPerPage={MAX_ITEMS_PER_PAGE}
                         itemsCount={result?.cartItems?.totalCount ?? 0}
                         onActivePageChange={setPage}
-                        onItemsPerPageChange={setPageSize}
                         itemsPerPageControlHidden
                     />
                     <Container

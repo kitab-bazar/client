@@ -198,14 +198,13 @@ function OrderList(props: Props) {
         className,
     } = props;
 
-    const [pageSize, setPageSize] = useState<number>(MAX_ITEMS_PER_PAGE);
     const [page, setPage] = useState<number>(1);
     const [expandedOrderId, setExpandedOrderId] = useState<string | undefined>();
 
     const orderVariables = useMemo(() => ({
-        pageSize,
+        pageSize: MAX_ITEMS_PER_PAGE,
         page,
-    }), [pageSize, page]);
+    }), [page]);
 
     const {
         data: orderList,
@@ -240,10 +239,9 @@ function OrderList(props: Props) {
             footerContent={(
                 <Pager
                     activePage={page}
-                    maxItemsPerPage={pageSize}
+                    maxItemsPerPage={MAX_ITEMS_PER_PAGE}
                     itemsCount={orderList?.orders?.totalCount ?? 0}
                     onActivePageChange={setPage}
-                    onItemsPerPageChange={setPageSize}
                     itemsPerPageControlHidden
                 />
             )}

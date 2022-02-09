@@ -19,6 +19,10 @@ import {
     BookType,
     AddToOrderMutation,
     AddToOrderMutationVariables,
+    AddToWishListMutation,
+    AddToWishListMutationVariables,
+    RemoveFromWishListMutation,
+    RemoveFromWishListMutationVariables,
 } from '#generated/types';
 
 import styles from './styles.css';
@@ -43,12 +47,49 @@ mutation AddToOrder($id: String!, $quantity: Int!) {
 }
 `;
 
-type BookForList = Pick<BookType, 'id' | 'title' | 'price' | 'language' | 'authors' | 'categories' | 'image'>
+const ADD_TO_WISH_LIST = gql`
+mutation AddToWishList($id: String!) {
+    createWishlist(data: {book: $id}) {
+        errors
+        ok
+        result {
+            book {
+                id
+                cartDetails {
+                    id
+                    quantity
+                }
+                wishlistId
+            }
+        }
+    }
+}
+`;
+
+const REMOVE_FROM_WISH_LIST = gql`
+mutation RemoveFromWishList($id: ID!) {
+    deleteWishlist(id: $id) {
+        errors
+        ok
+        result {
+            book {
+                id
+                cartDetails {
+                    id
+                    quantity
+                }
+                wishlistId
+            }
+        }
+    }
+}
+`;
+type BookForList = Pick<BookType, 'id' | 'title' | 'price' | 'language' | 'authors' | 'categories' | 'image' | 'wishlistId'>
     & {
         publisher: Pick<BookType['publisher'], 'id' | 'name'>;
         cartDetails?: null | Pick<NonNullable<BookType['cartDetails']>, 'id' | 'quantity'>;
     };
-type BookForDetail = Pick<BookType, 'id' | 'title' | 'description' | 'price' | 'language' | 'numberOfPages' | 'isbn' | 'authors' | 'categories' | 'image'>
+type BookForDetail = Pick<BookType, 'id' | 'title' | 'description' | 'price' | 'language' | 'numberOfPages' | 'isbn' | 'authors' | 'categories' | 'image' | 'wishlistId'>
     & {
         publisher: Pick<BookType['publisher'], 'id' | 'name'>
         cartDetails?: null | Pick<NonNullable<BookType['cartDetails']>, 'id' | 'quantity'>;
@@ -57,6 +98,7 @@ type BookForCompact = Pick<BookType, 'id' | 'title' | 'image' | 'authors' | 'pri
 
 interface BaseProps {
     className?: string;
+    wishListActionsShown?: boolean;
 }
 
 export type Props = BaseProps & ({
@@ -66,7 +108,7 @@ export type Props = BaseProps & ({
 } | {
     variant: 'compact';
     book: BookForCompact;
-    onClick: (id: string) => void;
+    onClick: (bookId: string) => void;
 } | {
     variant: 'detail';
     book: BookForDetail;
@@ -78,6 +120,7 @@ function BookItem(props: Props) {
         className,
         variant,
         book,
+        wishListActionsShown,
     } = props;
 
     const alert = useAlert();
@@ -92,6 +135,53 @@ function BookItem(props: Props) {
                 if (!response?.createCartItem?.ok) {
                     alert.show(
                         'Failed to add book to the order.',
+                        { variant: 'error' },
+                    );
+                }
+            },
+            onError: (errors) => {
+                alert.show(
+                    errors.message,
+                    { variant: 'error' },
+                );
+            },
+        },
+    );
+
+    const [
+        addToWishList,
+        { loading: addToWishListLoading },
+    ] = useMutation<AddToWishListMutation, AddToWishListMutationVariables>(
+        ADD_TO_WISH_LIST,
+        {
+            onCompleted: (response) => {
+                if (!response?.createWishlist?.ok) {
+                    alert.show(
+                        // FIXME: translate
+                        'Failed to add book to the wish list.',
+                        { variant: 'error' },
+                    );
+                }
+            },
+            onError: (errors) => {
+                alert.show(
+                    errors.message,
+                    { variant: 'error' },
+                );
+            },
+        },
+    );
+
+    const [
+        removeFromWishList,
+        { loading: removeFromWishListLoading },
+    ] = useMutation<RemoveFromWishListMutation, RemoveFromWishListMutationVariables>(
+        REMOVE_FROM_WISH_LIST,
+        {
+            onCompleted: (response) => {
+                if (!response?.deleteWishlist?.ok) {
+                    alert.show(
+                        'Failed to delete item from wish list',
                         { variant: 'error' },
                     );
                 }
@@ -130,7 +220,24 @@ function BookItem(props: Props) {
         });
     }, [book.id, addToOrder]);
 
-    const actionsDisabled = addToOrderLoading;
+    const actionsDisabled = addToOrderLoading || addToWishListLoading || removeFromWishListLoading;
+
+    const handleAddToWishList = React.useCallback(() => {
+        addToWishList({
+            variables: {
+                id: book.id,
+            },
+        });
+    }, [book.id, addToWishList]);
+
+    const handleRemoveFromWishList = React.useCallback((id: string) => {
+        removeFromWishList({
+            variables: {
+                id,
+            },
+        });
+    }, [removeFromWishList]);
+
     const orderButton = React.useMemo(() => {
         if (variant === 'compact') {
             return undefined;
@@ -160,6 +267,47 @@ function BookItem(props: Props) {
             </Button>
         );
     }, [variant, actionsDisabled, handleAddToOrder, props.book]);
+
+    const wishListButton = React.useMemo(() => {
+        if (!wishListActionsShown) {
+            return undefined;
+        }
+        if (variant === 'compact') {
+            return undefined;
+        }
+        if (props.book.wishlistId) {
+            return (
+                <Button
+                    name={props.book.wishlistId}
+                    variant="primary"
+                    onClick={handleRemoveFromWishList}
+                    disabled={actionsDisabled}
+                >
+                    Remove from Wish list
+                </Button>
+            );
+        }
+        if (!props.book.cartDetails) {
+            return (
+                <Button
+                    name={undefined}
+                    variant="primary"
+                    onClick={handleAddToWishList}
+                    disabled={actionsDisabled}
+                >
+                    Add to Wish list
+                </Button>
+            );
+        }
+        return undefined;
+    }, [
+        variant,
+        props.book,
+        actionsDisabled,
+        handleAddToWishList,
+        handleRemoveFromWishList,
+        wishListActionsShown,
+    ]);
 
     const bookCoverPreview = (
         <div className={styles.preview}>
@@ -223,7 +371,12 @@ function BookItem(props: Props) {
                         </>
                     )}
                     footerActionsContainerClassName={styles.actions}
-                    footerActions={orderButton}
+                    footerActions={(
+                        <>
+                            {wishListButton}
+                            {orderButton}
+                        </>
+                    )}
                 />
             </div>
         );
@@ -285,6 +438,7 @@ function BookItem(props: Props) {
                         </div>
                     </div>
                     <div className={styles.actions}>
+                        {wishListButton}
                         {orderButton}
                     </div>
                     <div
