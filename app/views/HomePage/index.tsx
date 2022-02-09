@@ -14,11 +14,13 @@ import {
     FaHandshake,
     FaGift,
 } from 'react-icons/fa';
+import { isDefined } from '@togglecorp/fujs';
 
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
-import BookItem from '#components/BookItem';
 import { homePage } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
+import BookItem, { Props as BookItemProps } from '#components/BookItem';
+import BookDetailsModal from '#components/BookDetailModal';
 
 import routes from '#base/configs/routes';
 import {
@@ -90,6 +92,7 @@ function HomePage() {
         page,
     }), [page]);
 
+    const [selectedBook, setSelectedBook] = React.useState<string | undefined>();
     const {
         data: result,
         loading,
@@ -100,7 +103,10 @@ function HomePage() {
             variables: orderVariables,
         },
     );
-    const bookItemRendererParams = React.useCallback((_: string, data: Book) => ({
+
+    const bookItemRendererParams = React.useCallback((_: string, data: Book): BookItemProps => ({
+        onClick: setSelectedBook,
+        variant: 'compact',
         book: data,
     }), []);
 
@@ -209,6 +215,12 @@ function HomePage() {
                             pending={loading}
                             filtered={false}
                         />
+                        {isDefined(selectedBook) && (
+                            <BookDetailsModal
+                                bookId={selectedBook}
+                                onCloseButtonClick={setSelectedBook}
+                            />
+                        )}
                     </Container>
                 </div>
             </div>

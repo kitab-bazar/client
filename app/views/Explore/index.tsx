@@ -21,7 +21,7 @@ import {
 } from '#generated/types';
 import BookDetailModal from '#components/BookDetailModal';
 
-import BookItem, { Props as BookItemProps } from './BookItem';
+import BookItem, { Props as BookItemProps } from '#components/BookItem';
 
 import styles from './styles.css';
 
@@ -155,7 +155,7 @@ function Explore(props: Props) {
     ): BookItemProps => ({
         book,
         onBookTitleClick: setSelectedBookId,
-
+        variant: 'list',
     });
 
     const filtered = (categories && categories.length > 0) || !!publisher;

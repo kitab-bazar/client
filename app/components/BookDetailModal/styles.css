@@ -5,39 +5,11 @@
 
     .container {
         display: flex;
+        flex-direction: column;
 
-        .preview {
-            display: flex;
-            align-items: center;
-            flex-basis: 50%;
-            flex-shrink: 0;
-            justify-content: center;
-            background-color: var(--dui-color-background);
-            padding: var(--dui-spacing-extra-large);
-
-            .image {
-                width: 100%;
-                height: 100%;
-                object-fit: contain;
-                object-position: center center;
-            }
-        }
-
-        .details {
+        .detail {
             flex-grow: 1;
-            background-color: unset;
-
-            .content {
-                display: flex;
-                flex-direction: column;
-                gap: var(--dui-spacing-medium);
-
-                .book-meta {
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--dui-spacing-small);
-                }
-            }
+            overflow: auto;
         }
     }
 }

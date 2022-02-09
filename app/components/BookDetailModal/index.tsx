@@ -1,5 +1,5 @@
 import React from 'react';
-import { isDefined } from '@togglecorp/fujs';
+
 import {
     Container,
     TextOutput,
@@ -20,6 +20,8 @@ import {
     BookQuery,
     BookQueryVariables,
 } from '#generated/types';
+
+import BookItem from '#components/BookItem';
 
 import styles from './styles.css';
 
@@ -76,17 +78,6 @@ function BookDetailModal(props: Props) {
         BOOK,
         { variables: { id: bookId } },
     );
-
-    const authorsDisplay = React.useMemo(() => (
-        queryResponse?.book?.authors?.map((d) => d.name).join(', ')
-    ), [queryResponse?.book?.authors]);
-
-    const categoriesDisplay = React.useMemo(() => (
-        queryResponse?.book?.categories?.map((d) => d.name).join(', ')
-    ), [queryResponse?.book?.categories]);
-
-    const alreadyInOrder = (queryResponse?.book?.cartDetails?.quantity ?? 0) > 0;
-
     return (
         <Modal
             hideCloseButton
@@ -95,100 +86,12 @@ function BookDetailModal(props: Props) {
             size="large"
         >
             {queryResponse?.book && (
-                <>
-                    <div className={styles.preview}>
-                        {queryResponse?.book?.image?.url ? (
-                            <img
-                                className={styles.image}
-                                src={queryResponse.book.image.url}
-                                alt={queryResponse.book.title}
-                            />
-                        ) : (
-                            <Message
-                                // FIXME: translate
-                                message="Preview not available"
-                            />
-                        )}
-                    </div>
-                    <Container
-                        className={styles.details}
-                        heading={queryResponse.book.title}
-                        headerActions={(
-                            <Button
-                                name={undefined}
-                                variant="action"
-                                onClick={onCloseButtonClick}
-                            >
-                                <IoClose />
-                            </Button>
-                        )}
-                        headingSize="small"
-                        headingDescription={authorsDisplay}
-                        borderBelowHeader
-                        headerDescription={(
-                            <TextOutput
-                                // FIXME: translate
-                                label="Price (NPR)"
-                                value={queryResponse.book.price}
-                                valueType="number"
-                            />
-                        )}
-                        contentClassName={styles.content}
-                    >
-                        <div className={styles.bookMeta}>
-                            <TextOutput
-                                // FIXME: translate
-                                label="Language"
-                                value={queryResponse.book.language}
-                            />
-                            <TextOutput
-                                // FIXME: translate
-                                label="Number of pages"
-                                value={queryResponse.book.numberOfPages}
-                                valueType="number"
-                            />
-                            <TextOutput
-                                // FIXME: translate
-                                label="ISBN"
-                                value={queryResponse.book.isbn}
-                            />
-                            <TextOutput
-                                // FIXME: translate
-                                label="Publisher"
-                                value={queryResponse.book.publisher.name}
-                            />
-                            <div className={styles.categories}>
-                                {categoriesDisplay}
-                            </div>
-                        </div>
-                        <div className={styles.actions}>
-                            {alreadyInOrder ? (
-                                <Button
-                                    variant="secondary"
-                                    name={undefined}
-                                    icons={<IoCheckmark />}
-                                    readOnly
-                                >
-                                    Added to Order
-                                </Button>
-                            ) : (
-                                <Button
-                                    name={undefined}
-                                    variant="primary"
-                                >
-                                    Add to Order
-                                </Button>
-                            )}
-                        </div>
-                        <div
-                            // TODO: sanitize description
-                            // eslint-disable-next-line react/no-danger
-                            dangerouslySetInnerHTML={
-                                { __html: queryResponse.book.description ?? '' }
-                            }
-                        />
-                    </Container>
-                </>
+                <BookItem
+                    className={styles.detail}
+                    onCloseButtonClick={onCloseButtonClick}
+                    variant="detail"
+                    book={queryResponse.book}
+                />
             )}
         </Modal>
     );
