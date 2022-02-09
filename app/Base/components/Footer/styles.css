@@ -3,6 +3,7 @@
     justify-content: space-between;
     background-color: var(--dui-color-background);
     padding: var(--dui-spacing-extra-large);
+    padding-bottom: var(--dui-spacing-mega-large);
 
     .app-brand {
         flex-shrink: 0;

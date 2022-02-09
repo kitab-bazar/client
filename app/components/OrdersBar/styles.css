@@ -1,0 +1,15 @@
+.orders-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--dui-spacing-large);
+
+    &.hidden {
+        animation: disappear-to-bottom .2s ease-in forwards;
+    }
+}
+
+@keyframes disappear-to-bottom {
+    from { transform: translateY(0); }
+    to { transform: translateY(100%); }
+}

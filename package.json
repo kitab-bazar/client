@@ -37,7 +37,7 @@
         "@apollo/client": "^3.5.7",
         "@sentry/react": "^6.9.0",
         "@sentry/tracing": "^6.9.0",
-        "@the-deep/deep-ui": "^1.5.21",
+        "@the-deep/deep-ui": "^1.5.23",
         "@togglecorp/fujs": "^1.9.3",
         "@togglecorp/toggle-form": "^1.2.1",
         "apollo-link": "^1.2.14",

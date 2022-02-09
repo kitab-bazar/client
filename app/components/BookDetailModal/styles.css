@@ -1,0 +1,16 @@
+.query-response-modal {
+    padding: 0;
+    width: 100%!important;
+    max-width: var(--kitab-page-max-width);
+
+    .container {
+        display: flex;
+        flex-direction: column;
+
+        .detail {
+            flex-grow: 1;
+            overflow: auto;
+        }
+    }
+}
+

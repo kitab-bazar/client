@@ -1,65 +1,129 @@
 .book-item {
-    --book-item-width: 15rem;
-    --book-item-height: 20rem;
-    border: var(--dui-width-separator-thin) solid var(--dui-color-separator);
-    cursor: pointer;
-    width: var(--book-item-width);
-    text-decoration: none;
+    &.list-variant {
+        display: flex;
 
-    .image-wrapper {
-        width: 100%;
-        height: var(--book-item-height);
-        overflow: hidden;
+        .preview {
+            width: 8rem;
+            height: 12rem;
 
-        .image {
-            transition: 10s transform linear;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: top center;
+            .image {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                object-position: top center;
+            }
         }
 
-        .no-preview {
+        .details {
+            flex-grow: 1;
+
+            .meta {
+                display: flex;
+                align-items: flex-start;
+                flex-direction: column;
+
+                .categories {
+                    margin-top: var(--dui-spacing-small);
+                }
+            }
+
+            .actions {
+                align-self: flex-end;
+            }
+        }
+    }
+
+    &.detail-variant {
+        display: flex;
+
+        .preview {
             display: flex;
             align-items: center;
+            flex-basis: 50%;
+            flex-shrink: 0;
             justify-content: center;
+            background-color: var(--dui-color-background);
+            padding: var(--dui-spacing-extra-large);
+
+            .image {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                object-position: center center;
+            }
+        }
+
+        .details {
+            flex-grow: 1;
+            background-color: unset;
+
+            .content {
+                display: flex;
+                flex-direction: column;
+                gap: var(--dui-spacing-medium);
+
+                .book-meta {
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--dui-spacing-small);
+                }
+            }
+        }
+    }
+
+    &.compact-variant {
+        --book-item-width: 15rem;
+        --book-item-height: 20rem;
+        border: var(--dui-width-separator-thin) solid var(--dui-color-separator);
+        cursor: pointer;
+        width: var(--book-item-width);
+        text-decoration: none;
+
+        .preview {
+            width: 100%;
+            height: var(--book-item-height);
+            overflow: hidden;
+
+            .image {
+                transition: 10s transform linear;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                object-position: top center;
+            }
+        }
+
+        .details {
             padding: var(--dui-spacing-medium);
             width: 100%;
-            height: 100%;
-            text-align: center;
-        }
-    }
+            color: var(--dui-color-text);
 
-    .details {
-        padding: var(--dui-spacing-medium);
-        width: 100%;
-        color: var(--dui-color-text);
+            .title {
+                width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                color: var(--dui-color-primary);
+                font-size: var(--dui-font-size-large);
+                font-weight: var(--dui-font-weight-bold);
+            }
 
-        .title {
-            width: 100%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            color: var(--dui-color-primary);
-            font-size: var(--dui-font-size-large);
-            font-weight: var(--dui-font-weight-bold);
-        }
+            .author {
+                margin-bottom: var(--dui-spacing-small);
+            }
 
-        .author {
-            margin-bottom: var(--dui-spacing-small);
+            .price {
+                font-size: var(--dui-font-size-medium);
+                font-weight: var(--dui-font-weight-bold);
+            }
         }
 
-        .price {
-            font-size: var(--dui-font-size-medium);
-            font-weight: var(--dui-font-weight-bold);
-        }
-    }
+        &:hover {
+            border-color: var(--dui-color-accent);
 
-    &:hover {
-        border-color: var(--dui-color-accent);
-
-        .image {
-            transform: scale(1.3);
+            .image {
+                transform: scale(1.3);
+            }
         }
     }
 }

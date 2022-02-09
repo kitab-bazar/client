@@ -102,7 +102,6 @@ function Notifications(props: Props) {
                     maxItemsPerPage={PAGE_SIZE}
                     onActivePageChange={setPage}
                     itemsPerPageControlHidden
-                    hideInfo
                 />
             )}
         >

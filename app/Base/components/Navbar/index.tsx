@@ -4,7 +4,6 @@ import { useQuery, useMutation, gql } from '@apollo/client';
 import { useLocation } from 'react-router-dom';
 import {
     SegmentInput,
-    TextInput,
     useAlert,
     Link,
     DropdownMenu,
@@ -13,7 +12,6 @@ import {
     useConfirmation,
 } from '@the-deep/deep-ui';
 import {
-    IoSearchSharp,
     IoCart,
     IoHeart,
     IoNotificationsOutline,
@@ -171,18 +169,6 @@ function Navbar(props: Props) {
                 </div>
             </Link>
             <div className={styles.main}>
-                <div className={styles.searchInputContainer}>
-                    <TextInput
-                        variant="general"
-                        className={styles.searchInput}
-                        disabled
-                        icons={<IoSearchSharp />}
-                        onChange={undefined}
-                        placeholder={strings.searchAllBooksPlaceholder}
-                        name={undefined}
-                        value={undefined}
-                    />
-                </div>
                 <div className={styles.actions}>
                     <SegmentInput
                         className={styles.languageSelection}

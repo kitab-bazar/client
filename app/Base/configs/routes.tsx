@@ -86,6 +86,14 @@ const cartPage = wrap({
     },
     visibility: 'is-authenticated',
 });
+const explore = wrap({
+    path: '/explore/',
+    title: 'Explore',
+    navbarVisibility: true,
+    component: lazy(() => import('#views/Explore')),
+    componentProps: {},
+    visibility: 'is-anything',
+});
 
 const routes = {
     register,
@@ -97,5 +105,6 @@ const routes = {
     cartPage,
     fourHundredFour,
     orderList,
+    explore,
 };
 export default routes;

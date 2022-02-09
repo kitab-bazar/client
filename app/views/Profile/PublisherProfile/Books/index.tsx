@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { isNotDefined } from '@togglecorp/fujs';
+import { isNotDefined, isDefined } from '@togglecorp/fujs';
 import { useQuery, gql } from '@apollo/client';
 import { IoAdd } from 'react-icons/io5';
 
@@ -11,6 +11,7 @@ import {
     useModalState,
 } from '@the-deep/deep-ui';
 
+import BookDetailsModal from '#components/BookDetailModal';
 import BookItem, { Props as BookItemsProps } from '#components/BookItem';
 import {
     PublisherBooksQuery,
@@ -58,8 +59,8 @@ function Books(props: Props) {
         publisherId,
     } = props;
 
-    const [pageSize, setPageSize] = useState<number>(MAX_ITEMS_PER_PAGE);
     const [page, setPage] = useState<number>(1);
+    const [selectedBook, setSelectedBook] = React.useState<string | undefined>();
 
     const {
         data: publisherBooksResult,
@@ -72,7 +73,7 @@ function Books(props: Props) {
             skip: isNotDefined(publisherId),
             variables: {
                 page,
-                pageSize,
+                pageSize: MAX_ITEMS_PER_PAGE,
                 publisher: publisherId,
             },
         },
@@ -81,6 +82,8 @@ function Books(props: Props) {
     const books = publisherBooksResult?.books?.results ?? undefined;
 
     const bookItemRendererParams = useCallback((_, data: Book): BookItemsProps => ({
+        onClick: setSelectedBook,
+        variant: 'compact',
         book: data,
     }), []);
 
@@ -108,10 +111,10 @@ function Books(props: Props) {
             footerActions={(
                 <Pager
                     activePage={page}
-                    maxItemsPerPage={pageSize}
+                    maxItemsPerPage={MAX_ITEMS_PER_PAGE}
                     itemsCount={publisherBooksResult?.books?.totalCount ?? 0}
                     onActivePageChange={setPage}
-                    onItemsPerPageChange={setPageSize}
+                    itemsPerPageControlHidden
                 />
             )}
         >
@@ -130,6 +133,12 @@ function Books(props: Props) {
                     publisher={publisherId}
                     onModalClose={hideUploadBookModal}
                     onUploadSuccess={refetchPublisherBooks}
+                />
+            )}
+            {isDefined(selectedBook) && (
+                <BookDetailsModal
+                    bookId={selectedBook}
+                    onCloseButtonClick={setSelectedBook}
                 />
             )}
         </Container>

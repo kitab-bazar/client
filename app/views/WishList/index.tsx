@@ -211,7 +211,6 @@ interface Props {
 
 function WishList(props: Props) {
     const { className } = props;
-    const [pageSize, setPageSize] = useState<number>(MAX_ITEMS_PER_PAGE);
     const [page, setPage] = useState<number>(1);
     const alert = useAlert();
 
@@ -225,7 +224,7 @@ function WishList(props: Props) {
         {
             variables: {
                 page,
-                pageSize,
+                pageSize: MAX_ITEMS_PER_PAGE,
             },
         },
     );
@@ -352,10 +351,10 @@ function WishList(props: Props) {
                 />
                 <Pager
                     activePage={page}
-                    maxItemsPerPage={pageSize}
+                    maxItemsPerPage={MAX_ITEMS_PER_PAGE}
                     itemsCount={data?.wishList?.totalCount ?? 0}
                     onActivePageChange={setPage}
-                    onItemsPerPageChange={setPageSize}
+                    itemsPerPageControlHidden
                 />
             </div>
         </div>

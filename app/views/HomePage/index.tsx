@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import {
     ListView,
-    ButtonLikeLink,
     Container,
     Pager,
 } from '@the-deep/deep-ui';
@@ -15,11 +14,15 @@ import {
     FaHandshake,
     FaGift,
 } from 'react-icons/fa';
+import { isDefined } from '@togglecorp/fujs';
 
-import BookItem from '#components/BookItem';
+import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
 import { homePage } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
+import BookItem, { Props as BookItemProps } from '#components/BookItem';
+import BookDetailsModal from '#components/BookDetailModal';
 
+import routes from '#base/configs/routes';
 import {
     FeaturedBooksQuery,
     FeaturedBooksQueryVariables,
@@ -89,6 +92,7 @@ function HomePage() {
         page,
     }), [page]);
 
+    const [selectedBook, setSelectedBook] = React.useState<string | undefined>();
     const {
         data: result,
         loading,
@@ -99,7 +103,10 @@ function HomePage() {
             variables: orderVariables,
         },
     );
-    const bookItemRendererParams = React.useCallback((_: string, data: Book) => ({
+
+    const bookItemRendererParams = React.useCallback((_: string, data: Book): BookItemProps => ({
+        onClick: setSelectedBook,
+        variant: 'compact',
         book: data,
     }), []);
 
@@ -127,16 +134,14 @@ function HomePage() {
                             {strings.tagLineLabel}
                         </div>
                         <div className={styles.actions}>
-                            <ButtonLikeLink
-                                to="#"
-                                // TODO: implement page
-                                // TODO: use SmartButtonLikeLink
+                            <SmartButtonLikeLink
+                                route={routes.explore}
                                 variant="secondary"
                                 spacing="loose"
                                 // FIXME: translate
                             >
                                 Explore the Platform
-                            </ButtonLikeLink>
+                            </SmartButtonLikeLink>
                         </div>
                     </div>
                 </div>
@@ -210,6 +215,12 @@ function HomePage() {
                             pending={loading}
                             filtered={false}
                         />
+                        {isDefined(selectedBook) && (
+                            <BookDetailsModal
+                                bookId={selectedBook}
+                                onCloseButtonClick={setSelectedBook}
+                            />
+                        )}
                     </Container>
                 </div>
             </div>

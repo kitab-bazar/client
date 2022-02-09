@@ -25,6 +25,8 @@ import useLocalStorage from '#base/hooks/useLocalStorage';
 import Routes from '#base/components/Routes';
 import { User } from '#base/types/user';
 
+import OrdersBar from '#components/OrdersBar';
+
 import styles from './styles.css';
 
 if (sentryConfig) {
@@ -198,6 +200,7 @@ function Base() {
                                             />
                                             <Routes className={styles.view} />
                                             <Footer className={styles.footer} />
+                                            <OrdersBar className={styles.ordersBar} />
                                         </Init>
                                     </Router>
                                 </AlertContext.Provider>
