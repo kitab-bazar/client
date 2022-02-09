@@ -3,7 +3,8 @@ import {
     IoPencil,
     IoArrowForward,
     IoHeart,
-    IoCart,
+    IoPerson,
+    IoList,
 } from 'react-icons/io5';
 import { useQuery, gql } from '@apollo/client';
 import {
@@ -15,6 +16,7 @@ import {
     useModalState,
 } from '@the-deep/deep-ui';
 import { removeNull } from '@togglecorp/toggle-form';
+import { _cs } from '@togglecorp/fujs';
 
 import routes from '#base/configs/routes';
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
@@ -158,7 +160,13 @@ function OrderListRenderer(props: OrderListProps) {
     );
 }
 
-function SchoolProfile() {
+interface Props {
+    className?: string,
+}
+
+function SchoolProfile(props: Props) {
+    const { className } = props;
+
     const [
         editSchoolProfileModalShown,
         showEditSchoolProfileModal,
@@ -203,23 +211,18 @@ function SchoolProfile() {
 
     return (
         <div
-            className={styles.schoolProfile}
+            className={_cs(
+                styles.schoolProfile,
+                className,
+            )}
         >
-            <Container
-                contentClassName={styles.profileDetails}
-                spacing="comfortable"
-                heading={strings.profileDetailsHeading}
-            >
-                <div className={styles.left}>
-                    <div
-                        className={styles.displayPicture}
-                    >
-                        <img
-                            src={profileDetails?.me?.image?.url ?? undefined}
-                            alt={profileDetails?.me?.image?.name ?? ''}
-                        />
-                    </div>
-                    <div className={styles.description}>
+            <div className={styles.pageContainer}>
+                <Container
+                    className={styles.profileDetails}
+                    contentClassName={styles.profileDetailsContent}
+                    spacing="comfortable"
+                    heading={strings.profileDetailsHeading}
+                    headerActions={(
                         <Button
                             name={undefined}
                             variant="general"
@@ -228,54 +231,73 @@ function SchoolProfile() {
                         >
                             {strings.editSchoolProfileButtonContent}
                         </Button>
-                        <TextOutput
-                            label={strings.schoolNameLabel}
-                            value={profileDetails?.me?.school?.name}
-                        />
-                        <TextOutput
-                            label={strings.nameLabel}
-                            value={profileDetails?.me?.fullName}
-                        />
-                        <TextOutput
-                            label={strings.emailLabel}
-                            value={profileDetails?.me?.email}
-                        />
-                        <TextOutput
-                            label={strings.phoneNumberLabel}
-                            value={profileDetails?.me?.phoneNumber}
-                        />
-                        <TextOutput
-                            label={strings.addressLabel}
-                            value={`${
-                                profileDetails
-                                    ?.me
-                                    ?.school
-                                    ?.localAddress
-                            }, ${
-                                profileDetails
-                                    ?.me
-                                    ?.school
-                                    ?.municipality
-                                    ?.district
-                                    ?.name
-                            }`}
-                        />
-                        <TextOutput
-                            label={strings.wardNumberLabel}
-                            value={profileDetails?.me?.school?.wardNumber}
-                        />
-                        <TextOutput
-                            label={strings.panNumberLabel}
-                            value={profileDetails?.me?.school?.panNumber}
-                        />
-                        <TextOutput
-                            label={strings.vatNumberLabel}
-                            value={profileDetails?.me?.school?.vatNumber}
-                        />
+                    )}
+                >
+                    <div className={styles.schoolDetails}>
+                        <div className={styles.displayPicture}>
+                            {profileDetails?.me?.image?.url ? (
+                                <img
+                                    className={styles.image}
+                                    src={profileDetails.me.image.url}
+                                    alt={profileDetails.me.image.name}
+                                />
+                            ) : (
+                                <IoPerson className={styles.fallbackIcon} />
+                            )}
+                        </div>
+                        <div className={styles.attributes}>
+                            <TextOutput
+                                spacing="none"
+                                block
+                                valueContainerClassName={styles.value}
+                                label={strings.schoolNameLabel}
+                                value={profileDetails?.me?.school?.name}
+                            />
+                            <TextOutput
+                                spacing="none"
+                                block
+                                valueContainerClassName={styles.value}
+                                label={strings.emailLabel}
+                                value={profileDetails?.me?.email}
+                            />
+                            <TextOutput
+                                spacing="none"
+                                block
+                                valueContainerClassName={styles.value}
+                                label={strings.phoneNumberLabel}
+                                value={profileDetails?.me?.phoneNumber}
+                            />
+                            <TextOutput
+                                label={strings.addressLabel}
+                                value={`${
+                                    profileDetails
+                                        ?.me
+                                        ?.school
+                                        ?.localAddress
+                                }, ${
+                                    profileDetails
+                                        ?.me
+                                        ?.school
+                                        ?.municipality
+                                        ?.district
+                                        ?.name
+                                }`}
+                            />
+                            <TextOutput
+                                label={strings.wardNumberLabel}
+                                value={profileDetails?.me?.school?.wardNumber}
+                            />
+                            <TextOutput
+                                label={strings.panNumberLabel}
+                                value={profileDetails?.me?.school?.panNumber}
+                            />
+                            <TextOutput
+                                label={strings.vatNumberLabel}
+                                value={profileDetails?.me?.school?.vatNumber}
+                            />
+                        </div>
                     </div>
-                </div>
-                <div>
-                    <div className={styles.buttons}>
+                    <div className={styles.usefulLinks}>
                         <SmartButtonLikeLink
                             route={routes.wishList}
                             variant="general"
@@ -284,8 +306,10 @@ function SchoolProfile() {
                             {strings.myWishlistLabel}
                         </SmartButtonLikeLink>
                     </div>
-                    <div>
-                        <h4>Order Details</h4>
+                    <Container
+                        className={styles.orderDetails}
+                        heading={strings.orderDetailsHeading}
+                    >
                         <TextOutput
                             label={strings.totalOrdersLabel}
                             value={orderList?.orders?.totalCount}
@@ -294,39 +318,60 @@ function SchoolProfile() {
                             label={strings.weeksOrderLabel}
                             value="2 (will come from server soon)"
                         />
-                    </div>
-                </div>
-            </Container>
-            <Container
-                heading={strings.orderDetailsHeading}
-                spacing="comfortable"
-                footerActions={(
-                    <SmartButtonLikeLink
-                        route={routes.orderList}
-                    >
-                        {strings.viewMoreButtonContent}
-                        <IoArrowForward />
-                    </SmartButtonLikeLink>
+                    </Container>
+                </Container>
+                <Container
+                    className={styles.orderDetails}
+                    heading={strings.orderDetailsHeading}
+                    spacing="comfortable"
+                    footerActions={(
+                        <SmartButtonLikeLink
+                            route={routes.orderList}
+                            icons={<IoArrowForward />}
+                            variant="tertiary"
+                        >
+                            {strings.viewMoreButtonContent}
+                        </SmartButtonLikeLink>
+                    )}
+                >
+                    <ListView
+                        className={styles.orderList}
+                        data={orderList?.orders?.results ?? undefined}
+                        keySelector={orderListKeySelector}
+                        renderer={OrderListRenderer}
+                        rendererParams={orderListRendererParams}
+                        // FIXME: handle errored and filtered
+                        errored={false}
+                        filtered={false}
+                        pending={loading}
+                        messageShown
+                        // FIXME: use strings
+                        // FIXME: use common component
+                        emptyMessage={(
+                            <div className={styles.emptyMessage}>
+                                <IoList className={styles.icon} />
+                                <div className={styles.text}>
+                                    <div className={styles.primary}>
+                                        You dont have any Recent Orders
+                                    </div>
+                                    <div className={styles.suggestion}>
+                                        Add Books that you want to buy
+                                        later by clicking Add to Wishlist
+                                        and then goto your Cart to place your Order
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    />
+                </Container>
+                {editSchoolProfileModalShown && (
+                    <EditSchoolProfileModal
+                        onModalClose={hideEditSchoolProfileModal}
+                        onEditSuccess={refetchProfileDetails}
+                        profileDetails={schoolDetails}
+                    />
                 )}
-            >
-                <ListView
-                    className={styles.orders}
-                    data={orderList?.orders?.results ?? undefined}
-                    keySelector={orderListKeySelector}
-                    renderer={OrderListRenderer}
-                    rendererParams={orderListRendererParams}
-                    errored={false}
-                    filtered={false}
-                    pending={loading}
-                />
-            </Container>
-            {editSchoolProfileModalShown && (
-                <EditSchoolProfileModal
-                    onModalClose={hideEditSchoolProfileModal}
-                    onEditSuccess={refetchProfileDetails}
-                    profileDetails={schoolDetails}
-                />
-            )}
+            </div>
         </div>
     );
 }
