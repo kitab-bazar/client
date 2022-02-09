@@ -2,59 +2,117 @@
     display: flex;
     align-items: center;
     flex-direction: column;
-    flex-grow: 1;
-    background-color: unset;
-    overflow: unset;
 
-    .main-content {
+    .header-container {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        background-color: var(--dui-color-background);
+        padding: var(--dui-spacing-extra-large);
         width: 100%;
-        max-width: var(--kitab-page-max-width);
+
+        .page-header {
+            width: 100%;
+            max-width: var(--kitab-page-max-width);
+
+            .search-input {
+                width: 100%;
+            }
+        }
     }
 
-    .orders{
+    .container {
         display: flex;
-        flex-direction: column;
-        gap: var(--dui-spacing-medium);
+        flex-wrap: wrap;
+        padding: var(--dui-spacing-extra-large);
+        width: 100%;
+        max-width: var(--kitab-page-max-width);
 
-        .order-item {
+        .side-bar {
             display: flex;
-            border: unset;
+            flex-basis: 20rem;
+            flex-direction: column;
+            flex-shrink: 0;
+            padding: var(--dui-spacing-extra-large) 0;
+            gap: var(--dui-spacing-extra-large);
 
-            .book-list {
-                display: flex;
-                flex-wrap: wrap;
-                gap: var(--dui-spacing-large);
-
-                .book-item {
+            .status-input {
+                .status-list {
                     display: flex;
-                    gap: var(--dui-spacing-medium);
+                    flex-direction: column;
+                }
+            }
+        }
 
-                    .cover-image {
+        .orders-list-section {
+            flex-direction: column;
+            flex-grow: 1;
+            padding: var(--dui-spacing-extra-large) 0;
+            gap: var(--dui-spacing-medium);
+
+            .summary {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                .order-count {
+                    font-size: var(--dui-font-size-large);
+                }
+            }
+
+            .order-list {
+                display: flex;
+                flex-direction: column;
+                flex-grow: 1;
+                padding: var(--dui-spacing-extra-large) 0;
+                gap: var(--dui-spacing-medium);
+
+                .order-item {
+                    display: flex;
+                    width: 100%;
+
+                    .order-meta {
                         display: flex;
-                        align-items: center;
-                        flex-shrink: 0;
-                        width: 6rem;
-                        height: 10rem;
-
-                        .image {
-                            width: 100%;
-                            height: 100%;
-                            object-fit: cover;
-                        }
+                        flex-direction: column;
+                        gap: var(--dui-spacing-small);
                     }
 
-                    .book-details {
-                        background-color: unset;
+                    .book-list {
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: var(--dui-spacing-large);
 
-                        .meta-list {
+                        .book-item {
                             display: flex;
-                            gap: var(--dui-spacing-extra-small);
-                            flex-direction: column;
+                            gap: var(--dui-spacing-medium);
+
+                            .cover-image {
+                                display: flex;
+                                align-items: center;
+                                flex-shrink: 0;
+                                width: 6rem;
+                                height: 10rem;
+
+                                .image {
+                                    width: 100%;
+                                    height: 100%;
+                                    object-fit: cover;
+                                }
+                            }
+
+                            .book-details {
+                                background-color: unset;
+
+                                .meta-list {
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--dui-spacing-extra-small);
+                                }
+                            }
                         }
                     }
                 }
             }
         }
-
     }
 }

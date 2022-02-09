@@ -138,9 +138,8 @@ function HomePage() {
                                 route={routes.explore}
                                 variant="secondary"
                                 spacing="loose"
-                                // FIXME: translate
                             >
-                                Explore the Platform
+                                {strings.exploreButtonLabel}
                             </SmartButtonLikeLink>
                         </div>
                     </div>

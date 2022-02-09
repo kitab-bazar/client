@@ -7,51 +7,72 @@ import {
     ControlledExpandableContainer,
     Pager,
     Container,
+    TextInput,
+    Header,
+    RadioInput,
+    Button,
+    useInputState,
 } from '@the-deep/deep-ui';
+import { IoSearchSharp } from 'react-icons/io5';
 import {
     OrderListWithBooksQuery,
     OrderListWithBooksQueryVariables,
     OrderType,
     OrderStatus,
     BookOrderType,
+    OrderStatusOptionsQuery,
+    OrderStatusOptionsQueryVariables,
 } from '#generated/types';
 
 import styles from './styles.css';
 
 const ORDER_LIST_WITH_BOOKS = gql`
-    query OrderListWithBooks(
-        $pageSize: Int,
-        $page: Int,
-    ) {
-        orders(pageSize: $pageSize, page: $page) {
-            page
-            pageSize
-            totalCount
-            results {
-                id
-                orderCode
-                status
-                totalPrice
-                bookOrders {
-                    totalCount
-                    results {
-                        id
-                        isbn
-                        title
-                        edition
-                        price
-                        quantity
-                        image {
-                            name
-                            url
-                        }
+query OrderListWithBooks(
+    $pageSize: Int,
+    $page: Int,
+    $status: [String!],
+) {
+    orders(pageSize: $pageSize, page: $page, status: $status) {
+        page
+        pageSize
+        totalCount
+        results {
+            id
+            orderCode
+            status
+            totalPrice
+            bookOrders {
+                totalCount
+                results {
+                    id
+                    isbn
+                    title
+                    edition
+                    price
+                    quantity
+                    image {
+                        name
+                        url
                     }
                 }
             }
         }
     }
+}
+`;
+const ORDER_STATUS_OPTIONS = gql`
+query OrderStatusOptions {
+    orderStatusList: __type(name: "OrderStatus") {
+        enumValues {
+            name
+            description
+        }
+    }
+}
 `;
 
+const enumKeySelector = (d: { name: string}) => d.name;
+const enumLabelSelector = (d: { description?: string | null }) => d.description ?? '???';
 const bookListKeySelector = (b: BookOrderType) => b.id;
 
 interface BookProps {
@@ -123,7 +144,7 @@ interface OrderListItemProps {
     books: BookOrderType[] | undefined;
 }
 
-function OrderListRenderer(props: OrderListItemProps) {
+function OrderItem(props: OrderListItemProps) {
     const {
         orderCode,
         totalPrice,
@@ -143,12 +164,19 @@ function OrderListRenderer(props: OrderListItemProps) {
         title: data.title,
     }), []);
 
+    const orderTitle = React.useMemo(() => {
+        const splits = orderCode.split('-');
+
+        return `Order #${splits[0]}`;
+    }, [orderCode]);
+
     return (
         <ControlledExpandableContainer
             className={styles.orderItem}
             name={orderCode}
-            heading={orderCode}
+            heading={orderTitle}
             headingSize="extraSmall"
+            headerDescriptionClassName={styles.orderMeta}
             headerDescription={(
                 <>
                     <TextOutput
@@ -200,11 +228,13 @@ function OrderList(props: Props) {
 
     const [page, setPage] = useState<number>(1);
     const [expandedOrderId, setExpandedOrderId] = useState<string | undefined>();
+    const [status, setStatus] = useInputState<string | undefined>(undefined);
 
     const orderVariables = useMemo(() => ({
         pageSize: MAX_ITEMS_PER_PAGE,
         page,
-    }), [page]);
+        status: status ? [status] : undefined,
+    }), [page, status]);
 
     const {
         data: orderList,
@@ -213,6 +243,13 @@ function OrderList(props: Props) {
     } = useQuery<OrderListWithBooksQuery, OrderListWithBooksQueryVariables>(
         ORDER_LIST_WITH_BOOKS,
         { variables: orderVariables },
+    );
+
+    const { data: statusOptions } = useQuery<
+        OrderStatusOptionsQuery,
+        OrderStatusOptionsQueryVariables
+    >(
+        ORDER_STATUS_OPTIONS,
     );
 
     const handleExpansionChange = useCallback((orderExpanded: boolean, key: string) => {
@@ -233,30 +270,77 @@ function OrderList(props: Props) {
     ]);
 
     return (
-        <Container
-            className={_cs(styles.orderList, className)}
-            contentClassName={styles.mainContent}
-            footerContent={(
-                <Pager
-                    activePage={page}
-                    maxItemsPerPage={MAX_ITEMS_PER_PAGE}
-                    itemsCount={orderList?.orders?.totalCount ?? 0}
-                    onActivePageChange={setPage}
-                    itemsPerPageControlHidden
-                />
-            )}
-        >
-            <ListView
-                className={styles.orders}
-                data={orderList?.orders?.results ?? undefined}
-                keySelector={orderListKeySelector}
-                renderer={OrderListRenderer}
-                rendererParams={orderListRendererParams}
-                errored={!!error}
-                filtered={false}
-                pending={loading}
-            />
-        </Container>
+        <div className={_cs(styles.orderList, className)}>
+            <div className={styles.headerContainer}>
+                <Header
+                    className={styles.pageHeader}
+                    heading="My Orders"
+                    spacing="loose"
+                >
+                    <TextInput
+                        variant="general"
+                        className={styles.searchInput}
+                        icons={<IoSearchSharp />}
+                        placeholder="Search by book title (3 or more characters)"
+                        disabled
+                        name={undefined}
+                        value={undefined}
+                        onChange={undefined}
+                    />
+                </Header>
+            </div>
+            <div className={styles.container}>
+                <div className={styles.sideBar}>
+                    <RadioInput
+                        className={styles.statusInput}
+                        listContainerClassName={styles.statusList}
+                        name={undefined}
+                        label="Order Status"
+                        options={statusOptions?.orderStatusList?.enumValues ?? undefined}
+                        keySelector={enumKeySelector}
+                        labelSelector={enumLabelSelector}
+                        value={status}
+                        onChange={setStatus}
+                    />
+                    {status && status.length > 0 && (
+                        <Button
+                            name={undefined}
+                            onClick={setStatus}
+                            variant="transparent"
+                            spacing="none"
+                        >
+                            Clear status filter
+                        </Button>
+                    )}
+                </div>
+                <div className={styles.ordersListSection}>
+                    <div className={styles.summary}>
+                        <TextOutput
+                            className={styles.orderCount}
+                            value={orderList?.orders?.totalCount}
+                            label="Order(s) found"
+                        />
+                    </div>
+                    <ListView
+                        className={styles.orderList}
+                        data={orderList?.orders?.results ?? undefined}
+                        keySelector={orderListKeySelector}
+                        renderer={OrderItem}
+                        rendererParams={orderListRendererParams}
+                        errored={!!error}
+                        filtered={false}
+                        pending={loading}
+                    />
+                    <Pager
+                        activePage={page}
+                        maxItemsPerPage={MAX_ITEMS_PER_PAGE}
+                        itemsCount={orderList?.orders?.totalCount ?? 0}
+                        onActivePageChange={setPage}
+                        itemsPerPageControlHidden
+                    />
+                </div>
+            </div>
+        </div>
     );
 }
 
