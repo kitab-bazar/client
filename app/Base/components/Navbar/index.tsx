@@ -12,7 +12,6 @@ import {
     useConfirmation,
 } from '@the-deep/deep-ui';
 import {
-    IoCart,
     IoHeart,
     IoNotificationsOutline,
     IoPerson,

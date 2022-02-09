@@ -69,12 +69,23 @@ const wishList = wrap({
     visibility: 'is-authenticated',
 });
 const explore = wrap({
-    path: '/explore/',
-    title: 'Explore',
+    path: '/books/',
+    title: 'books',
     navbarVisibility: true,
     component: lazy(() => import('#views/Explore')),
     componentProps: {},
     visibility: 'is-anything',
+});
+
+const publisherBooks = wrap({
+    path: '/publisher/books',
+    title: 'Published Books',
+    navbarVisibility: true,
+    component: lazy(() => import('#views/Explore')),
+    componentProps: {
+        publisher: true,
+    },
+    visibility: 'is-authenticated',
 });
 
 const routes = {
@@ -86,5 +97,6 @@ const routes = {
     fourHundredFour,
     orderList,
     explore,
+    publisherBooks,
 };
 export default routes;

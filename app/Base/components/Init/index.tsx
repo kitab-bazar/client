@@ -86,8 +86,10 @@ function Init(props: Props) {
                     setUser({
                         id: safeMe.id,
                         displayName: getDisplayName(safeMe),
+                        displayPictureUrl: undefined,
                         type: safeMe.userType,
                         permissions: safeMe.allowedPermissions,
+                        publisherId: safeMe.publisher?.id,
                     });
                 } else {
                     setUser(undefined);

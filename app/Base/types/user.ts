@@ -5,8 +5,10 @@ import {
 
 export interface User {
     id: string;
-    displayName?: string;
-    displayPictureUrl?: string;
+    displayName: string | undefined;
+    displayPictureUrl: string | undefined;
     type: UserUserType;
-    permissions: UserPermissions[]
+    permissions: UserPermissions[];
+
+    publisherId: string | undefined;
 }
