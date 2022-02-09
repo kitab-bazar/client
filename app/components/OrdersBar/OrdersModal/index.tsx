@@ -95,6 +95,7 @@ function OrdersModal(props: Props) {
         loading: cartLoading,
         data: cartItemList,
         error,
+        refetch,
     } = useQuery<CartItemsListQuery, CartItemsListQueryVariables>(
         CART_ITEMS_LIST,
         {
@@ -119,8 +120,6 @@ function OrdersModal(props: Props) {
                         { variant: 'success' },
                     );
                     onClose();
-                    // TODO:
-                    // refetchCartItemMeta();
                 } else {
                     alert.show(
                         'Failed to place the order!',
@@ -137,12 +136,16 @@ function OrdersModal(props: Props) {
         },
     );
 
-    const cartItemRendererParams = (
-        _: string,
-        cartDetails: Cart,
-    ): CartItemProps => ({
-        cartDetails,
-    });
+    const cartItemRendererParams = React.useCallback(
+        (
+            _: string,
+            cartDetails: Cart,
+        ): CartItemProps => ({
+            cartDetails,
+            onCartItemRemove: refetch,
+        }),
+        [refetch],
+    );
 
     const handleOrderBooksClick = React.useCallback(() => {
         placeOrderFromCart();
@@ -168,7 +171,7 @@ function OrdersModal(props: Props) {
                     name={undefined}
                     variant="primary"
                     onClick={handleOrderBooksClick}
-                    disabled={placeOrderLoading}
+                    disabled={placeOrderLoading || (cartItemList?.cartItems?.totalCount ?? 0) <= 0}
                 >
                     Order Books
                 </Button>

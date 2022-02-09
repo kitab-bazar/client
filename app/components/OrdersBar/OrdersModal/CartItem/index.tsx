@@ -3,6 +3,7 @@ import {
     _cs,
     isDefined,
 } from '@togglecorp/fujs';
+import { getOperationName } from 'apollo-link';
 import {
     Container,
     TextOutput,
@@ -23,8 +24,11 @@ import {
     RemoveCartItemMutation,
     RemoveCartItemMutationVariables,
 } from '#generated/types';
+import { CART_ITEMS } from '#components/OrdersBar/queries';
 
 import styles from './styles.css';
+
+const CART_ITEMS_NAME = getOperationName(CART_ITEMS);
 
 const UPDATE_CART_BOOK_QUANTITY = gql`
 mutation UpdateCartBookQuantity($id: ID!, $bookId: String!, $quantity: Int!) {
@@ -73,12 +77,14 @@ type CartDetails = NonNullable<NonNullable<CartItemsListQuery['cartItems']>['res
 export interface Props {
     className?: string;
     cartDetails: CartDetails;
+    onCartItemRemove: () => void;
 }
 
 function CartItem(props: Props) {
     const {
         className,
         cartDetails,
+        onCartItemRemove,
     } = props;
 
     const {
@@ -93,10 +99,10 @@ function CartItem(props: Props) {
     const [removeCartItem] = useMutation<RemoveCartItemMutation, RemoveCartItemMutationVariables>(
         REMOVE_CART_ITEM,
         {
+            refetchQueries: CART_ITEMS_NAME ? [CART_ITEMS_NAME] : undefined,
             onCompleted: (response) => {
                 if (response?.deleteCartItem?.ok) {
-                    console.warn('refetch cart info here');
-                    // updateBar();
+                    onCartItemRemove();
                 } else {
                     // FIXME: translate
                     alert.show(
@@ -120,10 +126,9 @@ function CartItem(props: Props) {
     >(
         UPDATE_CART_BOOK_QUANTITY,
         {
+            refetchQueries: CART_ITEMS_NAME ? [CART_ITEMS_NAME] : undefined,
             onCompleted: (response) => {
-                if (response?.updateCartItem?.ok) {
-                    console.warn('refetch cart info here');
-                } else {
+                if (!response?.updateCartItem?.ok) {
                     alert.show(
                         'Failed to update the cart',
                         { variant: 'error' },

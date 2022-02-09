@@ -1,5 +1,6 @@
 import React from 'react';
 import { _cs } from '@togglecorp/fujs';
+import { getOperationName } from 'apollo-link';
 import {
     Container,
     TextOutput,
@@ -24,8 +25,11 @@ import {
     RemoveFromWishListMutation,
     RemoveFromWishListMutationVariables,
 } from '#generated/types';
+import { CART_ITEMS } from '#components/OrdersBar/queries';
 
 import styles from './styles.css';
+
+const CART_ITEMS_NAME = getOperationName(CART_ITEMS);
 
 const ADD_TO_ORDER = gql`
 mutation AddToOrder($id: String!, $quantity: Int!) {
@@ -131,6 +135,7 @@ function BookItem(props: Props) {
     ] = useMutation<AddToOrderMutation, AddToOrderMutationVariables>(
         ADD_TO_ORDER,
         {
+            refetchQueries: CART_ITEMS_NAME ? [CART_ITEMS_NAME] : undefined,
             onCompleted: (response) => {
                 if (!response?.createCartItem?.ok) {
                     alert.show(
