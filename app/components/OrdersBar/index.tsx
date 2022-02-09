@@ -35,12 +35,14 @@ function OrdersBar(props: Props) {
         data: cartItemsMeta,
     } = useQuery<CartItemsMetaQuery, CartItemsMetaQueryVariables>(CART_ITEMS);
 
+    const totalCartItems = cartItemsMeta?.cartItems?.totalCount ?? 0;
+
     return (
         <>
-            {cartItemsMeta?.cartItems?.totalCount && (
+            {totalCartItems > 0 && (
                 <div className={_cs(styles.ordersBar, showOrders && styles.hidden, className)}>
                     <div>
-                        {`${cartItemsMeta.cartItems.totalCount} book(s) selected`}
+                        {`${totalCartItems} book(s) selected`}
                     </div>
                     <div>
                         <Button
