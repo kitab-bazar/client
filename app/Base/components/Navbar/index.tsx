@@ -12,7 +12,6 @@ import {
     useConfirmation,
 } from '@the-deep/deep-ui';
 import {
-    IoCart,
     IoHeart,
     IoNotificationsOutline,
     IoPerson,
@@ -197,12 +196,6 @@ function Navbar(props: Props) {
                         route={routes.wishList}
                     >
                         <IoHeart />
-                    </SmartButtonLikeLink>
-                    <SmartButtonLikeLink
-                        variant="action"
-                        route={routes.cartPage}
-                    >
-                        <IoCart />
                     </SmartButtonLikeLink>
                     {authenticated && user && (
                         <>

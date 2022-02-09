@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { _cs } from '@togglecorp/fujs';
 import {
     CheckListInput,
@@ -19,6 +19,7 @@ import {
     useQuery,
 } from '@apollo/client';
 
+import { UserContext } from '#base/context/UserContext';
 import {
     ExploreFilterOptionsQuery,
     ExploreFilterOptionsQueryVariables,
@@ -56,6 +57,7 @@ query ExploreBooks(
     $page: Int,
     $pageSize: Int,
     $title: String,
+    $isAddedInWishlist: Boolean,
 ) {
     books(
         categories: $categories,
@@ -64,6 +66,7 @@ query ExploreBooks(
         page: $page,
         pageSize: $pageSize,
         title: $title,
+        isAddedInWishlist: $isAddedInWishlist,
     ) {
         page
         pageSize
@@ -119,43 +122,50 @@ const sortKeys = Object.keys(sortOptions) as SortKeyType[];
 
 interface Props {
     className?: string;
-    // TODO: read publisher and category from state
-    publisher?: string;
-    category?: string;
-    // wishList?: string;
+    publisher?: boolean;
+    wishList?: boolean;
+    // category?: string;
 }
 
 function Explore(props: Props) {
     const {
         className,
         publisher: publisherFromProps,
-        category: categoryFromProps,
-        // wishList: wishListFromProps,
+        // category: categoryFromProps,
+        wishList: wishListFromProps,
     } = props;
 
-    const [categories, setCategories] = useInputState<string[] | undefined>(
-        categoryFromProps
-            ? [categoryFromProps]
-            : undefined,
-    );
+    const {
+        user,
+    } = useContext(UserContext);
+
+    const [categories, setCategories] = useInputState<string[] | undefined>(undefined);
     const [selectedSortKey, setSelectedSortKey] = useInputState<SortKeyType>('id');
     const [search, setSearch] = useInputState<string | undefined>(undefined);
     const [publisher, setPublisher] = useInputState<string | undefined>(undefined);
     const [selectedBookId, setSelectedBookId] = React.useState<string | undefined>();
 
+    const effectivePublisher = publisherFromProps ? user?.publisherId : publisher;
+
     const [page, setPage] = useState<number>(1);
 
     const pageTitle = React.useMemo(() => {
         if (publisherFromProps) {
-            return 'Explore Books by Publisher';
+            return 'Publisher Books';
         }
 
+        /*
         if (categoryFromProps) {
             return 'Explore Books by Category';
         }
+        */
 
-        return 'Explore all Books';
-    }, [publisherFromProps, categoryFromProps]);
+        if (wishListFromProps) {
+            return 'Wish List';
+        }
+
+        return 'Explore Books';
+    }, [publisherFromProps, wishListFromProps]);
 
     const {
         data: optionsQueryResponse,
@@ -175,11 +185,11 @@ function Explore(props: Props) {
             variables: {
                 ordering: selectedSortKey,
                 categories,
-                publisher: publisherFromProps ?? publisher,
+                publisher: effectivePublisher,
                 title: (search && search.length > 3) ? search : undefined,
                 pageSize: MAX_ITEMS_PER_PAGE,
                 page,
-                // inWishList: wishListFromProps
+                isAddedInWishlist: wishListFromProps,
             },
         },
     );

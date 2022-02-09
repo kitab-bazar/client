@@ -29,18 +29,6 @@ function Routes(props: Props) {
                 </Route>
                 <Route
                     exact
-                    path={routes.cartPage.path}
-                >
-                    {routes.cartPage.load({ className })}
-                </Route>
-                <Route
-                    exact
-                    path={routes.bookDetail.path}
-                >
-                    {routes.bookDetail.load({ className })}
-                </Route>
-                <Route
-                    exact
                     path={routes.myProfile.path}
                 >
                     {routes.myProfile.load({ className })}
@@ -68,6 +56,12 @@ function Routes(props: Props) {
                     path={routes.explore.path}
                 >
                     {routes.explore.load({ className })}
+                </Route>
+                <Route
+                    exact
+                    path={routes.publisherBooks.path}
+                >
+                    {routes.publisherBooks.load({ className })}
                 </Route>
                 <Route
                     exact
