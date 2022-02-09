@@ -56,6 +56,7 @@ query ExploreBooks(
     $page: Int,
     $pageSize: Int,
     $title: String,
+    $isAddedInWishlist: Boolean,
 ) {
     books(
         categories: $categories,
@@ -64,6 +65,7 @@ query ExploreBooks(
         page: $page,
         pageSize: $pageSize,
         title: $title,
+        isAddedInWishlist: $isAddedInWishlist,
     ) {
         page
         pageSize
@@ -122,7 +124,7 @@ interface Props {
     // TODO: read publisher and category from state
     publisher?: string;
     category?: string;
-    // wishList?: string;
+    wishList?: boolean;
 }
 
 function Explore(props: Props) {
@@ -130,7 +132,7 @@ function Explore(props: Props) {
         className,
         publisher: publisherFromProps,
         category: categoryFromProps,
-        // wishList: wishListFromProps,
+        wishList: wishListFromProps,
     } = props;
 
     const [categories, setCategories] = useInputState<string[] | undefined>(
@@ -154,8 +156,12 @@ function Explore(props: Props) {
             return 'Explore Books by Category';
         }
 
-        return 'Explore all Books';
-    }, [publisherFromProps, categoryFromProps]);
+        if (wishListFromProps) {
+            return 'Wish List';
+        }
+
+        return 'Explore Books';
+    }, [publisherFromProps, categoryFromProps, wishListFromProps]);
 
     const {
         data: optionsQueryResponse,
@@ -179,7 +185,7 @@ function Explore(props: Props) {
                 title: (search && search.length > 3) ? search : undefined,
                 pageSize: MAX_ITEMS_PER_PAGE,
                 page,
-                // inWishList: wishListFromProps
+                isAddedInWishlist: wishListFromProps,
             },
         },
     );

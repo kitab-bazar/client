@@ -200,13 +200,6 @@ function IndividualProfile(props: Props) {
                         >
                             My Wishlist
                         </SmartButtonLikeLink>
-                        <SmartButtonLikeLink
-                            route={routes.cartPage}
-                            variant="general"
-                            actions={<IoCart />}
-                        >
-                            My Cart
-                        </SmartButtonLikeLink>
                     </div>
                     <Container
                         className={styles.orderSummary}

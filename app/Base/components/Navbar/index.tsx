@@ -198,12 +198,6 @@ function Navbar(props: Props) {
                     >
                         <IoHeart />
                     </SmartButtonLikeLink>
-                    <SmartButtonLikeLink
-                        variant="action"
-                        route={routes.cartPage}
-                    >
-                        <IoCart />
-                    </SmartButtonLikeLink>
                     {authenticated && user && (
                         <>
                             <QuickActionDropdownMenu

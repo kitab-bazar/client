@@ -283,13 +283,6 @@ function SchoolProfile() {
                         >
                             {strings.myWishlistLabel}
                         </SmartButtonLikeLink>
-                        <SmartButtonLikeLink
-                            route={routes.cartPage}
-                            variant="general"
-                            actions={<IoCart />}
-                        >
-                            {strings.myCartLabel}
-                        </SmartButtonLikeLink>
                     </div>
                     <div>
                         <h4>Order Details</h4>

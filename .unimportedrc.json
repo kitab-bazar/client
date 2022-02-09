@@ -1,0 +1,17 @@
+{
+    "entry": ["./app/index.tsx"],
+    "ignorePatterns": ["**/node_modules/**", "build/**"],
+    "ignoreUnimported": ["**/*.d.ts"],
+    "ignoreUnused": ["core-js"],
+    "extensions": [".ts", ".js", ".tsx", ".jsx"],
+    "aliases": {
+        "#generated/*": ["./generated/*"],
+        "#components/*": ["./app/components/*"],
+        "#views/*": ["./app/views/*"],
+        "#base/*": ["./app/Base/*"],
+        "#hooks/*": ["./app/hooks/*"],
+        "#resources/*": ["./app/resources/*"],
+        "#utils/*": ["./app/utils/*"],
+        "#hooks/*": ["./app/hooks/*"]
+    }
+}
