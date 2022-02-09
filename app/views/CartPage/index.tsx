@@ -61,8 +61,8 @@ query CartList($page: Int!, $pageSize: Int!) {
 `;
 
 const ORDER_FROM_CART = gql`
-mutation CheckOutCart($cartItems: [ID!]) {
-    placeOrderFromCart(data: { cartItemIds: $cartItems }) {
+mutation CheckOutCart {
+    placeOrderFromCart {
         errors
         ok
         result {
@@ -241,7 +241,7 @@ function CartPage(props: Props) {
         const selectedKeys = Object.keys(selectedItems)
             .filter((k) => selectedItems[k]);
         if (selectedKeys.length > 0) {
-            placeOrderFromCart({ variables: { cartItems: selectedKeys } });
+            placeOrderFromCart();
         } else {
             // eslint-disable-next-line no-console
             console.error('There are no selected keys to order');
