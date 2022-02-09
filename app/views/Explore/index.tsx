@@ -19,6 +19,7 @@ import {
     ExploreBooksQuery,
     ExploreBooksQueryVariables,
 } from '#generated/types';
+import BookDetailModal from '#components/BookDetailModal';
 
 import BookItem, { Props as BookItemProps } from './BookItem';
 
@@ -120,6 +121,7 @@ function Explore(props: Props) {
             : undefined,
     );
     const [publisher, setPublisher] = useInputState<string | undefined>(undefined);
+    const [selectedBookId, setSelectedBookId] = React.useState<string | undefined>();
 
     const [pageSize, setPageSize] = useState<number>(MAX_ITEMS_PER_PAGE);
     const [page, setPage] = useState<number>(1);
@@ -152,6 +154,8 @@ function Explore(props: Props) {
         book: Book,
     ): BookItemProps => ({
         book,
+        onBookTitleClick: setSelectedBookId,
+
     });
 
     const filtered = (categories && categories.length > 0) || !!publisher;
@@ -213,6 +217,7 @@ function Explore(props: Props) {
                 </div>
                 <div className={styles.bookList}>
                     <ListView
+                        className={styles.bookList}
                         data={bookResponse?.books?.results ?? undefined}
                         rendererParams={bookItemRendererParams}
                         renderer={BookItem}
@@ -230,6 +235,12 @@ function Explore(props: Props) {
                         itemsPerPageControlHidden
                     />
                 </div>
+                {selectedBookId && (
+                    <BookDetailModal
+                        bookId={selectedBookId}
+                        onCloseButtonClick={setSelectedBookId}
+                    />
+                )}
             </div>
         </div>
     );
