@@ -39,12 +39,36 @@
             .bottom {
                 display: flex;
                 flex-direction: column;
-                gap: var(--dui-spacin-small);
+                gap: var(--dui-spacing-small);
             }
         }
 
-        .order-summary {
+        .order-summary-container {
             display: flex;
+
+            .summary {
+                display: flex;
+                gap: var(--dui-spacing-medium);
+
+                .left {
+                    display: flex;
+                    flex-direction: column;
+                    flex-grow: 1;
+                }
+
+                .right {
+                    display: flex;
+                    flex-grow: 1;
+                    min-height: 300px;
+                    overflow-y: none;
+
+                    .container {
+                        flex-grow: 1;
+                        width: 100%;
+                        overflow-y: none;
+                    }
+                }
+            }
         }
     }
 }
