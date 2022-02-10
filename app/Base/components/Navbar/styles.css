@@ -30,6 +30,7 @@
             .app-name {
                 display: flex;
                 align-items: center;
+                text-transform: uppercase;
                 line-height: 1;
                 color: var(--dui-color-accent);
                 font-size: var(--dui-font-size-extra-large);

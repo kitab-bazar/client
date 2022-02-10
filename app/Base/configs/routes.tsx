@@ -49,6 +49,17 @@ const myProfile = wrap({
     },
     visibility: 'is-authenticated',
 });
+const explore = wrap({
+    path: '/books/',
+    title: 'Books',
+    navbarVisibility: true,
+    component: lazy(() => import('#views/Explore')),
+    componentProps: {},
+    visibility: 'is-anything',
+    checkPermissions: (user) => (
+        !user?.publisherId
+    ),
+});
 const orderList = wrap({
     path: '/orders/',
     title: 'My Orders',
@@ -57,6 +68,9 @@ const orderList = wrap({
     componentProps: {
     },
     visibility: 'is-authenticated',
+    checkPermissions: (user) => (
+        !user?.publisherId
+    ),
 });
 const wishList = wrap({
     path: '/wish-list',
@@ -67,16 +81,10 @@ const wishList = wrap({
         wishList: true,
     },
     visibility: 'is-authenticated',
+    checkPermissions: (user) => (
+        !user?.publisherId
+    ),
 });
-const explore = wrap({
-    path: '/books/',
-    title: 'books',
-    navbarVisibility: true,
-    component: lazy(() => import('#views/Explore')),
-    componentProps: {},
-    visibility: 'is-anything',
-});
-
 const publisherBooks = wrap({
     path: '/publisher/books',
     title: 'Published Books',
@@ -86,6 +94,9 @@ const publisherBooks = wrap({
         publisher: true,
     },
     visibility: 'is-authenticated',
+    checkPermissions: (user) => (
+        !!user?.publisherId
+    ),
 });
 
 const routes = {

@@ -12,7 +12,6 @@ import {
     useConfirmation,
 } from '@the-deep/deep-ui';
 import {
-    IoHeart,
     IoNotificationsOutline,
     IoPerson,
 } from 'react-icons/io5';
@@ -36,8 +35,8 @@ import {
     UserNotificationsCountQueryVariables,
 } from '#generated/types';
 import useRouteMatching from '#base/hooks/useRouteMatching';
-import SmartNavLink from '#base/components/SmartNavLink';
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
+import SmartNavLink from '#base/components/SmartNavLink';
 import Notifications from '#components/Notifications';
 import KitabLogo from '#resources/img/KitabLogo.png';
 import { resolveToString } from '#base/utils/lang';
@@ -170,18 +169,26 @@ function Navbar(props: Props) {
             </Link>
             <div className={styles.mainMenu}>
                 <SmartNavLink
+                    route={routes.home}
+                    exact
+                    className={styles.navLink}
+                />
+                <SmartNavLink
                     route={routes.explore}
                     className={styles.navLink}
-                >
-                    Books
-                </SmartNavLink>
+                />
+                <SmartNavLink
+                    route={routes.publisherBooks}
+                    className={styles.navLink}
+                />
+                <SmartNavLink
+                    route={routes.wishList}
+                    className={styles.navLink}
+                />
                 <SmartNavLink
                     route={routes.orderList}
                     className={styles.navLink}
-                    activeClassName={styles.active}
-                >
-                    Orders
-                </SmartNavLink>
+                />
             </div>
             <div className={styles.actions}>
                 <SegmentInput
@@ -205,12 +212,6 @@ function Navbar(props: Props) {
                     state={{ from: location.pathname }}
                 >
                     {strings.loginButtonLabel}
-                </SmartButtonLikeLink>
-                <SmartButtonLikeLink
-                    variant="action"
-                    route={routes.wishList}
-                >
-                    <IoHeart />
                 </SmartButtonLikeLink>
                 {authenticated && user && (
                     <>
