@@ -36,6 +36,7 @@ import {
     UserNotificationsCountQueryVariables,
 } from '#generated/types';
 import useRouteMatching from '#base/hooks/useRouteMatching';
+import SmartNavLink from '#base/components/SmartNavLink';
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
 import Notifications from '#components/Notifications';
 import KitabLogo from '#resources/img/KitabLogo.png';
@@ -167,80 +168,92 @@ function Navbar(props: Props) {
                     {commonStrings.kitabBazarAppLabel}
                 </div>
             </Link>
-            <div className={styles.main}>
-                <div className={styles.actions}>
-                    <SegmentInput
-                        className={styles.languageSelection}
-                        name={undefined}
-                        options={langOptions}
-                        keySelector={langKeySelector}
-                        labelSelector={langLabelSelector}
-                        value={lang}
-                        onChange={setLang}
-                    />
-                    <SmartButtonLikeLink
-                        route={routes.register}
-                        variant="primary"
-                    >
-                        {strings.signUpButtonLabel}
-                    </SmartButtonLikeLink>
-                    <SmartButtonLikeLink
-                        route={routes.login}
-                        variant="primary"
-                        state={{ from: location.pathname }}
-                    >
-                        {strings.loginButtonLabel}
-                    </SmartButtonLikeLink>
-                    <SmartButtonLikeLink
-                        variant="action"
-                        route={routes.wishList}
-                    >
-                        <IoHeart />
-                    </SmartButtonLikeLink>
-                    {authenticated && user && (
-                        <>
-                            <QuickActionDropdownMenu
-                                label={(<IoNotificationsOutline />)}
-                                componentRef={notificationRef}
-                                className={styles.notificationButton}
-                                actions={notificationsCount !== 0 ? notificationsCount : undefined}
-                                popupClassName={styles.popup}
-                                actionsContainerClassName={styles.notificationCount}
-                                persistent
-                            >
-                                <Notifications
-                                    onNotificationClose={handleCloseNotificationClick}
-                                />
-                            </QuickActionDropdownMenu>
-
-                            <DropdownMenu
-                                label={<IoPerson />}
-                                variant="tertiary"
-                                className={styles.userDropdown}
-                            >
-                                <div className={styles.userInfo}>
-                                    <div className={styles.greetings}>
-                                        {resolveToString(strings.greetings, { name: user.displayName ?? 'Unnamed' })}
-                                    </div>
-                                    {profileUrl && (
-                                        <DropdownMenuItem href={profileUrl.to}>
-                                            {strings.gotoProfile}
-                                        </DropdownMenuItem>
-                                    )}
-                                    <DropdownMenuItem
-                                        name={undefined}
-                                        onClick={setShowLogoutConfirmationTrue}
-                                        // TODO: disable dropdown menu item
-                                        // disabled={logoutLoading}
-                                    >
-                                        {strings.logoutButtonLabel}
-                                    </DropdownMenuItem>
+            <div className={styles.mainMenu}>
+                <SmartNavLink
+                    route={routes.explore}
+                    className={styles.navLink}
+                >
+                    Books
+                </SmartNavLink>
+                <SmartNavLink
+                    route={routes.orderList}
+                    className={styles.navLink}
+                    activeClassName={styles.active}
+                >
+                    Orders
+                </SmartNavLink>
+            </div>
+            <div className={styles.actions}>
+                <SegmentInput
+                    className={styles.languageSelection}
+                    name={undefined}
+                    options={langOptions}
+                    keySelector={langKeySelector}
+                    labelSelector={langLabelSelector}
+                    value={lang}
+                    onChange={setLang}
+                />
+                <SmartButtonLikeLink
+                    route={routes.register}
+                    variant="primary"
+                >
+                    {strings.signUpButtonLabel}
+                </SmartButtonLikeLink>
+                <SmartButtonLikeLink
+                    route={routes.login}
+                    variant="primary"
+                    state={{ from: location.pathname }}
+                >
+                    {strings.loginButtonLabel}
+                </SmartButtonLikeLink>
+                <SmartButtonLikeLink
+                    variant="action"
+                    route={routes.wishList}
+                >
+                    <IoHeart />
+                </SmartButtonLikeLink>
+                {authenticated && user && (
+                    <>
+                        <QuickActionDropdownMenu
+                            label={(<IoNotificationsOutline />)}
+                            componentRef={notificationRef}
+                            className={styles.notificationButton}
+                            actions={notificationsCount !== 0 ? notificationsCount : undefined}
+                            popupClassName={styles.popup}
+                            actionsContainerClassName={styles.notificationCount}
+                            persistent
+                        >
+                            <Notifications
+                                onNotificationClose={handleCloseNotificationClick}
+                            />
+                        </QuickActionDropdownMenu>
+                        <DropdownMenu
+                            label={<IoPerson />}
+                            variant="tertiary"
+                            className={styles.userDropdown}
+                        >
+                            <div className={styles.userInfo}>
+                                <div className={styles.greetings}>
+                                    {resolveToString(strings.greetings, { name: user.displayName ?? 'Unnamed' })}
                                 </div>
-                            </DropdownMenu>
-                            {logoutConfirmationModal}
-                        </>
-                    )}
-                </div>
+                                {profileUrl && (
+                                    <DropdownMenuItem href={profileUrl.to}>
+                                        {strings.gotoProfile}
+                                    </DropdownMenuItem>
+                                )}
+                                <DropdownMenuItem
+                                    name={undefined}
+                                    onClick={setShowLogoutConfirmationTrue}
+                                    // TODO: disable dropdown menu item
+                                    // disabled={logoutLoading}
+                                >
+                                    {strings.logoutButtonLabel}
+                                </DropdownMenuItem>
+                            </div>
+                        </DropdownMenu>
+                        {logoutConfirmationModal}
+                    </>
+                )}
             </div>
         </nav>
     );
