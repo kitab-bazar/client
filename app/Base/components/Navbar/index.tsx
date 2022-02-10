@@ -1,9 +1,12 @@
 import React, { useRef, useContext, useCallback } from 'react';
-import { _cs } from '@togglecorp/fujs';
+import {
+    _cs,
+    listToMap,
+} from '@togglecorp/fujs';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { useLocation } from 'react-router-dom';
 import {
-    SegmentInput,
+    SelectInput,
     useAlert,
     Link,
     DropdownMenu,
@@ -42,6 +45,12 @@ import KitabLogo from '#resources/img/KitabLogo.png';
 import { resolveToString } from '#base/utils/lang';
 
 import styles from './styles.css';
+
+const languageIconMap = listToMap(
+    langOptions,
+    (d) => d.key,
+    (d) => d.iconUrl,
+);
 
 const LOGOUT = gql`
     mutation Logout {
@@ -191,7 +200,9 @@ function Navbar(props: Props) {
                 />
             </div>
             <div className={styles.actions}>
-                <SegmentInput
+                <SelectInput
+                    nonClearable
+                    variant="general"
                     className={styles.languageSelection}
                     name={undefined}
                     options={langOptions}
@@ -199,16 +210,23 @@ function Navbar(props: Props) {
                     labelSelector={langLabelSelector}
                     value={lang}
                     onChange={setLang}
+                    icons={(
+                        <img
+                            className={styles.icon}
+                            alt={lang}
+                            src={languageIconMap[lang]}
+                        />
+                    )}
                 />
                 <SmartButtonLikeLink
                     route={routes.register}
-                    variant="primary"
+                    variant="general"
                 >
                     {strings.signUpButtonLabel}
                 </SmartButtonLikeLink>
                 <SmartButtonLikeLink
                     route={routes.login}
-                    variant="primary"
+                    variant="tertiary"
                     state={{ from: location.pathname }}
                 >
                     {strings.loginButtonLabel}

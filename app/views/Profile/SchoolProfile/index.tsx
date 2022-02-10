@@ -116,6 +116,7 @@ interface OrderListProps {
     totalBookTypes: number;
 }
 
+// FIXME: Reuse order item
 function OrderListRenderer(props: OrderListProps) {
     const {
         orderCode,

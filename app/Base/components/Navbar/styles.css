@@ -80,8 +80,11 @@
         }
 
         .language-selection {
-            button {
-                line-height: 1.2;
+            width: 9rem;
+
+            .icon {
+                width: 1rem;
+                height: 1rem;
             }
         }
         .user-dropdown {

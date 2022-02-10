@@ -206,15 +206,19 @@ function BookItem(props: Props) {
     ), [book.authors]);
 
     const handleClick = React.useCallback(() => {
+        // eslint-disable-next-line react/destructuring-assignment
         if (props.variant === 'compact' && props.onClick) {
+            // eslint-disable-next-line react/destructuring-assignment
             props.onClick(props.book.id);
         }
     }, [props]);
 
     const categoriesDisplay = React.useMemo(() => (
         variant !== 'compact'
+            // eslint-disable-next-line react/destructuring-assignment
             ? props.book.categories?.map((d) => d.name).join(', ')
             : undefined
+        // eslint-disable-next-line react/destructuring-assignment
     ), [variant, props.book]);
 
     const handleAddToOrder = React.useCallback(() => {
@@ -249,6 +253,7 @@ function BookItem(props: Props) {
             return undefined;
         }
 
+        // eslint-disable-next-line react/destructuring-assignment
         if (props.book.cartDetails) {
             return (
                 <Button
@@ -272,6 +277,7 @@ function BookItem(props: Props) {
                 Add to Order
             </Button>
         );
+        // eslint-disable-next-line react/destructuring-assignment
     }, [variant, actionsDisabled, handleAddToOrder, props.book]);
 
     const wishListButton = React.useMemo(() => {
@@ -281,9 +287,11 @@ function BookItem(props: Props) {
         if (variant === 'compact') {
             return undefined;
         }
+        // eslint-disable-next-line react/destructuring-assignment
         if (props.book.wishlistId) {
             return (
                 <Button
+                    // eslint-disable-next-line react/destructuring-assignment
                     name={props.book.wishlistId}
                     variant="primary"
                     onClick={handleRemoveFromWishList}
@@ -293,6 +301,7 @@ function BookItem(props: Props) {
                 </Button>
             );
         }
+        // eslint-disable-next-line react/destructuring-assignment
         if (!props.book.cartDetails) {
             return (
                 <Button
@@ -308,6 +317,7 @@ function BookItem(props: Props) {
         return undefined;
     }, [
         variant,
+        // eslint-disable-next-line react/destructuring-assignment
         props.book,
         actionsDisabled,
         handleAddToWishList,
@@ -330,9 +340,11 @@ function BookItem(props: Props) {
     );
 
     const containerClassName = _cs(
+        /* eslint-disable react/destructuring-assignment */
         props.variant === 'list' && styles.listVariant,
         props.variant === 'detail' && styles.detailVariant,
         props.variant === 'compact' && styles.compactVariant,
+        /* eslint-enable react/destructuring-assignment */
         styles.bookItem,
         className,
     );
@@ -347,6 +359,7 @@ function BookItem(props: Props) {
                         <Button
                             name={book.id}
                             variant="action"
+                            // eslint-disable-next-line react/destructuring-assignment
                             onClick={props.onBookTitleClick}
                         >
                             {book.title}
@@ -367,10 +380,12 @@ function BookItem(props: Props) {
                         <>
                             <TextOutput
                                 label="Language"
+                                // eslint-disable-next-line react/destructuring-assignment
                                 value={props.book.language}
                             />
                             <TextOutput
                                 label="Publisher"
+                                // eslint-disable-next-line react/destructuring-assignment
                                 value={props.book.publisher.name}
                             />
                             <div className={styles.categories}>
@@ -401,6 +416,7 @@ function BookItem(props: Props) {
                         <Button
                             name={undefined}
                             variant="action"
+                            // eslint-disable-next-line react/destructuring-assignment
                             onClick={props.onCloseButtonClick}
                         >
                             <IoClose />
@@ -423,22 +439,26 @@ function BookItem(props: Props) {
                         <TextOutput
                             // FIXME: translate
                             label="Language"
+                            // eslint-disable-next-line react/destructuring-assignment
                             value={props.book.language}
                         />
                         <TextOutput
                             // FIXME: translate
                             label="Number of pages"
+                            // eslint-disable-next-line react/destructuring-assignment
                             value={props.book.numberOfPages}
                             valueType="number"
                         />
                         <TextOutput
                             // FIXME: translate
                             label="ISBN"
+                            // eslint-disable-next-line react/destructuring-assignment
                             value={props.book.isbn}
                         />
                         <TextOutput
                             // FIXME: translate
                             label="Publisher"
+                            // eslint-disable-next-line react/destructuring-assignment
                             value={props.book.publisher.name}
                         />
                         <div className={styles.categories}>
@@ -453,6 +473,7 @@ function BookItem(props: Props) {
                         // TODO: sanitize description
                         // eslint-disable-next-line react/no-danger
                         dangerouslySetInnerHTML={
+                            // eslint-disable-next-line react/destructuring-assignment
                             { __html: props.book.description ?? '' }
                         }
                     />
