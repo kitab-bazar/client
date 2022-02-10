@@ -11,34 +11,50 @@
 
     &.list-variant {
         display: flex;
+        flex-wrap: wrap;
 
         .preview {
-            width: 8rem;
-            height: 12rem;
+            display: flex;
+            flex-shrink: 0;
+            justify-content: center;
 
             .image {
-                width: 100%;
-                height: 100%;
+                width: 10rem;
+                height: 16rem;
                 object-fit: cover;
                 object-position: top center;
+            }
+
+            .fallback-icon {
+                width: 10rem;
+                height: 16rem;
             }
         }
 
         .details {
             flex-grow: 1;
+            flex-wrap: wrap;
 
-            .meta {
-                display: flex;
-                align-items: flex-start;
-                flex-direction: column;
-
-                .categories {
-                    margin-top: var(--dui-spacing-small);
-                }
+            .book-title {
+                text-align: left;
             }
 
-            .actions {
-                align-self: flex-end;
+            .footer {
+                flex-wrap: wrap;
+
+                .meta {
+                    display: flex;
+                    align-items: flex-start;
+                    flex-direction: column;
+
+                    .categories {
+                        margin-top: var(--dui-spacing-small);
+                    }
+                }
+
+                .actions {
+                    align-self: flex-end;
+                }
             }
         }
     }

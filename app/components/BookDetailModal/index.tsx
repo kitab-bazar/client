@@ -7,6 +7,8 @@ import {
     useQuery,
 } from '@apollo/client';
 
+import { bookDetailModal } from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
 import {
     BookQuery,
     BookQueryVariables,
@@ -64,6 +66,8 @@ function BookDetailModal(props: Props) {
         onCloseButtonClick,
     } = props;
 
+    const strings = useTranslation(bookDetailModal);
+
     const {
         data,
         error,
@@ -84,11 +88,15 @@ function BookDetailModal(props: Props) {
         >
             {errored && (
                 // FIXME: style this
-                <div>Errored!</div>
+                <div>
+                    {strings.bookDetailFetchErrorMessage}
+                </div>
             )}
             {!errored && loading && (
                 // FIXME: style this
-                <div>Loading!</div>
+                <div>
+                    {strings.loadingMessage}
+                </div>
             )}
             {!errored && !loading && data?.book && (
                 <BookItem

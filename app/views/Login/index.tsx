@@ -17,7 +17,7 @@ function Login() {
                     <img
                         className={styles.kitabLogo}
                         src={KitabLogo}
-                        alt="Kitab"
+                        alt=""
                     />
                     <div className={styles.appName}>
                         {strings.kitabBazarAppLabel}

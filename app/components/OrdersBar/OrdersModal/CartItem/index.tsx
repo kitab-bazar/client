@@ -17,6 +17,8 @@ import {
     useMutation,
 } from '@apollo/client';
 
+import { ordersBar } from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
 import {
     CartItemsListQuery,
     UpdateCartBookQuantityMutation,
@@ -96,6 +98,7 @@ function CartItem(props: Props) {
         totalPrice,
     } = cartDetails;
 
+    const strings = useTranslation(ordersBar);
     const alert = useAlert();
 
     const { user } = useContext(UserContext);
@@ -112,9 +115,8 @@ function CartItem(props: Props) {
                 if (response?.deleteCartItem?.ok) {
                     onCartItemRemove();
                 } else {
-                    // FIXME: translate
                     alert.show(
-                        'Failed to remove current book from the cart',
+                        strings.removeFromCartErrorMessage,
                         { variant: 'error' },
                     );
                 }
@@ -138,7 +140,7 @@ function CartItem(props: Props) {
             onCompleted: (response) => {
                 if (!response?.updateCartItem?.ok) {
                     alert.show(
-                        'Failed to update the cart',
+                        strings.updateCartErrorMessage,
                         { variant: 'error' },
                     );
                 }
@@ -194,7 +196,7 @@ function CartItem(props: Props) {
                         {authorsDisplay}
                         <TextOutput
                             valueType="number"
-                            label="NPR."
+                            label={strings.nprPrefix}
                             hideLabelColon
                             value={book.price}
                         />
@@ -229,7 +231,7 @@ function CartItem(props: Props) {
                 footerActions={(
                     <TextOutput
                         valueType="number"
-                        label="NPR."
+                        label={strings.nprPrefix}
                         hideLabelColon
                         value={totalPrice}
                     />

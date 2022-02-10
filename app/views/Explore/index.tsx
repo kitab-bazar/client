@@ -2,7 +2,6 @@ import React, { useState, useContext } from 'react';
 import { _cs } from '@togglecorp/fujs';
 import {
     CheckListInput,
-    SegmentInput,
     RadioInput,
     useInputState,
     ListView,
@@ -125,10 +124,6 @@ interface BookSourceOption {
     name: string;
 }
 
-const bookSources: BookSourceOption[] = [
-    { id: 'own', name: 'My books' },
-    { id: 'all', name: 'All books' },
-];
 const bookSourceKeySelector = (item: BookSourceOption) => item.id;
 const bookSourceLabelSelector = (item: BookSourceOption) => item.name;
 
@@ -206,6 +201,11 @@ function Explore(props: Props) {
         ];
     }, [strings]);
 
+    const bookSources: BookSourceOption[] = React.useMemo(() => ([
+        { id: 'own', name: strings.publisherOwnBooksLabel },
+        { id: 'all', name: strings.publisherAllBooksLabel },
+    ]), [strings]);
+
     const {
         data: optionsQueryResponse,
         loading: filterLoading,
@@ -263,7 +263,7 @@ function Explore(props: Props) {
                             onClick={showUploadBookModal}
                             icons={<IoAdd />}
                         >
-                            Add New Book
+                            {strings.addBookButtonLabel}
                         </Button>
                     )}
                 >

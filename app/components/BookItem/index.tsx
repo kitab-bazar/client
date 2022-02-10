@@ -17,6 +17,9 @@ import {
     useMutation,
 } from '@apollo/client';
 
+import { bookItem } from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
+import { resolveToString } from '#base/utils/lang';
 import {
     BookType,
     AddToOrderMutation,
@@ -130,8 +133,8 @@ function BookItem(props: Props) {
         wishListActionsShown,
     } = props;
 
+    const strings = useTranslation(bookItem);
     const alert = useAlert();
-
     const { user } = useContext(UserContext);
 
     const canCreateOrder = user?.permissions.includes('CREATE_ORDER');
@@ -146,7 +149,7 @@ function BookItem(props: Props) {
             onCompleted: (response) => {
                 if (!response?.createCartItem?.ok) {
                     alert.show(
-                        'Failed to add book to the order.',
+                        strings.bookOrderFailedMessage,
                         { variant: 'error' },
                     );
                 }
@@ -169,8 +172,7 @@ function BookItem(props: Props) {
             onCompleted: (response) => {
                 if (!response?.createWishlist?.ok) {
                     alert.show(
-                        // FIXME: translate
-                        'Failed to add book to the wish list.',
+                        strings.wishlistAdditionFailedMessage,
                         { variant: 'error' },
                     );
                 }
@@ -193,7 +195,7 @@ function BookItem(props: Props) {
             onCompleted: (response) => {
                 if (!response?.deleteWishlist?.ok) {
                     alert.show(
-                        'Failed to delete item from wish list',
+                        strings.wishlistRemovalFailedMessage,
                         { variant: 'error' },
                     );
                 }
@@ -268,7 +270,7 @@ function BookItem(props: Props) {
                     icons={<IoCheckmark />}
                     readOnly
                 >
-                    In order list
+                    {strings.alreadyInOrderListMessage}
                 </Button>
             );
         }
@@ -280,11 +282,11 @@ function BookItem(props: Props) {
                 onClick={handleAddToOrder}
                 disabled={actionsDisabled}
             >
-                Add to Order
+                {strings.addToOrderButtonLabel}
             </Button>
         );
         // eslint-disable-next-line react/destructuring-assignment
-    }, [variant, canCreateOrder, actionsDisabled, handleAddToOrder, props.book]);
+    }, [strings, variant, canCreateOrder, actionsDisabled, handleAddToOrder, props.book]);
 
     const wishListButton = React.useMemo(() => {
         if (!wishListActionsShown) {
@@ -303,7 +305,7 @@ function BookItem(props: Props) {
                     onClick={handleRemoveFromWishList}
                     disabled={actionsDisabled}
                 >
-                    Remove from Wish list
+                    {strings.removeFromWishlistButtonLabel}
                 </Button>
             );
         }
@@ -316,12 +318,13 @@ function BookItem(props: Props) {
                     onClick={handleAddToWishList}
                     disabled={actionsDisabled}
                 >
-                    Add to Wish list
+                    {strings.addToWishlistButtonLabel}
                 </Button>
             );
         }
         return undefined;
     }, [
+        strings,
         canCreateOrder,
         variant,
         // eslint-disable-next-line react/destructuring-assignment
@@ -364,6 +367,7 @@ function BookItem(props: Props) {
                     className={styles.details}
                     heading={(
                         <Button
+                            className={styles.bookTitle}
                             name={book.id}
                             variant="action"
                             // eslint-disable-next-line react/destructuring-assignment
@@ -377,11 +381,12 @@ function BookItem(props: Props) {
                     headerActions={(
                         <TextOutput
                             valueType="number"
-                            label="NPR."
+                            label={strings.nprLabel}
                             hideLabelColon
                             value={book.price}
                         />
                     )}
+                    footerClassName={styles.footer}
                     footerIconsContainerClassName={styles.meta}
                     footerIcons={(
                         <>
@@ -434,8 +439,7 @@ function BookItem(props: Props) {
                     borderBelowHeader
                     headerDescription={(
                         <TextOutput
-                            // FIXME: translate
-                            label="Price (NPR)"
+                            label={strings.priceLabel}
                             value={book.price}
                             valueType="number"
                         />
@@ -444,27 +448,23 @@ function BookItem(props: Props) {
                 >
                     <div className={styles.bookMeta}>
                         <TextOutput
-                            // FIXME: translate
-                            label="Language"
+                            label={strings.languageLabel}
                             // eslint-disable-next-line react/destructuring-assignment
                             value={props.book.language}
                         />
                         <TextOutput
-                            // FIXME: translate
-                            label="Number of pages"
+                            label={strings.numberOfPagesLabel}
                             // eslint-disable-next-line react/destructuring-assignment
                             value={props.book.numberOfPages}
                             valueType="number"
                         />
                         <TextOutput
-                            // FIXME: translate
-                            label="ISBN"
+                            label={strings.isbnLabel}
                             // eslint-disable-next-line react/destructuring-assignment
                             value={props.book.isbn}
                         />
                         <TextOutput
-                            // FIXME: translate
-                            label="Publisher"
+                            label={strings.publisherLabel}
                             // eslint-disable-next-line react/destructuring-assignment
                             value={props.book.publisher.name}
                         />
@@ -506,8 +506,11 @@ function BookItem(props: Props) {
                 <div className={styles.author}>
                     {book.authors[0].name}
                 </div>
-                <div className={styles.price}>
-                    {`NPR ${book.price}`}
+                <div
+                    className={styles.price}
+                    // FIXME: use Numeral
+                >
+                    {resolveToString(strings.bookPrice, { price: String(book.price) })}
                 </div>
             </div>
         </div>

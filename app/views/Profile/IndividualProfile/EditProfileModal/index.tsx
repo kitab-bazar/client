@@ -21,7 +21,11 @@ import {
     UpdateIndividualProfileMutationVariables,
 } from '#generated/types';
 import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
+import { individualProfile } from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
+
 import NonFieldError from '#components/NonFieldError';
+
 import styles from './styles.css';
 
 const UPDATE_INDIVIDUAL_PROFILE = gql`
@@ -92,6 +96,7 @@ function EditProfileModal(props: Props) {
 
     const error = getErrorObject(riskyError);
     const alert = useAlert();
+    const strings = useTranslation(individualProfile);
 
     const [
         updateProfile,
@@ -111,7 +116,7 @@ function EditProfileModal(props: Props) {
 
                 if (ok) {
                     alert.show(
-                        'Successfully updated profile',
+                        strings.profileUpdateSuccessMessage,
                         { variant: 'success' },
                     );
                     onEditSuccess();
@@ -120,7 +125,7 @@ function EditProfileModal(props: Props) {
                     const formError = transformToFormError(removeNull(errors) as ObjectError[]);
                     setError(formError);
                     alert.show(
-                        'Error updating profile',
+                        strings.profileUpdateErrorMessage,
                         { variant: 'error' },
                     );
                 }
@@ -152,7 +157,7 @@ function EditProfileModal(props: Props) {
 
     return (
         <Modal
-            heading="Edit Profile"
+            heading={strings.modalHeading}
             onCloseButtonClick={onModalClose}
             size="small"
             freeHeight
@@ -164,7 +169,7 @@ function EditProfileModal(props: Props) {
                         onClick={onModalClose}
                         variant="secondary"
                     >
-                        Cancel
+                        {strings.editProfileCancelButtonLabel}
                     </Button>
                     <Button
                         name={undefined}
@@ -172,7 +177,7 @@ function EditProfileModal(props: Props) {
                         onClick={submit}
                         disabled={pristine || updateProfilePending}
                     >
-                        Save
+                        {strings.editProfileSaveButtonLabel}
                     </Button>
                 </>
             )}
@@ -181,7 +186,7 @@ function EditProfileModal(props: Props) {
             <TextInput
                 name="firstName"
                 onChange={setFieldValue}
-                label="First Name"
+                label={strings.editProfileFirstNameInputLabel}
                 value={value?.firstName}
                 error={error?.firstName}
                 disabled={updateProfilePending}
@@ -189,14 +194,14 @@ function EditProfileModal(props: Props) {
             <TextInput
                 name="lastName"
                 onChange={setFieldValue}
-                label="Last Name"
+                label={strings.editProfileLastNameInputLabel}
                 value={value?.lastName}
                 error={error?.lastName}
                 disabled={updateProfilePending}
             />
             <TextInput
                 name="phoneNumber"
-                label="Phone Number"
+                label={strings.editProfilePhoneNumberInputLabel}
                 onChange={setFieldValue}
                 value={value?.phoneNumber}
                 error={error?.phoneNumber}

@@ -1,8 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import {
     ListView,
     Container,
-    Pager,
 } from '@the-deep/deep-ui';
 import {
     gql,

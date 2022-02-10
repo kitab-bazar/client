@@ -8,18 +8,23 @@ import { getOperationName } from 'apollo-link';
 import {
     Button,
     Modal,
+    Pager,
     ListView,
     TextOutput,
     useAlert,
-    Pager,
+    useModalState,
 } from '@the-deep/deep-ui';
 
+import { ordersBar } from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
 import {
     CartItemsListQuery,
     CartItemsListQueryVariables,
     OrderFromCartMutation,
     OrderFromCartMutationVariables,
 } from '#generated/types';
+
+import KitabLogo from '#resources/img/KitabLogo.png';
 
 import CartItem, { Props as CartItemProps } from './CartItem';
 import { CART_ITEMS } from '../queries';
@@ -91,9 +96,14 @@ function OrdersModal(props: Props) {
         totalQuantity,
     } = props;
 
+    const strings = useTranslation(ordersBar);
     const alert = useAlert();
 
     const [page, setPage] = useState<number>(1);
+    const [
+        showOrderSuccessfulModal,
+        setShowOrderSuccessfulModalTrue,
+    ] = useModalState(false);
 
     const {
         loading: cartLoading,
@@ -112,7 +122,10 @@ function OrdersModal(props: Props) {
 
     const [
         placeOrderFromCart,
-        { loading: placeOrderLoading },
+        {
+            data: orderDetails,
+            loading: placeOrderLoading,
+        },
     ] = useMutation<OrderFromCartMutation, OrderFromCartMutationVariables>(
         ORDER_FROM_CART,
         {
@@ -120,13 +133,14 @@ function OrdersModal(props: Props) {
             onCompleted: (response) => {
                 if (response?.placeOrderFromCart?.ok) {
                     alert.show(
-                        'Your order was placed successfully!',
+                        strings.orderPlacementSuccessfulMessage,
                         { variant: 'success' },
                     );
-                    onClose();
+                    setShowOrderSuccessfulModalTrue();
+                    // onClose();
                 } else {
                     alert.show(
-                        'Failed to place the order!',
+                        strings.orderPlacementFailureMessage,
                         { variant: 'error' },
                     );
                 }
@@ -155,58 +169,106 @@ function OrdersModal(props: Props) {
         placeOrderFromCart();
     }, [placeOrderFromCart]);
 
+    const handleDoneButtonClick = React.useCallback(() => {
+        window.location.reload();
+        onClose();
+    }, [onClose]);
+
     return (
-        <Modal
-            backdropClassName={styles.modalBackdrop}
-            onCloseButtonClick={onClose}
-            className={styles.ordersModal}
-            // FIXME: translate
-            heading="Order List"
-            headingSize="small"
-            footerIcons={(
-                <>
-                    <TextOutput
-                        label="Total price (NPR)"
-                        valueType="number"
-                        value={totalPrice}
-                    />
-                    <TextOutput
-                        label="Total Books"
-                        valueType="number"
-                        value={totalQuantity}
-                    />
-                </>
-            )}
-            footerActions={(
-                <Button
-                    name={undefined}
-                    variant="primary"
-                    onClick={handleOrderBooksClick}
-                    disabled={placeOrderLoading || (cartItemList?.cartItems?.totalCount ?? 0) <= 0}
+        <>
+            <Modal
+                backdropClassName={styles.modalBackdrop}
+                onCloseButtonClick={onClose}
+                className={styles.ordersModal}
+                heading={strings.orderListHeading}
+                headingSize="small"
+                footerIcons={(
+                    <>
+                        <TextOutput
+                            label={strings.totalPriceLabel}
+                            valueType="number"
+                            value={totalPrice}
+                        />
+                        <TextOutput
+                            label={strings.totalBooksLabel}
+                            valueType="number"
+                            value={totalQuantity}
+                        />
+                    </>
+                )}
+                footerActions={(
+                    <Button
+                        name={undefined}
+                        variant="primary"
+                        onClick={handleOrderBooksClick}
+                        disabled={
+                            placeOrderLoading
+                                || (cartItemList?.cartItems?.totalCount ?? 0) <= 0
+                        }
+                    >
+                        {strings.orderBooksButtonLabel}
+                    </Button>
+                )}
+            >
+                <ListView
+                    className={styles.cartItemList}
+                    data={cartItemList?.cartItems?.results ?? undefined}
+                    renderer={CartItem}
+                    rendererParams={cartItemRendererParams}
+                    keySelector={keySelector}
+                    filtered={false}
+                    errored={!!error}
+                    pending={cartLoading}
+                    messageShown
+                />
+                <Pager
+                    activePage={page}
+                    maxItemsPerPage={MAX_ITEMS_PER_PAGE}
+                    itemsCount={cartItemList?.cartItems?.totalCount ?? 0}
+                    onActivePageChange={setPage}
+                    itemsPerPageControlHidden
+                />
+            </Modal>
+            {showOrderSuccessfulModal && (
+                <Modal
+                    className={styles.orderSuccessModal}
+                    bodyClassName={styles.content}
+                    size="small"
+                    hideCloseButton
+                    footerContentClassName={styles.footer}
+                    footer={(
+                        <Button
+                            name={undefined}
+                            onClick={handleDoneButtonClick}
+                        >
+                            {strings.doneButtonLabel}
+                        </Button>
+                    )}
                 >
-                    Order Books
-                </Button>
+                    <img
+                        className={styles.logo}
+                        src={KitabLogo}
+                        alt="logo"
+                    />
+                    <div className={styles.successMessage}>
+                        {strings.orderPlacementSuccessfulMessage}
+                    </div>
+                    <div className={styles.orderDetails}>
+                        <TextOutput
+                            label={strings.orderIdLabel}
+                            value={orderDetails?.placeOrderFromCart?.result?.orderCode?.split('-')?.[0]}
+                        />
+                        <TextOutput
+                            label={strings.totalPriceLabel}
+                            value={orderDetails?.placeOrderFromCart?.result?.totalPrice}
+                        />
+                    </div>
+                    <div className={styles.helpText}>
+                        {strings.orderPlacementHelpText}
+                    </div>
+                </Modal>
             )}
-        >
-            <ListView
-                className={styles.cartItemList}
-                data={cartItemList?.cartItems?.results ?? undefined}
-                renderer={CartItem}
-                rendererParams={cartItemRendererParams}
-                keySelector={keySelector}
-                filtered={false}
-                errored={!!error}
-                pending={cartLoading}
-                messageShown
-            />
-            <Pager
-                activePage={page}
-                maxItemsPerPage={MAX_ITEMS_PER_PAGE}
-                itemsCount={cartItemList?.cartItems?.totalCount ?? 0}
-                onActivePageChange={setPage}
-                itemsPerPageControlHidden
-            />
-        </Modal>
+        </>
     );
 }
 export default OrdersModal;

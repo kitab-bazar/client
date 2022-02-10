@@ -41,7 +41,11 @@ export function resolveToComponent(
 
     const parts = template.split('{');
     const resolvedParts = parts.map(
-        (part) => {
+        (part, i) => {
+            if (i === 0) {
+                return part;
+            }
+
             const endIndex = part.indexOf('}');
 
             if (endIndex === -1) {

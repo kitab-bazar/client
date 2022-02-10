@@ -1,6 +1,6 @@
 .query-response-modal {
     padding: 0;
-    width: 100%!important;
+    width: calc(90%)!important;
     max-width: var(--kitab-page-max-width);
 
     .container {

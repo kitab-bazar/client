@@ -144,10 +144,14 @@
                         display: flex;
                         align-items: flex-start;
                         flex-wrap: wrap;
+                        justify-content: center;
                         gap: var(--dui-spacing-large);
 
                         .goal-point {
-                            flex-basis: calc(25% - var(--dui-spacing-large));
+                            flex-basis: 20%;
+                            flex-grow: 1;
+                            min-width: 14rem;
+                            max-width: 24rem;
                         }
                     }
                 }
@@ -162,6 +166,7 @@
                 .book-list {
                     display: flex;
                     flex-wrap: wrap;
+                    justify-content: center;
                     margin-top: var(--dui-spacing-large);
                     gap: var(--dui-spacing-extra-large);
                 }

@@ -29,6 +29,8 @@ import {
 } from '#generated/types';
 
 import OrderItem, { Props as OrderItemProps } from '#components/OrderItem';
+import { individualProfile } from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
 
 import EditProfileModal from './EditProfileModal';
 import styles from './styles.css';
@@ -95,6 +97,7 @@ interface Props {
 
 function IndividualProfile(props: Props) {
     const { className } = props;
+    const strings = useTranslation(individualProfile);
 
     const [
         editProfileModalShown,
@@ -142,7 +145,7 @@ function IndividualProfile(props: Props) {
                 <Container
                     className={styles.userDetails}
                     contentClassName={styles.userDetailContent}
-                    heading="User Details"
+                    heading={strings.userDetailHeading}
                     spacing="comfortable"
                     headerActions={(
                         <Button
@@ -151,7 +154,7 @@ function IndividualProfile(props: Props) {
                             onClick={showEditProfileModal}
                             icons={<IoPencil />}
                         >
-                            Edit Profile
+                            {strings.editProfileLabel}
                         </Button>
                     )}
                 >
@@ -172,21 +175,21 @@ function IndividualProfile(props: Props) {
                                 spacing="none"
                                 block
                                 valueContainerClassName={styles.value}
-                                label="Name"
+                                label={strings.nameAttributeLabel}
                                 value={profileDetails?.me?.fullName}
                             />
                             <TextOutput
                                 spacing="none"
                                 block
                                 valueContainerClassName={styles.value}
-                                label="Email"
+                                label={strings.emailAttributeLabel}
                                 value={profileDetails?.me?.email}
                             />
                             <TextOutput
                                 spacing="none"
                                 block
                                 valueContainerClassName={styles.value}
-                                label="Phone Number"
+                                label={strings.phoneAttributeLabel}
                                 value={profileDetails?.me?.phoneNumber ?? 'Not available'}
                             />
                         </div>
@@ -197,32 +200,26 @@ function IndividualProfile(props: Props) {
                             variant="general"
                             actions={<IoHeart />}
                         >
-                            Wish list
+                            {strings.wishlistLabel}
                         </SmartButtonLikeLink>
                     </div>
                     <Container
                         className={styles.orderSummary}
                         contentClassName={styles.summaryItemList}
                         withoutExternalPadding
-                        heading="Order Summary"
+                        heading={strings.orderSummaryHeading}
                         headingSize="small"
                     >
                         <TextOutput
-                            label="Total orders"
+                            label={strings.totalOrdersLabel}
                             value={orderList?.orders?.totalCount}
                         />
-                        {/*
-                        <TextOutput
-                            label="Orders this week"
-                            value="2"
-                        />
-                        */}
                     </Container>
                 </Container>
                 <Container
                     className={styles.orderDetails}
                     headingSize="small"
-                    heading="Recent Orders"
+                    heading={strings.recentOrdersHeading}
                     spacing="comfortable"
                     headerActions={(
                         <SmartButtonLikeLink
@@ -230,7 +227,7 @@ function IndividualProfile(props: Props) {
                             actions={<IoArrowForward />}
                             variant="tertiary"
                         >
-                            View all
+                            {strings.viewAllLabel}
                         </SmartButtonLikeLink>
                     )}
                     footerContent={(
@@ -250,19 +247,16 @@ function IndividualProfile(props: Props) {
                         renderer={OrderItem}
                         rendererParams={orderListRendererParams}
                         messageShown
-                        // FIXME: use strings
                         // FIXME: use common component
                         emptyMessage={(
                             <div className={styles.emptyMessage}>
                                 <IoList className={styles.icon} />
                                 <div className={styles.text}>
                                     <div className={styles.primary}>
-                                        You dont have any Recent Orders
+                                        {strings.recentOrderEmptyMessage}
                                     </div>
                                     <div className={styles.suggestion}>
-                                        Add Books that you want to buy
-                                        later by clicking Add to Wishlist
-                                        and then goto your Cart to place your Order
+                                        {strings.recentOrderEmptySuggestion}
                                     </div>
                                 </div>
                             </div>

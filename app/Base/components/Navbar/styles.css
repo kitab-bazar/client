@@ -10,7 +10,7 @@
     background-color: var(--dui-color-foreground);
     padding: var(--navbar-padding-v) var(--dui-spacing-extra-large);
     color: var(--dui-color-text);
-    gap: var(--dui-spacing-medium);
+    gap: var(--dui-spacing-extra-large);
 
     .app-brand {
         flex-shrink: 0;
@@ -42,11 +42,11 @@
         display: flex;
         align-self: stretch;
         gap: var(--dui-spacing-large);
-        flex-grow: 1;
         justify-content: center;
 
         .nav-link {
             margin: calc(-1 * var(--navbar-padding-v)) 0;
+            padding: var(--dui-spacing-large);
         }
     }
 

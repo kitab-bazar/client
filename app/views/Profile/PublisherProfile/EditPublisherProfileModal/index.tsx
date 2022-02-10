@@ -22,6 +22,8 @@ import {
     UpdatePublisherProfileMutationVariables,
 } from '#generated/types';
 import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
+import { publisher } from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
 
 import LocationInput, { MunicipalityOption } from '#views/Register/RegisterForm/LocationInput';
 
@@ -75,6 +77,8 @@ function EditProfileModal(props: Props) {
         profileDetails,
     } = props;
 
+    const strings = useTranslation(publisher);
+
     const initialValue: PartialFormType = useMemo(() => ({
         name: profileDetails?.name,
         municipality: profileDetails?.municipality,
@@ -122,7 +126,7 @@ function EditProfileModal(props: Props) {
 
                 if (ok) {
                     alert.show(
-                        'Successfully updated profile',
+                        strings.profileUpdateSuccessLabel,
                         { variant: 'success' },
                     );
                     onEditSuccess();
@@ -131,7 +135,7 @@ function EditProfileModal(props: Props) {
                     const formError = transformToFormError(removeNull(errors) as ObjectError[]);
                     setError(formError);
                     alert.show(
-                        'Error updating profile',
+                        strings.profileUpdateErrorLabel,
                         { variant: 'error' },
                     );
                 }
@@ -159,7 +163,7 @@ function EditProfileModal(props: Props) {
 
     return (
         <Modal
-            heading="Edit Profile"
+            heading={strings.editProfileModalHeading}
             onCloseButtonClick={onModalClose}
             size="small"
             freeHeight
@@ -170,7 +174,7 @@ function EditProfileModal(props: Props) {
                         onClick={onModalClose}
                         variant="secondary"
                     >
-                        Cancel
+                        {strings.cancelLabel}
                     </Button>
                     <Button
                         name={undefined}
@@ -178,7 +182,7 @@ function EditProfileModal(props: Props) {
                         onClick={submit}
                         disabled={pristine || updateProfilePending}
                     >
-                        Save
+                        {strings.saveLabel}
                     </Button>
                 </>
             )}
@@ -186,7 +190,7 @@ function EditProfileModal(props: Props) {
             <NonFieldError error={error} />
             <TextInput
                 name="name"
-                label="Name of the Publisher"
+                label={strings.publisherNameLabel}
                 value={value?.name}
                 error={error?.name}
                 onChange={setFieldValue}
@@ -195,7 +199,7 @@ function EditProfileModal(props: Props) {
             />
             <LocationInput
                 name="municipality"
-                label="Municipality"
+                label={strings.municipalityLabel}
                 error={error?.municipality}
                 value={value?.municipality}
                 onChange={setFieldValue}
@@ -205,7 +209,7 @@ function EditProfileModal(props: Props) {
             />
             <NumberInput
                 name="wardNumber"
-                label="Ward Number"
+                label={strings.wardNumberLabel}
                 value={value?.wardNumber}
                 error={error?.wardNumber}
                 onChange={setFieldValue}
@@ -215,7 +219,7 @@ function EditProfileModal(props: Props) {
             />
             <TextInput
                 name="localAddress"
-                label="Local Address"
+                label={strings.localAddressLabel}
                 value={value?.localAddress}
                 error={error?.localAddress}
                 onChange={setFieldValue}

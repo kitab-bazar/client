@@ -8,6 +8,9 @@ import {
     OrderStatus,
 } from '#generated/types';
 import routes from '#base/configs/routes';
+import { orderItem } from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
+
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
 
 import styles from './styles.css';
@@ -35,11 +38,13 @@ function OrderItem(props: Props) {
         status,
     } = order;
 
+    const strings = useTranslation(orderItem);
+
     return (
         <Container
             className={_cs(styles.orderItem, className)}
             contentClassName={styles.orderMeta}
-            heading={orderCode}
+            heading={orderCode?.split('-')?.[0]}
             headingClassName={styles.heading}
             headingSize="extraSmall"
             headingContainerClassName={styles.heading}
@@ -50,21 +55,21 @@ function OrderItem(props: Props) {
                     state={{ orderId: orderCode }}
                     variant="transparent"
                 >
-                    View order details
+                    {strings.viewDetailsLabel}
                 </SmartButtonLikeLink>
             )}
         >
             <TextOutput
-                label="Books"
+                label={strings.booksLabel}
                 valueType="number"
                 value={totalQuantity}
             />
             <TextOutput
-                label="Total price"
+                label={strings.totalPriceLabel}
                 valueType="number"
                 value={totalPrice}
                 valueProps={{
-                    prefix: 'NPR. ',
+                    prefix: strings.nprPrefix,
                 }}
             />
             <TextOutput

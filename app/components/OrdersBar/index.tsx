@@ -12,6 +12,10 @@ import {
     CartItemsMetaQueryVariables,
 } from '#generated/types';
 
+import { ordersBar } from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
+import { resolveToString } from '#base/utils/lang';
+
 import OrdersModal from './OrdersModal';
 import { CART_ITEMS } from './queries';
 
@@ -26,6 +30,7 @@ function OrdersBar(props: Props) {
         className,
     } = props;
 
+    const strings = useTranslation(ordersBar);
     const [
         showOrders,
         setShowOrdersTrue,
@@ -45,14 +50,19 @@ function OrdersBar(props: Props) {
             {totalCount > 0 && (
                 <div className={_cs(styles.ordersBar, showOrders && styles.hidden, className)}>
                     <div className={styles.summary}>
-                        {`${totalCount} book(s) selected`}
+                        {
+                            resolveToString(
+                                strings.booksSelectedMessage,
+                                { count: String(totalCount) },
+                            )
+                        }
                         <TextOutput
-                            label="Total price (NPR)"
+                            label={strings.totalPriceLabel}
                             valueType="number"
                             value={totalPrice}
                         />
                         <TextOutput
-                            label="Total Books"
+                            label={strings.totalBooksLabel}
                             valueType="number"
                             value={totalQuantity}
                         />
@@ -63,7 +73,7 @@ function OrdersBar(props: Props) {
                             variant="tertiary"
                             onClick={setShowOrdersTrue}
                         >
-                            View Orders
+                            {strings.viewOrdersLabel}
                         </Button>
                     </div>
                 </div>

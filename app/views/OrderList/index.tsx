@@ -23,6 +23,8 @@ import {
     OrderStatusOptionsQuery,
     OrderStatusOptionsQueryVariables,
 } from '#generated/types';
+import { orderList as orderListLang } from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
 
 import styles from './styles.css';
 
@@ -227,6 +229,8 @@ function OrderList(props: Props) {
         className,
     } = props;
 
+    const strings = useTranslation(orderListLang);
+
     const [page, setPage] = useState<number>(1);
     const [expandedOrderId, setExpandedOrderId] = useState<string | undefined>();
     const [status, setStatus] = useInputState<string | undefined>(undefined);
@@ -278,14 +282,14 @@ function OrderList(props: Props) {
             <div className={styles.headerContainer}>
                 <Header
                     className={styles.pageHeader}
-                    heading="Orders"
+                    heading={strings.pageHeading}
                     spacing="loose"
                 >
                     <TextInput
                         variant="general"
                         className={styles.searchInput}
                         icons={<IoSearchSharp />}
-                        placeholder="Search by book title (3 or more characters)"
+                        placeholder={strings.searchPlaceholder}
                         disabled
                         name={undefined}
                         value={undefined}
@@ -299,7 +303,7 @@ function OrderList(props: Props) {
                         className={styles.statusInput}
                         listContainerClassName={styles.statusList}
                         name={undefined}
-                        label="Order Status"
+                        label={strings.orderStatusFilterLabel}
                         options={statusOptions?.orderStatusList?.enumValues ?? undefined}
                         keySelector={enumKeySelector}
                         labelSelector={enumLabelSelector}
@@ -313,7 +317,7 @@ function OrderList(props: Props) {
                             variant="transparent"
                             spacing="none"
                         >
-                            Clear status filter
+                            {strings.clearStatusFilterButtonLabel}
                         </Button>
                     )}
                 </div>
@@ -322,7 +326,7 @@ function OrderList(props: Props) {
                         <TextOutput
                             className={styles.orderCount}
                             value={orderList?.orders?.totalCount}
-                            label="Order(s) found"
+                            label={strings.orderStatusFilterLabel}
                         />
                     </div>
                     <ListView
