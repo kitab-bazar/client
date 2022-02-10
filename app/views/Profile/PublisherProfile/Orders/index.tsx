@@ -58,7 +58,8 @@ function Orders() {
     const [page, setPage] = useState<number>(1);
 
     const {
-        data: publisherBookOrdersResult,
+        previousData,
+        data: publisherBookOrdersResult = previousData,
         loading,
         error,
     } = useQuery<PublisherBookOrdersQuery, PublisherBookOrdersQueryVariables>(

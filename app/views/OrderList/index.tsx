@@ -236,8 +236,11 @@ function OrderList(props: Props) {
         status: status ? [status] : undefined,
     }), [page, status]);
 
+    const filtered = !!status;
+
     const {
-        data: orderList,
+        previousData,
+        data: orderList = previousData,
         loading,
         error,
     } = useQuery<OrderListWithBooksQuery, OrderListWithBooksQueryVariables>(
@@ -328,7 +331,7 @@ function OrderList(props: Props) {
                         renderer={OrderItem}
                         rendererParams={orderListRendererParams}
                         errored={!!error}
-                        filtered={false}
+                        filtered={filtered}
                         pending={loading}
                     />
                     <Pager
