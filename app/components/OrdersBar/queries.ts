@@ -5,6 +5,7 @@ export const CART_ITEMS = gql`
 query CartItemsMeta {
     cartItems {
         totalCount
+        totalQuantity
         grandTotalPrice
     }
 }

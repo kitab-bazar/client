@@ -63,8 +63,8 @@ function Base() {
             if (typeof u === 'function') {
                 setUser((oldUser) => {
                     const newUser = u(oldUser);
-
                     const sanitizedUser = newUser;
+
                     sync(!!sanitizedUser, sanitizedUser?.id);
                     setUserOnSentry(sanitizedUser ?? null);
 
@@ -74,7 +74,8 @@ function Base() {
                 const sanitizedUser = u;
                 sync(!!sanitizedUser, sanitizedUser?.id);
                 setUserOnSentry(sanitizedUser ?? null);
-                setUser(u);
+
+                setUser(sanitizedUser);
             }
         },
         [setUser],
@@ -191,7 +192,12 @@ function Base() {
                                     <AuthPopup />
                                     <AlertContainer className={styles.alertContainer} />
                                     <Router history={browserHistory}>
-                                        <Init preloadClassName={styles.preload}>
+                                        <Init
+                                            preloadClassName={styles.preload}
+                                            // NOTE: make sure page is
+                                            // destroyed when user is changed
+                                            key={user?.id}
+                                        >
                                             <Navbar
                                                 className={_cs(
                                                     styles.navbar,

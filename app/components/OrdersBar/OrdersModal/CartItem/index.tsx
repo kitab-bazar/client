@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
     _cs,
     isDefined,
@@ -25,6 +25,8 @@ import {
     RemoveCartItemMutationVariables,
 } from '#generated/types';
 import { CART_ITEMS } from '#components/OrdersBar/queries';
+
+import UserContext from '#base/context/UserContext';
 
 import styles from './styles.css';
 
@@ -96,7 +98,13 @@ function CartItem(props: Props) {
 
     const alert = useAlert();
 
-    const [removeCartItem] = useMutation<RemoveCartItemMutation, RemoveCartItemMutationVariables>(
+    const { user } = useContext(UserContext);
+    const canCreateOrder = user?.permissions.includes('CREATE_ORDER');
+
+    const [
+        removeCartItem,
+        { loading: removeLoading },
+    ] = useMutation<RemoveCartItemMutation, RemoveCartItemMutationVariables>(
         REMOVE_CART_ITEM,
         {
             refetchQueries: CART_ITEMS_NAME ? [CART_ITEMS_NAME] : undefined,
@@ -120,10 +128,10 @@ function CartItem(props: Props) {
         },
     );
 
-    const [updateCartBookQuantity] = useMutation<
-        UpdateCartBookQuantityMutation,
-        UpdateCartBookQuantityMutationVariables
-    >(
+    const [
+        updateCartBookQuantity,
+        { loading: updateLoading },
+    ] = useMutation<UpdateCartBookQuantityMutation, UpdateCartBookQuantityMutationVariables>(
         UPDATE_CART_BOOK_QUANTITY,
         {
             refetchQueries: CART_ITEMS_NAME ? [CART_ITEMS_NAME] : undefined,
@@ -142,6 +150,8 @@ function CartItem(props: Props) {
             },
         },
     );
+
+    const actionsDisabled = removeLoading || updateLoading;
 
     const handleQuantityChange = React.useCallback((newQuantity: number | undefined) => {
         if (isDefined(newQuantity) && newQuantity > 0) {
@@ -190,11 +200,12 @@ function CartItem(props: Props) {
                         />
                     </>
                 )}
-                headerActions={(
+                headerActions={canCreateOrder && (
                     <Button
                         name={undefined}
                         onClick={handleRemoveButtonClick}
                         variant="action"
+                        disabled={actionsDisabled}
                     >
                         <IoTrash />
                     </Button>
@@ -207,6 +218,11 @@ function CartItem(props: Props) {
                         type="number"
                         variant="general"
                         onChange={handleQuantityChange}
+                        // NOTE: not disabling when updateLoading is true
+                        readOnly={!canCreateOrder}
+                        disabled={removeLoading}
+                        min={1}
+                        max={99}
                     />
                 )}
                 footerActionsContainerClassName={styles.actions}

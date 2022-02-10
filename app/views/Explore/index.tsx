@@ -148,6 +148,8 @@ function Explore(props: Props) {
     const { user } = useContext(UserContext);
     const strings = useTranslation(explore);
 
+    const canAddBook = user?.permissions.includes('CAN_CREATE_BOOK');
+
     const [selectedBookId, setSelectedBookId] = React.useState<string | undefined>();
     const [page, setPage] = useState<number>(1);
 
@@ -255,7 +257,7 @@ function Explore(props: Props) {
                     className={styles.pageHeader}
                     heading={pageTitle}
                     spacing="loose"
-                    actions={publisherFromProps && (
+                    actions={canAddBook && (
                         <Button
                             name={undefined}
                             onClick={showUploadBookModal}

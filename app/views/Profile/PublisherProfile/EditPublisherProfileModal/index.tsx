@@ -211,6 +211,7 @@ function EditProfileModal(props: Props) {
                 onChange={setFieldValue}
                 disabled={updateProfilePending}
                 min={1}
+                max={99}
             />
             <TextInput
                 name="localAddress"

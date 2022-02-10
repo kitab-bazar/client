@@ -2,6 +2,7 @@ import React from 'react';
 
 interface ErrorBoundaryProps {
     children: React.ReactNode;
+    className?: string;
 }
 interface ErrorBoundaryState {
     hasError: boolean;
@@ -22,10 +23,15 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 
     render() {
         const { hasError } = this.state;
-        const { children } = this.props;
+        const {
+            children,
+            className,
+        } = this.props;
+
         if (hasError) {
+            // FIXME: style this
             return (
-                <div>
+                <div className={className}>
                     Some error occurred
                 </div>
             );

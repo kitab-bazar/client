@@ -179,8 +179,8 @@ export const explore = {
         ne: 'Date added (Newer first)',
     },
     pageTitlePublisher: {
-        en: 'Publisher Books',
-        ne: 'Publisher Books',
+        en: 'Books',
+        ne: 'Books',
     },
     pageTitleExploreByCategory: {
         en: 'Explore Books by Category',

@@ -120,7 +120,7 @@ function Page<T extends { className?: string }>(props: Props<T>) {
     return (
         <>
             <PageTitle value={title} />
-            <ErrorBoundary>
+            <ErrorBoundary className={styles.page}>
                 <Comp
                     className={styles.page}
                     {...componentProps}

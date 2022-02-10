@@ -4,6 +4,7 @@ import { useQuery } from '@apollo/client';
 import {
     Button,
     useBooleanState,
+    TextOutput,
 } from '@the-deep/deep-ui';
 
 import {
@@ -35,14 +36,26 @@ function OrdersBar(props: Props) {
         data: cartItemsMeta,
     } = useQuery<CartItemsMetaQuery, CartItemsMetaQueryVariables>(CART_ITEMS);
 
-    const totalCartItems = cartItemsMeta?.cartItems?.totalCount ?? 0;
+    const totalCount = cartItemsMeta?.cartItems?.totalCount ?? 0;
+    const totalQuantity = cartItemsMeta?.cartItems?.totalQuantity ?? 0;
+    const totalPrice = cartItemsMeta?.cartItems?.grandTotalPrice ?? 0;
 
     return (
         <>
-            {totalCartItems > 0 && (
+            {totalCount > 0 && (
                 <div className={_cs(styles.ordersBar, showOrders && styles.hidden, className)}>
-                    <div>
-                        {`${totalCartItems} book(s) selected`}
+                    <div className={styles.summary}>
+                        {`${totalCount} book(s) selected`}
+                        <TextOutput
+                            label="Total price (NPR)"
+                            valueType="number"
+                            value={totalPrice}
+                        />
+                        <TextOutput
+                            label="Total Books"
+                            valueType="number"
+                            value={totalQuantity}
+                        />
                     </div>
                     <div>
                         <Button
@@ -58,6 +71,8 @@ function OrdersBar(props: Props) {
             {showOrders && (
                 <OrdersModal
                     onClose={setShowOrdersFalse}
+                    totalPrice={totalPrice}
+                    totalQuantity={totalQuantity}
                 />
             )}
         </>

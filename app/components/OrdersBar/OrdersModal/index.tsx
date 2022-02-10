@@ -80,11 +80,15 @@ const MAX_ITEMS_PER_PAGE = 10;
 
 interface Props {
     onClose: () => void;
+    totalPrice: number;
+    totalQuantity: number;
 }
 
 function OrdersModal(props: Props) {
     const {
         onClose,
+        totalPrice,
+        totalQuantity,
     } = props;
 
     const alert = useAlert();
@@ -160,11 +164,18 @@ function OrdersModal(props: Props) {
             heading="Order List"
             headingSize="small"
             footerIcons={(
-                <TextOutput
-                    label="Total price (NPR)"
-                    valueType="number"
-                    value={cartItemList?.cartItems?.grandTotalPrice}
-                />
+                <>
+                    <TextOutput
+                        label="Total price (NPR)"
+                        valueType="number"
+                        value={totalPrice}
+                    />
+                    <TextOutput
+                        label="Total Books"
+                        valueType="number"
+                        value={totalQuantity}
+                    />
+                </>
             )}
             footerActions={(
                 <Button

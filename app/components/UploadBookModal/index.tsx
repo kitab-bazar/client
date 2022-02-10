@@ -256,6 +256,7 @@ function UploadBookModal(props: Props) {
                 error={error?.numberOfPages}
                 onChange={setFieldValue}
                 disabled={createBookPending}
+                min={1}
             />
             <SelectInput
                 label="Language"
@@ -282,6 +283,7 @@ function UploadBookModal(props: Props) {
                 error={error?.price}
                 onChange={setFieldValue}
                 disabled={createBookPending}
+                min={1}
             />
             <CategoryMultiSelectInput
                 name="categories"

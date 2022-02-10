@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { _cs } from '@togglecorp/fujs';
 import { getOperationName } from 'apollo-link';
 import {
@@ -27,6 +27,8 @@ import {
     RemoveFromWishListMutationVariables,
 } from '#generated/types';
 import { CART_ITEMS } from '#components/OrdersBar/queries';
+
+import UserContext from '#base/context/UserContext';
 
 import styles from './styles.css';
 
@@ -129,6 +131,10 @@ function BookItem(props: Props) {
     } = props;
 
     const alert = useAlert();
+
+    const { user } = useContext(UserContext);
+
+    const canCreateOrder = user?.permissions.includes('CREATE_ORDER');
 
     const [
         addToOrder,
@@ -267,7 +273,7 @@ function BookItem(props: Props) {
             );
         }
 
-        return (
+        return canCreateOrder && (
             <Button
                 name={undefined}
                 variant="primary"
@@ -278,7 +284,7 @@ function BookItem(props: Props) {
             </Button>
         );
         // eslint-disable-next-line react/destructuring-assignment
-    }, [variant, actionsDisabled, handleAddToOrder, props.book]);
+    }, [variant, canCreateOrder, actionsDisabled, handleAddToOrder, props.book]);
 
     const wishListButton = React.useMemo(() => {
         if (!wishListActionsShown) {
@@ -289,7 +295,7 @@ function BookItem(props: Props) {
         }
         // eslint-disable-next-line react/destructuring-assignment
         if (props.book.wishlistId) {
-            return (
+            return canCreateOrder && (
                 <Button
                     // eslint-disable-next-line react/destructuring-assignment
                     name={props.book.wishlistId}
@@ -303,7 +309,7 @@ function BookItem(props: Props) {
         }
         // eslint-disable-next-line react/destructuring-assignment
         if (!props.book.cartDetails) {
-            return (
+            return canCreateOrder && (
                 <Button
                     name={undefined}
                     variant="primary"
@@ -316,6 +322,7 @@ function BookItem(props: Props) {
         }
         return undefined;
     }, [
+        canCreateOrder,
         variant,
         // eslint-disable-next-line react/destructuring-assignment
         props.book,

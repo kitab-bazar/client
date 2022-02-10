@@ -65,9 +65,6 @@ const orderList = wrap({
     componentProps: {
     },
     visibility: 'is-authenticated',
-    checkPermissions: (user) => (
-        !user?.publisherId
-    ),
 });
 const wishList = wrap({
     path: '/wish-list',

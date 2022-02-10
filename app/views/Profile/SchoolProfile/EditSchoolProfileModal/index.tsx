@@ -238,6 +238,8 @@ function EditSchoolProfileModal(props: Props) {
                 value={value?.wardNumber}
                 error={error?.wardNumber}
                 disabled={updateProfilePending}
+                min={1}
+                max={99}
             />
         </Modal>
     );

@@ -85,12 +85,11 @@ function GoalPoint(props: GoalPointProps) {
 const MAX_ITEMS_PER_PAGE = 4;
 
 function HomePage() {
-    const [page, setPage] = useState<number>(1);
-
     const orderVariables = useMemo(() => ({
         pageSize: MAX_ITEMS_PER_PAGE,
-        page,
-    }), [page]);
+        page: 1,
+        ordering: '-id',
+    }), []);
 
     const [selectedBook, setSelectedBook] = React.useState<string | undefined>();
     const {
@@ -194,15 +193,6 @@ function HomePage() {
                     <Container
                         className={styles.featuredBooksSection}
                         heading={strings.featuredBooksLabel}
-                        footerContent={(
-                            <Pager
-                                activePage={page}
-                                maxItemsPerPage={MAX_ITEMS_PER_PAGE}
-                                itemsCount={result?.books?.totalCount ?? 0}
-                                onActivePageChange={setPage}
-                                itemsPerPageControlHidden
-                            />
-                        )}
                     >
                         <ListView
                             className={styles.bookList}

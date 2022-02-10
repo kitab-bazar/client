@@ -6,7 +6,7 @@ import { notifications } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 import { resolveToComponent } from '#base/utils/lang';
 import routes from '#base/configs/routes';
-import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
+import SmartLink from '#base/components/SmartLink';
 
 import { Notification } from '../index';
 import NotificationContainer from '../NotificationContainer';
@@ -38,12 +38,12 @@ function NotificationItem(props: Props) {
 
     const orderLink = useMemo(() => (
         notification.order ? (
-            <SmartButtonLikeLink
+            <SmartLink
                 route={routes.orderList}
-                state={{ orderId: notification.order.orderCode }}
+                // state={{ orderId: notification.order.orderCode }}
             >
-                View details
-            </SmartButtonLikeLink>
+                {`order #${notification.order.orderCode.split('-')[0]}`}
+            </SmartLink>
         ) : undefined
     ), [notification.order]);
 

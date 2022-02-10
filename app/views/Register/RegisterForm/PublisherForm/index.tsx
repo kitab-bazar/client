@@ -77,6 +77,7 @@ function PublisherForm<K extends string>(props: Props<K>) {
                 onChange={setFieldValue}
                 disabled={disabled}
                 min={1}
+                max={99}
             />
             <TextInput
                 name="localAddress"
