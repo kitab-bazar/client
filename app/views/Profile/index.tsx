@@ -1,6 +1,6 @@
 import React from 'react';
-
 import { useQuery, gql } from '@apollo/client';
+import { _cs } from '@togglecorp/fujs';
 
 import {
     MyProfileTypeQuery,
@@ -24,7 +24,13 @@ const MY_PROFILE = gql`
     }
 `;
 
-function Profile() {
+interface Props {
+    className?: string,
+}
+
+function Profile(props: Props) {
+    const { className } = props;
+
     const {
         data: profileData,
     } = useQuery<MyProfileTypeQuery, MyProfileTypeQueryVariables>(
@@ -36,7 +42,7 @@ function Profile() {
     // FIXME: handle error handling and loading states
 
     return (
-        <div className={styles.profile}>
+        <div className={_cs(styles.profile, className)}>
             {userType === 'INDIVIDUAL_USER' && (
                 <IndividualProfile />
             )}

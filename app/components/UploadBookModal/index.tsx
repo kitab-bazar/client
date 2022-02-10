@@ -31,6 +31,8 @@ import AuthorMultiSelectInput, { Author } from '#components/AuthorMultiSelectInp
 import CategoryMultiSelectInput, { Category } from '#components/CategoryMultiSelectInput';
 import { EnumFix } from '#utils/types';
 
+import styles from './styles.css';
+
 interface EnumEntity<T> {
     name: T;
     description?: string | null;
@@ -142,16 +144,12 @@ function UploadBookModal(props: Props) {
                     setError(formError);
                     alert.show(
                         'Error uploading book',
-                        {
-                            variant: 'error',
-                        },
+                        { variant: 'error' },
                     );
                 } else if (ok) {
                     alert.show(
                         'Successfully uploaded book',
-                        {
-                            variant: 'success',
-                        },
+                        { variant: 'success' },
                     );
                     onUploadSuccess();
                     onModalClose();
@@ -160,9 +158,7 @@ function UploadBookModal(props: Props) {
             onError: () => {
                 alert.show(
                     'Error uploading book',
-                    {
-                        variant: 'error',
-                    },
+                    { variant: 'error' },
                 );
             },
         },
@@ -187,6 +183,8 @@ function UploadBookModal(props: Props) {
                             data: {
                                 ...val as CreateBookMutationVariables['data'],
                                 publisher,
+                                // FIXME: add this to form
+                                isPublished: true,
                             },
                         },
                     });
@@ -201,7 +199,8 @@ function UploadBookModal(props: Props) {
 
     return (
         <Modal
-            className={_cs(className)}
+            className={_cs(styles.uploadBookModal, className)}
+            bodyClassName={styles.inputList}
             heading="Upload Book"
             onCloseButtonClick={onModalClose}
             size="medium"

@@ -10,6 +10,7 @@ import {
 import {
     IoCheckmark,
     IoClose,
+    IoBook,
 } from 'react-icons/io5';
 import {
     gql,
@@ -316,12 +317,14 @@ function BookItem(props: Props) {
 
     const bookCoverPreview = (
         <div className={styles.preview}>
-            {book.image?.url && (
+            {book.image?.url ? (
                 <img
                     className={styles.image}
                     src={book.image.url}
                     alt={book.image.name ?? undefined}
                 />
+            ) : (
+                <IoBook className={styles.fallbackIcon} />
             )}
         </div>
     );

@@ -389,3 +389,123 @@ export const school = {
         ne: 'अझ धेरै हेर्नुहोस्',
     },
 };
+
+export const publisher = {
+    profileUpdateErrorLabel: {
+        en: 'Error updating publisher profile',
+        ne: 'Error updating publisher profile',
+    },
+    profileUpdateSuccessLabel: {
+        en: 'Successfully updated publisher profile',
+        ne: 'Successfully updated publisher profile',
+    },
+    editProfileModalHeading: {
+        en: 'Edit Details',
+        ne: 'Edit Details',
+    },
+    cancelLabel: {
+        en: 'Cancel',
+        ne: 'रद्द गर्नुहोस्',
+    },
+    saveLabel: {
+        en: 'Save',
+        ne: 'बचत गर्नुहोस्',
+        // TODO: Find better word for 'save'
+    },
+    publisherNameLabel: {
+        en: 'Publisher Name',
+        ne: 'Publisher Name',
+    },
+    municipalityLabel: {
+        en: 'Municipality',
+        ne: 'नगरपालिका',
+    },
+    wardNumberLabel: {
+        en: 'Ward Number',
+        ne: 'वडा नम्बर ',
+    },
+    localAddressLabel: {
+        en: 'Local Address',
+        ne: 'स्थानीय ठेगाना',
+    },
+    firstNameLabel: {
+        en: 'First Name',
+        ne: 'पहिलो नाम',
+    },
+    lastNameLabel: {
+        en: 'Last Name',
+        ne: 'थर',
+    },
+    phoneNumberLabel: {
+        en: 'Phone Number',
+        ne: 'फोन नम्बर',
+    },
+    panNumberLabel: {
+        en: 'PAN Number',
+        ne: 'प्यान नम्बर',
+    },
+    vatNumberLabel: {
+        en: 'VAT Number',
+        ne: 'भ्याट नम्बर',
+    },
+    booksLabel: {
+        en: 'Books',
+        ne: 'किताबहरु ',
+    },
+    totalPriceLabel: {
+        en: 'Total Price',
+        ne: 'कुल रकम',
+    },
+    rsLabel: {
+        en: 'Rs. ',
+        ne: 'रु.',
+    },
+    statusLabel: {
+        en: 'Status',
+        ne: 'स्थिति',
+    },
+    profileDetailsHeading: {
+        en: 'Profile Details',
+        ne: 'प्रोफाइल विवरण',
+    },
+    editProfileButtonContent: {
+        en: 'Edit Profile',
+        ne: 'प्रोफाइल सम्पादन गर्नुहोस',
+    },
+    nameLabel: {
+        en: 'Name',
+        ne: 'नाम',
+    },
+    emailLabel: {
+        en: 'Email',
+        ne: 'इमेल',
+    },
+    addressLabel: {
+        en: 'Address',
+        ne: 'ठेगाना',
+    },
+    myWishlistLabel: {
+        en: 'My Wishlist',
+        ne: 'मेरो इच्छा सूची',
+    },
+    myCartLabel: {
+        en: 'My Cart',
+        ne: 'मेरो कार्ट',
+    },
+    totalOrdersLabel: {
+        en: 'Total Orders',
+        ne: 'कुल अर्डरहरु ',
+    },
+    weeksOrderLabel: {
+        en: 'This week\'s order',
+        ne: 'यो हप्ताको अर्डरहरु ',
+    },
+    orderDetailsHeading: {
+        en: 'Order Details',
+        ne: 'अर्डर विवरण ',
+    },
+    viewMoreButtonContent: {
+        en: 'View More',
+        ne: 'अझ धेरै हेर्नुहोस्',
+    },
+};

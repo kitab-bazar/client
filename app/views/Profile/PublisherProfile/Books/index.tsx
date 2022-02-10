@@ -1,14 +1,11 @@
 import React, { useCallback, useState } from 'react';
 import { isNotDefined, isDefined } from '@togglecorp/fujs';
 import { useQuery, gql } from '@apollo/client';
-import { IoAdd } from 'react-icons/io5';
 
 import {
     Pager,
-    Button,
     ListView,
     Container,
-    useModalState,
 } from '@the-deep/deep-ui';
 
 import BookDetailsModal from '#components/BookDetailModal';
@@ -18,7 +15,6 @@ import {
     PublisherBooksQueryVariables,
 } from '#generated/types';
 
-import UploadBookModal from './UploadBookModal';
 import styles from './styles.css';
 
 type Book = NonNullable<NonNullable<PublisherBooksQuery['books']>['results']>[number];
@@ -65,7 +61,6 @@ function Books(props: Props) {
     const {
         data: publisherBooksResult,
         loading,
-        refetch: refetchPublisherBooks,
         error,
     } = useQuery<PublisherBooksQuery, PublisherBooksQueryVariables>(
         PUBLISHER_BOOKS,
@@ -87,27 +82,11 @@ function Books(props: Props) {
         book: data,
     }), []);
 
-    const [
-        uploadBookModalShown,
-        showUploadBookModal,
-        hideUploadBookModal,
-    ] = useModalState(false);
-
     return (
         <Container
             className={styles.publisherBooks}
             heading="Books"
             contentClassName={styles.content}
-            headerActions={(
-                <Button
-                    name={undefined}
-                    variant="general"
-                    onClick={showUploadBookModal}
-                    icons={<IoAdd />}
-                >
-                    Upload Book
-                </Button>
-            )}
             footerActions={(
                 <Pager
                     activePage={page}
@@ -128,13 +107,6 @@ function Books(props: Props) {
                 pending={loading}
                 filtered={false}
             />
-            {uploadBookModalShown && publisherId && (
-                <UploadBookModal
-                    publisher={publisherId}
-                    onModalClose={hideUploadBookModal}
-                    onUploadSuccess={refetchPublisherBooks}
-                />
-            )}
             {isDefined(selectedBook) && (
                 <BookDetailsModal
                     bookId={selectedBook}

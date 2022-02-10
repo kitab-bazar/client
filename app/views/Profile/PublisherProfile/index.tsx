@@ -1,20 +1,45 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
-    Tab,
-    Tabs,
-    TabPanel,
-    TabList,
+    IoPencil,
+    IoHeart,
+    IoPerson,
+} from 'react-icons/io5';
+import {
     PendingMessage,
+    Button,
+    Container,
+    TextOutput,
+    Message,
+    useModalState,
 } from '@the-deep/deep-ui';
+import {
+    AreaChart,
+    XAxis,
+    YAxis,
+    Area,
+    Tooltip,
+    ResponsiveContainer,
+} from 'recharts';
+import {
+    _cs,
+    isDefined,
+    compareDate,
+} from '@togglecorp/fujs';
 import { useQuery, gql } from '@apollo/client';
+
 import {
     PublisherProfileQuery,
     PublisherProfileQueryVariables,
+    PublisherStatsQuery,
+    PublisherStatsQueryVariables,
 } from '#generated/types';
+import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
+import routes from '#base/configs/routes';
 
-import Profile from './Profile';
-import Books from './Books';
-import Orders from './Orders';
+import { publisher } from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
+
+import EditPublisherProfileModal from './EditPublisherProfileModal';
 import styles from './styles.css';
 
 const PUBLISHER_PROFILE = gql`
@@ -54,54 +79,247 @@ const PUBLISHER_PROFILE = gql`
     }
 `;
 
+const dateFormatter = (value: number | string) => {
+    const date = new Date(value);
+    return date.toDateString();
+};
+
+const tickFormatter = (value: number | string) => {
+    const date = new Date(value);
+    const format: Intl.DateTimeFormatOptions = {
+        dateStyle: 'medium',
+    };
+    if (Number.isNaN(date.getTime())) {
+        return '';
+    }
+
+    return new Intl.DateTimeFormat('en-GB', format).format(date);
+};
+
+const PUBLISHER_STATS = gql`
+    query PublisherStats {
+        orderStat {
+            ordersCompletedCount
+            totalBooksOrdered
+            totalBooksUploaded
+            stat {
+                orderPlacedAt
+                totalQuantity
+            }
+        }
+    }
+`;
+
+interface ChartData {
+    orderPlacedAt: string;
+    totalQuantity: number;
+}
+
 export type ProfileDetails = NonNullable<NonNullable<PublisherProfileQuery>['me']>;
 
-function PublisherProfile() {
-    const [activeTab, setActiveTab] = useState<'profile' | 'books' | 'orders' | undefined>('profile');
+interface Props {
+    className?: string;
+}
+
+function PublisherProfile(props: Props) {
+    const { className } = props;
+    const strings = useTranslation(publisher);
 
     const {
-        data: profileDetails,
-        refetch: refetchProfileDetails,
+        previousData,
+        data: profileDetails = previousData,
         loading,
+        refetch: refetchProfileDetails,
     } = useQuery<PublisherProfileQuery, PublisherProfileQueryVariables>(
         PUBLISHER_PROFILE,
     );
 
+    const { data: publisherStats } = useQuery<
+        PublisherStatsQuery,
+        PublisherStatsQueryVariables
+    >(PUBLISHER_STATS);
+
+    const orderSummary = React.useMemo(
+        () => {
+            const filteredStats = publisherStats?.orderStat?.stat
+                ?.filter((v) => isDefined(v.orderPlacedAt)) as ChartData[] | undefined | null;
+            return (filteredStats ?? []).map((v) => ({
+                ...v,
+                orderPlacedAt: new Date(v.orderPlacedAt).getTime(),
+            })).sort((a, b) => compareDate(a.orderPlacedAt, b.orderPlacedAt));
+        },
+        [publisherStats],
+    );
+
+    const [
+        editProfileModalShown,
+        showEditProfileModal,
+        hideEditProfileModal,
+    ] = useModalState(false);
+
+    const publisherDetails = {
+        ...profileDetails?.me?.publisher,
+        municipality: profileDetails?.me?.publisher?.municipality.id,
+    };
+
     return (
-        <div className={styles.publisherProfile}>
-            { loading && (<PendingMessage />)}
-            <Tabs
-                value={activeTab}
-                onChange={setActiveTab}
-            >
-                <TabList
-                    className={styles.tabList}
+        <div className={_cs(styles.publisherProfile, className)}>
+            <div className={styles.pageContainer}>
+                { loading && <PendingMessage />}
+                <Container
+                    className={styles.profileDetails}
+                    contentClassName={styles.profileDetailsContent}
+                    spacing="comfortable"
+                    heading={strings.profileDetailsHeading}
+                    headerActions={(
+                        <Button
+                            name={undefined}
+                            variant="general"
+                            onClick={showEditProfileModal}
+                            icons={<IoPencil />}
+                        >
+                            {strings.editProfileButtonContent}
+                        </Button>
+                    )}
                 >
-                    <Tab name="profile">
-                        Profile
-                    </Tab>
-                    <Tab name="books">
-                        Books
-                    </Tab>
-                    <Tab name="orders">
-                        Orders
-                    </Tab>
-                </TabList>
-                <TabPanel name="profile" className={styles.tabPanel}>
-                    <Profile
-                        profileDetails={profileDetails?.me ?? undefined}
+                    <div className={styles.schoolDetails}>
+                        <div className={styles.displayPicture}>
+                            {profileDetails?.me?.image?.url ? (
+                                <img
+                                    className={styles.image}
+                                    src={profileDetails.me.image.url}
+                                    alt={profileDetails.me.image.name ?? ''}
+                                />
+                            ) : (
+                                <IoPerson className={styles.fallbackIcon} />
+                            )}
+                        </div>
+                        <div className={styles.attributes}>
+                            <TextOutput
+                                spacing="none"
+                                block
+                                valueContainerClassName={styles.value}
+                                label={strings.publisherNameLabel}
+                                value={profileDetails?.me?.publisher?.name}
+                            />
+                            <TextOutput
+                                spacing="none"
+                                block
+                                valueContainerClassName={styles.value}
+                                label={strings.emailLabel}
+                                value={profileDetails?.me?.email}
+                            />
+                            <TextOutput
+                                spacing="none"
+                                block
+                                valueContainerClassName={styles.value}
+                                label={strings.phoneNumberLabel}
+                                value={profileDetails?.me?.phoneNumber}
+                            />
+                            <TextOutput
+                                label={strings.addressLabel}
+                                value={`${
+                                    profileDetails
+                                        ?.me
+                                        ?.publisher
+                                        ?.localAddress
+                                }, ${
+                                    profileDetails
+                                        ?.me
+                                        ?.publisher
+                                        ?.municipality
+                                        ?.district
+                                        ?.name
+                                }`}
+                            />
+                            <TextOutput
+                                label={strings.wardNumberLabel}
+                                value={profileDetails?.me?.publisher?.wardNumber}
+                            />
+                            <TextOutput
+                                label={strings.panNumberLabel}
+                                value={profileDetails?.me?.publisher?.panNumber}
+                            />
+                            <TextOutput
+                                label={strings.vatNumberLabel}
+                                value={profileDetails?.me?.publisher?.vatNumber}
+                            />
+                        </div>
+                    </div>
+                    <div className={styles.usefulLinks}>
+                        <SmartButtonLikeLink
+                            route={routes.wishList}
+                            variant="general"
+                            actions={<IoHeart />}
+                        >
+                            {strings.myWishlistLabel}
+                        </SmartButtonLikeLink>
+                    </div>
+                </Container>
+                <Container
+                    className={styles.orderSummary}
+                    heading={strings.orderDetailsHeading}
+                    spacing="comfortable"
+                >
+                    <ResponsiveContainer className={styles.chartContainer}>
+                        {(orderSummary.length > 0) ? (
+                            <AreaChart data={orderSummary}>
+                                <defs>
+                                    <linearGradient
+                                        key="#00adb5"
+                                        id="accent-color-gradient"
+                                        x1="0"
+                                        y1="0"
+                                        x2="0"
+                                        y2="1"
+                                    >
+                                        <stop
+                                            offset="5%"
+                                            stopColor="#00adb5"
+                                            stopOpacity={0.2}
+                                        />
+                                        <stop
+                                            offset="95%"
+                                            stopColor="#00adb5"
+                                            stopOpacity={0}
+                                        />
+                                    </linearGradient>
+                                </defs>
+                                <XAxis
+                                    dataKey="orderPlacedAt"
+                                    type="number"
+                                    scale="time"
+                                    domain={['dataMin', 'dataMax']}
+                                    allowDuplicatedCategory={false}
+                                    tickFormatter={tickFormatter}
+                                    tick={{ strokeWidth: 1 }}
+                                    interval="preserveStartEnd"
+                                    padding={{ left: 10, right: 10 }}
+                                />
+                                <YAxis />
+                                <Tooltip
+                                    labelFormatter={dateFormatter}
+                                    isAnimationActive={false}
+                                />
+                                <Area
+                                    dataKey="totalQuantity"
+                                    stroke="#00adb5"
+                                    fill="{url(#accent-color-gradient)}"
+                                />
+                            </AreaChart>
+                        ) : (
+                            <Message message="Chart not available" />
+                        )}
+                    </ResponsiveContainer>
+                </Container>
+                {editProfileModalShown && (
+                    <EditPublisherProfileModal
+                        onModalClose={hideEditProfileModal}
                         onEditSuccess={refetchProfileDetails}
+                        profileDetails={publisherDetails}
                     />
-                </TabPanel>
-                <TabPanel name="books" className={styles.tabPanel}>
-                    <Books
-                        publisherId={profileDetails?.me?.publisher?.id}
-                    />
-                </TabPanel>
-                <TabPanel name="orders" className={styles.tabPanel}>
-                    <Orders />
-                </TabPanel>
-            </Tabs>
+                )}
+            </div>
         </div>
     );
 }

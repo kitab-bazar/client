@@ -49,20 +49,6 @@ const tickFormatter = (value: number | string) => {
     return new Intl.DateTimeFormat('en-GB', format).format(date);
 };
 
-const PUBLISHER_STATS = gql`
-    query PublisherStats {
-        orderStat {
-            ordersCompletedCount
-            totalBooksOrdered
-            totalBooksUploaded
-            stat {
-                orderPlacedAt
-                totalQuantity
-            }
-        }
-    }
-`;
-
 interface ChartData {
     orderPlacedAt: string;
     totalQuantity: number;

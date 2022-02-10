@@ -12,8 +12,12 @@ import {
     DropdownMenu,
     DropdownMenuItem,
     TextOutput,
+    useModalState,
 } from '@the-deep/deep-ui';
-import { IoSearchSharp } from 'react-icons/io5';
+import {
+    IoSearchSharp,
+    IoAdd,
+} from 'react-icons/io5';
 import {
     gql,
     useQuery,
@@ -30,6 +34,7 @@ import {
     ExploreBooksQueryVariables,
 } from '#generated/types';
 import BookDetailModal from '#components/BookDetailModal';
+import UploadBookModal from '#components/UploadBookModal';
 import BookItem, { Props as BookItemProps } from '#components/BookItem';
 
 import styles from './styles.css';
@@ -190,6 +195,7 @@ function Explore(props: Props) {
         data: bookResponse = previousData,
         loading: bookLoading,
         error: bookError,
+        refetch: refetchBooks,
     } = useQuery<ExploreBooksQuery, ExploreBooksQueryVariables>(
         EXPLORE_BOOKS,
         {
@@ -215,6 +221,11 @@ function Explore(props: Props) {
     });
 
     const filtered = (categories && categories.length > 0) || !!publisher;
+    const [
+        uploadBookModalShown,
+        showUploadBookModal,
+        hideUploadBookModal,
+    ] = useModalState(false);
 
     return (
         <div className={_cs(styles.explore, className)}>
@@ -223,6 +234,15 @@ function Explore(props: Props) {
                     className={styles.pageHeader}
                     heading={pageTitle}
                     spacing="loose"
+                    actions={publisherFromProps && (
+                        <Button
+                            name={undefined}
+                            onClick={showUploadBookModal}
+                            icons={<IoAdd />}
+                        >
+                            Add New Book
+                        </Button>
+                    )}
                 >
                     <TextInput
                         variant="general"
@@ -234,6 +254,14 @@ function Explore(props: Props) {
                         onChange={setSearch}
                     />
                 </Header>
+                {uploadBookModalShown && effectivePublisher && (
+                    <UploadBookModal
+                        publisher={effectivePublisher}
+                        onModalClose={hideUploadBookModal}
+                        // FIXME: This might not be required
+                        onUploadSuccess={refetchBooks}
+                    />
+                )}
             </div>
             <div className={styles.container}>
                 <div className={styles.sideBar}>
