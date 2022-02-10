@@ -208,6 +208,7 @@ function OrderItem(props: OrderListItemProps) {
                 errored={false}
                 filtered={false}
                 pending={false}
+                messageShown
             />
         </ControlledExpandableContainer>
     );
@@ -215,7 +216,7 @@ function OrderItem(props: OrderListItemProps) {
 
 const orderListKeySelector = (o: OrderType) => o.id;
 
-const MAX_ITEMS_PER_PAGE = 20;
+const MAX_ITEMS_PER_PAGE = 10;
 
 interface Props {
     className?: string;
@@ -277,7 +278,7 @@ function OrderList(props: Props) {
             <div className={styles.headerContainer}>
                 <Header
                     className={styles.pageHeader}
-                    heading="My Orders"
+                    heading="Orders"
                     spacing="loose"
                 >
                     <TextInput
@@ -333,6 +334,7 @@ function OrderList(props: Props) {
                         errored={!!error}
                         filtered={filtered}
                         pending={loading}
+                        messageShown
                     />
                     <Pager
                         activePage={page}

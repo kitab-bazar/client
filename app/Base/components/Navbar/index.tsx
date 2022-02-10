@@ -186,14 +186,12 @@ function Navbar(props: Props) {
                     route={routes.explore}
                     className={styles.navLink}
                 />
-                <SmartNavLink
-                    route={routes.publisherBooks}
-                    className={styles.navLink}
-                />
+                {/*
                 <SmartNavLink
                     route={routes.wishList}
                     className={styles.navLink}
                 />
+                */}
                 <SmartNavLink
                     route={routes.orderList}
                     className={styles.navLink}

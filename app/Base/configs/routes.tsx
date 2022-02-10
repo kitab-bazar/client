@@ -42,7 +42,7 @@ const home = wrap({
 });
 const myProfile = wrap({
     path: '/profile/',
-    title: 'My Profile',
+    title: 'Profile',
     navbarVisibility: true,
     component: lazy(() => import('#views/Profile')),
     componentProps: {
@@ -56,13 +56,10 @@ const explore = wrap({
     component: lazy(() => import('#views/Explore')),
     componentProps: {},
     visibility: 'is-anything',
-    checkPermissions: (user) => (
-        !user?.publisherId
-    ),
 });
 const orderList = wrap({
     path: '/orders/',
-    title: 'My Orders',
+    title: 'Orders',
     navbarVisibility: true,
     component: lazy(() => import('#views/OrderList')),
     componentProps: {
@@ -74,7 +71,7 @@ const orderList = wrap({
 });
 const wishList = wrap({
     path: '/wish-list',
-    title: 'My Wish List',
+    title: 'Wish List',
     navbarVisibility: true,
     component: lazy(() => import('#views/Explore')),
     componentProps: {
@@ -83,19 +80,6 @@ const wishList = wrap({
     visibility: 'is-authenticated',
     checkPermissions: (user) => (
         !user?.publisherId
-    ),
-});
-const publisherBooks = wrap({
-    path: '/publisher/books',
-    title: 'Published Books',
-    navbarVisibility: true,
-    component: lazy(() => import('#views/Explore')),
-    componentProps: {
-        publisher: true,
-    },
-    visibility: 'is-authenticated',
-    checkPermissions: (user) => (
-        !!user?.publisherId
     ),
 });
 
@@ -108,6 +92,5 @@ const routes = {
     fourHundredFour,
     orderList,
     explore,
-    publisherBooks,
 };
 export default routes;

@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { _cs } from '@togglecorp/fujs';
 import {
     CheckListInput,
+    SegmentInput,
     RadioInput,
     useInputState,
     ListView,
@@ -114,12 +115,25 @@ type Book = NonNullable<NonNullable<ExploreBooksQuery['books']>['results']>[numb
 
 const keySelector = (d: { id: string }) => d.id;
 const labelSelector = (d: { name: string }) => d.name;
-const MAX_ITEMS_PER_PAGE = 20;
+
+const MAX_ITEMS_PER_PAGE = 10;
 type SortKeyType = 'price' | '-price' | 'id' | '-id';
+
+type BookSource = 'own' | 'all';
+interface BookSourceOption {
+    id: BookSource;
+    name: string;
+}
+
+const bookSources: BookSourceOption[] = [
+    { id: 'own', name: 'My books' },
+    { id: 'all', name: 'All books' },
+];
+const bookSourceKeySelector = (item: BookSourceOption) => item.id;
+const bookSourceLabelSelector = (item: BookSourceOption) => item.name;
 
 interface Props {
     className?: string;
-    publisher?: boolean;
     wishList?: boolean;
     // category?: string;
 }
@@ -127,13 +141,48 @@ interface Props {
 function Explore(props: Props) {
     const {
         className,
-        publisher: publisherFromProps,
         // category: categoryFromProps,
         wishList: wishListFromProps,
     } = props;
 
     const { user } = useContext(UserContext);
     const strings = useTranslation(explore);
+
+    const [selectedBookId, setSelectedBookId] = React.useState<string | undefined>();
+    const [page, setPage] = useState<number>(1);
+
+    // NOTE: A different UI depending on if user is publisher or not
+    const publisherId = user?.publisherId;
+    // NOTE: only used when in publisher mode
+    const [bookSource, setBookSource] = useInputState<BookSource | undefined>('own');
+
+    const [categories, setCategories] = useInputState<string[] | undefined>(undefined);
+    const [selectedSortKey, setSelectedSortKey] = useInputState<SortKeyType>('id');
+    const [search, setSearch] = useInputState<string | undefined>(undefined);
+    const [publisher, setPublisher] = useInputState<string | undefined>(undefined);
+
+    // eslint-disable-next-line no-nested-ternary
+    const effectivePublisher = publisherId
+        ? (bookSource === 'own' ? publisherId : undefined)
+        : publisher;
+
+    const pageTitle = React.useMemo(() => {
+        if (publisherId) {
+            return strings.pageTitlePublisher;
+        }
+
+        /*
+        if (categoryFromProps) {
+            return strings.pageTitleExploreByCategory;
+        }
+        */
+
+        if (wishListFromProps) {
+            return strings.pageTitleWishList;
+        }
+
+        return strings.pageTitleDefault;
+    }, [strings, publisherId, wishListFromProps]);
 
     const [
         sortOptions,
@@ -154,34 +203,6 @@ function Explore(props: Props) {
             keys,
         ];
     }, [strings]);
-
-    const [categories, setCategories] = useInputState<string[] | undefined>(undefined);
-    const [selectedSortKey, setSelectedSortKey] = useInputState<SortKeyType>('id');
-    const [search, setSearch] = useInputState<string | undefined>(undefined);
-    const [publisher, setPublisher] = useInputState<string | undefined>(undefined);
-    const [selectedBookId, setSelectedBookId] = React.useState<string | undefined>();
-
-    const effectivePublisher = publisherFromProps ? user?.publisherId : publisher;
-
-    const [page, setPage] = useState<number>(1);
-
-    const pageTitle = React.useMemo(() => {
-        if (publisherFromProps) {
-            return strings.pageTitlePublisher;
-        }
-
-        /*
-        if (categoryFromProps) {
-            return strings.pageTitleExploreByCategory;
-        }
-        */
-
-        if (wishListFromProps) {
-            return strings.pageTitleWishList;
-        }
-
-        return strings.pageTitleDefault;
-    }, [strings, publisherFromProps, wishListFromProps]);
 
     const {
         data: optionsQueryResponse,
@@ -211,14 +232,14 @@ function Explore(props: Props) {
         },
     );
 
-    const bookItemRendererParams = (
+    const bookItemRendererParams = React.useCallback((
         _: string,
         book: Book,
     ): BookItemProps => ({
         book,
         onBookTitleClick: setSelectedBookId,
         variant: 'list',
-    });
+    }), []);
 
     const filtered = (categories && categories.length > 0) || !!publisher;
     const [
@@ -265,6 +286,19 @@ function Explore(props: Props) {
             </div>
             <div className={styles.container}>
                 <div className={styles.sideBar}>
+                    {publisherId && (
+                        <RadioInput
+                            className={styles.publisherInput}
+                            listContainerClassName={styles.publisherList}
+                            name={undefined}
+                            options={bookSources}
+                            keySelector={bookSourceKeySelector}
+                            labelSelector={bookSourceLabelSelector}
+                            value={bookSource}
+                            onChange={setBookSource}
+                            disabled={filterLoading}
+                        />
+                    )}
                     <CheckListInput
                         label={strings.categoriesFilterLabel}
                         className={styles.categoriesInput}
@@ -288,7 +322,7 @@ function Explore(props: Props) {
                             {strings.clearCategoriesFilterButtonLabel}
                         </Button>
                     )}
-                    {!publisherFromProps && (
+                    {!publisherId && (
                         <>
                             <RadioInput
                                 label={strings.publisherFilterLabel}
@@ -349,6 +383,7 @@ function Explore(props: Props) {
                         errored={!!bookError}
                         filtered={filtered}
                         pending={bookLoading}
+                        messageShown
                     />
                     <Pager
                         activePage={page}

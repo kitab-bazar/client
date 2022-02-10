@@ -87,7 +87,7 @@ const ORDER_LIST_INDIVIDUAL = gql`
 
 const orderListKeySelector = (o: OrderType) => o.id;
 
-const MAX_ITEMS_PER_PAGE = 3;
+const MAX_ITEMS_PER_PAGE = 4;
 
 interface Props {
     className?: string;
@@ -197,7 +197,7 @@ function IndividualProfile(props: Props) {
                             variant="general"
                             actions={<IoHeart />}
                         >
-                            My Wishlist
+                            Wish list
                         </SmartButtonLikeLink>
                     </div>
                     <Container

@@ -365,11 +365,11 @@ export const school = {
         ne: 'ठेगाना',
     },
     myWishlistLabel: {
-        en: 'My Wishlist',
+        en: 'Wish list',
         ne: 'मेरो इच्छा सूची',
     },
     myCartLabel: {
-        en: 'My Cart',
+        en: 'Cart',
         ne: 'मेरो कार्ट',
     },
     totalOrdersLabel: {

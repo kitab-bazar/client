@@ -76,7 +76,7 @@ type Cart = NonNullable<NonNullable<NonNullable<CartItemsListQuery>['cartItems']
 
 const keySelector = (d: Cart) => d.id;
 
-const MAX_ITEMS_PER_PAGE = 20;
+const MAX_ITEMS_PER_PAGE = 10;
 
 interface Props {
     onClose: () => void;
@@ -186,6 +186,7 @@ function OrdersModal(props: Props) {
                 filtered={false}
                 errored={!!error}
                 pending={cartLoading}
+                messageShown
             />
             <Pager
                 activePage={page}

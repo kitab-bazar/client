@@ -94,7 +94,6 @@ function Notifications(props: Props) {
             spacing="none"
             headingSize="extraSmall"
             headerClassName={styles.header}
-            borderBelowHeader
             footerActions={(
                 <Pager
                     activePage={page}
@@ -113,6 +112,7 @@ function Notifications(props: Props) {
                 errored={!!error}
                 pending={loading}
                 filtered={false}
+                messageShown
             />
 
         </Container>
