@@ -23,6 +23,8 @@
 
     .container {
         display: flex;
+        flex-wrap: wrap;
+        padding: var(--dui-spacing-extra-large);
         width: 100%;
         max-width: var(--kitab-page-max-width);
 
@@ -49,7 +51,7 @@
             }
         }
 
-        .book-list {
+        .book-list-section {
             display: flex;
             flex-direction: column;
             flex-grow: 1;
@@ -64,6 +66,14 @@
                 .book-count {
                     font-size: var(--dui-font-size-large);
                 }
+            }
+
+            .book-list {
+                display: flex;
+                flex-direction: column;
+                flex-grow: 1;
+                padding: var(--dui-spacing-extra-large) 0;
+                gap: var(--dui-spacing-medium);
             }
         }
     }

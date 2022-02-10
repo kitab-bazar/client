@@ -19,7 +19,10 @@ import {
     useQuery,
 } from '@apollo/client';
 
+import { explore } from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
 import { UserContext } from '#base/context/UserContext';
+import { resolveToString } from '#base/utils/lang';
 import {
     ExploreFilterOptionsQuery,
     ExploreFilterOptionsQueryVariables,
@@ -27,7 +30,6 @@ import {
     ExploreBooksQueryVariables,
 } from '#generated/types';
 import BookDetailModal from '#components/BookDetailModal';
-
 import BookItem, { Props as BookItemProps } from '#components/BookItem';
 
 import styles from './styles.css';
@@ -110,16 +112,6 @@ const labelSelector = (d: { name: string }) => d.name;
 const MAX_ITEMS_PER_PAGE = 20;
 type SortKeyType = 'price' | '-price' | 'id' | '-id';
 
-const sortOptions: {
-    [key in SortKeyType]: string;
-} = {
-    price: 'Price (Low to High)',
-    '-price': 'Price (High to Low)',
-    id: 'Date added (Older first)',
-    '-id': 'Date added (Newer first)',
-};
-const sortKeys = Object.keys(sortOptions) as SortKeyType[];
-
 interface Props {
     className?: string;
     publisher?: boolean;
@@ -135,9 +127,28 @@ function Explore(props: Props) {
         wishList: wishListFromProps,
     } = props;
 
-    const {
-        user,
-    } = useContext(UserContext);
+    const { user } = useContext(UserContext);
+    const strings = useTranslation(explore);
+
+    const [
+        sortOptions,
+        sortKeys,
+    ] = React.useMemo(() => {
+        const options: {
+            [key in SortKeyType]: string;
+        } = {
+            price: strings.sortOptionsPriceAsc,
+            '-price': strings.sortOptionsPriceDsc,
+            id: strings.sortOptionsDateAsc,
+            '-id': strings.sortOptionsDateDsc,
+        };
+        const keys = Object.keys(options) as SortKeyType[];
+
+        return [
+            options,
+            keys,
+        ];
+    }, [strings]);
 
     const [categories, setCategories] = useInputState<string[] | undefined>(undefined);
     const [selectedSortKey, setSelectedSortKey] = useInputState<SortKeyType>('id');
@@ -151,21 +162,21 @@ function Explore(props: Props) {
 
     const pageTitle = React.useMemo(() => {
         if (publisherFromProps) {
-            return 'Publisher Books';
+            return strings.pageTitlePublisher;
         }
 
         /*
         if (categoryFromProps) {
-            return 'Explore Books by Category';
+            return strings.pageTitleExploreByCategory;
         }
         */
 
         if (wishListFromProps) {
-            return 'Wish List';
+            return strings.pageTitleWishList;
         }
 
-        return 'Explore Books';
-    }, [publisherFromProps, wishListFromProps]);
+        return strings.pageTitleDefault;
+    }, [strings, publisherFromProps, wishListFromProps]);
 
     const {
         data: optionsQueryResponse,
@@ -217,7 +228,7 @@ function Explore(props: Props) {
                         variant="general"
                         className={styles.searchInput}
                         icons={<IoSearchSharp />}
-                        placeholder="Search by title (3 or more characters)"
+                        placeholder={strings.searchInputPlaceholder}
                         name={undefined}
                         value={search}
                         onChange={setSearch}
@@ -227,7 +238,7 @@ function Explore(props: Props) {
             <div className={styles.container}>
                 <div className={styles.sideBar}>
                     <CheckListInput
-                        label="Categories"
+                        label={strings.categoriesFilterLabel}
                         className={styles.categoriesInput}
                         listContainerClassName={styles.categoryList}
                         name={undefined}
@@ -246,13 +257,13 @@ function Explore(props: Props) {
                             spacing="none"
                             disabled={filterLoading}
                         >
-                            Clear categories filter
+                            {strings.clearCategoriesFilterButtonLabel}
                         </Button>
                     )}
                     {!publisherFromProps && (
                         <>
                             <RadioInput
-                                label="Publisher"
+                                label={strings.publisherFilterLabel}
                                 className={styles.publisherInput}
                                 listContainerClassName={styles.publisherList}
                                 name={undefined}
@@ -271,21 +282,24 @@ function Explore(props: Props) {
                                     spacing="none"
                                     disabled={filterLoading}
                                 >
-                                    Clear publisher filter
+                                    {strings.clearPublisherFilterButtonLabel}
                                 </Button>
                             )}
                         </>
                     )}
                 </div>
-                <div className={styles.bookList}>
+                <div className={styles.bookListSection}>
                     <div className={styles.summary}>
                         <TextOutput
                             className={styles.bookCount}
                             value={bookResponse?.books?.totalCount}
-                            label="Books found"
+                            label={strings.booksFoundLabel}
                         />
                         <DropdownMenu
-                            label={`Order by: ${sortOptions[selectedSortKey]}`}
+                            label={resolveToString(
+                                strings.activeSortLabel,
+                                { sortLabel: sortOptions[selectedSortKey] },
+                            )}
                         >
                             {sortKeys.map((sk) => (
                                 <DropdownMenuItem

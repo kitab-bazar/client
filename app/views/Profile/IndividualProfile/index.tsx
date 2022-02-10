@@ -3,7 +3,6 @@ import {
     IoPencil,
     IoArrowForward,
     IoHeart,
-    IoCart,
     IoPerson,
     IoList,
 } from 'react-icons/io5';
@@ -251,6 +250,8 @@ function IndividualProfile(props: Props) {
                         renderer={OrderItem}
                         rendererParams={orderListRendererParams}
                         messageShown
+                        // FIXME: use strings
+                        // FIXME: use common component
                         emptyMessage={(
                             <div className={styles.emptyMessage}>
                                 <IoList className={styles.icon} />

@@ -107,6 +107,10 @@ export const homePage = {
         en: 'Where reading gets better!',
         ne: 'जहाँ पढाइ राम्रो हुन्छ!',
     },
+    exploreButtonLabel: {
+        en: 'Explore the Platfrom',
+        ne: 'Explore the Platfrom',
+    },
     featuredBooksLabel: {
         en: 'Featured Books',
         ne: 'चित्रित किताबहरु',
@@ -154,6 +158,69 @@ export const homePage = {
     supplyChainText: {
         en: 'Strengthening supply chain mechanism for grade-appropriate supplementary reading materials to rural community schools',
         ne: 'ग्रामीण सामुदायिक विद्यालयहरूमा ग्रेड-उपयुक्त पूरक पठन सामग्रीहरूको लागि आपूर्ति श्रृंखला संयन्त्रलाई सुदृढ गर्दै',
+    },
+};
+
+export const explore = {
+    sortOptionsPriceAsc: {
+        en: 'Price (Low to High)',
+        ne: 'Price (Low to High)',
+    },
+    sortOptionsPriceDsc: {
+        en: 'Price (High to Low)',
+        ne: 'Price (High to Low)',
+    },
+    sortOptionsDateAsc: {
+        en: 'Date added (Older first)',
+        ne: 'Date added (Older first)',
+    },
+    sortOptionsDateDsc: {
+        en: 'Date added (Newer first)',
+        ne: 'Date added (Newer first)',
+    },
+    pageTitlePublisher: {
+        en: 'Publisher Books',
+        ne: 'Publisher Books',
+    },
+    pageTitleExploreByCategory: {
+        en: 'Explore Books by Category',
+        ne: 'Explore Books by Category',
+    },
+    pageTitleWishList: {
+        en: 'Wish List',
+        ne: 'Wish List',
+    },
+    pageTitleDefault: {
+        en: 'Explore Books',
+        ne: 'Explore Books',
+    },
+    searchInputPlaceholder: {
+        en: 'Search by title (3 or more characters)',
+        ne: 'Search by title (3 or more characters)',
+    },
+    categoriesFilterLabel: {
+        en: 'Categories',
+        ne: 'Categories',
+    },
+    clearCategoriesFilterButtonLabel: {
+        en: 'Clear categories filter',
+        ne: 'Clear categories filter',
+    },
+    publisherFilterLabel: {
+        en: 'Publisher',
+        ne: 'Publisher',
+    },
+    clearPublisherFilterButtonLabel: {
+        en: 'Clear publisher filter',
+        ne: 'Clear publisher filter',
+    },
+    booksFoundLabel: {
+        en: 'Book(s) found',
+        ne: 'Book(s) found',
+    },
+    activeSortLabel: {
+        en: 'Order by: {sortLabel}',
+        ne: 'Order by: {sortLabel}',
     },
 };
 
