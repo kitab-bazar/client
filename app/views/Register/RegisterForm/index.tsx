@@ -17,19 +17,21 @@ import {
 } from '@togglecorp/toggle-form';
 import { useMutation, gql } from '@apollo/client';
 
-import NonFieldError from '#components/NonFieldError';
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
+import { register as registerStrings } from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
+import { resolveToComponent } from '#base/utils/lang';
+import routes from '#base/configs/routes';
+import {
+    transformToFormError,
+    ObjectError,
+} from '#base/utils/errorTransform';
 import {
     UserUserType,
     RegisterMutation,
     RegisterMutationVariables,
 } from '#generated/types';
-import routes from '#base/configs/routes';
-
-import {
-    transformToFormError,
-    ObjectError,
-} from '#base/utils/errorTransform';
+import NonFieldError from '#components/NonFieldError';
 
 import {
     PartialRegisterFormType,
@@ -93,10 +95,9 @@ function RegisterForm() {
         setError,
     } = useForm(schema, defaultFormValues);
 
+    const strings = useTranslation(registerStrings);
     const alert = useAlert();
-
     const error = getErrorObject(formError);
-
     const history = useHistory();
 
     const [confirmPassword, setConfirmPassword] = useInputState<string | undefined>(undefined);
@@ -125,8 +126,7 @@ function RegisterForm() {
 
                 if (ok) {
                     alert.show(
-                        // FIXME: translate
-                        'Registration completed successfully! Please validate your account before logging in',
+                        strings.registrationSuccessMessage,
                         { variant: 'success' },
                     );
                     history.replace(routes.login.path);
@@ -137,8 +137,7 @@ function RegisterForm() {
                     setError(formErrorFromServer);
 
                     alert.show(
-                        // FIXME: translate
-                        'Error during registration!',
+                        strings.registrationFailureMessage,
                         { variant: 'error' },
                     );
                 }
@@ -164,32 +163,32 @@ function RegisterForm() {
             return undefined;
         }
 
-        // FIXME: translate
-        return 'Password doesn\'t match';
-    }, [confirmPassword, value?.password]);
+        return strings.passwordConfirmationError;
+    }, [strings.passwordConfirmationError, confirmPassword, value?.password]);
 
     return (
         <Container
             className={styles.registerForm}
-            // FIXME: translate
-            heading="Register new User"
+            heading={strings.pageHeading}
             headingSize="large"
             spacing="loose"
             footerContentClassName={styles.footerContent}
-            // FIXME: translate
-            footerContent={(
-                <>
-                    Already have an account?
-                    &nbsp;
-                    <SmartButtonLikeLink
-                        className={styles.loginLink}
-                        route={routes.login}
-                        variant="transparent"
-                    >
-                        Login
-                    </SmartButtonLikeLink>
-                </>
-            )}
+            footerContent={
+                resolveToComponent(
+                    strings.alreadyHaveAccountMessage,
+                    {
+                        loginLink: (
+                            <SmartButtonLikeLink
+                                className={styles.loginLink}
+                                route={routes.login}
+                                variant="transparent"
+                            >
+                                {strings.loginLinkLabel}
+                            </SmartButtonLikeLink>
+                        ),
+                    },
+                )
+            }
         >
             <form
                 className={styles.form}
@@ -198,8 +197,7 @@ function RegisterForm() {
                 <NonFieldError error={error} />
                 <TextInput
                     name="email"
-                    // FIXME: translate
-                    label="Email"
+                    label={strings.emailInputLabel}
                     value={value?.email}
                     error={error?.email}
                     onChange={setFieldValue}
@@ -207,8 +205,7 @@ function RegisterForm() {
                 />
                 <PasswordInput
                     name="password"
-                    // FIXME: translate
-                    label="Password"
+                    label={strings.passwordInputLabel}
                     value={value?.password}
                     error={error?.password}
                     onChange={setFieldValue}
@@ -216,8 +213,7 @@ function RegisterForm() {
                 />
                 <PasswordInput
                     name={undefined}
-                    // FIXME: translate
-                    label="Confirm Password"
+                    label={strings.confirmPasswordInputLabel}
                     value={confirmPassword}
                     error={confirmationError}
                     onChange={setConfirmPassword}
@@ -225,8 +221,7 @@ function RegisterForm() {
                 />
                 <TextInput
                     name="phoneNumber"
-                    // FIXME: translate
-                    label="Phone Number"
+                    label={strings.phoneNumberInputLabel}
                     value={value?.phoneNumber}
                     error={error?.phoneNumber}
                     onChange={setFieldValue}
@@ -235,8 +230,7 @@ function RegisterForm() {
                 <RadioInput
                     name="userType"
                     options={userTypes}
-                    // FIXME: translate
-                    label="User Type"
+                    label={strings.userTypeInputLabel}
                     keySelector={userKeySelector}
                     labelSelector={userLabelSelector}
                     onChange={setFieldValue}
@@ -248,8 +242,7 @@ function RegisterForm() {
                     <>
                         <TextInput
                             name="firstName"
-                            // FIXME: translate
-                            label="First Name"
+                            label={strings.firstNameInputLabel}
                             value={value?.firstName}
                             error={error?.firstName}
                             onChange={setFieldValue}
@@ -257,8 +250,7 @@ function RegisterForm() {
                         />
                         <TextInput
                             name="lastName"
-                            // FIXME: translate
-                            label="Last Name"
+                            label={strings.lastNameInputLabel}
                             value={value?.lastName}
                             error={error?.lastName}
                             onChange={setFieldValue}
@@ -304,9 +296,8 @@ function RegisterForm() {
                     name={undefined}
                     type="submit"
                     disabled={registerPending}
-                    // FIXME: translate
                 >
-                    Register
+                    {strings.registerButtonLabel}
                 </Button>
             </form>
         </Container>

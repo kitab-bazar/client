@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
     _cs,
     isDefined,
@@ -17,6 +17,8 @@ import {
     useMutation,
 } from '@apollo/client';
 
+import { ordersBar } from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
 import {
     CartItemsListQuery,
     UpdateCartBookQuantityMutation,
@@ -25,6 +27,8 @@ import {
     RemoveCartItemMutationVariables,
 } from '#generated/types';
 import { CART_ITEMS } from '#components/OrdersBar/queries';
+
+import UserContext from '#base/context/UserContext';
 
 import styles from './styles.css';
 
@@ -94,9 +98,16 @@ function CartItem(props: Props) {
         totalPrice,
     } = cartDetails;
 
+    const strings = useTranslation(ordersBar);
     const alert = useAlert();
 
-    const [removeCartItem] = useMutation<RemoveCartItemMutation, RemoveCartItemMutationVariables>(
+    const { user } = useContext(UserContext);
+    const canCreateOrder = user?.permissions.includes('CREATE_ORDER');
+
+    const [
+        removeCartItem,
+        { loading: removeLoading },
+    ] = useMutation<RemoveCartItemMutation, RemoveCartItemMutationVariables>(
         REMOVE_CART_ITEM,
         {
             refetchQueries: CART_ITEMS_NAME ? [CART_ITEMS_NAME] : undefined,
@@ -104,9 +115,8 @@ function CartItem(props: Props) {
                 if (response?.deleteCartItem?.ok) {
                     onCartItemRemove();
                 } else {
-                    // FIXME: translate
                     alert.show(
-                        'Failed to remove current book from the cart',
+                        strings.removeFromCartErrorMessage,
                         { variant: 'error' },
                     );
                 }
@@ -120,17 +130,17 @@ function CartItem(props: Props) {
         },
     );
 
-    const [updateCartBookQuantity] = useMutation<
-        UpdateCartBookQuantityMutation,
-        UpdateCartBookQuantityMutationVariables
-    >(
+    const [
+        updateCartBookQuantity,
+        { loading: updateLoading },
+    ] = useMutation<UpdateCartBookQuantityMutation, UpdateCartBookQuantityMutationVariables>(
         UPDATE_CART_BOOK_QUANTITY,
         {
             refetchQueries: CART_ITEMS_NAME ? [CART_ITEMS_NAME] : undefined,
             onCompleted: (response) => {
                 if (!response?.updateCartItem?.ok) {
                     alert.show(
-                        'Failed to update the cart',
+                        strings.updateCartErrorMessage,
                         { variant: 'error' },
                     );
                 }
@@ -142,6 +152,8 @@ function CartItem(props: Props) {
             },
         },
     );
+
+    const actionsDisabled = removeLoading || updateLoading;
 
     const handleQuantityChange = React.useCallback((newQuantity: number | undefined) => {
         if (isDefined(newQuantity) && newQuantity > 0) {
@@ -184,17 +196,18 @@ function CartItem(props: Props) {
                         {authorsDisplay}
                         <TextOutput
                             valueType="number"
-                            label="NPR."
+                            label={strings.nprPrefix}
                             hideLabelColon
                             value={book.price}
                         />
                     </>
                 )}
-                headerActions={(
+                headerActions={canCreateOrder && (
                     <Button
                         name={undefined}
                         onClick={handleRemoveButtonClick}
                         variant="action"
+                        disabled={actionsDisabled}
                     >
                         <IoTrash />
                     </Button>
@@ -207,13 +220,18 @@ function CartItem(props: Props) {
                         type="number"
                         variant="general"
                         onChange={handleQuantityChange}
+                        // NOTE: not disabling when updateLoading is true
+                        readOnly={!canCreateOrder}
+                        disabled={removeLoading}
+                        min={1}
+                        max={99}
                     />
                 )}
                 footerActionsContainerClassName={styles.actions}
                 footerActions={(
                     <TextOutput
                         valueType="number"
-                        label="NPR."
+                        label={strings.nprPrefix}
                         hideLabelColon
                         value={totalPrice}
                     />

@@ -11,11 +11,11 @@ import {
     SetValueArg,
 } from '@togglecorp/toggle-form';
 
+import { register as registerStrings } from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
 import NonFieldError from '#components/NonFieldError';
 import { PublisherType } from '../common';
 import LocationInput, { MunicipalityOption } from '../LocationInput';
-
-// import styles from './styles.css';
 
 type PublisherInputValue = PartialForm<PublisherType> | undefined;
 const defaultPublisherValue: NonNullable<PublisherInputValue> = {};
@@ -43,6 +43,7 @@ function PublisherForm<K extends string>(props: Props<K>) {
         onMunicipalityOptionsChange,
     } = props;
 
+    const strings = useTranslation(registerStrings);
     const setFieldValue = useFormObject(name, onChange, defaultPublisherValue);
     const error = getErrorObject(formError);
 
@@ -51,8 +52,7 @@ function PublisherForm<K extends string>(props: Props<K>) {
             <NonFieldError error={error} />
             <TextInput
                 name="name"
-                // FIXME: translate
-                label="Name of the Publisher"
+                label={strings.publisherNameInputLabel}
                 value={value?.name}
                 error={error?.name}
                 onChange={setFieldValue}
@@ -60,7 +60,7 @@ function PublisherForm<K extends string>(props: Props<K>) {
             />
             <LocationInput
                 name="municipality"
-                label="Municipality"
+                label={strings.municipalityInputLabel}
                 error={error?.municipality}
                 value={value?.municipality}
                 onChange={setFieldValue}
@@ -70,18 +70,17 @@ function PublisherForm<K extends string>(props: Props<K>) {
             />
             <NumberInput
                 name="wardNumber"
-                // FIXME: translate
-                label="Ward Number"
+                label={strings.wardNumberInputLabel}
                 value={value?.wardNumber}
                 error={error?.wardNumber}
                 onChange={setFieldValue}
                 disabled={disabled}
                 min={1}
+                max={99}
             />
             <TextInput
                 name="localAddress"
-                // FIXME: translate
-                label="Local Address"
+                label={strings.localAddressInputLabel}
                 value={value?.localAddress}
                 error={error?.localAddress}
                 onChange={setFieldValue}
@@ -89,8 +88,7 @@ function PublisherForm<K extends string>(props: Props<K>) {
             />
             <TextInput
                 name="panNumber"
-                // FIXME: translate
-                label="PAN"
+                label={strings.panInputLabel}
                 value={value?.panNumber}
                 error={error?.panNumber}
                 onChange={setFieldValue}
@@ -98,8 +96,7 @@ function PublisherForm<K extends string>(props: Props<K>) {
             />
             <TextInput
                 name="vatNumber"
-                // FIXME: translate
-                label="VAT Number"
+                label={strings.vatNumberInputLabel}
                 value={value?.vatNumber}
                 error={error?.vatNumber}
                 onChange={setFieldValue}

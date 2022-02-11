@@ -1,4 +1,6 @@
 import { createContext } from 'react';
+import flagNe from '#resources/img/flag-ne.png';
+import flagEn from '#resources/img/flag-en.png';
 
 export type Lang = 'en' | 'ne';
 
@@ -11,16 +13,19 @@ export interface LanguageContextInterface {
 export interface LangOption {
     key: Lang;
     label: string;
+    iconUrl: string;
 }
 
 export const langOptions: LangOption[] = [
     {
         key: 'en',
-        label: 'en',
+        label: 'English',
+        iconUrl: flagEn,
     },
     {
         key: 'ne',
-        label: 'ने.',
+        label: 'नेपाली',
+        iconUrl: flagNe,
     },
 ];
 

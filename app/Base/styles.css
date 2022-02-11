@@ -5,9 +5,9 @@
     --dui-color-primary: #122344;
     --dui-color-brand: #122344;
     --dui-color-accent: #00adb5;
-    --dui-color-background: #f3f3f3;
+    --dui-color-background: #f7f9fa;
     --dui-color-text: #414141;
-    --dui-font-family-sans-serif: 'PT Sans', 'Noto Serif Devanagari', sans-serif;
+    --dui-font-family-sans-serif: 'Inter', 'Mukta', sans-serif;
     --dui-color-background-hover-primary-button: #0098a6;
 
     --dui-font-size-extra-small: 0.7rem;
@@ -24,13 +24,9 @@
 .base {
     display: flex;
     flex-direction: column;
-    width: 100vw;
     height: 100vh;
     overflow: auto;
-
-    &.ne {
-        line-height: 1.25;
-    }
+    scrollbar-gutter: stable both-edges;
 
     .preload {
         flex-grow: 1;

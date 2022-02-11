@@ -13,11 +13,16 @@
     }
 
     .footer-content {
-        display: flex;
+        display: inline;
 
         .login-link {
+            display: inline;
             padding: unset;
             color: var(--dui-color-accent);
+
+            >* {
+                display: inline;
+            }
         }
     }
 }

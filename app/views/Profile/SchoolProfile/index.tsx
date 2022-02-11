@@ -116,6 +116,7 @@ interface OrderListProps {
     totalBookTypes: number;
 }
 
+// FIXME: Reuse order item
 function OrderListRenderer(props: OrderListProps) {
     const {
         orderCode,
@@ -129,7 +130,7 @@ function OrderListRenderer(props: OrderListProps) {
     return (
         <ContainerCard
             className={styles.orderItem}
-            heading={orderCode}
+            heading={orderCode?.split('-')?.[0]}
             headingClassName={styles.heading}
             headingSize="extraSmall"
         >
@@ -345,19 +346,16 @@ function SchoolProfile(props: Props) {
                         filtered={false}
                         pending={loading}
                         messageShown
-                        // FIXME: use strings
                         // FIXME: use common component
                         emptyMessage={(
                             <div className={styles.emptyMessage}>
                                 <IoList className={styles.icon} />
                                 <div className={styles.text}>
                                     <div className={styles.primary}>
-                                        You dont have any Recent Orders
+                                        {strings.recentOrderEmptyMessage}
                                     </div>
                                     <div className={styles.suggestion}>
-                                        Add Books that you want to buy
-                                        later by clicking Add to Wishlist
-                                        and then goto your Cart to place your Order
+                                        {strings.recentOrderEmptySuggestion}
                                     </div>
                                 </div>
                             </div>

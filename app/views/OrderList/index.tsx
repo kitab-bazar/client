@@ -23,6 +23,8 @@ import {
     OrderStatusOptionsQuery,
     OrderStatusOptionsQueryVariables,
 } from '#generated/types';
+import { orderList as orderListLang } from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
 
 import styles from './styles.css';
 
@@ -208,6 +210,7 @@ function OrderItem(props: OrderListItemProps) {
                 errored={false}
                 filtered={false}
                 pending={false}
+                messageShown
             />
         </ControlledExpandableContainer>
     );
@@ -215,7 +218,7 @@ function OrderItem(props: OrderListItemProps) {
 
 const orderListKeySelector = (o: OrderType) => o.id;
 
-const MAX_ITEMS_PER_PAGE = 20;
+const MAX_ITEMS_PER_PAGE = 10;
 
 interface Props {
     className?: string;
@@ -225,6 +228,8 @@ function OrderList(props: Props) {
     const {
         className,
     } = props;
+
+    const strings = useTranslation(orderListLang);
 
     const [page, setPage] = useState<number>(1);
     const [expandedOrderId, setExpandedOrderId] = useState<string | undefined>();
@@ -277,14 +282,14 @@ function OrderList(props: Props) {
             <div className={styles.headerContainer}>
                 <Header
                     className={styles.pageHeader}
-                    heading="My Orders"
+                    heading={strings.pageHeading}
                     spacing="loose"
                 >
                     <TextInput
                         variant="general"
                         className={styles.searchInput}
                         icons={<IoSearchSharp />}
-                        placeholder="Search by book title (3 or more characters)"
+                        placeholder={strings.searchPlaceholder}
                         disabled
                         name={undefined}
                         value={undefined}
@@ -298,7 +303,7 @@ function OrderList(props: Props) {
                         className={styles.statusInput}
                         listContainerClassName={styles.statusList}
                         name={undefined}
-                        label="Order Status"
+                        label={strings.orderStatusFilterLabel}
                         options={statusOptions?.orderStatusList?.enumValues ?? undefined}
                         keySelector={enumKeySelector}
                         labelSelector={enumLabelSelector}
@@ -312,7 +317,7 @@ function OrderList(props: Props) {
                             variant="transparent"
                             spacing="none"
                         >
-                            Clear status filter
+                            {strings.clearStatusFilterButtonLabel}
                         </Button>
                     )}
                 </div>
@@ -321,7 +326,7 @@ function OrderList(props: Props) {
                         <TextOutput
                             className={styles.orderCount}
                             value={orderList?.orders?.totalCount}
-                            label="Order(s) found"
+                            label={strings.orderStatusFilterLabel}
                         />
                     </div>
                     <ListView
@@ -333,6 +338,7 @@ function OrderList(props: Props) {
                         errored={!!error}
                         filtered={filtered}
                         pending={loading}
+                        messageShown
                     />
                     <Pager
                         activePage={page}

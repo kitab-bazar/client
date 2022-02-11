@@ -42,16 +42,24 @@ const home = wrap({
 });
 const myProfile = wrap({
     path: '/profile/',
-    title: 'My Profile',
+    title: 'Profile',
     navbarVisibility: true,
     component: lazy(() => import('#views/Profile')),
     componentProps: {
     },
     visibility: 'is-authenticated',
 });
+const explore = wrap({
+    path: '/books/',
+    title: 'Books',
+    navbarVisibility: true,
+    component: lazy(() => import('#views/Explore')),
+    componentProps: {},
+    visibility: 'is-anything',
+});
 const orderList = wrap({
     path: '/orders/',
-    title: 'My Orders',
+    title: 'Orders',
     navbarVisibility: true,
     component: lazy(() => import('#views/OrderList')),
     componentProps: {
@@ -60,32 +68,16 @@ const orderList = wrap({
 });
 const wishList = wrap({
     path: '/wish-list',
-    title: 'My Wish List',
+    title: 'Wish List',
     navbarVisibility: true,
     component: lazy(() => import('#views/Explore')),
     componentProps: {
         wishList: true,
     },
     visibility: 'is-authenticated',
-});
-const explore = wrap({
-    path: '/books/',
-    title: 'books',
-    navbarVisibility: true,
-    component: lazy(() => import('#views/Explore')),
-    componentProps: {},
-    visibility: 'is-anything',
-});
-
-const publisherBooks = wrap({
-    path: '/publisher/books',
-    title: 'Published Books',
-    navbarVisibility: true,
-    component: lazy(() => import('#views/Explore')),
-    componentProps: {
-        publisher: true,
-    },
-    visibility: 'is-authenticated',
+    checkPermissions: (user) => (
+        !user?.publisherId
+    ),
 });
 
 const routes = {
@@ -97,6 +89,5 @@ const routes = {
     fourHundredFour,
     orderList,
     explore,
-    publisherBooks,
 };
 export default routes;

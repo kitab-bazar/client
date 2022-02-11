@@ -94,6 +94,97 @@ export const login = {
     },
 };
 
+export const register = {
+    registrationSuccessMessage: {
+        en: 'Registration completed successfully! Please validate your account before logging in',
+        ne: 'Registration completed successfully! Please validate your account before logging in',
+    },
+    registrationFailureMessage: {
+        en: 'Error during registration!',
+        ne: 'Error during registration!',
+    },
+    passwordConfirmationError: {
+        en: 'Password doesn\'t match',
+        ne: 'Password doesn\'t match',
+    },
+    pageHeading: {
+        en: 'Register New User',
+        ne: 'Register New User',
+    },
+    alreadyHaveAccountMessage: {
+        en: 'Already have an account? {loginLink}',
+        ne: 'Already have an account? {loginLink}',
+    },
+    loginLinkLabel: {
+        en: 'Login',
+        ne: 'Login',
+    },
+    emailInputLabel: {
+        en: 'Email',
+        ne: 'Email',
+    },
+    passwordInputLabel: {
+        en: 'Password',
+        ne: 'Password',
+    },
+    confirmPasswordInputLabel: {
+        en: 'Confirm Password',
+        ne: 'Confirm Password',
+    },
+    phoneNumberInputLabel: {
+        en: 'Phone No.',
+        ne: 'Phone No.',
+    },
+    userTypeInputLabel: {
+        en: 'User Type',
+        ne: 'User Type',
+    },
+    firstNameInputLabel: {
+        en: 'First Name',
+        ne: 'First Name',
+    },
+    lastNameInputLabel: {
+        en: 'Last Name',
+        ne: 'Last Name',
+    },
+    registerButtonLabel: {
+        en: 'Register',
+        ne: 'Register',
+    },
+    institutionNameInputLabel: {
+        en: 'Name of the Institution',
+        ne: 'Name of the Institution',
+    },
+    publisherNameInputLabel: {
+        en: 'Name of the Publisher',
+        ne: 'Name of the Publisher',
+    },
+    schoolNameInputLabel: {
+        en: 'Name of the School',
+        ne: 'Name of the School',
+    },
+    municipalityInputLabel: {
+        en: 'Municipality',
+        ne: 'Municipality',
+    },
+    wardNumberInputLabel: {
+        en: 'Ward Number',
+        ne: 'Ward Number',
+    },
+    localAddressInputLabel: {
+        en: 'Local Address',
+        ne: 'Local Address',
+    },
+    panInputLabel: {
+        en: 'PAN',
+        ne: 'PAN',
+    },
+    vatNumberInputLabel: {
+        en: 'VAT Number',
+        ne: 'VAT Number',
+    },
+};
+
 export const homePage = {
     kitabLabel: {
         en: 'Kitab',
@@ -179,8 +270,8 @@ export const explore = {
         ne: 'Date added (Newer first)',
     },
     pageTitlePublisher: {
-        en: 'Publisher Books',
-        ne: 'Publisher Books',
+        en: 'Books',
+        ne: 'Books',
     },
     pageTitleExploreByCategory: {
         en: 'Explore Books by Category',
@@ -221,6 +312,18 @@ export const explore = {
     activeSortLabel: {
         en: 'Order by: {sortLabel}',
         ne: 'Order by: {sortLabel}',
+    },
+    addBookButtonLabel: {
+        en: 'Add New Book',
+        ne: 'Add New Book',
+    },
+    publisherAllBooksLabel: {
+        en: 'All Books',
+        ne: 'All Books',
+    },
+    publisherOwnBooksLabel: {
+        en: 'My Books',
+        ne: 'My Books',
     },
 };
 
@@ -263,6 +366,89 @@ export const notifications = {
     orderCompleted: {
         en: 'Your {orderLink} has been packed.',
         ne: 'तपाईंको {orderLink} पूरा भएको छ।',
+    },
+};
+
+export const individualProfile = {
+    userDetailHeading: {
+        en: 'User Details',
+        ne: 'User Details',
+    },
+    editProfileLabel: {
+        en: 'Edit Profile',
+        ne: 'Edit Profile',
+    },
+    nameAttributeLabel: {
+        en: 'Name',
+        ne: 'Name',
+    },
+    emailAttributeLabel: {
+        en: 'Email',
+        ne: 'Email',
+    },
+    phoneAttributeLabel: {
+        en: 'Phone No.',
+        ne: 'Phone No.',
+    },
+    wishlistLabel: {
+        en: 'Wish list',
+        ne: 'Wish list',
+    },
+    orderSummaryHeading: {
+        en: 'Order Summary',
+        ne: 'Order Summary',
+    },
+    totalOrdersLabel: {
+        en: 'Total orders',
+        ne: 'Total orders',
+    },
+    recentOrdersHeading: {
+        en: 'Recent Orders',
+        ne: 'Recent Orders',
+    },
+    viewAllLabel: {
+        en: 'View all',
+        ne: 'View all',
+    },
+    recentOrderEmptyMessage: {
+        en: 'You dont have any Recent Orders',
+        ne: 'You dont have any Recent Orders',
+    },
+    recentOrderEmptySuggestion: {
+        en: 'Add Books that you want to buy later by clicking Add to Wishlist and then goto your Cart to place your Order',
+        ne: 'Add Books that you want to buy later by clicking Add to Wishlist and then goto your Cart to place your Order',
+    },
+    profileUpdateSuccessMessage: {
+        en: 'Successfully updated profile',
+        ne: 'Successfully updated profile',
+    },
+    profileUpdateErrorMessage: {
+        en: 'Error updating profile',
+        ne: 'Error updating profile',
+    },
+    modalHeading: {
+        en: 'Edit Profile',
+        ne: 'Edit Profile',
+    },
+    editProfileSaveButtonLabel: {
+        en: 'Save',
+        ne: 'Save',
+    },
+    editProfileCancelButtonLabel: {
+        en: 'Cancel',
+        ne: 'Cancel',
+    },
+    editProfileFirstNameInputLabel: {
+        en: 'First Name',
+        ne: 'First Name',
+    },
+    editProfileLastNameInputLabel: {
+        en: 'Last Name',
+        ne: 'Last Name',
+    },
+    editProfilePhoneNumberInputLabel: {
+        en: 'Phone No.',
+        ne: 'Phone No.',
     },
 };
 
@@ -365,6 +551,134 @@ export const school = {
         ne: 'ठेगाना',
     },
     myWishlistLabel: {
+        en: 'Wish list',
+        ne: 'मेरो इच्छा सूची',
+    },
+    myCartLabel: {
+        en: 'Cart',
+        ne: 'मेरो कार्ट',
+    },
+    totalOrdersLabel: {
+        en: 'Total Orders',
+        ne: 'कुल अर्डरहरु ',
+    },
+    weeksOrderLabel: {
+        en: 'This week\'s order',
+        ne: 'यो हप्ताको अर्डरहरु ',
+    },
+    orderDetailsHeading: {
+        en: 'Order Details',
+        ne: 'अर्डर विवरण ',
+    },
+    viewMoreButtonContent: {
+        en: 'View More',
+        ne: 'अझ धेरै हेर्नुहोस्',
+    },
+    recentOrderEmptyMessage: {
+        en: 'You dont have any Recent Orders',
+        ne: 'You dont have any Recent Orders',
+    },
+    recentOrderEmptySuggestion: {
+        en: 'Add Books that you want to buy later by clicking Add to Wishlist and then goto your Cart to place your Order',
+        ne: 'Add Books that you want to buy later by clicking Add to Wishlist and then goto your Cart to place your Order',
+    },
+};
+
+export const publisher = {
+    profileUpdateErrorLabel: {
+        en: 'Error updating publisher profile',
+        ne: 'Error updating publisher profile',
+    },
+    profileUpdateSuccessLabel: {
+        en: 'Successfully updated publisher profile',
+        ne: 'Successfully updated publisher profile',
+    },
+    editProfileModalHeading: {
+        en: 'Edit Details',
+        ne: 'Edit Details',
+    },
+    cancelLabel: {
+        en: 'Cancel',
+        ne: 'रद्द गर्नुहोस्',
+    },
+    saveLabel: {
+        en: 'Save',
+        ne: 'बचत गर्नुहोस्',
+        // TODO: Find better word for 'save'
+    },
+    publisherNameLabel: {
+        en: 'Publisher Name',
+        ne: 'Publisher Name',
+    },
+    municipalityLabel: {
+        en: 'Municipality',
+        ne: 'नगरपालिका',
+    },
+    wardNumberLabel: {
+        en: 'Ward Number',
+        ne: 'वडा नम्बर ',
+    },
+    localAddressLabel: {
+        en: 'Local Address',
+        ne: 'स्थानीय ठेगाना',
+    },
+    firstNameLabel: {
+        en: 'First Name',
+        ne: 'पहिलो नाम',
+    },
+    lastNameLabel: {
+        en: 'Last Name',
+        ne: 'थर',
+    },
+    phoneNumberLabel: {
+        en: 'Phone Number',
+        ne: 'फोन नम्बर',
+    },
+    panNumberLabel: {
+        en: 'PAN Number',
+        ne: 'प्यान नम्बर',
+    },
+    vatNumberLabel: {
+        en: 'VAT Number',
+        ne: 'भ्याट नम्बर',
+    },
+    booksLabel: {
+        en: 'Books',
+        ne: 'किताबहरु ',
+    },
+    totalPriceLabel: {
+        en: 'Total Price',
+        ne: 'कुल रकम',
+    },
+    rsLabel: {
+        en: 'Rs. ',
+        ne: 'रु.',
+    },
+    statusLabel: {
+        en: 'Status',
+        ne: 'स्थिति',
+    },
+    profileDetailsHeading: {
+        en: 'Profile Details',
+        ne: 'प्रोफाइल विवरण',
+    },
+    editProfileButtonContent: {
+        en: 'Edit Profile',
+        ne: 'प्रोफाइल सम्पादन गर्नुहोस',
+    },
+    nameLabel: {
+        en: 'Name',
+        ne: 'नाम',
+    },
+    emailLabel: {
+        en: 'Email',
+        ne: 'इमेल',
+    },
+    addressLabel: {
+        en: 'Address',
+        ne: 'ठेगाना',
+    },
+    myWishlistLabel: {
         en: 'My Wishlist',
         ne: 'मेरो इच्छा सूची',
     },
@@ -387,5 +701,227 @@ export const school = {
     viewMoreButtonContent: {
         en: 'View More',
         ne: 'अझ धेरै हेर्नुहोस्',
+    },
+};
+
+export const orderList = {
+    pageHeading: {
+        en: 'Orders',
+        ne: 'Orders',
+    },
+    searchPlaceholder: {
+        en: 'Search by book title (3 or more characters)',
+        ne: 'Search by book title (3 or more characters)',
+    },
+    orderStatusFilterLabel: {
+        en: 'Order Status',
+        ne: 'Order Status',
+    },
+    clearStatusFilterButtonLabel: {
+        en: 'Clear status filter',
+        ne: 'Clear status filter',
+    },
+    numOrdersLabel: {
+        en: 'Order(s) found',
+        ne: 'Order(s) found',
+    },
+};
+
+export const bookDetailModal = {
+    bookDetailFetchErrorMessage: {
+        en: 'Error while fetching book details!',
+        ne: 'Error while fetching book details!',
+    },
+    loadingMessage: {
+        en: 'Loading...',
+        ne: 'Loading...',
+    },
+};
+
+export const bookItem = {
+    bookOrderFailedMessage: {
+        en: 'Failed to add book to the order',
+        ne: 'Failed to add book to the order',
+    },
+    wishlistAdditionFailedMessage: {
+        en: 'Failed to add book to the wish list',
+        ne: 'Failed to add book to the wish list',
+    },
+    wishlistRemovalFailedMessage: {
+        en: 'Failed to remove book from the wish list',
+        ne: 'Failed to remove book from the wish list',
+    },
+    alreadyInOrderListMessage: {
+        en: 'In order list',
+        ne: 'In order list',
+    },
+    addToOrderButtonLabel: {
+        en: 'Add to Order',
+        ne: 'Add to Order',
+    },
+    removeFromWishlistButtonLabel: {
+        en: 'Remove from Wish List',
+        ne: 'Remove from Wish List',
+    },
+    addToWishlistButtonLabel: {
+        en: 'Add to Wish List',
+        ne: 'Add to Wish List',
+    },
+    nprLabel: {
+        en: 'NPR.',
+        ne: 'NPR.',
+    },
+    priceLabel: {
+        en: 'Price (NPR)',
+        ne: 'Price (NPR)',
+    },
+    languageLabel: {
+        en: 'Language',
+        ne: 'Language',
+    },
+    numberOfPagesLabel: {
+        en: 'Number of Pages',
+        ne: 'Number of Pages',
+    },
+    isbnLabel: {
+        en: 'ISBN',
+        ne: 'ISBN',
+    },
+    publisherLabel: {
+        en: 'Publisher',
+        ne: 'Publisher',
+    },
+    bookPrice: {
+        en: 'NPR {price}',
+        ne: 'NPR {price}',
+    },
+};
+
+export const orderItem = {
+    viewDetailsLabel: {
+        en: 'View order details',
+        ne: 'View order details',
+    },
+    booksLabel: {
+        en: 'Books',
+        ne: 'Books',
+    },
+    totalPriceLabel: {
+        en: 'Total price',
+        ne: 'Total price',
+    },
+    nprPrefix: {
+        en: 'NPR. ',
+        ne: 'NPR. ',
+    },
+};
+
+export const ordersBar = {
+    booksSelectedMessage: {
+        en: '{count} book(s) selected',
+        ne: '{count} book(s) selected',
+    },
+    totalPriceLabel: {
+        en: 'Total price (NPR)',
+        ne: 'Total price (NPR)',
+    },
+    totalBooksLabel: {
+        en: 'Total Books',
+        ne: 'Total Books',
+    },
+    viewOrdersLabel: {
+        en: 'View Orders',
+        ne: 'View Orders',
+    },
+    orderPlacementSuccessfulMessage: {
+        en: 'Your order has been submitted successfully!',
+        ne: 'Your order has been submitted successfully!',
+    },
+    orderPlacementFailureMessage: {
+        en: 'Failed to place the order!',
+        ne: 'Failed to place the order!',
+    },
+    orderListHeading: {
+        en: 'Order List',
+        ne: 'Order List',
+    },
+    orderBooksButtonLabel: {
+        en: 'Order Books',
+        ne: 'Order Books',
+    },
+    doneButtonLabel: {
+        en: 'Done',
+        ne: 'Done',
+    },
+    orderIdLabel: {
+        en: 'Order ID',
+        ne: 'Order ID',
+    },
+    orderPlacementHelpText: {
+        en: 'We will contact you once we\'ve received the order on our end for order confirmation and payment details',
+        ne: 'We will contact you once we\'ve received the order on our end for order confirmation and payment details',
+    },
+    removeFromCartErrorMessage: {
+        en: 'Failed to remove current book from the cart',
+        ne: 'Failed to remove current book from the cart',
+    },
+    updateCartErrorMessage: {
+        en: 'Failed to update the cart',
+        ne: 'Failed to update the cart',
+    },
+    nprPrefix: {
+        en: 'NPR.',
+        ne: 'NPR.',
+    },
+};
+
+export const newBookModal = {
+    modalHeading: {
+        en: 'Add New Book',
+        ne: 'Add New Book',
+    },
+    saveButtonLabel: {
+        en: 'Save',
+        ne: 'Save',
+    },
+    cancelButtonLabel: {
+        en: 'Cancel',
+        ne: 'Cancel',
+    },
+    titleLabel: {
+        en: 'Title',
+        ne: 'Title',
+    },
+    descriptionLabel: {
+        en: 'Description',
+        ne: 'Description',
+    },
+    isbnLabel: {
+        en: 'ISBN',
+        ne: 'ISBN',
+    },
+    numberOfPagesLabel: {
+        en: 'Number of Pages',
+        ne: 'Number of Pages',
+    },
+    languageLabel: {
+        en: 'Language',
+        ne: 'Language',
+    },
+    publishedDateLabel: {
+        en: 'Published Date',
+        ne: 'Published Date',
+    },
+    priceLabel: {
+        en: 'Price',
+        ne: 'Price',
+    },
+    categoriesLabel: {
+        en: 'Categories',
+        ne: 'Categories',
+    },
+    authorsLabel: {
+        en: 'Authors',
+        ne: 'Authors',
     },
 };

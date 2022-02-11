@@ -4,6 +4,11 @@
     justify-content: space-between;
     padding: var(--dui-spacing-large);
 
+    .summary {
+        display: flex;
+        gap: var(--dui-spacing-medium);
+    }
+
     &.hidden {
         animation: disappear-to-bottom .2s ease-in forwards;
     }

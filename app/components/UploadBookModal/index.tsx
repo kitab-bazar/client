@@ -26,10 +26,14 @@ import {
     CreateBookMutation,
     CreateBookMutationVariables,
 } from '#generated/types';
+import { newBookModal } from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
 import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
 import AuthorMultiSelectInput, { Author } from '#components/AuthorMultiSelectInput';
 import CategoryMultiSelectInput, { Category } from '#components/CategoryMultiSelectInput';
 import { EnumFix } from '#utils/types';
+
+import styles from './styles.css';
 
 interface EnumEntity<T> {
     name: T;
@@ -108,6 +112,7 @@ function UploadBookModal(props: Props) {
         publisher,
     } = props;
 
+    const strings = useTranslation(newBookModal);
     const [authors, setAuthors] = useState<Author[] | undefined | null>();
     const [categories, setCategories] = useState<Category[] | undefined | null>();
     const initialValue: PartialFormType = {
@@ -142,16 +147,12 @@ function UploadBookModal(props: Props) {
                     setError(formError);
                     alert.show(
                         'Error uploading book',
-                        {
-                            variant: 'error',
-                        },
+                        { variant: 'error' },
                     );
                 } else if (ok) {
                     alert.show(
                         'Successfully uploaded book',
-                        {
-                            variant: 'success',
-                        },
+                        { variant: 'success' },
                     );
                     onUploadSuccess();
                     onModalClose();
@@ -160,9 +161,7 @@ function UploadBookModal(props: Props) {
             onError: () => {
                 alert.show(
                     'Error uploading book',
-                    {
-                        variant: 'error',
-                    },
+                    { variant: 'error' },
                 );
             },
         },
@@ -187,6 +186,8 @@ function UploadBookModal(props: Props) {
                             data: {
                                 ...val as CreateBookMutationVariables['data'],
                                 publisher,
+                                // FIXME: add this to form
+                                isPublished: true,
                             },
                         },
                     });
@@ -201,8 +202,9 @@ function UploadBookModal(props: Props) {
 
     return (
         <Modal
-            className={_cs(className)}
-            heading="Upload Book"
+            className={_cs(styles.uploadBookModal, className)}
+            bodyClassName={styles.inputList}
+            heading={strings.modalHeading}
             onCloseButtonClick={onModalClose}
             size="medium"
             freeHeight
@@ -213,7 +215,7 @@ function UploadBookModal(props: Props) {
                         onClick={onModalClose}
                         variant="secondary"
                     >
-                        Cancel
+                        {strings.cancelButtonLabel}
                     </Button>
                     <Button
                         name={undefined}
@@ -221,6 +223,7 @@ function UploadBookModal(props: Props) {
                         onClick={handleSubmit}
                         disabled={pristine || createBookPending}
                     >
+                        {strings.saveButtonLabel}
                         Save
                     </Button>
                 </>
@@ -228,7 +231,7 @@ function UploadBookModal(props: Props) {
         >
             <TextInput
                 name="title"
-                label="Title"
+                label={strings.titleLabel}
                 value={value?.title}
                 error={error?.title}
                 onChange={setFieldValue}
@@ -236,7 +239,7 @@ function UploadBookModal(props: Props) {
             />
             <TextInput
                 name="description"
-                label="Description"
+                label={strings.descriptionLabel}
                 value={value?.description}
                 error={error?.description}
                 onChange={setFieldValue}
@@ -244,7 +247,7 @@ function UploadBookModal(props: Props) {
             />
             <TextInput
                 name="isbn"
-                label="ISBN"
+                label={strings.isbnLabel}
                 value={value?.isbn}
                 error={error?.isbn}
                 onChange={setFieldValue}
@@ -252,14 +255,15 @@ function UploadBookModal(props: Props) {
             />
             <NumberInput
                 name="numberOfPages"
-                label="Number of Pages"
+                label={strings.numberOfPagesLabel}
                 value={value?.numberOfPages}
                 error={error?.numberOfPages}
                 onChange={setFieldValue}
                 disabled={createBookPending}
+                min={1}
             />
             <SelectInput
-                label="Language"
+                label={strings.languageLabel}
                 name="language"
                 options={createBooksOptions?.languageOptions?.enumValues}
                 keySelector={enumKeySelector}
@@ -270,7 +274,7 @@ function UploadBookModal(props: Props) {
             />
             <DateInput
                 name="publishedDate"
-                label="Published Date"
+                label={strings.publishedDateLabel}
                 disabled={createBookPending}
                 onChange={setFieldValue}
                 value={value?.publishedDate}
@@ -278,15 +282,16 @@ function UploadBookModal(props: Props) {
             />
             <NumberInput
                 name="price"
-                label="Price"
+                label={strings.priceLabel}
                 value={value?.price}
                 error={error?.price}
                 onChange={setFieldValue}
                 disabled={createBookPending}
+                min={1}
             />
             <CategoryMultiSelectInput
                 name="categories"
-                label="Categories"
+                label={strings.categoriesLabel}
                 value={value.categories}
                 onChange={setFieldValue}
                 options={categories}
@@ -295,7 +300,7 @@ function UploadBookModal(props: Props) {
             />
             <AuthorMultiSelectInput
                 name="authors"
-                label="Authors"
+                label={strings.authorsLabel}
                 value={value.authors}
                 onChange={setFieldValue}
                 options={authors}

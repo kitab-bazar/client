@@ -1,9 +1,12 @@
 import React, { useRef, useContext, useCallback } from 'react';
-import { _cs } from '@togglecorp/fujs';
+import {
+    _cs,
+    listToMap,
+} from '@togglecorp/fujs';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { useLocation } from 'react-router-dom';
 import {
-    SegmentInput,
+    SelectInput,
     useAlert,
     Link,
     DropdownMenu,
@@ -12,7 +15,6 @@ import {
     useConfirmation,
 } from '@the-deep/deep-ui';
 import {
-    IoHeart,
     IoNotificationsOutline,
     IoPerson,
 } from 'react-icons/io5';
@@ -37,11 +39,18 @@ import {
 } from '#generated/types';
 import useRouteMatching from '#base/hooks/useRouteMatching';
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
+import SmartNavLink from '#base/components/SmartNavLink';
 import Notifications from '#components/Notifications';
 import KitabLogo from '#resources/img/KitabLogo.png';
 import { resolveToString } from '#base/utils/lang';
 
 import styles from './styles.css';
+
+const languageIconMap = listToMap(
+    langOptions,
+    (d) => d.key,
+    (d) => d.iconUrl,
+);
 
 const LOGOUT = gql`
     mutation Logout {
@@ -167,80 +176,101 @@ function Navbar(props: Props) {
                     {commonStrings.kitabBazarAppLabel}
                 </div>
             </Link>
-            <div className={styles.main}>
-                <div className={styles.actions}>
-                    <SegmentInput
-                        className={styles.languageSelection}
-                        name={undefined}
-                        options={langOptions}
-                        keySelector={langKeySelector}
-                        labelSelector={langLabelSelector}
-                        value={lang}
-                        onChange={setLang}
-                    />
-                    <SmartButtonLikeLink
-                        route={routes.register}
-                        variant="primary"
-                    >
-                        {strings.signUpButtonLabel}
-                    </SmartButtonLikeLink>
-                    <SmartButtonLikeLink
-                        route={routes.login}
-                        variant="primary"
-                        state={{ from: location.pathname }}
-                    >
-                        {strings.loginButtonLabel}
-                    </SmartButtonLikeLink>
-                    <SmartButtonLikeLink
-                        variant="action"
-                        route={routes.wishList}
-                    >
-                        <IoHeart />
-                    </SmartButtonLikeLink>
-                    {authenticated && user && (
-                        <>
-                            <QuickActionDropdownMenu
-                                label={(<IoNotificationsOutline />)}
-                                componentRef={notificationRef}
-                                className={styles.notificationButton}
-                                actions={notificationsCount !== 0 ? notificationsCount : undefined}
-                                popupClassName={styles.popup}
-                                actionsContainerClassName={styles.notificationCount}
-                                persistent
-                            >
-                                <Notifications
-                                    onNotificationClose={handleCloseNotificationClick}
-                                />
-                            </QuickActionDropdownMenu>
-
-                            <DropdownMenu
-                                label={<IoPerson />}
-                                variant="tertiary"
-                                className={styles.userDropdown}
-                            >
-                                <div className={styles.userInfo}>
-                                    <div className={styles.greetings}>
-                                        {resolveToString(strings.greetings, { name: user.displayName ?? 'Unnamed' })}
-                                    </div>
-                                    {profileUrl && (
-                                        <DropdownMenuItem href={profileUrl.to}>
-                                            {strings.gotoProfile}
-                                        </DropdownMenuItem>
-                                    )}
-                                    <DropdownMenuItem
-                                        name={undefined}
-                                        onClick={setShowLogoutConfirmationTrue}
-                                        // TODO: disable dropdown menu item
-                                        // disabled={logoutLoading}
-                                    >
-                                        {strings.logoutButtonLabel}
-                                    </DropdownMenuItem>
-                                </div>
-                            </DropdownMenu>
-                            {logoutConfirmationModal}
-                        </>
+            <div className={styles.mainMenu}>
+                <SmartNavLink
+                    route={routes.home}
+                    exact
+                    className={styles.navLink}
+                />
+                <SmartNavLink
+                    route={routes.explore}
+                    className={styles.navLink}
+                />
+                {/*
+                <SmartNavLink
+                    route={routes.wishList}
+                    className={styles.navLink}
+                />
+                */}
+                <SmartNavLink
+                    route={routes.orderList}
+                    className={styles.navLink}
+                />
+            </div>
+            <div className={styles.actions}>
+                <SelectInput
+                    nonClearable
+                    variant="general"
+                    className={styles.languageSelection}
+                    name={undefined}
+                    options={langOptions}
+                    keySelector={langKeySelector}
+                    labelSelector={langLabelSelector}
+                    value={lang}
+                    onChange={setLang}
+                    icons={(
+                        <img
+                            className={styles.icon}
+                            alt={lang}
+                            src={languageIconMap[lang]}
+                        />
                     )}
-                </div>
+                />
+                <SmartButtonLikeLink
+                    route={routes.register}
+                    variant="general"
+                >
+                    {strings.signUpButtonLabel}
+                </SmartButtonLikeLink>
+                <SmartButtonLikeLink
+                    route={routes.login}
+                    variant="tertiary"
+                    state={{ from: location.pathname }}
+                >
+                    {strings.loginButtonLabel}
+                </SmartButtonLikeLink>
+                {authenticated && user && (
+                    <>
+                        <QuickActionDropdownMenu
+                            label={(<IoNotificationsOutline />)}
+                            componentRef={notificationRef}
+                            className={styles.notificationButton}
+                            actions={notificationsCount !== 0 ? notificationsCount : undefined}
+                            popupClassName={styles.popup}
+                            actionsContainerClassName={styles.notificationCount}
+                            persistent
+                        >
+                            <Notifications
+                                onNotificationClose={handleCloseNotificationClick}
+                            />
+                        </QuickActionDropdownMenu>
+                        <DropdownMenu
+                            label={<IoPerson />}
+                            variant="tertiary"
+                            className={styles.userDropdown}
+                        >
+                            <div className={styles.userInfo}>
+                                <div className={styles.greetings}>
+                                    {resolveToString(strings.greetings, { name: user.displayName ?? 'Unnamed' })}
+                                </div>
+                                {profileUrl && (
+                                    <DropdownMenuItem href={profileUrl.to}>
+                                        {strings.gotoProfile}
+                                    </DropdownMenuItem>
+                                )}
+                                <DropdownMenuItem
+                                    name={undefined}
+                                    onClick={setShowLogoutConfirmationTrue}
+                                    // TODO: disable dropdown menu item
+                                    // disabled={logoutLoading}
+                                >
+                                    {strings.logoutButtonLabel}
+                                </DropdownMenuItem>
+                            </div>
+                        </DropdownMenu>
+                        {logoutConfirmationModal}
+                    </>
+                )}
             </div>
         </nav>
     );

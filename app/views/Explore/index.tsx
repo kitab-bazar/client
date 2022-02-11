@@ -12,8 +12,12 @@ import {
     DropdownMenu,
     DropdownMenuItem,
     TextOutput,
+    useModalState,
 } from '@the-deep/deep-ui';
-import { IoSearchSharp } from 'react-icons/io5';
+import {
+    IoSearchSharp,
+    IoAdd,
+} from 'react-icons/io5';
 import {
     gql,
     useQuery,
@@ -30,6 +34,7 @@ import {
     ExploreBooksQueryVariables,
 } from '#generated/types';
 import BookDetailModal from '#components/BookDetailModal';
+import UploadBookModal from '#components/UploadBookModal';
 import BookItem, { Props as BookItemProps } from '#components/BookItem';
 
 import styles from './styles.css';
@@ -109,12 +114,21 @@ type Book = NonNullable<NonNullable<ExploreBooksQuery['books']>['results']>[numb
 
 const keySelector = (d: { id: string }) => d.id;
 const labelSelector = (d: { name: string }) => d.name;
-const MAX_ITEMS_PER_PAGE = 20;
+
+const MAX_ITEMS_PER_PAGE = 10;
 type SortKeyType = 'price' | '-price' | 'id' | '-id';
+
+type BookSource = 'own' | 'all';
+interface BookSourceOption {
+    id: BookSource;
+    name: string;
+}
+
+const bookSourceKeySelector = (item: BookSourceOption) => item.id;
+const bookSourceLabelSelector = (item: BookSourceOption) => item.name;
 
 interface Props {
     className?: string;
-    publisher?: boolean;
     wishList?: boolean;
     // category?: string;
 }
@@ -122,13 +136,50 @@ interface Props {
 function Explore(props: Props) {
     const {
         className,
-        publisher: publisherFromProps,
         // category: categoryFromProps,
         wishList: wishListFromProps,
     } = props;
 
     const { user } = useContext(UserContext);
     const strings = useTranslation(explore);
+
+    const canAddBook = user?.permissions.includes('CAN_CREATE_BOOK');
+
+    const [selectedBookId, setSelectedBookId] = React.useState<string | undefined>();
+    const [page, setPage] = useState<number>(1);
+
+    // NOTE: A different UI depending on if user is publisher or not
+    const publisherId = user?.publisherId;
+    // NOTE: only used when in publisher mode
+    const [bookSource, setBookSource] = useInputState<BookSource | undefined>('own');
+
+    const [categories, setCategories] = useInputState<string[] | undefined>(undefined);
+    const [selectedSortKey, setSelectedSortKey] = useInputState<SortKeyType>('id');
+    const [search, setSearch] = useInputState<string | undefined>(undefined);
+    const [publisher, setPublisher] = useInputState<string | undefined>(undefined);
+
+    // eslint-disable-next-line no-nested-ternary
+    const effectivePublisher = publisherId
+        ? (bookSource === 'own' ? publisherId : undefined)
+        : publisher;
+
+    const pageTitle = React.useMemo(() => {
+        if (publisherId) {
+            return strings.pageTitlePublisher;
+        }
+
+        /*
+        if (categoryFromProps) {
+            return strings.pageTitleExploreByCategory;
+        }
+        */
+
+        if (wishListFromProps) {
+            return strings.pageTitleWishList;
+        }
+
+        return strings.pageTitleDefault;
+    }, [strings, publisherId, wishListFromProps]);
 
     const [
         sortOptions,
@@ -150,33 +201,10 @@ function Explore(props: Props) {
         ];
     }, [strings]);
 
-    const [categories, setCategories] = useInputState<string[] | undefined>(undefined);
-    const [selectedSortKey, setSelectedSortKey] = useInputState<SortKeyType>('id');
-    const [search, setSearch] = useInputState<string | undefined>(undefined);
-    const [publisher, setPublisher] = useInputState<string | undefined>(undefined);
-    const [selectedBookId, setSelectedBookId] = React.useState<string | undefined>();
-
-    const effectivePublisher = publisherFromProps ? user?.publisherId : publisher;
-
-    const [page, setPage] = useState<number>(1);
-
-    const pageTitle = React.useMemo(() => {
-        if (publisherFromProps) {
-            return strings.pageTitlePublisher;
-        }
-
-        /*
-        if (categoryFromProps) {
-            return strings.pageTitleExploreByCategory;
-        }
-        */
-
-        if (wishListFromProps) {
-            return strings.pageTitleWishList;
-        }
-
-        return strings.pageTitleDefault;
-    }, [strings, publisherFromProps, wishListFromProps]);
+    const bookSources: BookSourceOption[] = React.useMemo(() => ([
+        { id: 'own', name: strings.publisherOwnBooksLabel },
+        { id: 'all', name: strings.publisherAllBooksLabel },
+    ]), [strings]);
 
     const {
         data: optionsQueryResponse,
@@ -190,6 +218,7 @@ function Explore(props: Props) {
         data: bookResponse = previousData,
         loading: bookLoading,
         error: bookError,
+        refetch: refetchBooks,
     } = useQuery<ExploreBooksQuery, ExploreBooksQueryVariables>(
         EXPLORE_BOOKS,
         {
@@ -205,16 +234,21 @@ function Explore(props: Props) {
         },
     );
 
-    const bookItemRendererParams = (
+    const bookItemRendererParams = React.useCallback((
         _: string,
         book: Book,
     ): BookItemProps => ({
         book,
         onBookTitleClick: setSelectedBookId,
         variant: 'list',
-    });
+    }), []);
 
     const filtered = (categories && categories.length > 0) || !!publisher;
+    const [
+        uploadBookModalShown,
+        showUploadBookModal,
+        hideUploadBookModal,
+    ] = useModalState(false);
 
     return (
         <div className={_cs(styles.explore, className)}>
@@ -223,6 +257,15 @@ function Explore(props: Props) {
                     className={styles.pageHeader}
                     heading={pageTitle}
                     spacing="loose"
+                    actions={canAddBook && (
+                        <Button
+                            name={undefined}
+                            onClick={showUploadBookModal}
+                            icons={<IoAdd />}
+                        >
+                            {strings.addBookButtonLabel}
+                        </Button>
+                    )}
                 >
                     <TextInput
                         variant="general"
@@ -234,9 +277,30 @@ function Explore(props: Props) {
                         onChange={setSearch}
                     />
                 </Header>
+                {uploadBookModalShown && effectivePublisher && (
+                    <UploadBookModal
+                        publisher={effectivePublisher}
+                        onModalClose={hideUploadBookModal}
+                        // FIXME: This might not be required
+                        onUploadSuccess={refetchBooks}
+                    />
+                )}
             </div>
             <div className={styles.container}>
                 <div className={styles.sideBar}>
+                    {publisherId && (
+                        <RadioInput
+                            className={styles.publisherInput}
+                            listContainerClassName={styles.publisherList}
+                            name={undefined}
+                            options={bookSources}
+                            keySelector={bookSourceKeySelector}
+                            labelSelector={bookSourceLabelSelector}
+                            value={bookSource}
+                            onChange={setBookSource}
+                            disabled={filterLoading}
+                        />
+                    )}
                     <CheckListInput
                         label={strings.categoriesFilterLabel}
                         className={styles.categoriesInput}
@@ -260,7 +324,7 @@ function Explore(props: Props) {
                             {strings.clearCategoriesFilterButtonLabel}
                         </Button>
                     )}
-                    {!publisherFromProps && (
+                    {!publisherId && (
                         <>
                             <RadioInput
                                 label={strings.publisherFilterLabel}
@@ -321,6 +385,7 @@ function Explore(props: Props) {
                         errored={!!bookError}
                         filtered={filtered}
                         pending={bookLoading}
+                        messageShown
                     />
                     <Pager
                         activePage={page}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { _cs } from '@togglecorp/fujs';
 import { getOperationName } from 'apollo-link';
 import {
@@ -10,12 +10,16 @@ import {
 import {
     IoCheckmark,
     IoClose,
+    IoBook,
 } from 'react-icons/io5';
 import {
     gql,
     useMutation,
 } from '@apollo/client';
 
+import { bookItem } from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
+import { resolveToString } from '#base/utils/lang';
 import {
     BookType,
     AddToOrderMutation,
@@ -26,6 +30,8 @@ import {
     RemoveFromWishListMutationVariables,
 } from '#generated/types';
 import { CART_ITEMS } from '#components/OrdersBar/queries';
+
+import UserContext from '#base/context/UserContext';
 
 import styles from './styles.css';
 
@@ -127,7 +133,11 @@ function BookItem(props: Props) {
         wishListActionsShown,
     } = props;
 
+    const strings = useTranslation(bookItem);
     const alert = useAlert();
+    const { user } = useContext(UserContext);
+
+    const canCreateOrder = user?.permissions.includes('CREATE_ORDER');
 
     const [
         addToOrder,
@@ -139,7 +149,7 @@ function BookItem(props: Props) {
             onCompleted: (response) => {
                 if (!response?.createCartItem?.ok) {
                     alert.show(
-                        'Failed to add book to the order.',
+                        strings.bookOrderFailedMessage,
                         { variant: 'error' },
                     );
                 }
@@ -162,8 +172,7 @@ function BookItem(props: Props) {
             onCompleted: (response) => {
                 if (!response?.createWishlist?.ok) {
                     alert.show(
-                        // FIXME: translate
-                        'Failed to add book to the wish list.',
+                        strings.wishlistAdditionFailedMessage,
                         { variant: 'error' },
                     );
                 }
@@ -186,7 +195,7 @@ function BookItem(props: Props) {
             onCompleted: (response) => {
                 if (!response?.deleteWishlist?.ok) {
                     alert.show(
-                        'Failed to delete item from wish list',
+                        strings.wishlistRemovalFailedMessage,
                         { variant: 'error' },
                     );
                 }
@@ -205,15 +214,19 @@ function BookItem(props: Props) {
     ), [book.authors]);
 
     const handleClick = React.useCallback(() => {
+        // eslint-disable-next-line react/destructuring-assignment
         if (props.variant === 'compact' && props.onClick) {
+            // eslint-disable-next-line react/destructuring-assignment
             props.onClick(props.book.id);
         }
     }, [props]);
 
     const categoriesDisplay = React.useMemo(() => (
         variant !== 'compact'
+            // eslint-disable-next-line react/destructuring-assignment
             ? props.book.categories?.map((d) => d.name).join(', ')
             : undefined
+        // eslint-disable-next-line react/destructuring-assignment
     ), [variant, props.book]);
 
     const handleAddToOrder = React.useCallback(() => {
@@ -248,6 +261,7 @@ function BookItem(props: Props) {
             return undefined;
         }
 
+        // eslint-disable-next-line react/destructuring-assignment
         if (props.book.cartDetails) {
             return (
                 <Button
@@ -256,22 +270,23 @@ function BookItem(props: Props) {
                     icons={<IoCheckmark />}
                     readOnly
                 >
-                    In order list
+                    {strings.alreadyInOrderListMessage}
                 </Button>
             );
         }
 
-        return (
+        return canCreateOrder && (
             <Button
                 name={undefined}
                 variant="primary"
                 onClick={handleAddToOrder}
                 disabled={actionsDisabled}
             >
-                Add to Order
+                {strings.addToOrderButtonLabel}
             </Button>
         );
-    }, [variant, actionsDisabled, handleAddToOrder, props.book]);
+        // eslint-disable-next-line react/destructuring-assignment
+    }, [strings, variant, canCreateOrder, actionsDisabled, handleAddToOrder, props.book]);
 
     const wishListButton = React.useMemo(() => {
         if (!wishListActionsShown) {
@@ -280,33 +295,39 @@ function BookItem(props: Props) {
         if (variant === 'compact') {
             return undefined;
         }
+        // eslint-disable-next-line react/destructuring-assignment
         if (props.book.wishlistId) {
-            return (
+            return canCreateOrder && (
                 <Button
+                    // eslint-disable-next-line react/destructuring-assignment
                     name={props.book.wishlistId}
                     variant="primary"
                     onClick={handleRemoveFromWishList}
                     disabled={actionsDisabled}
                 >
-                    Remove from Wish list
+                    {strings.removeFromWishlistButtonLabel}
                 </Button>
             );
         }
+        // eslint-disable-next-line react/destructuring-assignment
         if (!props.book.cartDetails) {
-            return (
+            return canCreateOrder && (
                 <Button
                     name={undefined}
                     variant="primary"
                     onClick={handleAddToWishList}
                     disabled={actionsDisabled}
                 >
-                    Add to Wish list
+                    {strings.addToWishlistButtonLabel}
                 </Button>
             );
         }
         return undefined;
     }, [
+        strings,
+        canCreateOrder,
         variant,
+        // eslint-disable-next-line react/destructuring-assignment
         props.book,
         actionsDisabled,
         handleAddToWishList,
@@ -316,20 +337,24 @@ function BookItem(props: Props) {
 
     const bookCoverPreview = (
         <div className={styles.preview}>
-            {book.image?.url && (
+            {book.image?.url ? (
                 <img
                     className={styles.image}
                     src={book.image.url}
                     alt={book.image.name ?? undefined}
                 />
+            ) : (
+                <IoBook className={styles.fallbackIcon} />
             )}
         </div>
     );
 
     const containerClassName = _cs(
+        /* eslint-disable react/destructuring-assignment */
         props.variant === 'list' && styles.listVariant,
         props.variant === 'detail' && styles.detailVariant,
         props.variant === 'compact' && styles.compactVariant,
+        /* eslint-enable react/destructuring-assignment */
         styles.bookItem,
         className,
     );
@@ -342,8 +367,10 @@ function BookItem(props: Props) {
                     className={styles.details}
                     heading={(
                         <Button
+                            className={styles.bookTitle}
                             name={book.id}
                             variant="action"
+                            // eslint-disable-next-line react/destructuring-assignment
                             onClick={props.onBookTitleClick}
                         >
                             {book.title}
@@ -354,20 +381,23 @@ function BookItem(props: Props) {
                     headerActions={(
                         <TextOutput
                             valueType="number"
-                            label="NPR."
+                            label={strings.nprLabel}
                             hideLabelColon
                             value={book.price}
                         />
                     )}
+                    footerClassName={styles.footer}
                     footerIconsContainerClassName={styles.meta}
                     footerIcons={(
                         <>
                             <TextOutput
                                 label="Language"
+                                // eslint-disable-next-line react/destructuring-assignment
                                 value={props.book.language}
                             />
                             <TextOutput
                                 label="Publisher"
+                                // eslint-disable-next-line react/destructuring-assignment
                                 value={props.book.publisher.name}
                             />
                             <div className={styles.categories}>
@@ -398,6 +428,7 @@ function BookItem(props: Props) {
                         <Button
                             name={undefined}
                             variant="action"
+                            // eslint-disable-next-line react/destructuring-assignment
                             onClick={props.onCloseButtonClick}
                         >
                             <IoClose />
@@ -408,8 +439,7 @@ function BookItem(props: Props) {
                     borderBelowHeader
                     headerDescription={(
                         <TextOutput
-                            // FIXME: translate
-                            label="Price (NPR)"
+                            label={strings.priceLabel}
                             value={book.price}
                             valueType="number"
                         />
@@ -418,24 +448,24 @@ function BookItem(props: Props) {
                 >
                     <div className={styles.bookMeta}>
                         <TextOutput
-                            // FIXME: translate
-                            label="Language"
+                            label={strings.languageLabel}
+                            // eslint-disable-next-line react/destructuring-assignment
                             value={props.book.language}
                         />
                         <TextOutput
-                            // FIXME: translate
-                            label="Number of pages"
+                            label={strings.numberOfPagesLabel}
+                            // eslint-disable-next-line react/destructuring-assignment
                             value={props.book.numberOfPages}
                             valueType="number"
                         />
                         <TextOutput
-                            // FIXME: translate
-                            label="ISBN"
+                            label={strings.isbnLabel}
+                            // eslint-disable-next-line react/destructuring-assignment
                             value={props.book.isbn}
                         />
                         <TextOutput
-                            // FIXME: translate
-                            label="Publisher"
+                            label={strings.publisherLabel}
+                            // eslint-disable-next-line react/destructuring-assignment
                             value={props.book.publisher.name}
                         />
                         <div className={styles.categories}>
@@ -450,6 +480,7 @@ function BookItem(props: Props) {
                         // TODO: sanitize description
                         // eslint-disable-next-line react/no-danger
                         dangerouslySetInnerHTML={
+                            // eslint-disable-next-line react/destructuring-assignment
                             { __html: props.book.description ?? '' }
                         }
                     />
@@ -475,8 +506,11 @@ function BookItem(props: Props) {
                 <div className={styles.author}>
                     {book.authors[0].name}
                 </div>
-                <div className={styles.price}>
-                    {`NPR ${book.price}`}
+                <div
+                    className={styles.price}
+                    // FIXME: use Numeral
+                >
+                    {resolveToString(strings.bookPrice, { price: String(book.price) })}
                 </div>
             </div>
         </div>

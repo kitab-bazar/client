@@ -59,12 +59,6 @@ function Routes(props: Props) {
                 </Route>
                 <Route
                     exact
-                    path={routes.publisherBooks.path}
-                >
-                    {routes.publisherBooks.load({ className })}
-                </Route>
-                <Route
-                    exact
                     path={routes.myProfile.path}
                 >
                     {routes.myProfile.load({ className })}

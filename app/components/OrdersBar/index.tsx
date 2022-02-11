@@ -4,12 +4,17 @@ import { useQuery } from '@apollo/client';
 import {
     Button,
     useBooleanState,
+    TextOutput,
 } from '@the-deep/deep-ui';
 
 import {
     CartItemsMetaQuery,
     CartItemsMetaQueryVariables,
 } from '#generated/types';
+
+import { ordersBar } from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
+import { resolveToString } from '#base/utils/lang';
 
 import OrdersModal from './OrdersModal';
 import { CART_ITEMS } from './queries';
@@ -25,6 +30,7 @@ function OrdersBar(props: Props) {
         className,
     } = props;
 
+    const strings = useTranslation(ordersBar);
     const [
         showOrders,
         setShowOrdersTrue,
@@ -35,14 +41,31 @@ function OrdersBar(props: Props) {
         data: cartItemsMeta,
     } = useQuery<CartItemsMetaQuery, CartItemsMetaQueryVariables>(CART_ITEMS);
 
-    const totalCartItems = cartItemsMeta?.cartItems?.totalCount ?? 0;
+    const totalCount = cartItemsMeta?.cartItems?.totalCount ?? 0;
+    const totalQuantity = cartItemsMeta?.cartItems?.totalQuantity ?? 0;
+    const totalPrice = cartItemsMeta?.cartItems?.grandTotalPrice ?? 0;
 
     return (
         <>
-            {totalCartItems > 0 && (
+            {totalCount > 0 && (
                 <div className={_cs(styles.ordersBar, showOrders && styles.hidden, className)}>
-                    <div>
-                        {`${totalCartItems} book(s) selected`}
+                    <div className={styles.summary}>
+                        {
+                            resolveToString(
+                                strings.booksSelectedMessage,
+                                { count: String(totalCount) },
+                            )
+                        }
+                        <TextOutput
+                            label={strings.totalPriceLabel}
+                            valueType="number"
+                            value={totalPrice}
+                        />
+                        <TextOutput
+                            label={strings.totalBooksLabel}
+                            valueType="number"
+                            value={totalQuantity}
+                        />
                     </div>
                     <div>
                         <Button
@@ -50,7 +73,7 @@ function OrdersBar(props: Props) {
                             variant="tertiary"
                             onClick={setShowOrdersTrue}
                         >
-                            View Orders
+                            {strings.viewOrdersLabel}
                         </Button>
                     </div>
                 </div>
@@ -58,6 +81,8 @@ function OrdersBar(props: Props) {
             {showOrders && (
                 <OrdersModal
                     onClose={setShowOrdersFalse}
+                    totalPrice={totalPrice}
+                    totalQuantity={totalQuantity}
                 />
             )}
         </>

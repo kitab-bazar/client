@@ -56,11 +56,13 @@
             flex-direction: column;
             flex-grow: 1;
             padding: var(--dui-spacing-extra-large) 0;
-            gap: var(--dui-spacing-medium);
+            gap: var(--dui-spacing-large);
 
             .summary {
                 display: flex;
                 align-items: center;
+                flex-wrap: wrap;
+                gap: var(--dui-spacing-medium);
                 justify-content: space-between;
 
                 .book-count {

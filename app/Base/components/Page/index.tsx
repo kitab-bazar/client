@@ -8,9 +8,8 @@ import useTranslation from '#base/hooks/useTranslation';
 import PreloadMessage from '#base/components/PreloadMessage';
 import { UserContext } from '#base/context/UserContext';
 import { NavbarContext } from '#base/context/NavbarContext';
-import { ProjectContext } from '#base/context/ProjectContext';
 import PageTitle from '#base/components/PageTitle';
-import { Project } from '#base/types/project';
+import { User } from '#base/types/user';
 import ErrorBoundary from '#base/components/ErrorBoundary';
 import { common } from '#base/configs/lang';
 
@@ -26,8 +25,7 @@ export interface Props<T extends { className?: string }> {
     overrideProps: Partial<React.PropsWithRef<T>>;
     visibility: Visibility,
     checkPermissions?: (
-        project: Project | undefined,
-        skipProjectPermissionCheck: boolean,
+        user: User | undefined,
     ) => boolean | undefined,
     navbarVisibility: boolean;
 
@@ -55,9 +53,8 @@ function Page<T extends { className?: string }>(props: Props<T>) {
 
     const location = useLocation();
 
-    const { authenticated } = useContext(UserContext);
+    const { user, authenticated } = useContext(UserContext);
     const { setNavbarVisibility } = useContext(NavbarContext);
-    const { project } = useContext(ProjectContext);
 
     const redirectToSignIn = visibility === 'is-authenticated' && !authenticated;
     const redirectToHome = visibility === 'is-not-authenticated' && authenticated;
@@ -108,7 +105,7 @@ function Page<T extends { className?: string }>(props: Props<T>) {
     // FIXME: custom error message from checkPermissions
     // FIXME: add a "back to home" or somewhere page
     // FIXME: only hide page if page is successfully mounted
-    if (checkPermissions && !checkPermissions(project, false)) {
+    if (checkPermissions && !checkPermissions(user)) {
         return (
             <>
                 <PageTitle value={`403 - ${title}`} />
@@ -123,7 +120,7 @@ function Page<T extends { className?: string }>(props: Props<T>) {
     return (
         <>
             <PageTitle value={title} />
-            <ErrorBoundary>
+            <ErrorBoundary className={styles.page}>
                 <Comp
                     className={styles.page}
                     {...componentProps}
