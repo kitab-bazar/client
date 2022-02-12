@@ -65,6 +65,12 @@ function Routes(props: Props) {
                 </Route>
                 <Route
                     exact
+                    path={routes.activateUser.path}
+                >
+                    {routes.activateUser.load({ className })}
+                </Route>
+                <Route
+                    exact
                     path={routes.orderList.path}
                 >
                     {routes.orderList.load({ className })}

@@ -925,3 +925,15 @@ export const newBookModal = {
         ne: 'Authors',
     },
 };
+
+export const activateUser = {
+    appLabel: common.kitabBazarAppLabel,
+    userActivationMessage: {
+        en: 'Activating User, Please wait..',
+        ne: 'Activating User, Please wait..',
+    },
+    userActivationSuccessfulMessage: {
+        en: 'Sucessfully activated the user!',
+        ne: 'Sucessfully activated the user!',
+    },
+};

@@ -66,8 +66,17 @@ const orderList = wrap({
     },
     visibility: 'is-authenticated',
 });
+const activateUser = wrap({
+    path: '/user/activate/:uid/:token/',
+    title: 'Activate User',
+    navbarVisibility: true,
+    component: lazy(() => import('#views/ActivateUser')),
+    componentProps: {
+    },
+    visibility: 'is-anything',
+});
 const wishList = wrap({
-    path: '/wish-list',
+    path: '/wish-list/',
     title: 'Wish List',
     navbarVisibility: true,
     component: lazy(() => import('#views/Explore')),
@@ -88,6 +97,7 @@ const routes = {
     wishList,
     fourHundredFour,
     orderList,
+    activateUser,
     explore,
 };
 export default routes;
