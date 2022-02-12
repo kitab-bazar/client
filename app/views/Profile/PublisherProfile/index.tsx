@@ -103,7 +103,7 @@ const PUBLISHER_STATS = gql`
             totalBooksOrdered
             totalBooksUploaded
             stat {
-                orderPlacedAt
+                orderPlacedAtDate
                 totalQuantity
             }
         }
@@ -111,7 +111,7 @@ const PUBLISHER_STATS = gql`
 `;
 
 interface ChartData {
-    orderPlacedAt: string;
+    orderPlacedAtDate: string;
     totalQuantity: number;
 }
 
@@ -142,10 +142,10 @@ function PublisherProfile(props: Props) {
     const orderSummary = React.useMemo(
         () => {
             const filteredStats = publisherStats?.orderStat?.stat
-                ?.filter((v) => isDefined(v.orderPlacedAt)) as ChartData[] | undefined | null;
+                ?.filter((v) => isDefined(v.orderPlacedAtDate)) as ChartData[] | undefined | null;
             return (filteredStats ?? []).map((v) => ({
                 ...v,
-                orderPlacedAt: new Date(v.orderPlacedAt).getTime(),
+                orderPlacedAt: new Date(v.orderPlacedAtDate).getTime(),
             })).sort((a, b) => compareDate(a.orderPlacedAt, b.orderPlacedAt));
         },
         [publisherStats],
@@ -216,6 +216,10 @@ function PublisherProfile(props: Props) {
                                 label={strings.phoneNumberLabel}
                                 value={profileDetails?.me?.phoneNumber}
                             />
+                            {/* NOTE: empty div only for gap */}
+                            <div>
+                                &nbsp;
+                            </div>
                             <TextOutput
                                 label={strings.addressLabel}
                                 value={`${

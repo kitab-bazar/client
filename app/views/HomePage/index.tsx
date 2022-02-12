@@ -133,7 +133,7 @@ function HomePage() {
                         </div>
                         <div className={styles.actions}>
                             <SmartButtonLikeLink
-                                route={routes.explore}
+                                route={routes.bookList}
                                 variant="secondary"
                                 spacing="loose"
                             >

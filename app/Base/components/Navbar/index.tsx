@@ -183,7 +183,7 @@ function Navbar(props: Props) {
                     className={styles.navLink}
                 />
                 <SmartNavLink
-                    route={routes.explore}
+                    route={routes.bookList}
                     className={styles.navLink}
                 />
                 {/*

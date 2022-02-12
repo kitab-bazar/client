@@ -49,13 +49,22 @@ const myProfile = wrap({
     },
     visibility: 'is-authenticated',
 });
-const explore = wrap({
+const bookList = wrap({
     path: '/books/',
     title: 'Books',
     navbarVisibility: true,
-    component: lazy(() => import('#views/Explore')),
+    component: lazy(() => import('#views/BookList')),
     componentProps: {},
     visibility: 'is-anything',
+});
+const orderDetail = wrap({
+    path: '/orders/:orderId/',
+    title: 'Order Detail',
+    navbarVisibility: true,
+    component: lazy(() => import('#views/OrderDetail')),
+    componentProps: {
+    },
+    visibility: 'is-authenticated',
 });
 const orderList = wrap({
     path: '/orders/',
@@ -67,7 +76,7 @@ const orderList = wrap({
     visibility: 'is-authenticated',
 });
 const activateUser = wrap({
-    path: '/user/activate/:uid/:token/',
+    path: '/user/activate/:userId/:token/',
     title: 'Activate User',
     navbarVisibility: true,
     component: lazy(() => import('#views/ActivateUser')),
@@ -79,7 +88,7 @@ const wishList = wrap({
     path: '/wish-list/',
     title: 'Wish List',
     navbarVisibility: true,
-    component: lazy(() => import('#views/Explore')),
+    component: lazy(() => import('#views/BookList')),
     componentProps: {
         wishList: true,
     },
@@ -98,6 +107,7 @@ const routes = {
     fourHundredFour,
     orderList,
     activateUser,
-    explore,
+    bookList,
+    orderDetail,
 };
 export default routes;

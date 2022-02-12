@@ -713,6 +713,10 @@ export const orderList = {
         en: 'Search by book title (3 or more characters)',
         ne: 'Search by book title (3 or more characters)',
     },
+    orderCountLabel: {
+        en: 'Order Count',
+        ne: 'Order Count',
+    },
     orderStatusFilterLabel: {
         en: 'Order Status',
         ne: 'Order Status',
@@ -791,9 +795,21 @@ export const bookItem = {
         en: 'Publisher',
         ne: 'Publisher',
     },
+    quantityLabel: {
+        en: 'Quantity',
+        ne: 'Quantity',
+    },
+    editionLabel: {
+        en: 'Edition',
+        ne: 'Edition',
+    },
     bookPrice: {
         en: 'NPR {price}',
         ne: 'NPR {price}',
+    },
+    editDetailsButtonLabel: {
+        en: 'Edit Details',
+        ne: 'Edit Details',
     },
 };
 
@@ -810,9 +826,17 @@ export const orderItem = {
         en: 'Total price',
         ne: 'Total price',
     },
+    statusLabel: {
+        en: 'Status',
+        ne: 'Status',
+    },
     nprPrefix: {
         en: 'NPR. ',
         ne: 'NPR. ',
+    },
+    orderTitle: {
+        en: 'Order #{code}',
+        ne: 'Order #{code}',
     },
 };
 
@@ -935,5 +959,36 @@ export const activateUser = {
     userActivationSuccessfulMessage: {
         en: 'Sucessfully activated the user!',
         ne: 'Sucessfully activated the user!',
+    },
+};
+
+export const orderDetail = {
+    searchInputPlaceholder: {
+        en: 'Search for books',
+        ne: 'Search for books',
+    },
+    markAsPackedButtonLabel: {
+        en: 'Mark as Packed',
+        ne: 'Mark as Packed',
+    },
+    markAsPackedConfirmationMessage: {
+        en: 'Are you sure you want to mark the order as packed?',
+        ne: 'Are you sure you want to mark the order as packed?',
+    },
+    markAsCompletedConfirmationMessage: {
+        en: 'Are you sure you want to mark the order as completed?',
+        ne: 'Are you sure you want to mark the order as completed?',
+    },
+    noGoingBackWarningMessage: {
+        en: 'NOTE: This action cannot be undone',
+        ne: 'NOTE: This action cannot be undone',
+    },
+    markAsCompletedButtonLabel: {
+        en: 'Mark as Completed',
+        ne: 'Mark as Completed',
+    },
+    orderStatusUpdateFailedMessage: {
+        en: 'Failed to update the Order status',
+        ne: 'Failed to update the Order status',
     },
 };

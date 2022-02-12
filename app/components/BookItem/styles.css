@@ -9,56 +9,6 @@
         }
     }
 
-    &.list-variant {
-        display: flex;
-        flex-wrap: wrap;
-
-        .preview {
-            display: flex;
-            flex-shrink: 0;
-            justify-content: center;
-
-            .image {
-                width: 10rem;
-                height: 16rem;
-                object-fit: cover;
-                object-position: top center;
-            }
-
-            .fallback-icon {
-                width: 10rem;
-                height: 16rem;
-            }
-        }
-
-        .details {
-            flex-grow: 1;
-            flex-wrap: wrap;
-
-            .book-title {
-                text-align: left;
-            }
-
-            .footer {
-                flex-wrap: wrap;
-
-                .meta {
-                    display: flex;
-                    align-items: flex-start;
-                    flex-direction: column;
-
-                    .categories {
-                        margin-top: var(--dui-spacing-small);
-                    }
-                }
-
-                .actions {
-                    align-self: flex-end;
-                }
-            }
-        }
-    }
-
     &.detail-variant {
         display: flex;
 
@@ -93,6 +43,43 @@
                     flex-direction: column;
                     gap: var(--dui-spacing-small);
                 }
+            }
+        }
+    }
+
+    &.order-variant {
+        display: flex;
+        flex-wrap: wrap;
+        --preview-width: 7rem;
+        --preview-height: 10rem;
+
+        .preview {
+            display: flex;
+            flex-shrink: 0;
+            justify-content: center;
+
+            .image {
+                width: var(--preview-width);
+                height: var(--preview-height);
+                object-fit: cover;
+                object-position: top center;
+            }
+
+            .fallback-icon {
+                width: var(--preview-width);
+                height: var(--preview-height);
+            }
+        }
+
+        .details {
+            flex-grow: 1;
+            flex-wrap: wrap;
+
+            .order-book-meta {
+                display: flex;
+                align-items: flex-start;
+                flex-direction: column;
+                gap: var(--dui-spacing-small);
             }
         }
     }
@@ -152,4 +139,62 @@
             }
         }
     }
+
+    &.list-variant {
+        display: flex;
+
+        .preview {
+            display: flex;
+            flex-shrink: 0;
+            justify-content: center;
+
+            .image {
+                width: 10rem;
+                height: 16rem;
+                object-fit: cover;
+                object-position: top center;
+            }
+
+            .fallback-icon {
+                width: 10rem;
+                height: 16rem;
+            }
+        }
+
+        .details {
+            flex-grow: 1;
+            flex-wrap: wrap;
+
+            .book-title {
+                text-align: left;
+            }
+
+            .footer {
+                flex-wrap: wrap;
+
+                .meta {
+                    display: flex;
+                    align-items: flex-start;
+                    flex-direction: column;
+
+                    .categories {
+                        margin-top: var(--dui-spacing-small);
+                    }
+                }
+
+                .actions {
+                    align-self: flex-end;
+                }
+            }
+        }
+
+        &:hover {
+            .details {
+                .book-title {
+                    color: var(--dui-color-accent);
+                }
+            }
+        }
+    }
+
 }

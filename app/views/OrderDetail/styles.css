@@ -1,4 +1,4 @@
-.explore {
+.order-detail {
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -8,10 +8,10 @@
         align-items: center;
         flex-direction: column;
         background-color: var(--dui-color-background);
-        padding: var(--dui-spacing-extra-large);
         width: 100%;
 
         .page-header {
+            padding: var(--dui-spacing-extra-large);
             width: 100%;
             max-width: var(--kitab-page-max-width);
 
@@ -56,25 +56,11 @@
             flex-direction: column;
             flex-grow: 1;
             padding: var(--dui-spacing-extra-large) 0;
-            gap: var(--dui-spacing-large);
-
-            .summary {
-                display: flex;
-                align-items: center;
-                flex-wrap: wrap;
-                gap: var(--dui-spacing-medium);
-                justify-content: space-between;
-
-                .book-count {
-                    font-size: var(--dui-font-size-large);
-                }
-            }
 
             .book-list {
                 display: flex;
                 flex-direction: column;
                 flex-grow: 1;
-                padding: var(--dui-spacing-extra-large) 0;
                 gap: var(--dui-spacing-medium);
             }
         }

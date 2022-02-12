@@ -53,9 +53,9 @@ function Routes(props: Props) {
                 </Route>
                 <Route
                     exact
-                    path={routes.explore.path}
+                    path={routes.bookList.path}
                 >
-                    {routes.explore.load({ className })}
+                    {routes.bookList.load({ className })}
                 </Route>
                 <Route
                     exact
@@ -68,6 +68,12 @@ function Routes(props: Props) {
                     path={routes.activateUser.path}
                 >
                     {routes.activateUser.load({ className })}
+                </Route>
+                <Route
+                    exact
+                    path={routes.orderDetail.path}
+                >
+                    {routes.orderDetail.load({ className })}
                 </Route>
                 <Route
                     exact

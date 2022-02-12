@@ -47,7 +47,7 @@ function ActivateUser(props: Props) {
     const { className } = props;
     const strings = useTranslation(activateUserLang);
     const routeParams = useParams<{
-        uid: string,
+        userId: string,
         token: string,
     }>();
 
@@ -92,10 +92,10 @@ function ActivateUser(props: Props) {
     );
 
     React.useEffect(() => {
-        if (routeParams && routeParams.uid && routeParams.token) {
+        if (routeParams && routeParams.userId && routeParams.token) {
             activateUser({
                 variables: {
-                    uid: routeParams.uid,
+                    uid: routeParams.userId,
                     token: routeParams.token,
                 },
             });

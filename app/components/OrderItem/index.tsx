@@ -4,31 +4,29 @@ import {
     Container,
     TextOutput,
 } from '@the-deep/deep-ui';
-import {
-    OrderStatus,
-} from '#generated/types';
 import routes from '#base/configs/routes';
 import { orderItem } from '#base/configs/lang';
+import { resolveToString } from '#base/utils/lang';
 import useTranslation from '#base/hooks/useTranslation';
+import { OrderType } from '#generated/types';
 
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
 
 import styles from './styles.css';
 
+type Order = Pick<OrderType, 'id' | 'orderCode' | 'totalPrice' | 'status' | 'totalQuantity'>
+
 export interface Props {
     className?: string;
-    order: {
-        orderCode: string;
-        totalPrice: number;
-        status: OrderStatus;
-        totalQuantity?: number | null | undefined;
-    }
+    order: Order;
+    hideDetailsLink?: boolean;
 }
 
 function OrderItem(props: Props) {
     const {
         className,
         order,
+        hideDetailsLink,
     } = props;
 
     const {
@@ -39,20 +37,24 @@ function OrderItem(props: Props) {
     } = order;
 
     const strings = useTranslation(orderItem);
+    const title = resolveToString(
+        strings.orderTitle,
+        { code: orderCode?.split('-')?.[0] },
+    );
 
     return (
         <Container
             className={_cs(styles.orderItem, className)}
             contentClassName={styles.orderMeta}
-            heading={orderCode?.split('-')?.[0]}
+            heading={title}
             headingClassName={styles.heading}
             headingSize="extraSmall"
             headingContainerClassName={styles.heading}
             withoutExternalPadding
-            footerActions={(
+            footerActions={!hideDetailsLink && (
                 <SmartButtonLikeLink
-                    route={routes.orderList}
-                    state={{ orderId: orderCode }}
+                    route={routes.orderDetail}
+                    attrs={{ orderId: order.id }}
                     variant="transparent"
                 >
                     {strings.viewDetailsLabel}
@@ -73,7 +75,7 @@ function OrderItem(props: Props) {
                 }}
             />
             <TextOutput
-                label="status"
+                label={strings.statusLabel}
                 value={status}
             />
         </Container>
