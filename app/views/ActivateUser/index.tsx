@@ -49,7 +49,7 @@ function ActivateUser(props: Props) {
     const routeParams = useParams<{
         userId: string,
         token: string,
-    }>();
+    }>() as { userId: string, token: string };
 
     const alert = useAlert();
 
@@ -88,18 +88,22 @@ function ActivateUser(props: Props) {
                     setError(formError);
                 }
             },
+            onError: (errors) => {
+                alert.show(
+                    errors.message,
+                    { variant: 'error' },
+                );
+            },
         },
     );
 
     React.useEffect(() => {
-        if (routeParams && routeParams.userId && routeParams.token) {
-            activateUser({
-                variables: {
-                    uid: routeParams.userId,
-                    token: routeParams.token,
-                },
-            });
-        }
+        activateUser({
+            variables: {
+                uid: routeParams.userId,
+                token: routeParams.token,
+            },
+        });
     }, [routeParams, activateUser]);
 
     return (

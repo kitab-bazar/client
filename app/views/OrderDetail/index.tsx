@@ -1,9 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import {
-    _cs,
-    isDefined,
-} from '@togglecorp/fujs';
+import { _cs } from '@togglecorp/fujs';
 import {
     Pager,
     useInputState,
@@ -39,7 +36,7 @@ import styles from './styles.css';
 const keySelector = (d: { id: string }) => d.id;
 // const labelSelector = (d: { name: string }) => d.name;
 
-const ORDER_DETIAL = gql`
+const ORDER_DETAIL = gql`
 query OrderDetails($id: ID!, $bookPage: Int, $bookPageSize: Int) {
     order(id: $id) {
         id
@@ -93,19 +90,19 @@ function OrderDetail(props: Props) {
 
     const strings = useTranslation(orderDetail);
     const alert = useAlert();
-    const routeParams = useParams<{
+    const { orderId } = useParams<{
         orderId: string;
-    }>();
+    }>() as { orderId: string };
 
     const {
         data: orderResponse,
-        // loading: orderLoading,
+        error,
+        loading: orderLoading,
     } = useQuery<OrderDetailsQuery, OrderDetailsQueryVariables>(
-        ORDER_DETIAL,
+        ORDER_DETAIL,
         {
-            skip: !routeParams?.orderId,
             variables: {
-                id: routeParams?.orderId ?? '',
+                id: orderId,
                 bookPage: page,
                 bookPageSize: MAX_ITEMS_PER_PAGE,
             },
@@ -114,6 +111,7 @@ function OrderDetail(props: Props) {
 
     const [
         updateOrder,
+        { loading: updateOrderLoading },
     ] = useMutation<UpdateOrderStatusMutation, UpdateOrderStatusMutationVariables>(
         UPDATE_ORDER_STATUS,
         {
@@ -125,30 +123,32 @@ function OrderDetail(props: Props) {
                     );
                 }
             },
+            onError: (errors) => {
+                alert.show(
+                    errors.message,
+                    { variant: 'error' },
+                );
+            },
         },
     );
 
     const handleMarkAsPacked = React.useCallback(() => {
-        if (isDefined(orderResponse?.order?.id)) {
-            updateOrder({
-                variables: {
-                    id: orderResponse?.order?.id ?? '',
-                    status: 'PACKED',
-                },
-            });
-        }
-    }, [orderResponse?.order?.id, updateOrder]);
+        updateOrder({
+            variables: {
+                id: orderId,
+                status: 'PACKED',
+            },
+        });
+    }, [orderId, updateOrder]);
 
     const handleMarkAsCompleted = React.useCallback(() => {
-        if (isDefined(orderResponse?.order?.id)) {
-            updateOrder({
-                variables: {
-                    id: orderResponse?.order?.id ?? '',
-                    status: 'COMPLETED',
-                },
-            });
-        }
-    }, [orderResponse?.order?.id, updateOrder]);
+        updateOrder({
+            variables: {
+                id: orderId,
+                status: 'COMPLETED',
+            },
+        });
+    }, [orderId, updateOrder]);
 
     const bookItemRendererParams = React.useCallback((
         _: string,
@@ -173,6 +173,7 @@ function OrderDetail(props: Props) {
                                 <ConfirmButton
                                     name={undefined}
                                     onConfirm={handleMarkAsPacked}
+                                    disabled={updateOrderLoading}
                                     message={(
                                         <>
                                             <strong>
@@ -191,6 +192,7 @@ function OrderDetail(props: Props) {
                                 <ConfirmButton
                                     name={undefined}
                                     onConfirm={handleMarkAsCompleted}
+                                    disabled={updateOrderLoading}
                                     message={(
                                         <>
                                             <strong>
@@ -227,7 +229,7 @@ function OrderDetail(props: Props) {
                         <OrderItem
                             className={styles.pageHeader}
                             order={order}
-                            hideDetailsLink
+                            detailsLinkHidden
                         />
                     )}
                 </div>
@@ -239,10 +241,9 @@ function OrderDetail(props: Props) {
                         renderer={BookItem}
                         keySelector={keySelector}
                         messageShown
-                        // TODO: add appropriate values
-                        errored={false}
+                        errored={!!error}
                         filtered={false}
-                        pending={false}
+                        pending={orderLoading}
                     />
                     <Pager
                         activePage={page}

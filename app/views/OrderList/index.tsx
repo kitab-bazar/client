@@ -15,13 +15,12 @@ import { IoSearchSharp } from 'react-icons/io5';
 import {
     OrderListWithBooksQuery,
     OrderListWithBooksQueryVariables,
-    OrderType,
     OrderStatusOptionsQuery,
     OrderStatusOptionsQueryVariables,
 } from '#generated/types';
 import { orderList as orderListLang } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
-import OrderItem, { Props as OrderItemProps } from '#components/OrderItem';
+import OrderItem, { Props as OrderItemProps, Order } from '#components/OrderItem';
 
 import styles from './styles.css';
 
@@ -71,8 +70,8 @@ query OrderStatusOptions {
 `;
 
 const enumKeySelector = (d: { name: string}) => d.name;
-const enumLabelSelector = (d: { description?: string | null }) => d.description ?? '???';
-const orderListKeySelector = (o: OrderType) => o.id;
+const enumLabelSelector = (d: { description?: string | null }) => d.description ?? '?';
+const orderListKeySelector = (o: Order) => o.id;
 
 const MAX_ITEMS_PER_PAGE = 10;
 
@@ -108,14 +107,15 @@ function OrderList(props: Props) {
         { variables: orderVariables },
     );
 
-    const { data: statusOptions } = useQuery<
+    const {
+        data: statusOptions,
+        loading: statusOptionsLoading,
+    } = useQuery<
         OrderStatusOptionsQuery,
         OrderStatusOptionsQueryVariables
-    >(
-        ORDER_STATUS_OPTIONS,
-    );
+    >(ORDER_STATUS_OPTIONS);
 
-    const orderListRendererParams = useCallback((_, data: Omit<OrderType, 'createdBy'>): OrderItemProps => ({
+    const orderListRendererParams = useCallback((_, data: Order): OrderItemProps => ({
         className: styles.orderItem,
         order: data,
     }), []);
@@ -148,6 +148,7 @@ function OrderList(props: Props) {
                         name={undefined}
                         label={strings.orderStatusFilterLabel}
                         options={statusOptions?.orderStatusList?.enumValues ?? undefined}
+                        disabled={statusOptionsLoading}
                         keySelector={enumKeySelector}
                         labelSelector={enumLabelSelector}
                         value={status}

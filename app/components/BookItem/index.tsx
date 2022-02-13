@@ -313,6 +313,7 @@ function BookItem(props: Props) {
                 name={undefined}
                 variant="tertiary"
                 // TODO: implement this feature
+                readOnly
             >
                 {strings.editDetailsButtonLabel}
             </Button>

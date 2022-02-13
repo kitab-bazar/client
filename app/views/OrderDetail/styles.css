@@ -35,20 +35,6 @@
             flex-shrink: 0;
             padding: var(--dui-spacing-extra-large) 0;
             gap: var(--dui-spacing-extra-large);
-
-            .publisher-input {
-                .publisher-list {
-                    display: flex;
-                    flex-direction: column;
-                }
-            }
-
-            .categories-input {
-                .category-list {
-                    display: flex;
-                    flex-direction: column;
-                }
-            }
         }
 
         .book-list-section {

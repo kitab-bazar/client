@@ -14,19 +14,19 @@ import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
 
 import styles from './styles.css';
 
-type Order = Pick<OrderType, 'id' | 'orderCode' | 'totalPrice' | 'status' | 'totalQuantity'>
+export type Order = Pick<OrderType, 'id' | 'orderCode' | 'totalPrice' | 'status' | 'totalQuantity'>
 
 export interface Props {
     className?: string;
     order: Order;
-    hideDetailsLink?: boolean;
+    detailsLinkHidden?: boolean;
 }
 
 function OrderItem(props: Props) {
     const {
         className,
         order,
-        hideDetailsLink,
+        detailsLinkHidden,
     } = props;
 
     const {
@@ -51,7 +51,7 @@ function OrderItem(props: Props) {
             headingSize="extraSmall"
             headingContainerClassName={styles.heading}
             withoutExternalPadding
-            footerActions={!hideDetailsLink && (
+            footerActions={!detailsLinkHidden && (
                 <SmartButtonLikeLink
                     route={routes.orderDetail}
                     attrs={{ orderId: order.id }}

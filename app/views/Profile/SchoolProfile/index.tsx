@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
     IoPencil,
     IoArrowForward,
@@ -10,10 +10,10 @@ import { useQuery, gql } from '@apollo/client';
 import {
     Button,
     Container,
-    ContainerCard,
     ListView,
     TextOutput,
     useModalState,
+    Pager,
 } from '@the-deep/deep-ui';
 import { removeNull } from '@togglecorp/toggle-form';
 import { _cs } from '@togglecorp/fujs';
@@ -25,9 +25,9 @@ import {
     SchoolProfileQueryVariables,
     OrderListSchoolQuery,
     OrderListSchoolQueryVariables,
-    OrderType,
-    OrderStatus,
 } from '#generated/types';
+
+import OrderItem, { Props as OrderItemProps, Order } from '#components/OrderItem';
 
 import { school } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
@@ -107,74 +107,23 @@ const ORDER_LIST_SCHOOL = gql`
     }
 `;
 
-const orderListKeySelector = (o: OrderType) => o.id;
+const orderListKeySelector = (o: Order) => o.id;
 
-interface OrderListProps {
-    orderCode: string;
-    totalPrice: number;
-    status: OrderStatus;
-    totalBookTypes: number;
-}
-
-// FIXME: Reuse order item
-function OrderListRenderer(props: OrderListProps) {
-    const {
-        orderCode,
-        totalPrice,
-        status,
-        totalBookTypes,
-    } = props;
-
-    const strings = useTranslation(school);
-
-    return (
-        <ContainerCard
-            className={styles.orderItem}
-            heading={orderCode?.split('-')?.[0]}
-            headingClassName={styles.heading}
-            headingSize="extraSmall"
-        >
-            <TextOutput
-                label={strings.booksLabel}
-                labelContainerClassName={styles.label}
-                valueType="number"
-                hideLabelColon
-                value={totalBookTypes}
-            />
-            <TextOutput
-                label={strings.totalPriceLabel}
-                labelContainerClassName={styles.label}
-                valueType="number"
-                hideLabelColon
-                value={totalPrice}
-                valueProps={{
-                    prefix: strings.rsLabel,
-                }}
-            />
-            <TextOutput
-                label={strings.statusLabel}
-                labelContainerClassName={styles.label}
-                hideLabelColon
-                value={status}
-            />
-        </ContainerCard>
-    );
-}
+const MAX_ITEMS_PER_PAGE = 4;
 
 interface Props {
-    className?: string,
+    className?: string;
 }
 
 function SchoolProfile(props: Props) {
     const { className } = props;
+    const strings = useTranslation(school);
 
     const [
         editSchoolProfileModalShown,
         showEditSchoolProfileModal,
         hideEditSchoolProfileModal,
     ] = useModalState(false);
-
-    const strings = useTranslation(school);
 
     const {
         data,
@@ -185,24 +134,24 @@ function SchoolProfile(props: Props) {
 
     const profileDetails = removeNull(data);
 
+    const [page, setPage] = useState<number>(1);
+
     const orderVariables = useMemo(() => ({
-        pageSize: 4,
-        page: 1,
-    }), []);
+        pageSize: MAX_ITEMS_PER_PAGE,
+        page,
+    }), [page]);
 
     const {
         data: orderList,
         loading,
+        error,
     } = useQuery<OrderListSchoolQuery, OrderListSchoolQueryVariables>(
         ORDER_LIST_SCHOOL,
         { variables: orderVariables },
     );
 
-    const orderListRendererParams = useCallback((_, order: Omit<OrderType, 'createdBy'>): OrderListProps => ({
-        totalBookTypes: order.bookOrders?.totalCount ?? 0,
-        orderCode: order.orderCode,
-        status: order.status,
-        totalPrice: order.totalPrice,
+    const orderListRendererParams = useCallback((_, order: Order): OrderItemProps => ({
+        order,
     }), []);
 
     const schoolDetails = {
@@ -221,8 +170,8 @@ function SchoolProfile(props: Props) {
                 <Container
                     className={styles.profileDetails}
                     contentClassName={styles.profileDetailsContent}
-                    spacing="comfortable"
                     heading={strings.profileDetailsHeading}
+                    spacing="comfortable"
                     headerActions={(
                         <Button
                             name={undefined}
@@ -266,7 +215,7 @@ function SchoolProfile(props: Props) {
                                 block
                                 valueContainerClassName={styles.value}
                                 label={strings.phoneNumberLabel}
-                                value={profileDetails?.me?.phoneNumber}
+                                value={profileDetails?.me?.phoneNumber ?? 'Not available'}
                             />
                             <TextOutput
                                 label={strings.addressLabel}
@@ -309,42 +258,46 @@ function SchoolProfile(props: Props) {
                     </div>
                     <Container
                         className={styles.orderDetails}
+                        withoutExternalPadding
                         heading={strings.orderDetailsHeading}
+                        headingSize="small"
                     >
                         <TextOutput
                             label={strings.totalOrdersLabel}
                             value={orderList?.orders?.totalCount}
                         />
-                        <TextOutput
-                            label={strings.weeksOrderLabel}
-                            value="2 (will come from server soon)"
-                        />
                     </Container>
                 </Container>
                 <Container
                     className={styles.orderDetails}
+                    headingSize="small"
                     heading={strings.orderDetailsHeading}
                     spacing="comfortable"
-                    footerActions={(
+                    headerActions={(
                         <SmartButtonLikeLink
                             route={routes.orderList}
-                            icons={<IoArrowForward />}
+                            actions={<IoArrowForward />}
                             variant="tertiary"
                         >
                             {strings.viewMoreButtonContent}
                         </SmartButtonLikeLink>
+                    )}
+                    footerContent={(
+                        <Pager
+                            activePage={page}
+                            maxItemsPerPage={MAX_ITEMS_PER_PAGE}
+                            itemsCount={orderList?.orders?.totalCount ?? 0}
+                            onActivePageChange={setPage}
+                            itemsPerPageControlHidden
+                        />
                     )}
                 >
                     <ListView
                         className={styles.orderList}
                         data={orderList?.orders?.results ?? undefined}
                         keySelector={orderListKeySelector}
-                        renderer={OrderListRenderer}
+                        renderer={OrderItem}
                         rendererParams={orderListRendererParams}
-                        // FIXME: handle errored and filtered
-                        errored={false}
-                        filtered={false}
-                        pending={loading}
                         messageShown
                         // FIXME: use common component
                         emptyMessage={(
@@ -360,6 +313,9 @@ function SchoolProfile(props: Props) {
                                 </div>
                             </div>
                         )}
+                        errored={!!error}
+                        filtered={false}
+                        pending={loading}
                     />
                 </Container>
                 {editSchoolProfileModalShown && (
