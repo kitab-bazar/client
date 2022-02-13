@@ -274,6 +274,7 @@ function Explore(props: Props) {
                         placeholder={strings.searchInputPlaceholder}
                         name={undefined}
                         value={search}
+                        type="search"
                         onChange={setSearch}
                     />
                 </Header>

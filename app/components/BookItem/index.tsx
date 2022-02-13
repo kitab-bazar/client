@@ -105,6 +105,9 @@ type BookForDetail = Pick<BookType, 'id' | 'title' | 'description' | 'price' | '
         cartDetails?: null | Pick<NonNullable<BookType['cartDetails']>, 'id' | 'quantity'>;
     };
 type BookForCompact = Pick<BookType, 'id' | 'title' | 'image' | 'authors' | 'price'>;
+type BookForOrder = Pick<BookType, 'id' | 'title' | 'price' | 'image' | 'edition' | 'isbn'> & {
+    quantity?: null | NonNullable<BookType['cartDetails']>['quantity'];
+};
 
 interface BaseProps {
     className?: string;
@@ -123,6 +126,9 @@ export type Props = BaseProps & ({
     variant: 'detail';
     book: BookForDetail;
     onCloseButtonClick: (v: undefined) => void;
+} | {
+    variant: 'order';
+    book: BookForOrder;
 })
 
 function BookItem(props: Props) {
@@ -137,7 +143,12 @@ function BookItem(props: Props) {
     const alert = useAlert();
     const { user } = useContext(UserContext);
 
+    // eslint-disable-next-line react/destructuring-assignment
+    const hasActions = props.variant === 'detail' || props.variant === 'list';
     const canCreateOrder = user?.permissions.includes('CREATE_ORDER');
+    const canEditBook = user?.permissions.includes('CAN_UPDATE_BOOK')
+        // eslint-disable-next-line react/destructuring-assignment
+        && hasActions && props.book.publisher.id === user?.publisherId;
 
     const [
         addToOrder,
@@ -210,8 +221,12 @@ function BookItem(props: Props) {
     );
 
     const authorsDisplay = React.useMemo(() => (
-        book.authors?.map((d) => d.name).join(', ')
-    ), [book.authors]);
+        variant !== 'order'
+            // eslint-disable-next-line react/destructuring-assignment
+            ? props.book.authors?.map((d) => d.name).join(', ')
+            : undefined
+        // eslint-disable-next-line react/destructuring-assignment
+    ), [variant, props.book]);
 
     const handleClick = React.useCallback(() => {
         // eslint-disable-next-line react/destructuring-assignment
@@ -222,7 +237,7 @@ function BookItem(props: Props) {
     }, [props]);
 
     const categoriesDisplay = React.useMemo(() => (
-        variant !== 'compact'
+        variant === 'list' || variant === 'detail'
             // eslint-disable-next-line react/destructuring-assignment
             ? props.book.categories?.map((d) => d.name).join(', ')
             : undefined
@@ -257,7 +272,7 @@ function BookItem(props: Props) {
     }, [removeFromWishList]);
 
     const orderButton = React.useMemo(() => {
-        if (variant === 'compact') {
+        if (variant === 'compact' || variant === 'order') {
             return undefined;
         }
 
@@ -288,11 +303,28 @@ function BookItem(props: Props) {
         // eslint-disable-next-line react/destructuring-assignment
     }, [strings, variant, canCreateOrder, actionsDisabled, handleAddToOrder, props.book]);
 
+    const editButton = React.useMemo(() => {
+        if (!canEditBook) {
+            return null;
+        }
+
+        return (
+            <Button
+                name={undefined}
+                variant="tertiary"
+                // TODO: implement this feature
+                readOnly
+            >
+                {strings.editDetailsButtonLabel}
+            </Button>
+        );
+    }, [strings.editDetailsButtonLabel, canEditBook]);
+
     const wishListButton = React.useMemo(() => {
         if (!wishListActionsShown) {
             return undefined;
         }
-        if (variant === 'compact') {
+        if (variant === 'compact' || variant === 'order') {
             return undefined;
         }
         // eslint-disable-next-line react/destructuring-assignment
@@ -354,6 +386,7 @@ function BookItem(props: Props) {
         props.variant === 'list' && styles.listVariant,
         props.variant === 'detail' && styles.detailVariant,
         props.variant === 'compact' && styles.compactVariant,
+        props.variant === 'order' && styles.orderVariant,
         /* eslint-enable react/destructuring-assignment */
         styles.bookItem,
         className,
@@ -410,6 +443,7 @@ function BookItem(props: Props) {
                         <>
                             {wishListButton}
                             {orderButton}
+                            {editButton}
                         </>
                     )}
                 />
@@ -475,6 +509,7 @@ function BookItem(props: Props) {
                     <div className={styles.actions}>
                         {wishListButton}
                         {orderButton}
+                        {editButton}
                     </div>
                     <div
                         // TODO: sanitize description
@@ -484,6 +519,43 @@ function BookItem(props: Props) {
                             { __html: props.book.description ?? '' }
                         }
                     />
+                </Container>
+            </div>
+        );
+    }
+
+    if (variant === 'order') {
+        return (
+            <div className={containerClassName}>
+                {bookCoverPreview}
+                <Container
+                    className={styles.details}
+                    heading={book.title}
+                    headingSize="extraSmall"
+                >
+                    <div className={styles.orderBookMeta}>
+                        <TextOutput
+                            label={strings.priceLabel}
+                            value={book.price}
+                            valueType="number"
+                        />
+                        <TextOutput
+                            label={strings.quantityLabel}
+                            // eslint-disable-next-line react/destructuring-assignment
+                            value={props.book.quantity}
+                            valueType="number"
+                        />
+                        <TextOutput
+                            label={strings.editionLabel}
+                            // eslint-disable-next-line react/destructuring-assignment
+                            value={props.book.edition}
+                        />
+                        <TextOutput
+                            label={strings.isbnLabel}
+                            // eslint-disable-next-line react/destructuring-assignment
+                            value={props.book.isbn}
+                        />
+                    </div>
                 </Container>
             </div>
         );
@@ -504,7 +576,7 @@ function BookItem(props: Props) {
                     {book.title}
                 </div>
                 <div className={styles.author}>
-                    {book.authors[0].name}
+                    {authorsDisplay}
                 </div>
                 <div
                     className={styles.price}

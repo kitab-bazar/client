@@ -25,10 +25,10 @@ import {
     IndividualProfileQueryVariables,
     OrderListIndividualQuery,
     OrderListIndividualQueryVariables,
-    OrderType,
 } from '#generated/types';
 
-import OrderItem, { Props as OrderItemProps } from '#components/OrderItem';
+import OrderItem, { Props as OrderItemProps, Order } from '#components/OrderItem';
+
 import { individualProfile } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 
@@ -87,7 +87,7 @@ const ORDER_LIST_INDIVIDUAL = gql`
     }
 `;
 
-const orderListKeySelector = (o: OrderType) => o.id;
+const orderListKeySelector = (o: Order) => o.id;
 
 const MAX_ITEMS_PER_PAGE = 4;
 
@@ -130,7 +130,7 @@ function IndividualProfile(props: Props) {
         { variables: orderVariables },
     );
 
-    const orderListRendererParams = useCallback((_, order: Omit<OrderType, 'createdBy'>): OrderItemProps => ({
+    const orderListRendererParams = useCallback((_, order: Order): OrderItemProps => ({
         order,
     }), []);
 

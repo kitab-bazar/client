@@ -1,4 +1,4 @@
-.order-list {
+.order-detail {
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -35,46 +35,19 @@
             flex-shrink: 0;
             padding: var(--dui-spacing-extra-large) 0;
             gap: var(--dui-spacing-extra-large);
-
-            .status-input {
-                .status-list {
-                    display: flex;
-                    flex-direction: column;
-                }
-            }
         }
 
-        .orders-list-section {
+        .book-list-section {
+            display: flex;
             flex-direction: column;
             flex-grow: 1;
             padding: var(--dui-spacing-extra-large) 0;
-            gap: var(--dui-spacing-medium);
 
-            .summary {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-
-                .order-count {
-                    font-size: var(--dui-font-size-large);
-                }
-            }
-
-            .order-list {
+            .book-list {
                 display: flex;
                 flex-direction: column;
                 flex-grow: 1;
-                padding: var(--dui-spacing-extra-large) 0;
-                gap: var(--dui-spacing-large);
-
-                .order-item {
-                    display: flex;
-                    width: 100%;
-
-                    &:hover {
-                        background-color: var(--dui-color-background-hover);
-                    }
-                }
+                gap: var(--dui-spacing-medium);
             }
         }
     }

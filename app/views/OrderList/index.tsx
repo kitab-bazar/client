@@ -4,9 +4,7 @@ import { useQuery, gql } from '@apollo/client';
 import {
     ListView,
     TextOutput,
-    ControlledExpandableContainer,
     Pager,
-    Container,
     TextInput,
     Header,
     RadioInput,
@@ -17,14 +15,12 @@ import { IoSearchSharp } from 'react-icons/io5';
 import {
     OrderListWithBooksQuery,
     OrderListWithBooksQueryVariables,
-    OrderType,
-    OrderStatus,
-    BookOrderType,
     OrderStatusOptionsQuery,
     OrderStatusOptionsQueryVariables,
 } from '#generated/types';
 import { orderList as orderListLang } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
+import OrderItem, { Props as OrderItemProps, Order } from '#components/OrderItem';
 
 import styles from './styles.css';
 
@@ -74,149 +70,8 @@ query OrderStatusOptions {
 `;
 
 const enumKeySelector = (d: { name: string}) => d.name;
-const enumLabelSelector = (d: { description?: string | null }) => d.description ?? '???';
-const bookListKeySelector = (b: BookOrderType) => b.id;
-
-interface BookProps {
-    edition: string;
-    image?: string;
-    isbn: string;
-    price: number;
-    quantity: number;
-    title: string;
-}
-
-function Book(props: BookProps) {
-    const {
-        title,
-        quantity,
-        isbn,
-        price,
-        edition,
-        image,
-    } = props;
-
-    return (
-        <div className={styles.bookItem}>
-            <div className={styles.coverImage}>
-                <img
-                    className={styles.image}
-                    src={image}
-                    alt=""
-                />
-            </div>
-            <Container
-                heading={title}
-                headingSize="extraSmall"
-                className={styles.bookDetails}
-                contentClassName={styles.metaList}
-            >
-                <TextOutput
-                    // FIXME: translate
-                    label="Quantity"
-                    value={quantity}
-                />
-                <TextOutput
-                    // FIXME: translate
-                    label="ISBN"
-                    value={isbn}
-                />
-                <TextOutput
-                    // FIXME: translate
-                    label="Edition"
-                    value={edition}
-                />
-                <TextOutput
-                    // FIXME: translate
-                    label="Price (NPR)"
-                    value={price}
-                />
-            </Container>
-        </div>
-    );
-}
-
-interface OrderListItemProps {
-    orderCode: string;
-    totalPrice: number;
-    status: OrderStatus;
-    totalBooks: number;
-    expanded: boolean;
-    onExpansionChange: (isExpanded: boolean, orderId: string) => void;
-    books: BookOrderType[] | undefined;
-}
-
-function OrderItem(props: OrderListItemProps) {
-    const {
-        orderCode,
-        totalPrice,
-        status,
-        totalBooks,
-        expanded,
-        onExpansionChange,
-        books,
-    } = props;
-
-    const bookListRendererParams = useCallback((_: string, data: BookOrderType): BookProps => ({
-        edition: data.edition,
-        image: data?.image?.url ?? undefined,
-        isbn: data.isbn,
-        price: data.price,
-        quantity: data.quantity,
-        title: data.title,
-    }), []);
-
-    const orderTitle = React.useMemo(() => {
-        const splits = orderCode.split('-');
-
-        return `Order #${splits[0]}`;
-    }, [orderCode]);
-
-    return (
-        <ControlledExpandableContainer
-            className={styles.orderItem}
-            name={orderCode}
-            heading={orderTitle}
-            headingSize="extraSmall"
-            headerDescriptionClassName={styles.orderMeta}
-            headerDescription={(
-                <>
-                    <TextOutput
-                        // FIXME: translate
-                        label="Total book types"
-                        value={totalBooks}
-                    />
-                    <TextOutput
-                        // FIXME: translate
-                        label="total price"
-                        value={totalPrice}
-                    />
-                    <TextOutput
-                        // FIXME: translate
-                        label="status"
-                        value={status}
-                    />
-                </>
-            )}
-            expanded={expanded}
-            onExpansionChange={onExpansionChange}
-        >
-            <ListView
-                className={styles.bookList}
-                data={books}
-                renderer={Book}
-                rendererParams={bookListRendererParams}
-                keySelector={bookListKeySelector}
-                errored={false}
-                filtered={false}
-                pending={false}
-                messageShown
-            />
-        </ControlledExpandableContainer>
-    );
-}
-
-const orderListKeySelector = (o: OrderType) => o.id;
+const enumLabelSelector = (d: { description?: string | null }) => d.description ?? '?';
+const orderListKeySelector = (o: Order) => o.id;
 
 const MAX_ITEMS_PER_PAGE = 10;
 
@@ -232,7 +87,6 @@ function OrderList(props: Props) {
     const strings = useTranslation(orderListLang);
 
     const [page, setPage] = useState<number>(1);
-    const [expandedOrderId, setExpandedOrderId] = useState<string | undefined>();
     const [status, setStatus] = useInputState<string | undefined>(undefined);
 
     const orderVariables = useMemo(() => ({
@@ -253,29 +107,18 @@ function OrderList(props: Props) {
         { variables: orderVariables },
     );
 
-    const { data: statusOptions } = useQuery<
+    const {
+        data: statusOptions,
+        loading: statusOptionsLoading,
+    } = useQuery<
         OrderStatusOptionsQuery,
         OrderStatusOptionsQueryVariables
-    >(
-        ORDER_STATUS_OPTIONS,
-    );
+    >(ORDER_STATUS_OPTIONS);
 
-    const handleExpansionChange = useCallback((orderExpanded: boolean, key: string) => {
-        setExpandedOrderId(orderExpanded ? key : undefined);
-    }, []);
-
-    const orderListRendererParams = useCallback((_, data: Omit<OrderType, 'createdBy'>): OrderListItemProps => ({
-        totalBooks: data?.bookOrders?.totalCount ?? 0,
-        orderCode: data.orderCode,
-        status: data.status,
-        totalPrice: data.totalPrice,
-        onExpansionChange: handleExpansionChange,
-        expanded: expandedOrderId === data.orderCode,
-        books: data?.bookOrders?.results ?? undefined,
-    }), [
-        expandedOrderId,
-        handleExpansionChange,
-    ]);
+    const orderListRendererParams = useCallback((_, data: Order): OrderItemProps => ({
+        className: styles.orderItem,
+        order: data,
+    }), []);
 
     return (
         <div className={_cs(styles.orderList, className)}>
@@ -305,6 +148,7 @@ function OrderList(props: Props) {
                         name={undefined}
                         label={strings.orderStatusFilterLabel}
                         options={statusOptions?.orderStatusList?.enumValues ?? undefined}
+                        disabled={statusOptionsLoading}
                         keySelector={enumKeySelector}
                         labelSelector={enumLabelSelector}
                         value={status}
@@ -326,10 +170,11 @@ function OrderList(props: Props) {
                         <TextOutput
                             className={styles.orderCount}
                             value={orderList?.orders?.totalCount}
-                            label={strings.orderStatusFilterLabel}
+                            label={strings.orderCountLabel}
                         />
                     </div>
                     <ListView
+                        borderBetweenItem
                         className={styles.orderList}
                         data={orderList?.orders?.results ?? undefined}
                         keySelector={orderListKeySelector}

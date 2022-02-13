@@ -6,10 +6,10 @@ import {
 } from 'react-icons/io5';
 import {
     PendingMessage,
+    Message,
     Button,
     Container,
     TextOutput,
-    Message,
     useModalState,
 } from '@the-deep/deep-ui';
 import {
@@ -46,11 +46,11 @@ const PUBLISHER_PROFILE = gql`
     query PublisherProfile {
         me {
             id
+            email
+            fullName
             firstName
             lastName
-            fullName
             phoneNumber
-            email
             image {
                 name
                 url
@@ -103,7 +103,7 @@ const PUBLISHER_STATS = gql`
             totalBooksOrdered
             totalBooksUploaded
             stat {
-                orderPlacedAt
+                orderPlacedAtDate
                 totalQuantity
             }
         }
@@ -111,7 +111,7 @@ const PUBLISHER_STATS = gql`
 `;
 
 interface ChartData {
-    orderPlacedAt: string;
+    orderPlacedAtDate: string;
     totalQuantity: number;
 }
 
@@ -141,12 +141,14 @@ function PublisherProfile(props: Props) {
 
     const orderSummary = React.useMemo(
         () => {
+            // FIXME: we should not need to cast this
             const filteredStats = publisherStats?.orderStat?.stat
-                ?.filter((v) => isDefined(v.orderPlacedAt)) as ChartData[] | undefined | null;
+                ?.filter((v) => isDefined(v.orderPlacedAtDate)) as ChartData[] | undefined | null;
+
             return (filteredStats ?? []).map((v) => ({
                 ...v,
-                orderPlacedAt: new Date(v.orderPlacedAt).getTime(),
-            })).sort((a, b) => compareDate(a.orderPlacedAt, b.orderPlacedAt));
+                orderPlacedAt: new Date(v.orderPlacedAtDate).getTime(),
+            })).sort((a, b) => compareDate(a.orderPlacedAtDate, b.orderPlacedAtDate));
         },
         [publisherStats],
     );
@@ -214,8 +216,12 @@ function PublisherProfile(props: Props) {
                                 block
                                 valueContainerClassName={styles.value}
                                 label={strings.phoneNumberLabel}
-                                value={profileDetails?.me?.phoneNumber}
+                                value={profileDetails?.me?.phoneNumber ?? 'Not available'}
                             />
+                            {/* NOTE: empty div only for gap */}
+                            <div>
+                                &nbsp;
+                            </div>
                             <TextOutput
                                 label={strings.addressLabel}
                                 value={`${
@@ -286,7 +292,7 @@ function PublisherProfile(props: Props) {
                                     </linearGradient>
                                 </defs>
                                 <XAxis
-                                    dataKey="orderPlacedAt"
+                                    dataKey="orderPlacedAtDate"
                                     type="number"
                                     scale="time"
                                     domain={['dataMin', 'dataMax']}

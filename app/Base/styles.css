@@ -18,7 +18,20 @@
     --dui-font-size-super-large: 2rem;
 
     --kitab-page-max-width: 76rem;
+}
 
+html {
+    @media(max-width:900px) {
+        font-size: 14px;
+    }
+
+    @media(max-width: 700px) {
+        font-size: 12px;
+    }
+
+    @media(max-width: 400px) {
+        font-size: 10px;
+    }
 }
 
 .base {

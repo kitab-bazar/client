@@ -14,6 +14,7 @@ import {
     Modal,
     Button,
     TextInput,
+    TextArea,
     SelectInput,
     NumberInput,
     DateInput,
@@ -224,7 +225,6 @@ function UploadBookModal(props: Props) {
                         disabled={pristine || createBookPending}
                     >
                         {strings.saveButtonLabel}
-                        Save
                     </Button>
                 </>
             )}
@@ -237,7 +237,7 @@ function UploadBookModal(props: Props) {
                 onChange={setFieldValue}
                 disabled={createBookPending}
             />
-            <TextInput
+            <TextArea
                 name="description"
                 label={strings.descriptionLabel}
                 value={value?.description}

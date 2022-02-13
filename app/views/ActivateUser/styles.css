@@ -1,0 +1,43 @@
+.activate-user {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+
+    .container {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        padding: var(--dui-spacing-large);
+        width: 100%;
+        max-width: var(--kitab-page-max-width);
+        gap: var(--dui-spacing-extra-large);
+
+        .app-brand {
+            display: flex;
+            flex-direction: column;
+            gap: var(--dui-spacing-large);
+
+            .kitab-logo {
+                width: auto;
+                height: 10rem;
+                object-fit: contain;
+                object-position: center center;
+            }
+
+            .app-name {
+                text-align: center;
+                font-size: var(--dui-font-size-extra-large);
+                font-weight: var(--dui-font-weight-bold);
+            }
+        }
+
+        .loading {
+            width: 100%;
+        }
+
+        .mutation-error {
+            color: var(--dui-color-danger);
+        }
+    }
+}

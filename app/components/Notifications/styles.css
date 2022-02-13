@@ -1,7 +1,8 @@
 .notifications {
     background-color: var(--dui-color-foreground);
-    width: 480px;
-    height: 60vh;
+    width: 60vw;
+    max-width: 30rem;
+    height: 30rem;
 
     .header {
         padding: var(--dui-spacing-small) var(--dui-spacing-medium);

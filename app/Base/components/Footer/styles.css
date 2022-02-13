@@ -1,5 +1,7 @@
 .footer {
     display: flex;
+    flex-wrap: wrap;
+    gap: var(--dui-spacing-extra-large);
     justify-content: space-between;
     background-color: var(--dui-color-background);
     padding: var(--dui-spacing-extra-large);

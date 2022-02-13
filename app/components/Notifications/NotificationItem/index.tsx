@@ -39,8 +39,8 @@ function NotificationItem(props: Props) {
     const orderLink = useMemo(() => (
         notification.order ? (
             <SmartLink
-                route={routes.orderList}
-                // state={{ orderId: notification.order.orderCode }}
+                route={routes.orderDetail}
+                attrs={{ orderId: notification.order.id }}
             >
                 {`order #${notification.order.orderCode.split('-')[0]}`}
             </SmartLink>

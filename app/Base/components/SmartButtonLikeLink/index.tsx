@@ -1,5 +1,8 @@
 import React from 'react';
-import { ButtonLikeLink, ButtonLikeLinkProps } from '@the-deep/deep-ui';
+import {
+    ButtonLikeLink,
+    ButtonLikeLinkProps,
+} from '@the-deep/deep-ui';
 
 import useRouteMatching, {
     RouteData,
