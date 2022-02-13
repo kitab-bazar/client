@@ -97,6 +97,15 @@ const wishList = wrap({
         !user?.publisherId
     ),
 });
+const about = wrap({
+    path: '/about/',
+    title: 'About',
+    navbarVisibility: true,
+    component: lazy(() => import('#views/About')),
+    componentProps: {
+    },
+    visibility: 'is-anything',
+});
 
 const routes = {
     register,
@@ -109,5 +118,6 @@ const routes = {
     activateUser,
     bookList,
     orderDetail,
+    about,
 };
 export default routes;

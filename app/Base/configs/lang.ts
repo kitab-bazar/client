@@ -206,6 +206,21 @@ export const homePage = {
         en: 'Featured Books',
         ne: 'चित्रित किताबहरु',
     },
+    exploreByGradeHeading: {
+        en: 'Explore by Grade',
+        ne: 'Explore by Grade',
+    },
+    exploreByCategoryHeading: {
+        en: 'Explore by Category',
+        ne: 'Explore by Category',
+    },
+    exploreByPublisherHeading: {
+        en: 'Explore by Publisher',
+        ne: 'Explore by Publisher',
+    },
+};
+
+export const about = {
     backgroundLabel: {
         en: 'Background',
         ne: 'पृष्ठभूमि',
@@ -292,6 +307,14 @@ export const explore = {
     categoriesFilterLabel: {
         en: 'Categories',
         ne: 'Categories',
+    },
+    gradeFilterLabel: {
+        en: 'Grade',
+        ne: 'Grade',
+    },
+    clearGradeFilterButtonLabel: {
+        en: 'Clear grade filter',
+        ne: 'Clear grade filter',
     },
     clearCategoriesFilterButtonLabel: {
         en: 'Clear categories filter',
