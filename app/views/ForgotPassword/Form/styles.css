@@ -1,9 +1,8 @@
-.login-form {
+.reset-password-form {
     display: flex;
-    flex-direction: column;
     flex-grow: 1;
 
-    .login-form-container {
+    .reset-password-form-container {
         background-color: unset;
         width: 100%;
 
@@ -16,20 +15,6 @@
             flex-direction: column;
             justify-content: center;
             gap: var(--dui-spacing-large);
-        }
-
-        .login-button {
-            align-self: flex-end;
-        }
-    }
-
-    .footer-content {
-        display: flex;
-        padding: var(--dui-spacing-large);
-
-        .register-link {
-            padding: unset;
-            color: var(--dui-color-accent);
         }
     }
 }

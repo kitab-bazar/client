@@ -1,4 +1,5 @@
 import React from 'react';
+import { LocationState } from 'history';
 import { NavLink, NavLinkProps } from 'react-router-dom';
 import { _cs } from '@togglecorp/fujs';
 import { Border } from '@the-deep/deep-ui';
@@ -14,6 +15,7 @@ export type Props = Omit<NavLinkProps, 'to'> & {
     route: RouteData;
     attrs?: Attrs;
     children?: React.ReactNode;
+    state?: LocationState;
 };
 
 function SmartNavLink(props: Props) {
@@ -23,6 +25,7 @@ function SmartNavLink(props: Props) {
         children,
         className,
         activeClassName,
+        state,
         ...otherProps
     } = props;
 
@@ -34,7 +37,10 @@ function SmartNavLink(props: Props) {
     return (
         <NavLink
             {...otherProps}
-            to={routeData.to}
+            to={{
+                pathname: routeData.to,
+                state,
+            }}
             className={_cs(styles.smartNavLink, className)}
             activeClassName={_cs(styles.active, activeClassName)}
         >

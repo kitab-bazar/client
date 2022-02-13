@@ -49,6 +49,17 @@ const myProfile = wrap({
     },
     visibility: 'is-authenticated',
 });
+
+const forgotPassword = wrap({
+    path: '/forgot-password/',
+    title: 'Forgot Password',
+    navbarVisibility: true,
+    component: lazy(() => import('#views/ForgotPassword')),
+    componentProps: {
+    },
+    visibility: 'is-not-authenticated',
+});
+
 const bookList = wrap({
     path: '/books/',
     title: 'Books',
@@ -119,5 +130,6 @@ const routes = {
     bookList,
     orderDetail,
     about,
+    forgotPassword,
 };
 export default routes;

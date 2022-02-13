@@ -1,4 +1,5 @@
 import React from 'react';
+import { LocationState } from 'history';
 import {
     ButtonLikeLink,
     ButtonLikeLinkProps,
@@ -13,7 +14,7 @@ export type Props = Omit<ButtonLikeLinkProps, 'to'> & {
     route: RouteData;
     attrs?: Attrs;
     children?: React.ReactNode;
-    state?: unknown;
+    state?: LocationState;
 };
 
 function SmartButtonLikeLink(props: Props) {

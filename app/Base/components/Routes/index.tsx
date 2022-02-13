@@ -47,6 +47,12 @@ function Routes(props: Props) {
                 </Route>
                 <Route
                     exact
+                    path={routes.forgotPassword.path}
+                >
+                    {routes.forgotPassword.load({ className })}
+                </Route>
+                <Route
+                    exact
                     path={routes.home.path}
                 >
                     {routes.home.load({ className })}
