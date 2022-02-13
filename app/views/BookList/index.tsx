@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import { useLocation } from 'react-router-dom';
 import { _cs } from '@togglecorp/fujs';
 import {
     CheckListInput,
@@ -32,12 +33,18 @@ import {
     ExploreFilterOptionsQueryVariables,
     ExploreBooksQuery,
     ExploreBooksQueryVariables,
+    Grade,
+    GradeFilterOptionsQuery,
+    GradeFilterOptionsQueryVariables,
 } from '#generated/types';
 import BookDetailModal from '#components/BookDetailModal';
 import UploadBookModal from '#components/UploadBookModal';
 import BookItem, { Props as BookItemProps } from '#components/BookItem';
 
 import styles from './styles.css';
+
+const enumKeySelector = (d: { name: string}) => d.name;
+const enumLabelSelector = (d: { description?: string | null }) => d.description ?? '???';
 
 const EXPLORE_FILTER_OPTIONS = gql`
 query ExploreFilterOptions {
@@ -51,6 +58,17 @@ query ExploreFilterOptions {
         results {
             id
             name
+        }
+    }
+}
+`;
+
+const GRADE_FILTER_OPTIONS = gql`
+query GradeFilterOptions {
+    gradeList: __type(name: "BookGrade") {
+        enumValues {
+            name
+            description
         }
     }
 }
@@ -130,33 +148,42 @@ const bookSourceLabelSelector = (item: BookSourceOption) => item.name;
 interface Props {
     className?: string;
     wishList?: boolean;
-    // category?: string;
 }
 
 function Explore(props: Props) {
     const {
         className,
-        // category: categoryFromProps,
         wishList: wishListFromProps,
     } = props;
 
     const { user } = useContext(UserContext);
     const strings = useTranslation(explore);
+    const location = useLocation();
+    const locationState = location.state as {
+        grade?: Grade;
+        category?: string;
+        publisher?: string;
+    } | undefined;
 
     const canAddBook = user?.permissions.includes('CAN_CREATE_BOOK');
 
     const [selectedBookId, setSelectedBookId] = React.useState<string | undefined>();
     const [page, setPage] = useState<number>(1);
 
+    // TODO: use this for filtering
+    const [grade, setGrade] = useInputState<string | undefined>(locationState?.grade);
+
     // NOTE: A different UI depending on if user is publisher or not
     const publisherId = user?.publisherId;
     // NOTE: only used when in publisher mode
     const [bookSource, setBookSource] = useInputState<BookSource | undefined>('own');
 
-    const [categories, setCategories] = useInputState<string[] | undefined>(undefined);
+    const [categories, setCategories] = useInputState<string[] | undefined>(
+        locationState?.category ? [locationState?.category] : undefined,
+    );
     const [selectedSortKey, setSelectedSortKey] = useInputState<SortKeyType>('id');
     const [search, setSearch] = useInputState<string | undefined>(undefined);
-    const [publisher, setPublisher] = useInputState<string | undefined>(undefined);
+    const [publisher, setPublisher] = useInputState<string | undefined>(locationState?.publisher);
 
     // eslint-disable-next-line no-nested-ternary
     const effectivePublisher = publisherId
@@ -211,6 +238,13 @@ function Explore(props: Props) {
         loading: filterLoading,
     } = useQuery<ExploreFilterOptionsQuery, ExploreFilterOptionsQueryVariables>(
         EXPLORE_FILTER_OPTIONS,
+    );
+
+    const {
+        data: gradeOptionsResponse,
+        loading: gradeLoading,
+    } = useQuery<GradeFilterOptionsQuery, GradeFilterOptionsQueryVariables>(
+        GRADE_FILTER_OPTIONS,
     );
 
     const {
@@ -301,6 +335,28 @@ function Explore(props: Props) {
                             onChange={setBookSource}
                             disabled={filterLoading}
                         />
+                    )}
+                    <RadioInput
+                        className={styles.gradeInput}
+                        listContainerClassName={styles.gradeList}
+                        label={strings.gradeFilterLabel}
+                        name={undefined}
+                        options={gradeOptionsResponse?.gradeList?.enumValues ?? undefined}
+                        keySelector={enumKeySelector}
+                        labelSelector={enumLabelSelector}
+                        value={grade}
+                        onChange={setGrade}
+                    />
+                    {grade && grade.length > 0 && (
+                        <Button
+                            name={undefined}
+                            onClick={setGrade}
+                            variant="transparent"
+                            spacing="none"
+                            disabled={gradeLoading}
+                        >
+                            {strings.clearGradeFilterButtonLabel}
+                        </Button>
                     )}
                     <CheckListInput
                         label={strings.categoriesFilterLabel}

@@ -1,0 +1,21 @@
+.category-item {
+    text-decoration: none;
+    color: var(--dui-color-brand);
+
+    .link {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        border: var(--dui-width-separator-thin) solid var(--dui-color-separator);
+        padding: var(--dui-spacing-medium) var(--dui-spacing-super-large);
+
+        .preview {
+            opacity: 0.3;
+            font-size: 10rem;
+        }
+
+        .name {
+            font-weight: var(--dui-font-weight-bold);
+        }
+    }
+}

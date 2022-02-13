@@ -36,6 +36,13 @@
             padding: var(--dui-spacing-extra-large) 0;
             gap: var(--dui-spacing-extra-large);
 
+            .grade-input {
+                .grade-list {
+                    display: flex;
+                    flex-direction: column;
+                }
+            }
+
             .publisher-input {
                 .publisher-list {
                     display: flex;

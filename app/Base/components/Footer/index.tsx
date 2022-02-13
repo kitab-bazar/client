@@ -1,9 +1,9 @@
 import React from 'react';
-import {
-    Button,
-    Link,
-} from '@the-deep/deep-ui';
+import { Link } from '@the-deep/deep-ui';
 import { _cs } from '@togglecorp/fujs';
+
+import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
+import routes from '#base/configs/routes';
 
 import {
     footer,
@@ -51,34 +51,30 @@ function Footer(props: Props) {
                 </div>
             </Link>
             <div className={styles.actions}>
-                <Button
-                    name={undefined}
-                    onClick={undefined}
+                <SmartButtonLikeLink
+                    route={routes.about}
                     variant="action"
                 >
                     {strings.faqButtonLabel}
-                </Button>
-                <Button
-                    name={undefined}
-                    onClick={undefined}
+                </SmartButtonLikeLink>
+                <SmartButtonLikeLink
+                    route={routes.about}
                     variant="action"
                 >
                     {strings.blogsButtonLabel}
-                </Button>
-                <Button
-                    name={undefined}
-                    onClick={undefined}
+                </SmartButtonLikeLink>
+                <SmartButtonLikeLink
+                    route={routes.about}
                     variant="action"
                 >
                     {strings.whyKitabBazarLabel}
-                </Button>
-                <Button
-                    name={undefined}
-                    onClick={undefined}
+                </SmartButtonLikeLink>
+                <SmartButtonLikeLink
+                    route={routes.about}
                     variant="action"
                 >
                     {strings.contactUsButtonLabel}
-                </Button>
+                </SmartButtonLikeLink>
             </div>
         </div>
     );

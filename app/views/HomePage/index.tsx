@@ -8,12 +8,9 @@ import {
     useQuery,
 } from '@apollo/client';
 import {
-    FaTruck,
-    FaBookReader,
-    FaHandshake,
-    FaGift,
-} from 'react-icons/fa';
-import { isDefined } from '@togglecorp/fujs';
+    isDefined,
+    _cs,
+} from '@togglecorp/fujs';
 
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
 import { homePage } from '#base/configs/lang';
@@ -25,9 +22,17 @@ import routes from '#base/configs/routes';
 import {
     FeaturedBooksQuery,
     FeaturedBooksQueryVariables,
+    GradeOptionsQuery,
+    GradeOptionsQueryVariables,
+    ExploreCategoryAndPublisherOptionsQuery,
+    ExploreCategoryAndPublisherOptionsQueryVariables,
 } from '#generated/types';
-
 import coverImage from '#resources/img/cover.png';
+
+import GradeItem, { Props as GradeItemProps } from './GradeItem';
+import CategoryItem, { Props as CategoryItemProps } from './CategoryItem';
+import PublisherItem, { Props as PublisherItemProps } from './PublisherItem';
+
 import styles from './styles.css';
 
 const FEATURED_BOOKS = gql`
@@ -54,36 +59,47 @@ query FeaturedBooks($page: Int!, $pageSize: Int!) {
 }
 `;
 
+const EXPLORE_CATEGORY_AND_PUBLISHER_OPTIONS = gql`
+query ExploreCategoryAndPublisherOptions {
+    categories {
+        results {
+            id
+            name
+        }
+    }
+    publishers {
+        results {
+            id
+            name
+        }
+    }
+}
+`;
+
+const GRADE_OPTIONS = gql`
+query GradeOptions {
+    gradeList: __type(name: "BookGrade") {
+        enumValues {
+            name
+            description
+        }
+    }
+}
+`;
+
 type Book = NonNullable<NonNullable<FeaturedBooksQuery['books']>['results']>[number]
 
-const bookKeySelector = (b: Book) => b.id;
-
-interface GoalPointProps {
-    icon: React.ReactNode;
-    description: string;
-}
-
-function GoalPoint(props: GoalPointProps) {
-    const {
-        icon,
-        description,
-    } = props;
-
-    return (
-        <div className={styles.goalPoint}>
-            <div className={styles.icon}>
-                {icon}
-            </div>
-            <div className={styles.goalDescription}>
-                {description}
-            </div>
-        </div>
-    );
-}
+const itemKeySelector = (b: { id: string }) => b.id;
+const enumKeySelector = (d: { name: string }) => d.name;
 
 const MAX_ITEMS_PER_PAGE = 4;
 
-function HomePage() {
+interface Props {
+    className?: string;
+}
+
+function HomePage(props: Props) {
+    const { className } = props;
     const orderVariables = useMemo(() => ({
         pageSize: MAX_ITEMS_PER_PAGE,
         page: 1,
@@ -92,14 +108,31 @@ function HomePage() {
 
     const [selectedBook, setSelectedBook] = React.useState<string | undefined>();
     const {
-        data: result,
-        loading,
-        error,
+        data: featuredBookResponse,
+        loading: featuredBooksLoading,
+        error: featuredBooksError,
     } = useQuery<FeaturedBooksQuery, FeaturedBooksQueryVariables>(
         FEATURED_BOOKS,
-        {
-            variables: orderVariables,
-        },
+        { variables: orderVariables },
+    );
+
+    const {
+        data: gradeResponse,
+        loading: gradeLoading,
+        error: gradeError,
+    } = useQuery<GradeOptionsQuery, GradeOptionsQueryVariables>(
+        GRADE_OPTIONS,
+    );
+
+    const {
+        data: categoryAndPublisherResponse,
+        loading: categoryAndPublisherLoading,
+        error: categoryAndPublisherError,
+    } = useQuery<
+        ExploreCategoryAndPublisherOptionsQuery,
+        ExploreCategoryAndPublisherOptionsQueryVariables
+    >(
+        EXPLORE_CATEGORY_AND_PUBLISHER_OPTIONS,
     );
 
     const bookItemRendererParams = React.useCallback((_: string, data: Book): BookItemProps => ({
@@ -110,8 +143,32 @@ function HomePage() {
 
     const strings = useTranslation(homePage);
 
+    const gradeItemRendererParams = React.useCallback((
+        _: string,
+        grade: NonNullable<NonNullable<GradeOptionsQuery['gradeList']>['enumValues']>[number],
+    ): GradeItemProps => ({
+        className: styles.gradeItem,
+        grade,
+    }), []);
+
+    const categoryItemRendererParams = React.useCallback((
+        _: string,
+        category: NonNullable<NonNullable<ExploreCategoryAndPublisherOptionsQuery['categories']>['results']>[number],
+    ): CategoryItemProps => ({
+        className: styles.categoryItem,
+        category,
+    }), []);
+
+    const publisherItemRendererParams = React.useCallback((
+        _: string,
+        publisher: NonNullable<NonNullable<ExploreCategoryAndPublisherOptionsQuery['publishers']>['results']>[number],
+    ): PublisherItemProps => ({
+        className: styles.publisherItem,
+        publisher,
+    }), []);
+
     return (
-        <div className={styles.home}>
+        <div className={_cs(styles.home, className)}>
             <div className={styles.pageContent}>
                 <div className={styles.coverImageContainer}>
                     <img
@@ -143,64 +200,63 @@ function HomePage() {
                     </div>
                 </div>
                 <div className={styles.pageContainer}>
-                    <div className={styles.description}>
-                        <Container
-                            className={styles.whoAreWe}
-                            heading={strings.whoAreWeLabel}
-                        >
-                            {strings.whoAreWeDescription}
-                        </Container>
-                        <Container
-                            className={styles.platformBackground}
-                            heading={strings.backgroundLabel}
-                        >
-                            {strings.platformBackground}
-                        </Container>
-                        <Container
-                            className={styles.goals}
-                            heading={strings.goalsLabel}
-                        >
-                            <p>
-                                {strings.firstGoalDescription}
-                            </p>
-                            <p>
-                                {strings.secondGoalDescription}
-                            </p>
-                        </Container>
-                        <Container
-                            className={styles.goalPoints}
-                            contentClassName={styles.goalPointList}
-                        >
-                            <GoalPoint
-                                icon={<FaBookReader />}
-                                description={strings.accessToReadingMaterialText}
-                            />
-                            <GoalPoint
-                                icon={<FaGift />}
-                                description={strings.bookCornerIncentiveText}
-                            />
-                            <GoalPoint
-                                icon={<FaHandshake />}
-                                description={strings.relationshipEnhacementText}
-                            />
-                            <GoalPoint
-                                icon={<FaTruck />}
-                                description={strings.supplyChainText}
-                            />
-                        </Container>
-                    </div>
+                    <Container
+                        className={styles.exploreByGradeSection}
+                        heading={strings.exploreByGradeHeading}
+                    >
+                        <ListView
+                            className={styles.gradeList}
+                            data={gradeResponse?.gradeList?.enumValues}
+                            keySelector={enumKeySelector}
+                            rendererParams={gradeItemRendererParams}
+                            renderer={GradeItem}
+                            errored={!!gradeError}
+                            pending={gradeLoading}
+                            filtered={false}
+                        />
+                    </Container>
+                    <Container
+                        className={styles.exploreByCategoriesSection}
+                        heading={strings.exploreByCategoryHeading}
+                    >
+                        <ListView
+                            className={styles.categoryList}
+                            data={categoryAndPublisherResponse?.categories?.results}
+                            keySelector={itemKeySelector}
+                            rendererParams={categoryItemRendererParams}
+                            renderer={CategoryItem}
+                            errored={!!categoryAndPublisherError}
+                            pending={categoryAndPublisherLoading}
+                            filtered={false}
+                        />
+                    </Container>
+                    <Container
+                        className={styles.exploreByPublishersSection}
+                        heading={strings.exploreByPublisherHeading}
+                    >
+                        <ListView
+                            className={styles.publisherList}
+                            data={categoryAndPublisherResponse?.publishers?.results}
+                            keySelector={itemKeySelector}
+                            rendererParams={publisherItemRendererParams}
+                            renderer={PublisherItem}
+                            errored={!!categoryAndPublisherError}
+                            pending={categoryAndPublisherLoading}
+                            filtered={false}
+                        />
+                    </Container>
                     <Container
                         className={styles.featuredBooksSection}
                         heading={strings.featuredBooksLabel}
                     >
                         <ListView
                             className={styles.bookList}
-                            data={result?.books?.results ?? undefined}
-                            keySelector={bookKeySelector}
+                            data={featuredBookResponse?.books?.results ?? undefined}
+                            keySelector={itemKeySelector}
                             rendererParams={bookItemRendererParams}
                             renderer={BookItem}
-                            errored={!!error}
-                            pending={loading}
+                            errored={!!featuredBooksError}
+                            pending={featuredBooksLoading}
                             filtered={false}
                         />
                         {isDefined(selectedBook) && (

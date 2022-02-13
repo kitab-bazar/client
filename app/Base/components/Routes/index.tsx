@@ -83,6 +83,12 @@ function Routes(props: Props) {
                 </Route>
                 <Route
                     exact
+                    path={routes.about.path}
+                >
+                    {routes.about.load({ className })}
+                </Route>
+                <Route
+                    exact
                     path={routes.fourHundredFour.path}
                 >
                     {routes.fourHundredFour.load({ className })}

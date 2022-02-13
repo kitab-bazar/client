@@ -1,0 +1,71 @@
+.goal-point {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: var(--dui-spacing-small);
+
+    .icon {
+        opacity: 0.5;
+        color: var(--dui-color-brand);
+        font-size: var(--dui-font-size-mega-large);
+    }
+
+    .goal-description {
+        text-align: center;
+        font-size: var(--dui-font-size-medium);
+    }
+}
+
+.about {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: var(--dui-spacing-extra-large);
+
+    .page-content {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+        max-width: var(--kitab-page-max-width);
+        gap: var(--dui-spacing-medium);
+
+        * {
+            overflow: unset;
+        }
+
+        .platform-background {
+            background-color: unset;
+            padding: var(--dui-spacing-large);
+        }
+
+        .who-are-we {
+            background-color: unset;
+            padding: var(--dui-spacing-large);
+        }
+
+        .goals {
+            background-color: unset;
+            padding: var(--dui-spacing-large);
+        }
+
+        .goal-points {
+            background-color: unset;
+            padding: var(--dui-spacing-large);
+
+            .goal-point-list {
+                display: flex;
+                align-items: flex-start;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: var(--dui-spacing-large);
+
+                .goal-point {
+                    flex-basis: 20%;
+                    flex-grow: 1;
+                    min-width: 14rem;
+                    max-width: 24rem;
+                }
+            }
+        }
+    }
+}
