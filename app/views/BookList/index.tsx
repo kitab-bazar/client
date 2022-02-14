@@ -36,7 +36,7 @@ import {
     ExploreFilterOptionsQueryVariables,
     ExploreBooksQuery,
     ExploreBooksQueryVariables,
-    BookGrade,
+    BookGradeEnum,
     GradeFilterOptionsQuery,
     GradeFilterOptionsQueryVariables,
 } from '#generated/types';
@@ -68,7 +68,7 @@ query ExploreFilterOptions {
 
 const GRADE_FILTER_OPTIONS = gql`
 query GradeFilterOptions {
-    gradeList: __type(name: "BookGrade") {
+    gradeList: __type(name: "BookGradeEnum") {
         enumValues {
             name
             description
@@ -266,7 +266,7 @@ function Explore(props: Props) {
                 ordering: selectedSortKey,
                 categories,
                 publisher: effectivePublisher,
-                grade: isDefined(grade) ? [grade as BookGrade] : undefined,
+                grade: isDefined(grade) ? [grade as BookGradeEnum] : undefined,
                 title: (search && search.length > 3) ? search : undefined,
                 pageSize: MAX_ITEMS_PER_PAGE,
                 page,

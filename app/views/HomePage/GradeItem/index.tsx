@@ -2,18 +2,18 @@ import React from 'react';
 import { _cs } from '@togglecorp/fujs';
 import { Link } from '@the-deep/deep-ui';
 
-import { GradeOptionsQuery } from '#generated/types';
+import { GradeOptionsQuery, BookGradeEnum } from '#generated/types';
 
 import routes from '#base/configs/routes';
 
 import styles from './styles.css';
 
 const gradePreviewMap: {
-    [key: string]: number;
+    [key in BookGradeEnum]: number;
 } = {
-    GRADE_ONE: 1,
-    GRADE_TWO: 2,
-    GRADE_THREE: 3,
+    GRADE_1: 1,
+    GRADE_2: 2,
+    GRADE_3: 3,
 };
 
 export interface Props {
@@ -37,7 +37,7 @@ function GradeItem(props: Props) {
             linkElementClassName={styles.link}
         >
             <div className={styles.preview}>
-                {gradePreviewMap[grade.name]}
+                {gradePreviewMap[grade.name as BookGradeEnum]}
             </div>
             <div className={styles.description}>
                 {grade.description}
