@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useContext } from 'react';
 import {
     ListView,
     Container,
@@ -12,6 +12,7 @@ import {
     _cs,
 } from '@togglecorp/fujs';
 
+import { UserContext } from '#base/context/UserContext';
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
 import { homePage } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
@@ -100,6 +101,9 @@ interface Props {
 
 function HomePage(props: Props) {
     const { className } = props;
+
+    const { user } = useContext(UserContext);
+
     const orderVariables = useMemo(() => ({
         pageSize: MAX_ITEMS_PER_PAGE,
         page: 1,
@@ -230,21 +234,23 @@ function HomePage(props: Props) {
                             filtered={false}
                         />
                     </Container>
-                    <Container
-                        className={styles.exploreByPublishersSection}
-                        heading={strings.exploreByPublisherHeading}
-                    >
-                        <ListView
-                            className={styles.publisherList}
-                            data={categoryAndPublisherResponse?.publishers?.results}
-                            keySelector={itemKeySelector}
-                            rendererParams={publisherItemRendererParams}
-                            renderer={PublisherItem}
-                            errored={!!categoryAndPublisherError}
-                            pending={categoryAndPublisherLoading}
-                            filtered={false}
-                        />
-                    </Container>
+                    {!user?.publisherId && (
+                        <Container
+                            className={styles.exploreByPublishersSection}
+                            heading={strings.exploreByPublisherHeading}
+                        >
+                            <ListView
+                                className={styles.publisherList}
+                                data={categoryAndPublisherResponse?.publishers?.results}
+                                keySelector={itemKeySelector}
+                                rendererParams={publisherItemRendererParams}
+                                renderer={PublisherItem}
+                                errored={!!categoryAndPublisherError}
+                                pending={categoryAndPublisherLoading}
+                                filtered={false}
+                            />
+                        </Container>
+                    )}
                     <Container
                         className={styles.featuredBooksSection}
                         heading={strings.featuredBooksLabel}

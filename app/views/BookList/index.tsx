@@ -36,7 +36,7 @@ import {
     ExploreFilterOptionsQueryVariables,
     ExploreBooksQuery,
     ExploreBooksQueryVariables,
-    Grade,
+    BookGrade,
     GradeFilterOptionsQuery,
     GradeFilterOptionsQueryVariables,
 } from '#generated/types';
@@ -85,7 +85,7 @@ query ExploreBooks(
     $page: Int,
     $pageSize: Int,
     $title: String,
-    $grade: [String!],
+    $grade: [BookGradeEnum!],
     $isAddedInWishlist: Boolean,
 ) {
     books(
@@ -166,7 +166,7 @@ function Explore(props: Props) {
     const strings = useTranslation(explore);
     const location = useLocation();
     const locationState = location.state as {
-        grade?: Grade;
+        grade?: string;
         category?: string;
         publisher?: string;
     } | undefined;
@@ -266,7 +266,7 @@ function Explore(props: Props) {
                 ordering: selectedSortKey,
                 categories,
                 publisher: effectivePublisher,
-                grade: isDefined(grade) ? [grade] : undefined,
+                grade: isDefined(grade) ? [grade as BookGrade] : undefined,
                 title: (search && search.length > 3) ? search : undefined,
                 pageSize: MAX_ITEMS_PER_PAGE,
                 page,

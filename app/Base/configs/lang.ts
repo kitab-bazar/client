@@ -50,7 +50,7 @@ export const navbar = {
         ne: 'नमस्कार {name}!',
     },
     gotoProfile: {
-        en: 'Goto profile',
+        en: 'Profile',
         ne: 'प्रोफाइलमा जानुहोस्',
     },
     logoutConfirmMessage: {
