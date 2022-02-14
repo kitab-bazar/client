@@ -943,9 +943,17 @@ export const newBookModal = {
         en: 'Title',
         ne: 'Title',
     },
+    titleNepaliLabel: {
+        en: 'Title (Nepali)',
+        ne: 'Title (Nepali)',
+    },
     descriptionLabel: {
         en: 'Description',
         ne: 'Description',
+    },
+    descriptionNepaliLabel: {
+        en: 'Description (Nepali)',
+        ne: 'Description (Nepali)',
     },
     isbnLabel: {
         en: 'ISBN',
@@ -958,6 +966,18 @@ export const newBookModal = {
     languageLabel: {
         en: 'Language',
         ne: 'Language',
+    },
+    gradeLabel: {
+        en: 'Grade',
+        ne: 'Grade',
+    },
+    weightLabel: {
+        en: 'Weight',
+        ne: 'Weight',
+    },
+    editionLabel: {
+        en: 'Edition',
+        ne: 'Edition',
     },
     publishedDateLabel: {
         en: 'Published Date',

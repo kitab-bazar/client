@@ -44,6 +44,9 @@ query OrderDetails($id: ID!, $bookPage: Int, $bookPageSize: Int) {
         status
         totalPrice
         totalQuantity
+        createdBy {
+            id
+        }
         bookOrders(page: $bookPage, pageSize: $bookPageSize) {
             page
             pageSize
@@ -146,6 +149,15 @@ function OrderDetail(props: Props) {
             variables: {
                 id: orderId,
                 status: 'COMPLETED',
+            },
+        });
+    }, [orderId, updateOrder]);
+
+    const handleMarkAsCancelled = React.useCallback(() => {
+        updateOrder({
+            variables: {
+                id: orderId,
+                status: 'CANCELLED',
             },
         });
     }, [orderId, updateOrder]);

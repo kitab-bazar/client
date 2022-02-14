@@ -324,7 +324,7 @@ function Explore(props: Props) {
                         publisher={effectivePublisher}
                         onModalClose={hideUploadBookModal}
                         // FIXME: This might not be required
-                        onUploadSuccess={refetchBooks}
+                        onBookAdd={refetchBooks}
                     />
                 )}
             </div>

@@ -1,6 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import { _cs } from '@togglecorp/fujs';
-import { useQuery, useMutation, gql } from '@apollo/client';
+import {
+    useQuery,
+    useMutation,
+    gql,
+} from '@apollo/client';
 import {
     ObjectSchema,
     PartialForm,
@@ -8,6 +12,9 @@ import {
     createSubmitHandler,
     getErrorObject,
     requiredCondition,
+    requiredListCondition,
+    requiredStringCondition,
+    greaterThanCondition,
     removeNull,
 } from '@togglecorp/toggle-form';
 import {
@@ -26,6 +33,8 @@ import {
     CreateBooksOptionsQueryVariables,
     CreateBookMutation,
     CreateBookMutationVariables,
+    UpdateBookMutation,
+    UpdateBookMutationVariables,
 } from '#generated/types';
 import { newBookModal } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
@@ -48,6 +57,41 @@ function enumLabelSelector<T>(d: EnumEntity<T>) {
     return d.description ?? `${d.name}`;
 }
 
+const BOOK = gql`
+    query Book(
+        $id: ID!,
+    ) {
+        book(id: $id) {
+            id
+            title
+            titleNe
+            description
+            descriptionNe
+            edition
+            grade
+            isbn
+            numberOfPages
+            language
+            publisher
+            publishedDate
+            price
+            weight
+            categories {
+                id
+                name
+            }
+            authors {
+                id
+                name
+            }
+            image {
+                name
+                url
+            }
+        }
+    }
+`;
+
 const CREATE_BOOK = gql`
     mutation CreateBook(
         $data: BookCreateInputType!,
@@ -55,12 +99,87 @@ const CREATE_BOOK = gql`
         createBook(data: $data) {
             ok
             errors
+            result {
+                id
+                title
+                titleNe
+                description
+                descriptionNe
+                edition
+                grade
+                isbn
+                numberOfPages
+                language
+                publisher
+                publishedDate
+                price
+                weight
+                categories {
+                    id
+                    name
+                }
+                authors {
+                    id
+                    name
+                }
+                image {
+                    name
+                    url
+                }
+            }
+        }
+    }
+`;
+
+const UPDATE_BOOK = gql`
+    mutation UpdateBook(
+        $data: BookCreateInputType!,
+        $id: ID!,
+    ) {
+        updateBook(data: $data, id: $id) {
+            ok
+            errors
+            result {
+                id
+                title
+                titleNe
+                description
+                descriptionNe
+                edition
+                grade
+                isbn
+                numberOfPages
+                language
+                publisher
+                publishedDate
+                price
+                weight
+                categories {
+                    id
+                    name
+                }
+                authors {
+                    id
+                    name
+                }
+                image {
+                    name
+                    url
+                }
+            }
         }
     }
 `;
 
 const CREATE_BOOKS_OPTIONS = gql`
     query CreateBooksOptions {
+        gradeOptions: __type(name: "grade") {
+            name
+            enumValues {
+                name
+                description
+            }
+        }
         languageOptions: __type(name: "language") {
             name
             enumValues {
@@ -77,48 +196,56 @@ const CREATE_BOOKS_OPTIONS = gql`
 
     }
 `;
-type FormType = EnumFix<CreateBookMutationVariables['data'], 'language'>;
+type FormType = EnumFix<CreateBookMutationVariables['data'], 'language' | 'grade'>;
 type PartialFormType = PartialForm<FormType>;
 type FormSchema = ObjectSchema<PartialFormType>;
 type FormSchemaFields = ReturnType<FormSchema['fields']>;
 
+// NOTE: may need to use array condition
+
 const schema: FormSchema = {
     fields: (): FormSchemaFields => ({
-        title: [requiredCondition],
-        description: [requiredCondition],
-        isbn: [requiredCondition],
+        title: [requiredStringCondition],
+        titleNe: [requiredStringCondition],
+        description: [requiredStringCondition],
+        descriptionNe: [requiredStringCondition],
+        edition: [],
+        grade: [requiredCondition],
+        isbn: [requiredStringCondition],
         numberOfPages: [requiredCondition],
         language: [requiredCondition],
         publisher: [requiredCondition],
         publishedDate: [requiredCondition],
-        price: [requiredCondition],
-        categories: [requiredCondition],
-        authors: [requiredCondition],
+        price: [requiredCondition, greaterThanCondition(0)],
+        weight: [greaterThanCondition(0)],
+        categories: [requiredListCondition],
+        authors: [requiredListCondition],
         image: [],
     }),
 };
 
+const initialValue: PartialFormType = {};
+
 interface Props {
+    id?: string;
     publisher: string;
     className?: string;
     onModalClose: () => void;
-    onUploadSuccess: () => void;
+    onBookAdd: () => void;
 }
 
 function UploadBookModal(props: Props) {
     const {
         className,
         onModalClose,
-        onUploadSuccess,
+        onBookAdd,
         publisher,
+        id,
     } = props;
 
     const strings = useTranslation(newBookModal);
     const [authors, setAuthors] = useState<Author[] | undefined | null>();
     const [categories, setCategories] = useState<Category[] | undefined | null>();
-    const initialValue: PartialFormType = {
-        publisher,
-    };
 
     const {
         pristine,
@@ -127,10 +254,42 @@ function UploadBookModal(props: Props) {
         setFieldValue,
         validate,
         setError,
+        setValue,
     } = useForm(schema, initialValue);
 
     const error = getErrorObject(riskyError);
     const alert = useAlert();
+
+    const {
+        loading: bookLoading,
+    } = useQuery(
+        BOOK,
+        {
+            variables: id ? {
+                id,
+            } : undefined,
+            skip: !id,
+            onCompleted: (response) => {
+                if (!response?.book?.ok) {
+                    alert.show(
+                        'Could not get book',
+                        { variant: 'error' },
+                    );
+                    return;
+                }
+                const book = response.book.result;
+                setValue({
+                    ...book,
+                });
+            },
+            onError: (errors) => {
+                alert.show(
+                    errors.message,
+                    { variant: 'error' },
+                );
+            },
+        },
+    );
 
     const [
         createBook,
@@ -147,21 +306,56 @@ function UploadBookModal(props: Props) {
                     const formError = transformToFormError(removeNull(errors) as ObjectError[]);
                     setError(formError);
                     alert.show(
-                        'Error uploading book',
+                        'Error creating book',
                         { variant: 'error' },
                     );
                 } else if (ok) {
                     alert.show(
-                        'Successfully uploaded book',
+                        'Successfully creating book',
                         { variant: 'success' },
                     );
-                    onUploadSuccess();
+                    onBookAdd();
                     onModalClose();
                 }
             },
             onError: () => {
                 alert.show(
-                    'Error uploading book',
+                    'Error creating book',
+                    { variant: 'error' },
+                );
+            },
+        },
+    );
+
+    const [
+        updateBook,
+        { loading: updateBookPending },
+    ] = useMutation<UpdateBookMutation, UpdateBookMutationVariables>(
+        UPDATE_BOOK,
+        {
+            onCompleted: (response) => {
+                if (!response.updateBook) {
+                    return;
+                }
+                const { errors, ok } = response.updateBook;
+                if (errors) {
+                    const formError = transformToFormError(removeNull(errors) as ObjectError[]);
+                    setError(formError);
+                    alert.show(
+                        'Error updating book',
+                        { variant: 'error' },
+                    );
+                } else if (ok) {
+                    alert.show(
+                        'Successfully updated book',
+                        { variant: 'success' },
+                    );
+                    onModalClose();
+                }
+            },
+            onError: () => {
+                alert.show(
+                    'Error updating book',
                     { variant: 'error' },
                 );
             },
@@ -182,30 +376,46 @@ function UploadBookModal(props: Props) {
                 validate,
                 setError,
                 (val) => {
-                    createBook({
-                        variables: {
-                            data: {
-                                ...val as CreateBookMutationVariables['data'],
-                                publisher,
-                                // FIXME: add this to form
-                                isPublished: true,
+                    if (id) {
+                        updateBook({
+                            variables: {
+                                id,
+                                data: {
+                                    ...val as UpdateBookMutationVariables['data'],
+                                    publisher,
+                                    // FIXME: add this to form
+                                    isPublished: true,
+                                },
                             },
-                        },
-                    });
+                        });
+                    } else {
+                        createBook({
+                            variables: {
+                                data: {
+                                    ...val as CreateBookMutationVariables['data'],
+                                    publisher,
+                                    // FIXME: add this to form
+                                    isPublished: true,
+                                },
+                            },
+                        });
+                    }
                 },
             );
             submit();
         },
-        [setError, validate, createBook, publisher],
+        [setError, validate, createBook, updateBook, id, publisher],
     );
 
     const optionsDisabled = createBooksOptionsPending || !!createBooksOptionsError;
+
+    const pending = createBookPending || updateBookPending || bookLoading;
 
     return (
         <Modal
             className={_cs(styles.uploadBookModal, className)}
             bodyClassName={styles.inputList}
-            heading={strings.modalHeading}
+            heading={id ? 'Edit book' : strings.modalHeading}
             onCloseButtonClick={onModalClose}
             size="medium"
             freeHeight
@@ -222,7 +432,7 @@ function UploadBookModal(props: Props) {
                         name={undefined}
                         variant="primary"
                         onClick={handleSubmit}
-                        disabled={pristine || createBookPending}
+                        disabled={pristine || pending}
                     >
                         {strings.saveButtonLabel}
                     </Button>
@@ -235,7 +445,15 @@ function UploadBookModal(props: Props) {
                 value={value?.title}
                 error={error?.title}
                 onChange={setFieldValue}
-                disabled={createBookPending}
+                disabled={pending}
+            />
+            <TextInput
+                name="titleNe"
+                label={strings.titleNepaliLabel}
+                value={value?.titleNe}
+                error={error?.titleNe}
+                onChange={setFieldValue}
+                disabled={pending}
             />
             <TextArea
                 name="description"
@@ -243,7 +461,15 @@ function UploadBookModal(props: Props) {
                 value={value?.description}
                 error={error?.description}
                 onChange={setFieldValue}
-                disabled={createBookPending}
+                disabled={pending}
+            />
+            <TextArea
+                name="descriptionNe"
+                label={strings.descriptionNepaliLabel}
+                value={value?.descriptionNe}
+                error={error?.descriptionNe}
+                onChange={setFieldValue}
+                disabled={pending}
             />
             <TextInput
                 name="isbn"
@@ -251,7 +477,15 @@ function UploadBookModal(props: Props) {
                 value={value?.isbn}
                 error={error?.isbn}
                 onChange={setFieldValue}
-                disabled={createBookPending}
+                disabled={pending}
+            />
+            <TextInput
+                name="edition"
+                label={strings.editionLabel}
+                value={value?.edition}
+                error={error?.edition}
+                onChange={setFieldValue}
+                disabled={pending}
             />
             <NumberInput
                 name="numberOfPages"
@@ -259,8 +493,18 @@ function UploadBookModal(props: Props) {
                 value={value?.numberOfPages}
                 error={error?.numberOfPages}
                 onChange={setFieldValue}
-                disabled={createBookPending}
+                disabled={pending}
                 min={1}
+            />
+            <SelectInput
+                label={strings.gradeLabel}
+                name="grade"
+                options={createBooksOptions?.gradeOptions?.enumValues}
+                keySelector={enumKeySelector}
+                labelSelector={enumLabelSelector}
+                value={value.grade}
+                onChange={setFieldValue}
+                disabled={pending || optionsDisabled}
             />
             <SelectInput
                 label={strings.languageLabel}
@@ -270,12 +514,12 @@ function UploadBookModal(props: Props) {
                 labelSelector={enumLabelSelector}
                 value={value.language}
                 onChange={setFieldValue}
-                disabled={createBookPending || optionsDisabled}
+                disabled={pending || optionsDisabled}
             />
             <DateInput
                 name="publishedDate"
                 label={strings.publishedDateLabel}
-                disabled={createBookPending}
+                disabled={pending}
                 onChange={setFieldValue}
                 value={value?.publishedDate}
                 error={error?.publishedDate}
@@ -286,7 +530,16 @@ function UploadBookModal(props: Props) {
                 value={value?.price}
                 error={error?.price}
                 onChange={setFieldValue}
-                disabled={createBookPending}
+                disabled={pending}
+                min={1}
+            />
+            <NumberInput
+                name="weight"
+                label={strings.weightLabel}
+                value={value?.weight}
+                error={error?.weight}
+                onChange={setFieldValue}
+                disabled={pending}
                 min={1}
             />
             <CategoryMultiSelectInput
@@ -296,7 +549,7 @@ function UploadBookModal(props: Props) {
                 onChange={setFieldValue}
                 options={categories}
                 onOptionsChange={setCategories}
-                disabled={createBookPending}
+                disabled={pending}
             />
             <AuthorMultiSelectInput
                 name="authors"
@@ -305,7 +558,7 @@ function UploadBookModal(props: Props) {
                 onChange={setFieldValue}
                 options={authors}
                 onOptionsChange={setAuthors}
-                disabled={createBookPending}
+                disabled={pending}
             />
         </Modal>
     );
