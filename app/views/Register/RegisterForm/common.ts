@@ -70,7 +70,9 @@ export const schema: RegisterFormSchema = {
             ],
             phoneNumber: [
                 requiredStringCondition,
-                lengthGreaterThanCondition(9),
+                // NOTE: from 6 digit to 16 digit
+                // is usually the case for Nepali phone numbers
+                lengthGreaterThanCondition(5),
                 lengthSmallerThanCondition(15),
             ],
         };
@@ -80,8 +82,8 @@ export const schema: RegisterFormSchema = {
             municipality: [requiredStringCondition],
             wardNumber: [requiredCondition],
             localAddress: [],
-            panNumber: [requiredCondition],
-            vatNumber: [requiredCondition],
+            panNumber: [],
+            vatNumber: [],
         };
 
         switch (currentFormValue?.userType) {
