@@ -38,4 +38,5 @@ function Register(props: Props) {
         </div>
     );
 }
+
 export default Register;

@@ -1,8 +1,10 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useMutation, gql } from '@apollo/client';
 import {
     ObjectSchema,
     PartialForm,
+    requiredCondition,
+    requiredStringCondition,
     useForm,
     createSubmitHandler,
     getErrorObject,
@@ -12,20 +14,20 @@ import {
     Modal,
     Button,
     TextInput,
-    NumberInput,
     useAlert,
 } from '@the-deep/deep-ui';
 
 import NonFieldError from '#components/NonFieldError';
+import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
+import { publisher } from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
 import {
     UpdatePublisherProfileMutation,
     UpdatePublisherProfileMutationVariables,
 } from '#generated/types';
-import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
-import { publisher } from '#base/configs/lang';
-import useTranslation from '#base/hooks/useTranslation';
+import PublisherForm from '#views/Register/RegisterForm/PublisherForm';
 
-import LocationInput, { MunicipalityOption } from '#views/Register/RegisterForm/LocationInput';
+import { MunicipalityOption } from '#views/Register/RegisterForm/LocationInput';
 
 type FormType = NonNullable<UpdatePublisherProfileMutationVariables>;
 type PartialFormType = PartialForm<FormType>;
@@ -33,37 +35,40 @@ type FormSchema = ObjectSchema<PartialFormType>;
 
 type FormSchemaFields = ReturnType<FormSchema['fields']>;
 
+const extraSchema = {
+    name: [],
+    municipality: [requiredStringCondition],
+    wardNumber: [requiredCondition],
+    localAddress: [],
+    panNumber: [requiredCondition],
+    vatNumber: [requiredCondition],
+};
+
 const schema: FormSchema = {
     fields: (): FormSchemaFields => {
         const basicFields: FormSchemaFields = {
-            name: [],
-            municipality: [],
-            wardNumber: [],
-            localAddress: [],
+            phoneNumber: [],
+            publisher: {
+                fields: () => extraSchema,
+            },
         };
         return basicFields;
     },
 };
 interface Props {
     onEditSuccess: () => void;
-    profileDetails: PartialFormType | undefined | null;
+    profileDetails: PartialFormType | undefined;
     onModalClose: () => void;
 }
 
 const UPDATE_PUBLISHER_PROFILE = gql`
     mutation UpdatePublisherProfile(
-        $name: String!,
-        $municipality: String!,
-        $wardNumber: Int!,
-        $localAddress: String,
+        $phoneNumber: String,
+        $publisher: PublisherUpdateInputType!,
     ){
         updateProfile(data: {
-            publisher: {
-                name: $name,
-                municipality: $municipality,
-                wardNumber: $wardNumber,
-                localAddress: $localAddress,
-            }
+            phoneNumber: $phoneNumber,
+            publisher: $publisher,
         }) {
             ok
             errors
@@ -79,22 +84,15 @@ function EditProfileModal(props: Props) {
 
     const strings = useTranslation(publisher);
 
-    const initialValue: PartialFormType = useMemo(() => ({
-        name: profileDetails?.name,
-        municipality: profileDetails?.municipality,
-        wardNumber: profileDetails?.wardNumber,
-        localAddress: profileDetails?.localAddress,
-    }), [
-        profileDetails?.name,
-        profileDetails?.municipality,
-        profileDetails?.wardNumber,
-        profileDetails?.localAddress,
-    ]);
-
     const [
         municipalityOptions,
-        onMunicipalityOptionsChange,
+        setMunicipalityOptions,
     ] = useState<MunicipalityOption[] | undefined | null>();
+
+    const initialValue: PartialFormType = useMemo(() => ({
+        phoneNumber: profileDetails?.phoneNumber,
+        publisher: profileDetails?.publisher,
+    }), [profileDetails]);
 
     const {
         pristine,
@@ -189,41 +187,21 @@ function EditProfileModal(props: Props) {
         >
             <NonFieldError error={error} />
             <TextInput
-                name="name"
-                label={strings.publisherNameLabel}
-                value={value?.name}
-                error={error?.name}
+                name="phoneNumber"
+                label={strings.phoneNumberInputLabel}
+                value={value?.phoneNumber}
+                error={error?.phoneNumber}
                 onChange={setFieldValue}
-                placeholder="Togglecorp"
                 disabled={updateProfilePending}
             />
-            <LocationInput
-                name="municipality"
-                label={strings.municipalityLabel}
-                error={error?.municipality}
-                value={value?.municipality}
+            <PublisherForm
+                name="publisher"
+                value={value.publisher}
                 onChange={setFieldValue}
-                options={municipalityOptions}
-                onOptionsChange={onMunicipalityOptionsChange}
+                error={error?.publisher}
                 disabled={updateProfilePending}
-            />
-            <NumberInput
-                name="wardNumber"
-                label={strings.wardNumberLabel}
-                value={value?.wardNumber}
-                error={error?.wardNumber}
-                onChange={setFieldValue}
-                disabled={updateProfilePending}
-                min={1}
-                max={99}
-            />
-            <TextInput
-                name="localAddress"
-                label={strings.localAddressLabel}
-                value={value?.localAddress}
-                error={error?.localAddress}
-                onChange={setFieldValue}
-                disabled={updateProfilePending}
+                municipalityOptions={municipalityOptions}
+                onMunicipalityOptionsChange={setMunicipalityOptions}
             />
         </Modal>
     );

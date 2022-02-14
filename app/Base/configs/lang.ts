@@ -616,6 +616,10 @@ export const publisher = {
         en: 'Successfully updated publisher profile',
         ne: 'Successfully updated publisher profile',
     },
+    phoneNumberInputLabel: {
+        en: 'Phone Number',
+        ne: 'फोन नम्बर',
+    },
     editProfileModalHeading: {
         en: 'Edit Details',
         ne: 'Edit Details',

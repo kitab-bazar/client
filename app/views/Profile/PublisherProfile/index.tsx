@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
     IoPencil,
     IoHeart,
@@ -26,6 +26,7 @@ import {
     compareDate,
 } from '@togglecorp/fujs';
 import { useQuery, gql } from '@apollo/client';
+import { removeNull } from '@togglecorp/toggle-form';
 
 import {
     PublisherProfileQuery,
@@ -127,7 +128,7 @@ function PublisherProfile(props: Props) {
 
     const {
         previousData,
-        data: profileDetails = previousData,
+        data = previousData,
         loading,
         refetch: refetchProfileDetails,
     } = useQuery<PublisherProfileQuery, PublisherProfileQueryVariables>(
@@ -159,10 +160,7 @@ function PublisherProfile(props: Props) {
         hideEditProfileModal,
     ] = useModalState(false);
 
-    const publisherDetails = {
-        ...profileDetails?.me?.publisher,
-        municipality: profileDetails?.me?.publisher?.municipality.id,
-    };
+    const profileDetails = useMemo(() => removeNull(data?.me), [data]);
 
     return (
         <div className={_cs(styles.publisherProfile, className)}>
@@ -186,11 +184,11 @@ function PublisherProfile(props: Props) {
                 >
                     <div className={styles.schoolDetails}>
                         <div className={styles.displayPicture}>
-                            {profileDetails?.me?.image?.url ? (
+                            {profileDetails?.image?.url ? (
                                 <img
                                     className={styles.image}
-                                    src={profileDetails.me.image.url}
-                                    alt={profileDetails.me.image.name ?? ''}
+                                    src={profileDetails.image.url}
+                                    alt={profileDetails.image.name ?? ''}
                                 />
                             ) : (
                                 <IoPerson className={styles.fallbackIcon} />
@@ -202,21 +200,21 @@ function PublisherProfile(props: Props) {
                                 block
                                 valueContainerClassName={styles.value}
                                 label={strings.publisherNameLabel}
-                                value={profileDetails?.me?.publisher?.name}
+                                value={profileDetails?.publisher?.name}
                             />
                             <TextOutput
                                 spacing="none"
                                 block
                                 valueContainerClassName={styles.value}
                                 label={strings.emailLabel}
-                                value={profileDetails?.me?.email}
+                                value={profileDetails?.email}
                             />
                             <TextOutput
                                 spacing="none"
                                 block
                                 valueContainerClassName={styles.value}
                                 label={strings.phoneNumberLabel}
-                                value={profileDetails?.me?.phoneNumber ?? 'Not available'}
+                                value={profileDetails?.phoneNumber ?? 'Not available'}
                             />
                             {/* NOTE: empty div only for gap */}
                             <div>
@@ -226,12 +224,10 @@ function PublisherProfile(props: Props) {
                                 label={strings.addressLabel}
                                 value={`${
                                     profileDetails
-                                        ?.me
                                         ?.publisher
                                         ?.localAddress
                                 }, ${
                                     profileDetails
-                                        ?.me
                                         ?.publisher
                                         ?.municipality
                                         ?.district
@@ -240,15 +236,15 @@ function PublisherProfile(props: Props) {
                             />
                             <TextOutput
                                 label={strings.wardNumberLabel}
-                                value={profileDetails?.me?.publisher?.wardNumber}
+                                value={profileDetails?.publisher?.wardNumber}
                             />
                             <TextOutput
                                 label={strings.panNumberLabel}
-                                value={profileDetails?.me?.publisher?.panNumber}
+                                value={profileDetails?.publisher?.panNumber}
                             />
                             <TextOutput
                                 label={strings.vatNumberLabel}
-                                value={profileDetails?.me?.publisher?.vatNumber}
+                                value={profileDetails?.publisher?.vatNumber}
                             />
                         </div>
                     </div>
@@ -322,7 +318,7 @@ function PublisherProfile(props: Props) {
                     <EditPublisherProfileModal
                         onModalClose={hideEditProfileModal}
                         onEditSuccess={refetchProfileDetails}
-                        profileDetails={publisherDetails}
+                        profileDetails={profileDetails}
                     />
                 )}
             </div>
