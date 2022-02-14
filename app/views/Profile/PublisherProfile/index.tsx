@@ -1,7 +1,6 @@
 import React from 'react';
 import {
     IoPencil,
-    IoHeart,
     IoPerson,
 } from 'react-icons/io5';
 import {
@@ -33,13 +32,12 @@ import {
     PublisherStatsQuery,
     PublisherStatsQueryVariables,
 } from '#generated/types';
-import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
-import routes from '#base/configs/routes';
 
 import { publisher } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 
 import EditPublisherProfileModal from './EditPublisherProfileModal';
+
 import styles from './styles.css';
 
 const PUBLISHER_PROFILE = gql`
@@ -251,15 +249,6 @@ function PublisherProfile(props: Props) {
                                 value={profileDetails?.me?.publisher?.vatNumber}
                             />
                         </div>
-                    </div>
-                    <div className={styles.usefulLinks}>
-                        <SmartButtonLikeLink
-                            route={routes.wishList}
-                            variant="general"
-                            actions={<IoHeart />}
-                        >
-                            {strings.myWishlistLabel}
-                        </SmartButtonLikeLink>
                     </div>
                 </Container>
                 <Container

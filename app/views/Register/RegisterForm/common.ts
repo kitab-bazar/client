@@ -86,6 +86,11 @@ export const schema: RegisterFormSchema = {
             vatNumber: [],
         };
 
+        const publisherExtraSchema = {
+            ...extraSchema,
+            panNumber: [requiredCondition],
+        };
+
         switch (currentFormValue?.userType) {
             case 'INDIVIDUAL_USER':
                 return {
@@ -104,7 +109,7 @@ export const schema: RegisterFormSchema = {
                 return {
                     ...baseSchema,
                     publisher: {
-                        fields: () => extraSchema,
+                        fields: () => publisherExtraSchema,
                     },
                 };
             case 'SCHOOL_ADMIN':

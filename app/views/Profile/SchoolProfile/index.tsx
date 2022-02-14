@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import {
     IoPencil,
     IoArrowForward,
-    IoHeart,
+    // IoHeart,
     IoPerson,
     IoList,
 } from 'react-icons/io5';
@@ -33,6 +33,7 @@ import { school } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 
 import EditSchoolProfileModal from './EditSchoolProfileModal';
+
 import styles from './styles.css';
 
 const SCHOOL_PROFILE = gql`
@@ -247,6 +248,7 @@ function SchoolProfile(props: Props) {
                             />
                         </div>
                     </div>
+                    {/*
                     <div className={styles.usefulLinks}>
                         <SmartButtonLikeLink
                             route={routes.wishList}
@@ -256,6 +258,7 @@ function SchoolProfile(props: Props) {
                             {strings.myWishlistLabel}
                         </SmartButtonLikeLink>
                     </div>
+                    */}
                     <Container
                         className={styles.orderDetails}
                         withoutExternalPadding

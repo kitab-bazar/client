@@ -57,10 +57,12 @@
                     }
                 }
 
+                /*
                 .useful-links {
                     display: flex;
                     gap: var(--dui-spacing-small);
                 }
+                */
             }
         }
 

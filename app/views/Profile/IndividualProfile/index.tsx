@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import {
     IoPencil,
     IoArrowForward,
-    IoHeart,
+    // IoHeart,
     IoPerson,
     IoList,
 } from 'react-icons/io5';
@@ -33,6 +33,7 @@ import { individualProfile } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 
 import EditProfileModal from './EditProfileModal';
+
 import styles from './styles.css';
 
 const INDIVIDUAL_PROFILE = gql`
@@ -194,6 +195,7 @@ function IndividualProfile(props: Props) {
                             />
                         </div>
                     </div>
+                    {/*
                     <div className={styles.usefulLinks}>
                         <SmartButtonLikeLink
                             route={routes.wishList}
@@ -203,6 +205,7 @@ function IndividualProfile(props: Props) {
                             {strings.wishlistLabel}
                         </SmartButtonLikeLink>
                     </div>
+                    */}
                     <Container
                         className={styles.orderSummary}
                         contentClassName={styles.summaryItemList}
