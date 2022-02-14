@@ -130,7 +130,7 @@
                     flex-wrap: wrap;
                     gap: var(--dui-spacing-large);
 
-                    .category-item {
+                    .publisher-item {
                         flex-basis: calc(25% - var(--dui-spacing-large));
                     }
                 }
