@@ -1,6 +1,9 @@
 import React, { useState, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
-import { _cs } from '@togglecorp/fujs';
+import {
+    _cs,
+    isDefined,
+} from '@togglecorp/fujs';
 import {
     CheckListInput,
     RadioInput,
@@ -82,6 +85,7 @@ query ExploreBooks(
     $page: Int,
     $pageSize: Int,
     $title: String,
+    $grade: [String!],
     $isAddedInWishlist: Boolean,
 ) {
     books(
@@ -92,6 +96,7 @@ query ExploreBooks(
         pageSize: $pageSize,
         title: $title,
         isAddedInWishlist: $isAddedInWishlist,
+        grade: $grade,
     ) {
         page
         pageSize
@@ -99,6 +104,7 @@ query ExploreBooks(
         results {
             id
             title
+            grade
             price
             language
             image {
@@ -260,6 +266,7 @@ function Explore(props: Props) {
                 ordering: selectedSortKey,
                 categories,
                 publisher: effectivePublisher,
+                grade: isDefined(grade) ? [grade] : undefined,
                 title: (search && search.length > 3) ? search : undefined,
                 pageSize: MAX_ITEMS_PER_PAGE,
                 page,
