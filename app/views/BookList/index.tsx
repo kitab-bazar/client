@@ -68,7 +68,7 @@ query ExploreFilterOptions {
 
 const GRADE_FILTER_OPTIONS = gql`
 query GradeFilterOptions {
-    gradeList: __type(name: "BookGrade") {
+    gradeList: __type(name: "BookGradeEnum") {
         enumValues {
             name
             description

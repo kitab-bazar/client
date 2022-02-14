@@ -79,7 +79,7 @@ query ExploreCategoryAndPublisherOptions {
 
 const GRADE_OPTIONS = gql`
 query GradeOptions {
-    gradeList: __type(name: "BookGrade") {
+    gradeList: __type(name: "BookGradeEnum") {
         enumValues {
             name
             description
