@@ -23,6 +23,7 @@ import {
 } from '@togglecorp/toggle-form';
 
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
+// import SmartLink from '#base/components/SmartLink';
 import NonFieldError from '#components/NonFieldError';
 import { login as loginStrings } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
@@ -198,19 +199,26 @@ function LoginForm() {
                 headingClassName={styles.heading}
                 contentClassName={styles.inputContainer}
                 spacing="loose"
-                footerContentClassName={styles.footerContent}
-                footerContent={(
-                    <>
-                        {strings.donotHaveAccountYetLabel}
-                        &nbsp;
-                        <SmartButtonLikeLink
-                            className={styles.registerLink}
-                            route={routes.register}
-                            variant="transparent"
-                        >
-                            {strings.registerlabel}
-                        </SmartButtonLikeLink>
-                    </>
+                /*
+                footerIcons={(
+                    <SmartLink
+                        route={routes.forgotPassword}
+                        state={{ email: value?.email }}
+                    >
+                        {strings.forgotPasswordLabel}
+                    </SmartLink>
+                )}
+                */
+                footerActions={(
+                    <Button
+                        className={styles.loginButton}
+                        name="login"
+                        type="submit"
+                        variant="primary"
+                        disabled={loginPending || pristine}
+                    >
+                        {strings.loginButtonLabel}
+                    </Button>
                 )}
             >
                 <NonFieldError error={error} />
@@ -230,16 +238,18 @@ function LoginForm() {
                     error={error?.password}
                     disabled={loginPending}
                 />
-                <Button
-                    className={styles.loginButton}
-                    name="login"
-                    type="submit"
-                    variant="primary"
-                    disabled={loginPending || pristine}
-                >
-                    {strings.loginButtonLabel}
-                </Button>
             </Container>
+            <div className={styles.footerContent}>
+                {strings.donotHaveAccountYetLabel}
+                &nbsp;
+                <SmartButtonLikeLink
+                    className={styles.registerLink}
+                    route={routes.register}
+                    variant="transparent"
+                >
+                    {strings.registerlabel}
+                </SmartButtonLikeLink>
+            </div>
         </form>
     );
 }

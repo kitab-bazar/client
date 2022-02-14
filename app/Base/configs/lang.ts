@@ -50,7 +50,7 @@ export const navbar = {
         ne: 'नमस्कार {name}!',
     },
     gotoProfile: {
-        en: 'Goto profile',
+        en: 'Profile',
         ne: 'प्रोफाइलमा जानुहोस्',
     },
     logoutConfirmMessage: {
@@ -71,6 +71,10 @@ export const login = {
     emailLabel: {
         en: 'Email',
         ne: 'इमेल',
+    },
+    forgotPasswordLabel: {
+        en: 'Forgot Password',
+        ne: 'पास्स्वोर्ड  बिर्सिए',
     },
     passwordLabel: {
         en: 'Password',
@@ -1013,5 +1017,32 @@ export const orderDetail = {
     orderStatusUpdateFailedMessage: {
         en: 'Failed to update the Order status',
         ne: 'Failed to update the Order status',
+    },
+};
+
+export const resetPassword = {
+    resetPasswordHeaderLabel: {
+        en: 'Reset Password',
+        ne: 'पास्स्वोर्ड  बिर्सिए',
+    },
+    resetPasswordButtonLabel: {
+        en: 'Reset Password',
+        ne: 'पासवर्ड रिसेट गर्नुहोस् ',
+    },
+    emailLabel: {
+        en: 'Email',
+        ne: 'इमेल',
+    },
+    loginLabel: {
+        en: 'Go back to login',
+        ne: 'लगइन गर्न फर्कनुहोस्',
+    },
+    errorResettingPassword: {
+        en: 'There was an error while trying to reset your password.',
+        ne: 'तपाईको पासवर्ड रिसेट गर्दा त्रुटि भयो',
+    },
+    resetPasswordEmailSentLabel: {
+        en: 'Successfully sent email to reset your password.',
+        ne: ' तपाईको पासवर्ड रिसेट गर्न सफलतापूर्वक इमेल पठाइयो।',
     },
 };
