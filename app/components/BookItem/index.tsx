@@ -144,11 +144,13 @@ function BookItem(props: Props) {
     const { user } = useContext(UserContext);
 
     // eslint-disable-next-line react/destructuring-assignment
-    const hasActions = props.variant === 'detail' || props.variant === 'list';
+    // const hasActions = props.variant === 'detail' || props.variant === 'list';
     const canCreateOrder = user?.permissions.includes('CREATE_ORDER');
+    /*
     const canEditBook = user?.permissions.includes('CAN_UPDATE_BOOK')
         // eslint-disable-next-line react/destructuring-assignment
         && hasActions && props.book.publisher.id === user?.publisherId;
+    */
 
     const [
         addToOrder,
@@ -303,6 +305,7 @@ function BookItem(props: Props) {
         // eslint-disable-next-line react/destructuring-assignment
     }, [strings, variant, canCreateOrder, actionsDisabled, handleAddToOrder, props.book]);
 
+    /*
     const editButton = React.useMemo(() => {
         if (!canEditBook) {
             return null;
@@ -319,6 +322,7 @@ function BookItem(props: Props) {
             </Button>
         );
     }, [strings.editDetailsButtonLabel, canEditBook]);
+    */
 
     const wishListButton = React.useMemo(() => {
         if (!wishListActionsShown) {
@@ -443,7 +447,7 @@ function BookItem(props: Props) {
                         <>
                             {wishListButton}
                             {orderButton}
-                            {editButton}
+                            {/* editButton */}
                         </>
                     )}
                 />
@@ -509,7 +513,7 @@ function BookItem(props: Props) {
                     <div className={styles.actions}>
                         {wishListButton}
                         {orderButton}
-                        {editButton}
+                        {/* editButton */}
                     </div>
                     <div
                         // TODO: sanitize description

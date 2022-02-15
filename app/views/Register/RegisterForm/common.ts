@@ -78,17 +78,22 @@ export const schema: RegisterFormSchema = {
         };
 
         const extraSchema = {
-            name: [],
+            name: [requiredStringCondition],
             municipality: [requiredStringCondition],
             wardNumber: [requiredCondition],
-            localAddress: [],
-            panNumber: [],
-            vatNumber: [],
+            localAddress: [requiredStringCondition],
+            // panNumber: [],
+            // vatNumber: [],
         };
 
         const publisherExtraSchema = {
             ...extraSchema,
-            panNumber: [requiredCondition],
+            panNumber: [],
+            vatNumber: [],
+        };
+        const schoolSchema = {
+            ...extraSchema,
+            panNumber: [],
         };
 
         switch (currentFormValue?.userType) {
@@ -110,13 +115,19 @@ export const schema: RegisterFormSchema = {
                     ...baseSchema,
                     publisher: {
                         fields: () => publisherExtraSchema,
+                        validation: (value) => {
+                            if (value && !value.panNumber && !value.vatNumber) {
+                                return 'Either pan number or vat number is required';
+                            }
+                            return undefined;
+                        },
                     },
                 };
             case 'SCHOOL_ADMIN':
                 return {
                     ...baseSchema,
                     school: {
-                        fields: () => extraSchema,
+                        fields: () => schoolSchema,
                     },
                 };
             default:

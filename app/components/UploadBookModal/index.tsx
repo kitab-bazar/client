@@ -7,8 +7,12 @@ import {
     useForm,
     createSubmitHandler,
     getErrorObject,
+    getErrorString,
     requiredCondition,
+    requiredStringCondition,
+    requiredListCondition,
     removeNull,
+    defaultEmptyArrayType,
 } from '@togglecorp/toggle-form';
 import {
     Modal,
@@ -32,6 +36,7 @@ import useTranslation from '#base/hooks/useTranslation';
 import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
 import AuthorMultiSelectInput, { Author } from '#components/AuthorMultiSelectInput';
 import CategoryMultiSelectInput, { Category } from '#components/CategoryMultiSelectInput';
+import NonFieldError from '#components/NonFieldError';
 import { EnumFix } from '#utils/types';
 
 import styles from './styles.css';
@@ -68,6 +73,12 @@ const CREATE_BOOKS_OPTIONS = gql`
                 description
             }
         }
+        gradeList: __type(name: "BookGradeEnum") {
+            enumValues {
+                name
+                description
+            }
+        }
         authors {
             results {
                 id
@@ -77,23 +88,25 @@ const CREATE_BOOKS_OPTIONS = gql`
 
     }
 `;
-type FormType = EnumFix<CreateBookMutationVariables['data'], 'language'>;
+type FormType = EnumFix<CreateBookMutationVariables['data'], 'language' | 'grade'>;
 type PartialFormType = PartialForm<FormType>;
 type FormSchema = ObjectSchema<PartialFormType>;
 type FormSchemaFields = ReturnType<FormSchema['fields']>;
 
 const schema: FormSchema = {
     fields: (): FormSchemaFields => ({
-        title: [requiredCondition],
-        description: [requiredCondition],
-        isbn: [requiredCondition],
+        title: [requiredStringCondition],
+        description: [requiredStringCondition],
+        isbn: [requiredStringCondition],
         numberOfPages: [requiredCondition],
         language: [requiredCondition],
         publisher: [requiredCondition],
         publishedDate: [requiredCondition],
         price: [requiredCondition],
-        categories: [requiredCondition],
-        authors: [requiredCondition],
+        edition: [requiredStringCondition],
+        grade: [],
+        categories: [requiredListCondition, defaultEmptyArrayType],
+        authors: [requiredListCondition, defaultEmptyArrayType],
         image: [],
     }),
 };
@@ -229,6 +242,7 @@ function UploadBookModal(props: Props) {
                 </>
             )}
         >
+            <NonFieldError error={error} />
             <TextInput
                 name="title"
                 label={strings.titleLabel}
@@ -262,6 +276,25 @@ function UploadBookModal(props: Props) {
                 disabled={createBookPending}
                 min={1}
             />
+            <TextInput
+                name="edition"
+                label={strings.editionLabel}
+                value={value?.edition}
+                error={error?.edition}
+                onChange={setFieldValue}
+                disabled={createBookPending}
+            />
+            <SelectInput
+                name="grade"
+                label={strings.gradeLabel}
+                keySelector={enumKeySelector}
+                labelSelector={enumLabelSelector}
+                options={createBooksOptions?.gradeList?.enumValues}
+                value={value?.grade}
+                error={error?.grade}
+                onChange={setFieldValue}
+                disabled={createBookPending}
+            />
             <SelectInput
                 label={strings.languageLabel}
                 name="language"
@@ -269,6 +302,7 @@ function UploadBookModal(props: Props) {
                 keySelector={enumKeySelector}
                 labelSelector={enumLabelSelector}
                 value={value.language}
+                error={error?.language}
                 onChange={setFieldValue}
                 disabled={createBookPending || optionsDisabled}
             />
@@ -297,6 +331,7 @@ function UploadBookModal(props: Props) {
                 options={categories}
                 onOptionsChange={setCategories}
                 disabled={createBookPending}
+                error={getErrorString(error?.categories)}
             />
             <AuthorMultiSelectInput
                 name="authors"
@@ -306,6 +341,7 @@ function UploadBookModal(props: Props) {
                 options={authors}
                 onOptionsChange={setAuthors}
                 disabled={createBookPending}
+                error={getErrorString(error?.authors)}
             />
         </Modal>
     );
