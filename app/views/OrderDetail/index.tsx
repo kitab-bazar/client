@@ -7,8 +7,8 @@ import {
     TextInput,
     Header,
     ListView,
-    ConfirmButton,
-    useAlert,
+    // ConfirmButton,
+    // useAlert,
 } from '@the-deep/deep-ui';
 import {
     IoSearchSharp,
@@ -16,14 +16,14 @@ import {
 import {
     gql,
     useQuery,
-    useMutation,
+    // useMutation,
 } from '@apollo/client';
 
 import {
     OrderDetailsQuery,
     OrderDetailsQueryVariables,
-    UpdateOrderStatusMutation,
-    UpdateOrderStatusMutationVariables,
+    // UpdateOrderStatusMutation,
+    // UpdateOrderStatusMutationVariables,
 } from '#generated/types';
 
 import { orderDetail } from '#base/configs/lang';
@@ -65,6 +65,7 @@ query OrderDetails($id: ID!, $bookPage: Int, $bookPageSize: Int) {
 }
 `;
 
+/*
 const UPDATE_ORDER_STATUS = gql`
 mutation UpdateOrderStatus($id: ID!, $status: status) {
     updateOrder(id: $id, data: {status: $status}) {
@@ -77,6 +78,7 @@ mutation UpdateOrderStatus($id: ID!, $status: status) {
     }
 }
 `;
+*/
 
 const MAX_ITEMS_PER_PAGE = 10;
 interface Props {
@@ -89,7 +91,7 @@ function OrderDetail(props: Props) {
     const [search, setSearch] = useInputState<string | undefined>(undefined);
 
     const strings = useTranslation(orderDetail);
-    const alert = useAlert();
+    // const alert = useAlert();
     const { orderId } = useParams<{
         orderId: string;
     }>() as { orderId: string };
@@ -109,6 +111,7 @@ function OrderDetail(props: Props) {
         },
     );
 
+    /*
     const [
         updateOrder,
         { loading: updateOrderLoading },
@@ -149,6 +152,7 @@ function OrderDetail(props: Props) {
             },
         });
     }, [orderId, updateOrder]);
+    */
 
     const bookItemRendererParams = React.useCallback((
         _: string,
@@ -167,6 +171,7 @@ function OrderDetail(props: Props) {
                     className={styles.pageHeader}
                     heading={order?.orderCode}
                     spacing="loose"
+                    /*
                     actions={(
                         <>
                             {order?.status === 'RECEIVED' && (
@@ -209,6 +214,7 @@ function OrderDetail(props: Props) {
                             )}
                         </>
                     )}
+                    */
                 >
                     <TextInput
                         variant="general"

@@ -52,17 +52,19 @@ interface UserType {
 
 // TODO: fetch this from the server
 const userTypes: UserType[] = [
+    /*
     {
         id: 'INDIVIDUAL_USER',
         title: 'Individual User',
     },
     {
-        id: 'PUBLISHER',
-        title: 'Publisher',
-    },
-    {
         id: 'INSTITUTIONAL_USER',
         title: 'Institution',
+    },
+    */
+    {
+        id: 'PUBLISHER',
+        title: 'Publisher',
     },
     {
         id: 'SCHOOL_ADMIN',

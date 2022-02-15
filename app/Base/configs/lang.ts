@@ -943,6 +943,14 @@ export const newBookModal = {
         en: 'Title',
         ne: 'Title',
     },
+    editionLabel: {
+        en: 'Edition',
+        ne: 'Edition',
+    },
+    gradeLabel: {
+        en: 'Grade',
+        ne: 'Grade',
+    },
     descriptionLabel: {
         en: 'Description',
         ne: 'Description',

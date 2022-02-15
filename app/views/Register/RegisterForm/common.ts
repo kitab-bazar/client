@@ -70,18 +70,30 @@ export const schema: RegisterFormSchema = {
             ],
             phoneNumber: [
                 requiredStringCondition,
-                lengthGreaterThanCondition(9),
+                // NOTE: from 6 digit to 16 digit
+                // is usually the case for Nepali phone numbers
+                lengthGreaterThanCondition(5),
                 lengthSmallerThanCondition(15),
             ],
         };
 
         const extraSchema = {
-            name: [],
+            name: [requiredStringCondition],
             municipality: [requiredStringCondition],
             wardNumber: [requiredCondition],
-            localAddress: [],
-            panNumber: [requiredCondition],
-            vatNumber: [requiredCondition],
+            localAddress: [requiredStringCondition],
+            // panNumber: [],
+            // vatNumber: [],
+        };
+
+        const publisherExtraSchema = {
+            ...extraSchema,
+            panNumber: [],
+            vatNumber: [],
+        };
+        const schoolSchema = {
+            ...extraSchema,
+            panNumber: [],
         };
 
         switch (currentFormValue?.userType) {
@@ -102,14 +114,20 @@ export const schema: RegisterFormSchema = {
                 return {
                     ...baseSchema,
                     publisher: {
-                        fields: () => extraSchema,
+                        fields: () => publisherExtraSchema,
+                        validation: (value) => {
+                            if (value && !value.panNumber && !value.vatNumber) {
+                                return 'Either pan number or vat number is required';
+                            }
+                            return undefined;
+                        },
                     },
                 };
             case 'SCHOOL_ADMIN':
                 return {
                     ...baseSchema,
                     school: {
-                        fields: () => extraSchema,
+                        fields: () => schoolSchema,
                     },
                 };
             default:
