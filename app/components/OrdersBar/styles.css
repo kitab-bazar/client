@@ -7,6 +7,11 @@
     .summary {
         display: flex;
         gap: var(--dui-spacing-medium);
+
+        .book-selected {
+            display: flex;
+            gap: var(--dui-spacing-small);
+        }
     }
 
     &.hidden {

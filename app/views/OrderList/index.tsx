@@ -21,6 +21,7 @@ import {
 import { orderList as orderListLang } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 import OrderItem, { Props as OrderItemProps, Order } from '#components/OrderItem';
+import NumberOutput from '#components/NumberOutput';
 
 import styles from './styles.css';
 
@@ -169,8 +170,12 @@ function OrderList(props: Props) {
                     <div className={styles.summary}>
                         <TextOutput
                             className={styles.orderCount}
-                            value={orderList?.orders?.totalCount}
                             label={strings.orderCountLabel}
+                            value={(
+                                <NumberOutput
+                                    value={orderList?.orders?.totalCount}
+                                />
+                            )}
                         />
                     </div>
                     <ListView

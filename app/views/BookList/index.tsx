@@ -43,6 +43,7 @@ import {
 import BookDetailModal from '#components/BookDetailModal';
 import UploadBookModal from '#components/UploadBookModal';
 import BookItem, { Props as BookItemProps } from '#components/BookItem';
+import NumberOutput from '#components/NumberOutput';
 
 import styles from './styles.css';
 
@@ -420,7 +421,11 @@ function Explore(props: Props) {
                     <div className={styles.summary}>
                         <TextOutput
                             className={styles.bookCount}
-                            value={bookResponse?.books?.totalCount}
+                            value={(
+                                <NumberOutput
+                                    value={bookResponse?.books?.totalCount}
+                                />
+                            )}
                             label={strings.booksFoundLabel}
                         />
                         <DropdownMenu

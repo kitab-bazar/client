@@ -25,6 +25,7 @@ import {
 } from '#generated/types';
 
 import KitabLogo from '#resources/img/KitabLogo.png';
+import NumberOutput from '#components/NumberOutput';
 
 import CartItem, { Props as CartItemProps } from './CartItem';
 import { CART_ITEMS } from '../queries';
@@ -186,13 +187,20 @@ function OrdersModal(props: Props) {
                     <>
                         <TextOutput
                             label={strings.totalPriceLabel}
-                            valueType="number"
-                            value={totalPrice}
+                            value={(
+                                <NumberOutput
+                                    value={totalPrice}
+                                    currency
+                                />
+                            )}
                         />
                         <TextOutput
                             label={strings.totalBooksLabel}
-                            valueType="number"
-                            value={totalQuantity}
+                            value={(
+                                <NumberOutput
+                                    value={totalQuantity}
+                                />
+                            )}
                         />
                     </>
                 )}
@@ -260,7 +268,12 @@ function OrdersModal(props: Props) {
                         />
                         <TextOutput
                             label={strings.totalPriceLabel}
-                            value={orderDetails?.placeOrderFromCart?.result?.totalPrice}
+                            value={(
+                                <NumberOutput
+                                    value={orderDetails?.placeOrderFromCart?.result?.totalPrice}
+                                    currency
+                                />
+                            )}
                         />
                     </div>
                     <div className={styles.helpText}>

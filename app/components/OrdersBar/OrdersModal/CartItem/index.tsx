@@ -6,7 +6,6 @@ import {
 import { getOperationName } from 'apollo-link';
 import {
     Container,
-    TextOutput,
     Button,
     NumberInput,
     useAlert,
@@ -27,6 +26,7 @@ import {
     RemoveCartItemMutationVariables,
 } from '#generated/types';
 import { CART_ITEMS } from '#components/OrdersBar/queries';
+import NumberOutput from '#components/NumberOutput';
 
 import UserContext from '#base/context/UserContext';
 
@@ -194,11 +194,9 @@ function CartItem(props: Props) {
                 headingDescription={(
                     <>
                         {authorsDisplay}
-                        <TextOutput
-                            valueType="number"
-                            label={strings.nprPrefix}
-                            hideLabelColon
+                        <NumberOutput
                             value={book.price}
+                            currency
                         />
                     </>
                 )}
@@ -229,11 +227,9 @@ function CartItem(props: Props) {
                 )}
                 footerActionsContainerClassName={styles.actions}
                 footerActions={(
-                    <TextOutput
-                        valueType="number"
-                        label={strings.nprPrefix}
-                        hideLabelColon
+                    <NumberOutput
                         value={totalPrice}
+                        currency
                     />
                 )}
             />

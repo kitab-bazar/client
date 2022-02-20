@@ -11,6 +11,7 @@ import useTranslation from '#base/hooks/useTranslation';
 import { OrderType } from '#generated/types';
 
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
+import NumberOutput from '#components/NumberOutput';
 
 import styles from './styles.css';
 
@@ -50,7 +51,6 @@ function OrderItem(props: Props) {
             headingClassName={styles.heading}
             headingSize="extraSmall"
             headingContainerClassName={styles.heading}
-            withoutExternalPadding
             footerActions={!detailsLinkHidden && (
                 <SmartButtonLikeLink
                     route={routes.orderDetail}
@@ -63,16 +63,20 @@ function OrderItem(props: Props) {
         >
             <TextOutput
                 label={strings.booksLabel}
-                valueType="number"
-                value={totalQuantity}
+                value={(
+                    <NumberOutput
+                        value={totalQuantity}
+                    />
+                )}
             />
             <TextOutput
                 label={strings.totalPriceLabel}
-                valueType="number"
-                value={totalPrice}
-                valueProps={{
-                    prefix: strings.nprPrefix,
-                }}
+                value={(
+                    <NumberOutput
+                        value={totalPrice}
+                        currency
+                    />
+                )}
             />
             <TextOutput
                 label={strings.statusLabel}
