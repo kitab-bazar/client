@@ -15,8 +15,8 @@ import {
     TextInput,
     DropdownMenu,
     DropdownMenuItem,
-    TextOutput,
     useModalState,
+    Border,
 } from '@the-deep/deep-ui';
 import {
     IoSearchSharp,
@@ -30,7 +30,7 @@ import {
 import { explore } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 import { UserContext } from '#base/context/UserContext';
-import { resolveToString } from '#base/utils/lang';
+import { resolveToString, resolveToComponent } from '#base/utils/lang';
 import {
     ExploreFilterOptionsQuery,
     ExploreFilterOptionsQueryVariables,
@@ -177,7 +177,6 @@ function Explore(props: Props) {
     const [selectedBookId, setSelectedBookId] = React.useState<string | undefined>();
     const [page, setPage] = useState<number>(1);
 
-    // TODO: use this for filtering
     const [grade, setGrade] = useInputState<string | undefined>(locationState?.grade);
 
     // NOTE: A different UI depending on if user is publisher or not
@@ -201,12 +200,6 @@ function Explore(props: Props) {
         if (publisherId) {
             return strings.pageTitlePublisher;
         }
-
-        /*
-        if (categoryFromProps) {
-            return strings.pageTitleExploreByCategory;
-        }
-        */
 
         if (wishListFromProps) {
             return strings.pageTitleWishList;
@@ -268,7 +261,7 @@ function Explore(props: Props) {
                 categories,
                 publisher: effectivePublisher,
                 grade: isDefined(grade) ? [grade as BookGradeEnum] : undefined,
-                title: (search && search.length > 3) ? search : undefined,
+                title: (search && search.length >= 3) ? search : undefined,
                 pageSize: MAX_ITEMS_PER_PAGE,
                 page,
                 isAddedInWishlist: wishListFromProps,
@@ -331,18 +324,29 @@ function Explore(props: Props) {
             </div>
             <div className={styles.container}>
                 <div className={styles.sideBar}>
+                    <Header
+                        headingSize="extraSmall"
+                        heading={strings.filterBooksHeading}
+                        spacing="loose"
+                    />
                     {publisherId && (
-                        <RadioInput
-                            className={styles.publisherInput}
-                            listContainerClassName={styles.publisherList}
-                            name={undefined}
-                            options={bookSources}
-                            keySelector={bookSourceKeySelector}
-                            labelSelector={bookSourceLabelSelector}
-                            value={bookSource}
-                            onChange={setBookSource}
-                            disabled={filterLoading}
-                        />
+                        <>
+                            <RadioInput
+                                className={styles.publisherInput}
+                                listContainerClassName={styles.publisherList}
+                                name={undefined}
+                                options={bookSources}
+                                keySelector={bookSourceKeySelector}
+                                labelSelector={bookSourceLabelSelector}
+                                value={bookSource}
+                                onChange={setBookSource}
+                                disabled={filterLoading}
+                            />
+                            <Border
+                                inline
+                                width="thin"
+                            />
+                        </>
                     )}
                     <RadioInput
                         className={styles.gradeInput}
@@ -356,16 +360,22 @@ function Explore(props: Props) {
                         onChange={setGrade}
                     />
                     {grade && grade.length > 0 && (
-                        <Button
-                            name={undefined}
-                            onClick={setGrade}
-                            variant="transparent"
-                            spacing="none"
-                            disabled={gradeLoading}
-                        >
-                            {strings.clearGradeFilterButtonLabel}
-                        </Button>
+                        <>
+                            <Button
+                                name={undefined}
+                                onClick={setGrade}
+                                variant="transparent"
+                                spacing="none"
+                                disabled={gradeLoading}
+                            >
+                                {strings.clearGradeFilterButtonLabel}
+                            </Button>
+                        </>
                     )}
+                    <Border
+                        inline
+                        width="thin"
+                    />
                     <CheckListInput
                         label={strings.categoriesFilterLabel}
                         className={styles.categoriesInput}
@@ -389,6 +399,10 @@ function Explore(props: Props) {
                             {strings.clearCategoriesFilterButtonLabel}
                         </Button>
                     )}
+                    <Border
+                        inline
+                        width="thin"
+                    />
                     {!publisherId && (
                         <>
                             <RadioInput
@@ -419,14 +433,22 @@ function Explore(props: Props) {
                 </div>
                 <div className={styles.bookListSection}>
                     <div className={styles.summary}>
-                        <TextOutput
-                            className={styles.bookCount}
-                            value={(
-                                <NumberOutput
-                                    value={bookResponse?.books?.totalCount}
-                                />
+                        <Header
+                            headingClassName={styles.heading}
+                            headingSize="extraSmall"
+                            heading={(
+                                resolveToComponent(
+                                    strings.booksFoundLabel,
+                                    {
+                                        count: (
+                                            <NumberOutput
+                                                value={bookResponse?.books?.totalCount}
+                                            />
+                                        ),
+                                    },
+                                )
                             )}
-                            label={strings.booksFoundLabel}
+                            spacing="loose"
                         />
                         <DropdownMenu
                             label={resolveToString(
