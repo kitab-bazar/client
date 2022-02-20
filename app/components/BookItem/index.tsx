@@ -19,7 +19,6 @@ import {
 
 import { bookItem } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
-import { resolveToString } from '#base/utils/lang';
 import {
     BookType,
     AddToOrderMutation,
@@ -30,6 +29,7 @@ import {
     RemoveFromWishListMutationVariables,
 } from '#generated/types';
 import { CART_ITEMS } from '#components/OrdersBar/queries';
+import NumberOutput from '#components/NumberOutput';
 
 import UserContext from '#base/context/UserContext';
 
@@ -143,12 +143,10 @@ function BookItem(props: Props) {
     const alert = useAlert();
     const { user } = useContext(UserContext);
 
-    // eslint-disable-next-line react/destructuring-assignment
-    // const hasActions = props.variant === 'detail' || props.variant === 'list';
     const canCreateOrder = user?.permissions.includes('CREATE_ORDER');
     /*
+    const hasActions = props.variant === 'detail' || props.variant === 'list';
     const canEditBook = user?.permissions.includes('CAN_UPDATE_BOOK')
-        // eslint-disable-next-line react/destructuring-assignment
         && hasActions && props.book.publisher.id === user?.publisherId;
     */
 
@@ -416,11 +414,9 @@ function BookItem(props: Props) {
                     headingSize="extraSmall"
                     headingDescription={authorsDisplay}
                     headerActions={(
-                        <TextOutput
-                            valueType="number"
-                            label={strings.nprLabel}
-                            hideLabelColon
+                        <NumberOutput
                             value={book.price}
+                            currency
                         />
                     )}
                     footerClassName={styles.footer}
@@ -478,8 +474,12 @@ function BookItem(props: Props) {
                     headerDescription={(
                         <TextOutput
                             label={strings.priceLabel}
-                            value={book.price}
-                            valueType="number"
+                            value={(
+                                <NumberOutput
+                                    value={book.price}
+                                    currency
+                                />
+                            )}
                         />
                     )}
                     contentClassName={styles.content}
@@ -492,9 +492,12 @@ function BookItem(props: Props) {
                         />
                         <TextOutput
                             label={strings.numberOfPagesLabel}
-                            // eslint-disable-next-line react/destructuring-assignment
-                            value={props.book.numberOfPages}
-                            valueType="number"
+                            value={(
+                                <NumberOutput
+                                    // eslint-disable-next-line react/destructuring-assignment
+                                    value={props.book.numberOfPages}
+                                />
+                            )}
                         />
                         <TextOutput
                             label={strings.isbnLabel}
@@ -540,14 +543,20 @@ function BookItem(props: Props) {
                     <div className={styles.orderBookMeta}>
                         <TextOutput
                             label={strings.priceLabel}
-                            value={book.price}
-                            valueType="number"
+                            value={(
+                                <NumberOutput
+                                    value={book.price}
+                                />
+                            )}
                         />
                         <TextOutput
                             label={strings.quantityLabel}
-                            // eslint-disable-next-line react/destructuring-assignment
-                            value={props.book.quantity}
-                            valueType="number"
+                            value={(
+                                <NumberOutput
+                                    // eslint-disable-next-line react/destructuring-assignment
+                                    value={props.book.quantity}
+                                />
+                            )}
                         />
                         <TextOutput
                             label={strings.editionLabel}
@@ -582,12 +591,11 @@ function BookItem(props: Props) {
                 <div className={styles.author}>
                     {authorsDisplay}
                 </div>
-                <div
+                <NumberOutput
                     className={styles.price}
-                    // FIXME: use Numeral
-                >
-                    {resolveToString(strings.bookPrice, { price: String(book.price) })}
-                </div>
+                    currency
+                    value={book.price}
+                />
             </div>
         </div>
     );

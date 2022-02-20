@@ -14,8 +14,9 @@ import {
 
 import { ordersBar } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
-import { resolveToString } from '#base/utils/lang';
+import { resolveToComponent } from '#base/utils/lang';
 
+import NumberOutput from '#components/NumberOutput';
 import OrdersModal from './OrdersModal';
 import { CART_ITEMS } from './queries';
 
@@ -50,21 +51,28 @@ function OrdersBar(props: Props) {
             {totalCount > 0 && (
                 <div className={_cs(styles.ordersBar, showOrders && styles.hidden, className)}>
                     <div className={styles.summary}>
-                        {
-                            resolveToString(
+                        <div className={styles.bookSelected}>
+                            {resolveToComponent(
                                 strings.booksSelectedMessage,
-                                { count: String(totalCount) },
-                            )
-                        }
+                                { count: <NumberOutput value={totalCount} /> },
+                            )}
+                        </div>
                         <TextOutput
                             label={strings.totalPriceLabel}
-                            valueType="number"
-                            value={totalPrice}
+                            value={(
+                                <NumberOutput
+                                    value={totalPrice}
+                                    currency
+                                />
+                            )}
                         />
                         <TextOutput
                             label={strings.totalBooksLabel}
-                            valueType="number"
-                            value={totalQuantity}
+                            value={(
+                                <NumberOutput
+                                    value={totalQuantity}
+                                />
+                            )}
                         />
                     </div>
                     <div>

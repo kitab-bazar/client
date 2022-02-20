@@ -3,6 +3,7 @@ import { _cs } from '@togglecorp/fujs';
 import { Link } from '@the-deep/deep-ui';
 
 import { GradeOptionsQuery, BookGradeEnum } from '#generated/types';
+import NumberOutput from '#components/NumberOutput';
 
 import routes from '#base/configs/routes';
 
@@ -36,9 +37,10 @@ function GradeItem(props: Props) {
             className={_cs(styles.gradeItem, className)}
             linkElementClassName={styles.link}
         >
-            <div className={styles.preview}>
-                {gradePreviewMap[grade.name as BookGradeEnum]}
-            </div>
+            <NumberOutput
+                className={styles.preview}
+                value={gradePreviewMap[grade.name as BookGradeEnum]}
+            />
             <div className={styles.description}>
                 {grade.description}
             </div>
