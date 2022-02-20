@@ -27,14 +27,16 @@
         padding: var(--dui-spacing-extra-large);
         width: 100%;
         max-width: var(--kitab-page-max-width);
+        gap: var(--dui-spacing-large);
 
         .side-bar {
             display: flex;
             flex-basis: 20rem;
             flex-direction: column;
+            flex-grow: 1;
             flex-shrink: 0;
             padding: var(--dui-spacing-extra-large) 0;
-            gap: var(--dui-spacing-extra-large);
+            gap: var(--dui-spacing-large);
 
             .grade-input {
                 .grade-list {
@@ -72,8 +74,9 @@
                 gap: var(--dui-spacing-medium);
                 justify-content: space-between;
 
-                .book-count {
-                    font-size: var(--dui-font-size-large);
+                .heading {
+                    display: flex;
+                    gap: var(--dui-spacing-small);
                 }
             }
 

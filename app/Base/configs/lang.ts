@@ -308,6 +308,10 @@ export const explore = {
         en: 'Search by title (3 or more characters)',
         ne: 'पुस्तकको शीर्षकले खोज्नुहोस् (३ वा बढी वर्णहरू)',
     },
+    filterBooksHeading: {
+        en: 'Filter books',
+        ne: 'पुस्तकहरू फिल्टर गर्नुहोस्',
+    },
     categoriesFilterLabel: {
         en: 'Categories',
         ne: 'वर्ग',
@@ -333,8 +337,8 @@ export const explore = {
         ne: 'प्रकाशक फिल्टर खाली गर्नुहोस्',
     },
     booksFoundLabel: {
-        en: 'Book(s) found',
-        ne: 'पुस्तक(हरू) भेटियो',
+        en: '{count} book(s) found',
+        ne: '{count} पुस्तक(हरू) भेटियो',
     },
     activeSortLabel: {
         en: 'Order by: {sortLabel}',
@@ -426,7 +430,7 @@ export const individualProfile = {
         ne: 'अर्डर विवरण',
     },
     totalOrdersLabel: {
-        en: 'Total orders',
+        en: 'Total Orders',
         ne: 'कुल अर्डरहरू',
     },
     recentOrdersHeading: {

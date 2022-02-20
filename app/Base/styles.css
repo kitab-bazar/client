@@ -5,9 +5,9 @@
     --dui-color-primary: #122344;
     --dui-color-brand: #122344;
     --dui-color-accent: #00adb5;
-    --dui-color-background: #f7f9fa;
     --dui-color-text: #414141;
     --dui-font-family-sans-serif: 'Inter', 'Mukta', sans-serif;
+    --dui-color-background: #d9e8e8;
     --dui-color-background-hover-primary-button: #0098a6;
 
     --dui-font-size-extra-small: 0.7rem;
@@ -39,7 +39,7 @@ html {
     flex-direction: column;
     height: 100vh;
     overflow: auto;
-    scrollbar-gutter: stable both-edges;
+    scrollbar-gutter: stable;
 
     .preload {
         flex-grow: 1;
