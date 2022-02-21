@@ -12,3 +12,9 @@ export interface User {
 
     publisherId: string | undefined;
 }
+
+export interface OrderWindow {
+    id: string;
+    startDate: string;
+    endDate: string;
+}

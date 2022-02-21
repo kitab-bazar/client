@@ -101,7 +101,7 @@ const PUBLISHER_STATS = gql`
             totalBooksOrdered
             totalBooksUploaded
             stat {
-                orderPlacedAtDate
+                createdAtDate
                 totalQuantity
             }
         }
@@ -109,7 +109,7 @@ const PUBLISHER_STATS = gql`
 `;
 
 interface ChartData {
-    orderPlacedAtDate: string;
+    createdAtDate: string;
     totalQuantity: number;
 }
 
@@ -141,12 +141,12 @@ function PublisherProfile(props: Props) {
         () => {
             // FIXME: we should not need to cast this
             const filteredStats = publisherStats?.orderStat?.stat
-                ?.filter((v) => isDefined(v.orderPlacedAtDate)) as ChartData[] | undefined | null;
+                ?.filter((v) => isDefined(v.createdAtDate)) as ChartData[] | undefined | null;
 
             return (filteredStats ?? []).map((v) => ({
                 ...v,
-                orderPlacedAt: new Date(v.orderPlacedAtDate).getTime(),
-            })).sort((a, b) => compareDate(a.orderPlacedAtDate, b.orderPlacedAtDate));
+                orderPlacedAt: new Date(v.createdAtDate).getTime(),
+            })).sort((a, b) => compareDate(a.createdAtDate, b.createdAtDate));
         },
         [publisherStats],
     );
@@ -281,7 +281,7 @@ function PublisherProfile(props: Props) {
                                     </linearGradient>
                                 </defs>
                                 <XAxis
-                                    dataKey="orderPlacedAtDate"
+                                    dataKey="createdAtDate"
                                     type="number"
                                     scale="time"
                                     domain={['dataMin', 'dataMax']}

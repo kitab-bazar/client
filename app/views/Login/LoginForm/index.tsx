@@ -36,7 +36,7 @@ import styles from './styles.css';
 
 // TODO: this should come from server or move to utils
 function getDisplayName(data: NonNullable<NonNullable<LoginMutation['login']>['result']>): string {
-    if (data.userType === 'ADMIN' || data.userType === 'INDIVIDUAL_USER') {
+    if (data.userType === 'MODERATOR' || data.userType === 'INDIVIDUAL_USER') {
         return [
             data.firstName,
             data.lastName,

@@ -10,7 +10,7 @@ import { UserContext } from '#base/context/UserContext';
 import PreloadMessage from '#base/components/PreloadMessage';
 
 import { checkErrorCode } from '#base/utils/apollo';
-import { MeQuery, MeQueryVariables } from '#generated/types';
+import { MeQuery, MeQueryVariables, OrderWindowQuery } from '#generated/types';
 
 const ME = gql`
     query Me {
@@ -39,9 +39,19 @@ const ME = gql`
     }
 `;
 
+const ORDER_WINDOW = gql`
+    query OrderWindow {
+        orderWindowActive {
+            id
+            startDate
+            endDate
+        }
+    }
+`;
+
 // TODO: this should come from server or move to utils
 function getDisplayName(data: NonNullable<MeQuery['me']>): string {
-    if (data.userType === 'ADMIN' || data.userType === 'INDIVIDUAL_USER') {
+    if (data.userType === 'MODERATOR' || data.userType === 'INDIVIDUAL_USER') {
         return [
             data.firstName,
             data.lastName,
@@ -73,8 +83,24 @@ function Init(props: Props) {
     const [errored, setErrored] = useState(false);
 
     const {
+        authenticated,
         setUser,
+        setOrderWindow,
     } = useContext(UserContext);
+
+    useQuery<OrderWindowQuery>(
+        ORDER_WINDOW,
+        {
+            fetchPolicy: 'network-only',
+            // NOTE: only call if user is authenticated
+            // NOTE: also re-triggers request when logged-in user changes
+            skip: !authenticated,
+            onCompleted: (data) => {
+                const orderWindow = removeNull(data.orderWindowActive);
+                setOrderWindow(orderWindow);
+            },
+        },
+    );
 
     useQuery<MeQuery, MeQueryVariables>(
         ME,
