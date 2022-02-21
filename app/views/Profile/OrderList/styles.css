@@ -1,0 +1,29 @@
+.order-list {
+    display: flex;
+
+    .order-list {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        gap: var(--dui-spacing-extra-small);
+
+        .order-item {
+            display: flex;
+            background-color: var(--dui-color-foreground);
+            padding: var(--dui-spacing-large);
+            width: 100%;
+        }
+    }
+}
+
+.modal-backdrop {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+
+    .order-detail-modal {
+        max-width: unset;
+        height: 100%;
+        max-height: unset;
+    }
+}

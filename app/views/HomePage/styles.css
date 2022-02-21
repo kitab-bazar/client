@@ -104,6 +104,7 @@
 
                     .grade-item {
                         flex-basis: 25%;
+                        background-color: var(--dui-color-foreground);
                     }
                 }
             }
@@ -118,6 +119,7 @@
 
                     .category-item {
                         flex-basis: calc(25% - var(--dui-spacing-large));
+                        background-color: var(--dui-color-foreground);
                     }
                 }
             }
@@ -132,6 +134,7 @@
 
                     .publisher-item {
                         flex-basis: calc(25% - var(--dui-spacing-large));
+                        background-color: var(--dui-color-foreground);
                     }
                 }
             }

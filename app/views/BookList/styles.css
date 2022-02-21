@@ -31,9 +31,8 @@
 
         .side-bar {
             display: flex;
-            flex-basis: 20rem;
+            flex-basis: 18rem;
             flex-direction: column;
-            flex-grow: 1;
             flex-shrink: 0;
             padding: var(--dui-spacing-extra-large) 0;
             gap: var(--dui-spacing-large);
@@ -64,15 +63,15 @@
             display: flex;
             flex-direction: column;
             flex-grow: 1;
-            padding: var(--dui-spacing-extra-large) 0;
+            padding: var(--dui-spacing-extra-large);
             gap: var(--dui-spacing-large);
 
             .summary {
                 display: flex;
                 align-items: center;
                 flex-wrap: wrap;
-                gap: var(--dui-spacing-medium);
                 justify-content: space-between;
+                gap: var(--dui-spacing-medium);
 
                 .heading {
                     display: flex;

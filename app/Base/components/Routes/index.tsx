@@ -77,18 +77,6 @@ function Routes(props: Props) {
                 </Route>
                 <Route
                     exact
-                    path={routes.orderDetail.path}
-                >
-                    {routes.orderDetail.load({ className })}
-                </Route>
-                <Route
-                    exact
-                    path={routes.orderList.path}
-                >
-                    {routes.orderList.load({ className })}
-                </Route>
-                <Route
-                    exact
                     path={routes.about.path}
                 >
                     {routes.about.load({ className })}

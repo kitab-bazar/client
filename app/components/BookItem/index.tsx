@@ -144,11 +144,6 @@ function BookItem(props: Props) {
     const { user } = useContext(UserContext);
 
     const canCreateOrder = user?.permissions.includes('CREATE_ORDER');
-    /*
-    const hasActions = props.variant === 'detail' || props.variant === 'list';
-    const canEditBook = user?.permissions.includes('CAN_UPDATE_BOOK')
-        && hasActions && props.book.publisher.id === user?.publisherId;
-    */
 
     const [
         addToOrder,
@@ -293,7 +288,7 @@ function BookItem(props: Props) {
         return canCreateOrder && (
             <Button
                 name={undefined}
-                variant="primary"
+                variant="tertiary"
                 onClick={handleAddToOrder}
                 disabled={actionsDisabled}
             >
@@ -302,25 +297,6 @@ function BookItem(props: Props) {
         );
         // eslint-disable-next-line react/destructuring-assignment
     }, [strings, variant, canCreateOrder, actionsDisabled, handleAddToOrder, props.book]);
-
-    /*
-    const editButton = React.useMemo(() => {
-        if (!canEditBook) {
-            return null;
-        }
-
-        return (
-            <Button
-                name={undefined}
-                variant="tertiary"
-                // TODO: implement this feature
-                readOnly
-            >
-                {strings.editDetailsButtonLabel}
-            </Button>
-        );
-    }, [strings.editDetailsButtonLabel, canEditBook]);
-    */
 
     const wishListButton = React.useMemo(() => {
         if (!wishListActionsShown) {

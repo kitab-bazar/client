@@ -200,7 +200,7 @@ export const homePage = {
     },
     tagLineLabel: {
         en: 'Where reading gets better!',
-        ne: 'जहाँ पठन बन्छ रमणीय!',
+        ne: 'किताबको पहुँचबाट शिक्षाको बिकास।',
     },
     exploreButtonLabel: {
         en: 'Explore the Platfrom',

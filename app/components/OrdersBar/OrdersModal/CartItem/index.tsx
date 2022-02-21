@@ -10,7 +10,10 @@ import {
     NumberInput,
     useAlert,
 } from '@the-deep/deep-ui';
-import { IoTrash } from 'react-icons/io5';
+import {
+    IoTrash,
+    IoBook,
+} from 'react-icons/io5';
 import {
     gql,
     useMutation,
@@ -178,12 +181,14 @@ function CartItem(props: Props) {
     return (
         <div className={_cs(styles.cartItem, className)}>
             <div className={styles.preview}>
-                {book.image?.url && (
+                {book.image?.url ? (
                     <img
                         className={styles.image}
                         src={book.image.url}
                         alt={book.image.name ?? undefined}
                     />
+                ) : (
+                    <IoBook className={styles.fallbackIcon} />
                 )}
             </div>
             <Container

@@ -199,16 +199,6 @@ function Navbar(props: Props) {
                     route={routes.bookList}
                     className={styles.navLink}
                 />
-                {/*
-                <SmartNavLink
-                    route={routes.wishList}
-                    className={styles.navLink}
-                />
-                */}
-                <SmartNavLink
-                    route={routes.orderList}
-                    className={styles.navLink}
-                />
             </div>
             <div className={styles.actions}>
                 {orderWindow && (

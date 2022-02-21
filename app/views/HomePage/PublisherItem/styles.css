@@ -1,4 +1,7 @@
 .publisher-item {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
     text-decoration: none;
     color: var(--dui-color-brand);
 
@@ -10,11 +13,16 @@
         padding: var(--dui-spacing-medium) var(--dui-spacing-super-large);
 
         .preview {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            justify-content: center;
             opacity: 0.3;
             font-size: 10rem;
         }
 
         .name {
+            flex-shrink: 0;
             font-weight: var(--dui-font-weight-bold);
         }
     }

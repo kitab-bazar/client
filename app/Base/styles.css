@@ -8,6 +8,8 @@
     --dui-color-text: #414141;
     --dui-font-family-sans-serif: 'Inter', 'Mukta', sans-serif;
     --dui-color-background: #d9e8e8;
+    --dui-color-background-hover: #d9e8e8;
+    --dui-color-background-information: #ffffff;
     --dui-color-background-hover-primary-button: #0098a6;
 
     --dui-font-size-extra-small: 0.7rem;
@@ -18,9 +20,11 @@
     --dui-font-size-super-large: 2rem;
 
     --kitab-page-max-width: 76rem;
+    --kitab-page-background-color: #f9f9fa;
 }
 
 html {
+    background-color: var(--kitab-page-background-color);
     @media(max-width:900px) {
         font-size: 14px;
     }
