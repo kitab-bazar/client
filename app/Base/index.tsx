@@ -23,7 +23,7 @@ import Navbar from '#base/components/Navbar';
 import Footer from '#base/components/Footer';
 import useLocalStorage from '#base/hooks/useLocalStorage';
 import Routes from '#base/components/Routes';
-import { User } from '#base/types/user';
+import { User, OrderWindow } from '#base/types/user';
 
 import OrdersBar from '#components/OrdersBar';
 
@@ -46,6 +46,7 @@ const apolloClient = new ApolloClient(apolloConfig);
 
 function Base() {
     const [user, setUser] = useState<User | undefined>();
+    const [orderWindow, setOrderWindow] = useState<OrderWindow | undefined>();
 
     const [navbarVisibility, setNavbarVisibility] = useState(false);
     const [lang, setLang] = useLocalStorage<Lang>('lang', 'ne', false);
@@ -67,6 +68,9 @@ function Base() {
 
                     sync(!!sanitizedUser, sanitizedUser?.id);
                     setUserOnSentry(sanitizedUser ?? null);
+                    if (!sanitizedUser) {
+                        setOrderWindow(undefined);
+                    }
 
                     return newUser;
                 });
@@ -74,7 +78,9 @@ function Base() {
                 const sanitizedUser = u;
                 sync(!!sanitizedUser, sanitizedUser?.id);
                 setUserOnSentry(sanitizedUser ?? null);
-
+                if (!sanitizedUser) {
+                    setOrderWindow(undefined);
+                }
                 setUser(sanitizedUser);
             }
         },
@@ -86,12 +92,15 @@ function Base() {
             authenticated,
             user,
             setUser: setUserWithSentry,
+            orderWindow,
+            setOrderWindow,
             navbarVisibility,
             setNavbarVisibility,
         }),
         [
             authenticated,
             user,
+            orderWindow,
             setUserWithSentry,
             navbarVisibility,
             setNavbarVisibility,

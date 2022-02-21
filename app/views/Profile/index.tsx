@@ -43,7 +43,7 @@ function Profile(props: Props) {
 
     return (
         <div className={_cs(styles.profile, className)}>
-            {userType === 'INDIVIDUAL_USER' && (
+            {(userType === 'INDIVIDUAL_USER' || userType === 'MODERATOR') && (
                 <IndividualProfile />
             )}
             {userType === 'SCHOOL_ADMIN' && (

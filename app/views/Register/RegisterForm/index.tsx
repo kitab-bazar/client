@@ -63,17 +63,17 @@ const userTypes: UserType[] = [
     },
     */
     {
-        id: 'PUBLISHER',
-        title: 'Publisher',
-    },
-    {
         id: 'SCHOOL_ADMIN',
         title: 'School',
+    },
+    {
+        id: 'PUBLISHER',
+        title: 'Publisher',
     },
 ];
 
 const defaultFormValues: PartialRegisterFormType = {
-    userType: 'INDIVIDUAL_USER',
+    userType: 'SCHOOL_ADMIN',
 };
 
 const userKeySelector = (u: UserType) => u.id;

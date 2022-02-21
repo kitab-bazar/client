@@ -92,6 +92,7 @@ function Navbar(props: Props) {
         authenticated,
         user,
         setUser,
+        orderWindow,
     } = useContext(UserContext);
 
     const {
@@ -210,6 +211,9 @@ function Navbar(props: Props) {
                 />
             </div>
             <div className={styles.actions}>
+                {orderWindow && (
+                    `Order before ${orderWindow.endDate}`
+                )}
                 <SelectInput
                     nonClearable
                     variant="general"

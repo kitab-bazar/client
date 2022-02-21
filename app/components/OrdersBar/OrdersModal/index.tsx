@@ -65,7 +65,7 @@ query CartItemsList($page: Int!, $pageSize: Int!) {
 
 const ORDER_FROM_CART = gql`
 mutation OrderFromCart {
-    placeOrderFromCart {
+    createOrderFromCart {
         errors
         ok
         result {
@@ -122,7 +122,7 @@ function OrdersModal(props: Props) {
     );
 
     const [
-        placeOrderFromCart,
+        createOrderFromCart,
         {
             data: orderDetails,
             loading: placeOrderLoading,
@@ -132,7 +132,7 @@ function OrdersModal(props: Props) {
         {
             refetchQueries: CART_ITEMS_NAME ? [CART_ITEMS_NAME] : undefined,
             onCompleted: (response) => {
-                if (response?.placeOrderFromCart?.ok) {
+                if (response?.createOrderFromCart?.ok) {
                     alert.show(
                         strings.orderPlacementSuccessfulMessage,
                         { variant: 'success' },
@@ -167,8 +167,8 @@ function OrdersModal(props: Props) {
     );
 
     const handleOrderBooksClick = React.useCallback(() => {
-        placeOrderFromCart();
-    }, [placeOrderFromCart]);
+        createOrderFromCart();
+    }, [createOrderFromCart]);
 
     const handleDoneButtonClick = React.useCallback(() => {
         window.location.reload();
@@ -264,13 +264,13 @@ function OrdersModal(props: Props) {
                     <div className={styles.orderDetails}>
                         <TextOutput
                             label={strings.orderIdLabel}
-                            value={orderDetails?.placeOrderFromCart?.result?.orderCode?.split('-')?.[0]}
+                            value={orderDetails?.createOrderFromCart?.result?.orderCode?.split('-')?.[0]}
                         />
                         <TextOutput
                             label={strings.totalPriceLabel}
                             value={(
                                 <NumberOutput
-                                    value={orderDetails?.placeOrderFromCart?.result?.totalPrice}
+                                    value={orderDetails?.createOrderFromCart?.result?.totalPrice}
                                     currency
                                 />
                             )}
