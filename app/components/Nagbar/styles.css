@@ -1,0 +1,14 @@
+.nagbar {
+    --nagbar-padding-v: var(--dui-spacing-medium);
+
+    display: flex;
+    position: relative;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    border-bottom: var(--dui-width-separator-thin) solid var(--dui-color-separator);
+    background-color: var(--kitab-warning-color);
+    padding: var(--nagbar-padding-v) var(--dui-spacing-extra-large);
+    color: var(--dui-color-text);
+    gap: var(--dui-spacing-extra-large);
+}

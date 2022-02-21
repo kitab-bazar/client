@@ -32,6 +32,13 @@ export const common = {
     },
 };
 
+export const nagbar = {
+    orderWindowExpiryLabel: {
+        en: 'We are not taking new orders right now.',
+        ne: 'हामी अहिले नयाँ अर्डर लिइरहेका छैनौं। ',
+    },
+};
+
 export const navbar = {
     searchAllBooksPlaceholder: {
         en: 'Search all books',
@@ -60,6 +67,10 @@ export const navbar = {
     logoutButtonLabel: {
         en: 'Logout',
         ne: 'लग आउट',
+    },
+    orderWindowMessage: {
+        en: 'Please order books {relativeTime}',
+        ne: 'कृपया {relativeTime} किताबहरू अर्डर गर्नुहोस्',
     },
 };
 
