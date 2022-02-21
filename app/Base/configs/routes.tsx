@@ -108,6 +108,7 @@ const moderation = wrap({
     componentProps: {
     },
     visibility: 'is-authenticated',
+    checkPermissions: (user) => user?.type === 'MODERATOR',
 });
 
 const routes = {
