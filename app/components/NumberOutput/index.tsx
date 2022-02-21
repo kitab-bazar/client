@@ -1,6 +1,6 @@
 import React, { memo, useMemo, useContext } from 'react';
 import {
-    isFalsy,
+    isNotDefined,
     isDefined,
     _cs,
 } from '@togglecorp/fujs';
@@ -55,7 +55,7 @@ function NumberOutput(props: Props) {
 
     const val = useMemo(
         () => {
-            if (isFalsy(value)) {
+            if (isNotDefined(value)) {
                 return invalidText;
             }
             const options: Intl.NumberFormatOptions = {};

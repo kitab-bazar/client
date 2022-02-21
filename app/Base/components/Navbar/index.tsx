@@ -50,8 +50,9 @@ import {
 import useRouteMatching from '#base/hooks/useRouteMatching';
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
 import SmartNavLink from '#base/components/SmartNavLink';
+import RelativeTimeOutput from '#components/RelativeTimeOutput';
 import KitabLogo from '#resources/img/KitabLogo.png';
-import { resolveToString } from '#base/utils/lang';
+import { resolveToString, resolveToComponent } from '#base/utils/lang';
 // import Notifications from '#components/Notifications';
 
 import styles from './styles.css';
@@ -202,7 +203,18 @@ function Navbar(props: Props) {
             </div>
             <div className={styles.actions}>
                 {orderWindow && (
-                    `Order before ${orderWindow.endDate}`
+                    <div className={styles.orderWindowMessage}>
+                        {resolveToComponent(
+                            strings.orderWindowMessage,
+                            {
+                                relativeTime: (
+                                    <RelativeTimeOutput
+                                        value={orderWindow.endDate}
+                                    />
+                                ),
+                            },
+                        )}
+                    </div>
                 )}
                 <SelectInput
                     nonClearable

@@ -23,8 +23,10 @@ import Navbar from '#base/components/Navbar';
 import Footer from '#base/components/Footer';
 import useLocalStorage from '#base/hooks/useLocalStorage';
 import Routes from '#base/components/Routes';
+
 import { User, OrderWindow } from '#base/types/user';
 
+import Nagbar from '#components/Nagbar';
 import OrdersBar from '#components/OrdersBar';
 
 import styles from './styles.css';
@@ -213,6 +215,7 @@ function Base() {
                                                     !navbarVisibility && styles.hidden,
                                                 )}
                                             />
+                                            <Nagbar />
                                             <Routes className={styles.view} />
                                             <Footer className={styles.footer} />
                                             <OrdersBar className={styles.ordersBar} />

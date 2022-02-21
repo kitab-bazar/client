@@ -59,6 +59,11 @@
         order: 3;
         gap: var(--dui-spacing-medium);
 
+        .order-window-message {
+            display: flex;
+            gap: var(--dui-spacing-small);
+        }
+
         /*
         .notification-button {
             position: relative;
