@@ -1,0 +1,29 @@
+.empty-message {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    padding: var(--dui-spacing-large);
+
+    .icon {
+        opacity: 0.2;
+        font-size: 15rem;
+    }
+
+    .text {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        gap: var(--dui-spacing-small);
+
+        .message {
+            opacity: 0.7;
+            font-size: var(--dui-font-size-extra-large);
+            font-weight: var(--dui-font-weight-bold);
+        }
+
+        .suggestion {
+            opacity: 0.5;
+        }
+    }
+}

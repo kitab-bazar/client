@@ -1,0 +1,31 @@
+.moderation {
+    display: flex;
+
+    .tab-list {
+        display: flex;
+        flex-basis: 20rem;
+        flex-direction: column;
+        flex-shrink: 0;
+        box-shadow: 0 5px 7px -5px rgba(0, 0, 0, .3);
+        background-color: var(--dui-color-foreground);
+        padding: var(--dui-spacing-extra-large);
+        gap: var(--dui-spacing-small);
+
+        .tab-item {
+            border-right: var(--dui-width-separator-thick) solid transparent;
+            width: 100%;
+            text-align: left;
+            font-weight: var(--dui-font-weight-medium);
+
+            &.active {
+                border-right-color: var(--dui-color-accent);
+                background-color: var(--dui-color-background);
+            }
+        }
+    }
+
+    .tab-panel {
+        flex-grow: 1;
+        padding: var(--dui-spacing-extra-large);
+    }
+}

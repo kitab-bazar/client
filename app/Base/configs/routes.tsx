@@ -100,6 +100,16 @@ const about = wrap({
     visibility: 'is-anything',
 });
 
+const moderation = wrap({
+    path: '/moderation/',
+    title: 'Moderation',
+    navbarVisibility: true,
+    component: lazy(() => import('#views/Moderation')),
+    componentProps: {
+    },
+    visibility: 'is-authenticated',
+});
+
 const routes = {
     register,
     login,
@@ -111,5 +121,6 @@ const routes = {
     bookList,
     about,
     forgotPassword,
+    moderation,
 };
 export default routes;
