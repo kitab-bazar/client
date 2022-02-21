@@ -10,6 +10,8 @@ import {
     MyNotificationsQuery,
     MyNotificationsQueryVariables,
 } from '#generated/types';
+import useTranslation from '#base/hooks/useTranslation';
+import { notifications as notificationStrings } from '#base/configs/lang';
 
 import NotificationItem from './NotificationItem';
 
@@ -54,6 +56,8 @@ function Notifications(props: Props) {
         className,
         onNotificationClose,
     } = props;
+
+    const strings = useTranslation(notificationStrings);
 
     const [page, setPage] = useState<number>(1);
 
@@ -112,6 +116,8 @@ function Notifications(props: Props) {
                 errored={!!error}
                 pending={loading}
                 filtered={false}
+                pendingMessage={strings.pendingNotificationMessage}
+                emptyMessage={strings.emptyNotificationMessage}
                 messageShown
             />
 

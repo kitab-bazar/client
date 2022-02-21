@@ -199,6 +199,9 @@ function HomePage(props: Props) {
                             errored={!!gradeError}
                             pending={gradeLoading}
                             filtered={false}
+                            emptyMessage={strings.emptyGradeListMessage}
+                            pendingMessage={strings.pendingGradeListMessage}
+                            messageShown
                         />
                     </Container>
                     <Container
@@ -214,6 +217,9 @@ function HomePage(props: Props) {
                             errored={!!categoryOptionsError}
                             pending={categoryOptionsLoading}
                             filtered={false}
+                            emptyMessage={strings.emptyCategoriesMessage}
+                            pendingMessage={strings.pendingCategoriesMessage}
+                            messageShown
                         />
                     </Container>
                     <Container
@@ -229,6 +235,9 @@ function HomePage(props: Props) {
                             errored={!!featuredBooksError}
                             pending={featuredBooksLoading}
                             filtered={false}
+                            emptyMessage={strings.emptyBooksMessage}
+                            pendingMessage={strings.pendingBooksMessage}
+                            messageShown
                         />
                         {isDefined(selectedBook) && (
                             <BookDetailsModal

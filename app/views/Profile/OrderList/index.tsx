@@ -6,14 +6,17 @@ import {
     Pager,
     Modal,
 } from '@the-deep/deep-ui';
-import {
-    OrderListWithBooksQuery,
-    OrderListWithBooksQueryVariables,
-} from '#generated/types';
+
 import OrderItem, {
     Props as OrderItemProps,
     Order,
 } from '#components/OrderItem';
+import useTranslation from '#base/hooks/useTranslation';
+import { profile } from '#base/configs/lang';
+import {
+    OrderListWithBooksQuery,
+    OrderListWithBooksQueryVariables,
+} from '#generated/types';
 
 import OrderDetail from './OrderDetail';
 import styles from './styles.css';
@@ -78,6 +81,8 @@ function OrderList(props: Props) {
         ORDER_LIST_WITH_BOOKS,
     );
 
+    const strings = useTranslation(profile);
+
     const orderListRendererParams = useCallback((_, data: Order): OrderItemProps => ({
         className: styles.orderItem,
         order: data,
@@ -99,6 +104,8 @@ function OrderList(props: Props) {
                 errored={!!error}
                 filtered={false}
                 pending={loading}
+                pendingMessage={strings.pendingOrderListMessage}
+                emptyMessage={strings.emptyOrderListMessage}
                 messageShown
             />
             <Pager

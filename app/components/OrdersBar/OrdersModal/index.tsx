@@ -26,6 +26,7 @@ import {
 
 import KitabLogo from '#resources/img/KitabLogo.png';
 import NumberOutput from '#components/NumberOutput';
+import EmptyMessage from '#components/EmptyMessage';
 
 import CartItem, { Props as CartItemProps } from './CartItem';
 import { CART_ITEMS } from '../queries';
@@ -227,6 +228,13 @@ function OrdersModal(props: Props) {
                     filtered={false}
                     errored={!!error}
                     pending={cartLoading}
+                    pendingMessage={strings.pendingCartItemMessage}
+                    emptyMessage={(
+                        <EmptyMessage
+                            message={strings.emptyCartMessage}
+                            suggestion={strings.emptyCartSuggestion}
+                        />
+                    )}
                     messageShown
                 />
                 <Pager

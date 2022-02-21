@@ -489,6 +489,9 @@ function Explore(props: Props) {
                         errored={!!bookError}
                         filtered={filtered}
                         pending={bookLoading}
+                        pendingMessage={strings.pendingBookListMessage}
+                        emptyMessage={strings.bookListEmptyMessage}
+                        filteredEmptyMessage={strings.filteredBookListEmptyMessage}
                         messageShown
                     />
                     <Pager

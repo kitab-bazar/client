@@ -72,6 +72,18 @@ export const navbar = {
         en: 'Please order books {relativeTime}',
         ne: 'कृपया {relativeTime} किताबहरू अर्डर गर्नुहोस्',
     },
+    homeLabel: {
+        en: 'Home',
+        ne: 'गृह पृष्ठ',
+    },
+    booksLabel: {
+        en: 'Books',
+        ne: 'किताबहरु ',
+    },
+    moderationLabel: {
+        en: 'Moderation',
+        ne: 'मध्यस्थता',
+    },
 };
 
 export const login = {
@@ -233,6 +245,38 @@ export const homePage = {
         en: 'Explore by Publisher',
         ne: 'प्रकाशक द्वारा अन्वेषण',
     },
+    pendingGradeListMessage: {
+        en: 'Loading grades ...',
+        ne: 'ग्रेडहरु लोड गर्दै',
+    },
+    emptyGradeListMessage: {
+        en: 'No grades found.',
+        ne: 'कुनै ग्रेड फेला परेन',
+    },
+    emptyCategoriesMessage: {
+        en: 'No categories found',
+        ne: 'कुनै श्रेणीहरु भेटिएन ',
+    },
+    pendingCategoriesMessage: {
+        en: 'Loading categories ...',
+        ne: 'श्रेणीहरु लोड गर्दै ...',
+    },
+    emptyPublishersMessage: {
+        en: 'No publishers found',
+        ne: 'कुनै प्रकाशक भेटिएन',
+    },
+    pendingPublishersMessage: {
+        en: 'Loading publishers ...',
+        ne: 'प्रकाशकहरू लोड गर्दै...',
+    },
+    emptyBooksMessage: {
+        en: 'No books found',
+        ne: 'कुनै किताब भेटिएन ',
+    },
+    pendingBooksMessage: {
+        en: 'Loading books ...',
+        ne: 'किताबहरु लोड गर्दै  ...',
+    },
 };
 
 export const about = {
@@ -367,6 +411,18 @@ export const explore = {
         en: 'My Books',
         ne: 'मेरा पुस्तकहरू',
     },
+    bookListEmptyMessage: {
+        en: 'No books found',
+        ne: 'कुनै किताब भेटिएन',
+    },
+    filteredBookListEmptyMessage: {
+        en: 'No books match your filter criteria',
+        ne: 'कुनै पनि किताब तपाईंको फिल्टर मापदण्डसँग मेल खाँदैन',
+    },
+    pendingBookListMessage: {
+        en: 'Loading books ...',
+        ne: 'पुस्तकहरू लोड गर्दै...',
+    },
 };
 
 export const footer = {
@@ -417,56 +473,80 @@ export const notifications = {
         en: 'Your {orderLink} has been packed.',
         ne: 'तपाईंको {orderLink} पूरा भएको छ।',
     },
+    emptyNotificationMessage: {
+        en: 'You\'re all caught up.',
+        ne: 'अहिले कुनै सूचनाहरू छैनन्',
+    },
+    pendingNotificationMessage: {
+        en: 'Loading notifications ...',
+        ne: 'सूचनाहरू लोड गर्दै ...',
+    },
 };
 
 export const profile = {
     aboutTabLabel: {
-        en: 'About',
-        ne: 'About',
+        en: 'Details',
+        ne: 'विवरण',
     },
     ordersTabLabel: {
         en: 'Orders',
-        ne: 'Orders',
+        ne: 'अर्डरहरु',
     },
     packagesTabLabel: {
         en: 'Packages',
-        ne: 'Packages',
+        ne: 'प्याकेजहरू',
     },
     paymentsTabLabel: {
         en: 'Payments',
-        ne: 'Payments',
+        ne: 'भुक्तानीहरू',
     },
     schoolNameLabel: {
         en: 'School Name',
-        ne: 'School Name',
+        ne: 'विद्यालयको नाम',
     },
     publisherNameLabel: {
         en: 'Publisher Name',
-        ne: 'Publisher Name',
+        ne: 'प्रकाशकको नाम  ',
     },
     emailLabel: {
         en: 'Email',
-        ne: 'Email',
+        ne: 'इमेल',
     },
     phoneNumberLabel: {
         en: 'Phone Number',
-        ne: 'Phone Number',
+        ne: 'फोन नम्बर',
     },
     addressLabel: {
         en: 'Address',
-        ne: 'Address',
+        ne: 'ठेगाना',
     },
     vatNumberLabel: {
         en: 'VAT No.',
-        ne: 'VAT No.',
+        ne: 'भ्याट नम्बर',
     },
     panLabel: {
-        en: 'PAN',
-        ne: 'PAN',
+        en: 'PAN No.',
+        ne: 'प्यान नं',
     },
     profileLoadFailureMessage: {
         en: 'Failed to load profile',
-        ne: 'Failed to load profile',
+        ne: 'प्रोफाइल लोड गर्न असफल',
+    },
+    pendingOrderListMessage: {
+        en: 'Loading orders ...',
+        ne: 'अर्डरहरु लोड गर्दै ',
+    },
+    emptyOrderListMessage: {
+        en: 'No orders found.',
+        ne: 'कुनै अर्डर भेटिएन ',
+    },
+    emptyBookListMessage: {
+        en: 'No books found',
+        ne: 'कुनै किताब भेटिएन ',
+    },
+    pendingBookListMessage: {
+        en: 'Loading books ...',
+        ne: 'किताबहरु लोड गर्दै ...',
     },
 };
 
@@ -913,6 +993,18 @@ export const ordersBar = {
         en: 'NPR.',
         ne: 'ने रू ',
     },
+    pendingCartItemMessage: {
+        en: 'Loading cart items ...',
+        ne: 'कार्ट वस्तुहरू लोड गर्दै',
+    },
+    emptyCartMessage: {
+        en: 'Your cart is empty.',
+        ne: 'तपाईंको कार्ट खाली छ',
+    },
+    emptyCartSuggestion: {
+        en: 'Please add books to your cart.',
+        ne: 'कृपया आफ्नो कार्टमा किताबहरू थप्नुहोस्',
+    },
 };
 
 export const newBookModal = {
@@ -993,7 +1085,7 @@ export const orderDetail = {
     },
     markAsPackedButtonLabel: {
         en: 'Mark as Packed',
-        ne: 'Mark as Packed',
+        ne: 'प्याक भैसकेको अंकित गर्नुहोस ',
     },
     markAsPackedConfirmationMessage: {
         en: 'Are you sure you want to mark the order as packed?',
