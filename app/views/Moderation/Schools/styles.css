@@ -1,3 +1,45 @@
-.users {
+.schools {
+    display: flex;
+    flex-direction: column;
     padding: var(--dui-spacing-medium);
+    gap: var(--dui-spacing-super-large);
+
+    .filters {
+        display: flex;
+        gap: var(--dui-spacing-large);
+    }
+
+    .school-item-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--dui-spacing-super-large);
+    }
+}
+
+.school-item {
+    display: flex;
+    border: var(--dui-width-separator-thin) solid var(--dui-color-separator);
+    border-radius: var(--dui-radius-border-medium);
+    background-color: var(--dui-color-foreground);
+    padding: var(--dui-spacing-large);
+    width: 100%;
+    gap: var(--dui-spacing-medium);
+
+    .name-and-address {
+        flex-basis: 20rem;
+        flex-grow: 1;
+
+        .name {
+            font-weight: var(--dui-font-weight-bold);
+        }
+
+        .address {
+            opacity: 0.8;
+        }
+    }
+
+    .pan-number {
+        flex-basis: 5rem;
+        flex-grow: 1;
+    }
 }
