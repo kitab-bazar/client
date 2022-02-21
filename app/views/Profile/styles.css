@@ -1,3 +1,93 @@
 .profile {
-    display: flex;
+    .page-container {
+        width: 100%;
+        max-width: var(--kitab-page-max-width);
+    }
+
+    .page-header {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        background-color: var(--dui-color-background);
+        padding: var(--dui-spacing-super-large) var(--dui-spacing-extra-large);
+
+        .header-content {
+            display: flex;
+            gap: var(--dui-spacing-large);
+            align-items: center;
+
+            .display-picture-container {
+                width: 8rem;
+                height: 8rem;
+
+                .fallback-icon {
+                    opacity: 0.5;
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+
+            .header {
+                flex-grow: 1;
+            }
+        }
+    }
+
+    .page-content {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        padding: var(--dui-spacing-extra-large);
+
+        .main-content {
+            display: flex;
+            gap: var(--dui-spacing-extra-large);
+
+            .tab-list {
+                display: flex;
+                gap: var(--dui-spacing-small);
+                flex-direction: column;
+                padding: var(--dui-spacing-medium);
+                width: 16rem;
+
+                .tab-item {
+                    border-right: var(--dui-width-separator-thick) solid transparent;
+                    width: 100%;
+                    text-align: left;
+
+                    &.active {
+                        border-right-color: var(--dui-color-accent);
+                    }
+                }
+            }
+
+            .tab-content {
+                flex-grow: 1;
+                padding: var(--dui-spacing-medium);
+            }
+
+            .about {
+                display: flex;
+                flex-direction: column;
+                gap: var(--dui-spacing-extra-large);
+                background-color: var(--dui-color-foreground);
+                padding: var(--dui-spacing-extra-large);
+                min-height: 50vh;
+            }
+        }
+    }
+}
+
+.about-output {
+    gap: var(--dui-spacing-medium);
+
+    .label {
+        width: 10rem;
+        text-align: right;
+    }
+
+    .value {
+        font-size: var(--dui-font-size-large);
+        font-weight: var(--dui-font-weight-medium);
+    }
 }

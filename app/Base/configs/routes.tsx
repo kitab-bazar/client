@@ -68,24 +68,6 @@ const bookList = wrap({
     componentProps: {},
     visibility: 'is-anything',
 });
-const orderDetail = wrap({
-    path: '/orders/:orderId(\\d+)/',
-    title: 'Order Detail',
-    navbarVisibility: true,
-    component: lazy(() => import('#views/OrderDetail')),
-    componentProps: {
-    },
-    visibility: 'is-authenticated',
-});
-const orderList = wrap({
-    path: '/orders/',
-    title: 'Orders',
-    navbarVisibility: true,
-    component: lazy(() => import('#views/OrderList')),
-    componentProps: {
-    },
-    visibility: 'is-authenticated',
-});
 const activateUser = wrap({
     path: '/user/activate/:userId(\\d+)/:token/',
     title: 'Activate User',
@@ -125,10 +107,8 @@ const routes = {
     myProfile,
     wishList,
     fourHundredFour,
-    orderList,
     activateUser,
     bookList,
-    orderDetail,
     about,
     forgotPassword,
 };

@@ -1,5 +1,11 @@
 .book-item {
+    border: var(--dui-width-separator-thin) solid var(--dui-color-separator);
+    border-radius: var(--dui-radius-border-medium);
+    background-color: var(--dui-color-foreground);
+
     .preview {
+        background-color: var(--dui-color-background);
+
         .fallback-icon {
             opacity: 0.3;
             border: var(--dui-width-separator-thin) solid var(--dui-color-separator);
@@ -50,11 +56,12 @@
     &.order-variant {
         display: flex;
         flex-wrap: wrap;
-        --preview-width: 7rem;
-        --preview-height: 10rem;
+        --preview-width: 8rem;
+        --preview-height: 12rem;
 
         .preview {
             display: flex;
+            align-items: center;
             flex-shrink: 0;
             justify-content: center;
 
@@ -62,7 +69,7 @@
                 width: var(--preview-width);
                 height: var(--preview-height);
                 object-fit: cover;
-                object-position: top center;
+                object-position: center center;
             }
 
             .fallback-icon {
@@ -74,6 +81,7 @@
         .details {
             flex-grow: 1;
             flex-wrap: wrap;
+            background-color: unset;
 
             .order-book-meta {
                 display: flex;
@@ -149,8 +157,8 @@
             justify-content: center;
 
             .image {
-                width: 10rem;
-                height: 16rem;
+                width: 9rem;
+                height: 14rem;
                 object-fit: cover;
                 object-position: top center;
             }
@@ -164,6 +172,7 @@
         .details {
             flex-grow: 1;
             flex-wrap: wrap;
+            background-color: unset;
 
             .book-title {
                 text-align: left;

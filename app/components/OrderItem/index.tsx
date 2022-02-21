@@ -4,13 +4,11 @@ import {
     Container,
     TextOutput,
 } from '@the-deep/deep-ui';
-import routes from '#base/configs/routes';
 import { orderItem } from '#base/configs/lang';
 import { resolveToString } from '#base/utils/lang';
 import useTranslation from '#base/hooks/useTranslation';
 import { OrderType } from '#generated/types';
 
-import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
 import NumberOutput from '#components/NumberOutput';
 
 import styles from './styles.css';
@@ -20,14 +18,14 @@ export type Order = Pick<OrderType, 'id' | 'orderCode' | 'totalPrice' | 'status'
 export interface Props {
     className?: string;
     order: Order;
-    detailsLinkHidden?: boolean;
+    onClick?: (name: Order['id']) => void;
 }
 
 function OrderItem(props: Props) {
     const {
         className,
         order,
-        detailsLinkHidden,
+        onClick,
     } = props;
 
     const {
@@ -43,23 +41,29 @@ function OrderItem(props: Props) {
         { code: orderCode?.split('-')?.[0] },
     );
 
+    const handleClick = React.useCallback(() => {
+        if (onClick) {
+            onClick(order.id);
+        }
+    }, [onClick, order.id]);
+
     return (
         <Container
-            className={_cs(styles.orderItem, className)}
+            className={_cs(
+                styles.orderItem,
+                onClick && styles.clickable,
+                className,
+            )}
+            containerElementProps={
+                onClick ? { onClick: handleClick } : undefined
+            }
             contentClassName={styles.orderMeta}
             heading={title}
             headingClassName={styles.heading}
             headingSize="extraSmall"
             headingContainerClassName={styles.heading}
-            footerActions={!detailsLinkHidden && (
-                <SmartButtonLikeLink
-                    route={routes.orderDetail}
-                    attrs={{ orderId: order.id }}
-                    variant="transparent"
-                >
-                    {strings.viewDetailsLabel}
-                </SmartButtonLikeLink>
-            )}
+            footerActions={status}
+            footerActionsContainerClassName={styles.status}
         >
             <TextOutput
                 label={strings.booksLabel}
@@ -77,10 +81,6 @@ function OrderItem(props: Props) {
                         currency
                     />
                 )}
-            />
-            <TextOutput
-                label={strings.statusLabel}
-                value={status}
             />
         </Container>
     );
