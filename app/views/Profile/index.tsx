@@ -18,6 +18,9 @@ import {
     ProfileDetailsQueryVariables,
 } from '#generated/types';
 
+import { profile } from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
+
 import OrderList from './OrderList';
 
 import styles from './styles.css';
@@ -74,6 +77,7 @@ interface Props {
 
 function Profile(props: Props) {
     const { className } = props;
+    const strings = useTranslation(profile);
 
     const {
         loading,
@@ -83,13 +87,16 @@ function Profile(props: Props) {
     );
 
     const userDetails = profileData?.me;
+    let nameLabel;
     let profileDetails;
     if (userDetails?.userType === 'SCHOOL_ADMIN') {
         profileDetails = userDetails?.school;
+        nameLabel = strings.schoolNameLabel;
     }
 
     if (userDetails?.userType === 'PUBLISHER') {
         profileDetails = userDetails?.publisher;
+        nameLabel = strings.publisherNameLabel;
     }
 
     return (
@@ -127,22 +134,33 @@ function Profile(props: Props) {
                                             className={styles.tabItem}
                                             name="about"
                                         >
-                                            About
+                                            {strings.aboutTabLabel}
                                         </Tab>
                                         <Tab
                                             activeClassName={styles.active}
                                             className={styles.tabItem}
                                             name="orders"
                                         >
-                                            Orders
+                                            {strings.ordersTabLabel}
                                         </Tab>
-                                        <Tab
-                                            activeClassName={styles.active}
-                                            className={styles.tabItem}
-                                            name="packages"
-                                        >
-                                            Packages
-                                        </Tab>
+                                        {userDetails.userType === 'PUBLISHER' && (
+                                            <Tab
+                                                activeClassName={styles.active}
+                                                className={styles.tabItem}
+                                                name="packages"
+                                            >
+                                                {strings.packagesTabLabel}
+                                            </Tab>
+                                        )}
+                                        {userDetails.userType === 'SCHOOL_ADMIN' && (
+                                            <Tab
+                                                activeClassName={styles.active}
+                                                className={styles.tabItem}
+                                                name="payments"
+                                            >
+                                                {strings.paymentsTabLabel}
+                                            </Tab>
+                                        )}
                                     </TabList>
                                     <TabPanel
                                         name="about"
@@ -150,29 +168,29 @@ function Profile(props: Props) {
                                     >
                                         <div className={styles.about}>
                                             <AboutOutput
-                                                label="School Name"
+                                                label={nameLabel}
                                                 value={profileDetails.name}
                                             />
                                             <AboutOutput
-                                                label="Email"
+                                                label={strings.emailLabel}
                                                 value={userDetails.email}
                                             />
                                             <AboutOutput
-                                                label="Phone Number"
+                                                label={strings.phoneNumberLabel}
                                                 value={userDetails.phoneNumber}
                                             />
                                             <AboutOutput
-                                                label="Address"
+                                                label={strings.addressLabel}
                                                 value={profileDetails.localAddress}
                                             />
                                             {profileDetails?.vatNumber ? (
                                                 <AboutOutput
-                                                    label="VAT No."
+                                                    label={strings.vatNumberLabel}
                                                     value={profileDetails.vatNumber}
                                                 />
                                             ) : (
                                                 <AboutOutput
-                                                    label="PAN"
+                                                    label={strings.panLabel}
                                                     value={profileDetails.panNumber}
                                                 />
                                             )}
@@ -182,16 +200,24 @@ function Profile(props: Props) {
                                         name="orders"
                                         className={styles.tabContent}
                                     >
-                                        <OrderList
-                                            className={styles.orderList}
-                                        />
+                                        <OrderList />
                                     </TabPanel>
-                                    <TabPanel
-                                        name="packages"
-                                        className={styles.tabContent}
-                                    >
-                                        Packages
-                                    </TabPanel>
+                                    {userDetails.userType === 'PUBLISHER' && (
+                                        <TabPanel
+                                            name="packages"
+                                            className={styles.tabContent}
+                                        >
+                                            Packages
+                                        </TabPanel>
+                                    )}
+                                    {userDetails.userType === 'SCHOOL_ADMIN' && (
+                                        <TabPanel
+                                            name="payments"
+                                            className={styles.tabContent}
+                                        >
+                                            Payments
+                                        </TabPanel>
+                                    )}
                                 </div>
                             </div>
                         </Tabs>
@@ -199,7 +225,7 @@ function Profile(props: Props) {
                 </>
             ) : (
                 <Message
-                    message="Failed to load the profile"
+                    message={strings.profileLoadFailureMessage}
                 />
             )}
         </div>

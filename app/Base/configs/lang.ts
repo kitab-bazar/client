@@ -400,86 +400,54 @@ export const notifications = {
     },
 };
 
-export const individualProfile = {
-    userDetailHeading: {
-        en: 'User Details',
-        ne: 'प्रयोगकर्ता विवरणहरू',
+export const profile = {
+    aboutTabLabel: {
+        en: 'About',
+        ne: 'About',
     },
-    editProfileLabel: {
-        en: 'Edit Profile',
-        ne: 'प्रोफाइल सम्पादन गर्नुहोस्',
+    ordersTabLabel: {
+        en: 'Orders',
+        ne: 'Orders',
     },
-    nameAttributeLabel: {
-        en: 'Name',
-        ne: 'नाम',
+    packagesTabLabel: {
+        en: 'Packages',
+        ne: 'Packages',
     },
-    emailAttributeLabel: {
+    paymentsTabLabel: {
+        en: 'Payments',
+        ne: 'Payments',
+    },
+    schoolNameLabel: {
+        en: 'School Name',
+        ne: 'School Name',
+    },
+    publisherNameLabel: {
+        en: 'Publisher Name',
+        ne: 'Publisher Name',
+    },
+    emailLabel: {
         en: 'Email',
-        ne: 'ईमेल',
+        ne: 'Email',
     },
-    phoneAttributeLabel: {
-        en: 'Phone No.',
-        ne: 'फोन नम्बर',
+    phoneNumberLabel: {
+        en: 'Phone Number',
+        ne: 'Phone Number',
     },
-    wishlistLabel: {
-        en: 'Wish list',
-        ne: 'इच्छा-सूची',
+    addressLabel: {
+        en: 'Address',
+        ne: 'Address',
     },
-    orderSummaryHeading: {
-        en: 'Order Summary',
-        ne: 'अर्डर विवरण',
+    vatNumberLabel: {
+        en: 'VAT No.',
+        ne: 'VAT No.',
     },
-    totalOrdersLabel: {
-        en: 'Total Orders',
-        ne: 'कुल अर्डरहरू',
+    panLabel: {
+        en: 'PAN',
+        ne: 'PAN',
     },
-    recentOrdersHeading: {
-        en: 'Recent Orders',
-        ne: 'हालैका अर्डरहरू',
-    },
-    viewAllLabel: {
-        en: 'View all',
-        ne: 'सबै हेर्नुहोस्',
-    },
-    recentOrderEmptyMessage: {
-        en: 'You dont have any Recent Orders',
-        ne: 'तपाईंसँग कुनै हालैका अर्डरहरू छैनन्',
-    },
-    recentOrderEmptySuggestion: {
-        en: 'Add Books that you want to buy later by clicking Add to Wishlist and then goto your Cart to place your Order',
-        ne: 'इच्छा-सूचीमा क्लिक गरेर पछि किन्न चाहनु भएका पुस्तकहरू राख्नुहोस् र त्यसपछि अर्डर राख्नको लागि कार्टमा जानुहोस्',
-    },
-    profileUpdateSuccessMessage: {
-        en: 'Successfully updated profile',
-        ne: 'प्रोफाइल सफलतापूर्वक अपडेट भयो',
-    },
-    profileUpdateErrorMessage: {
-        en: 'Error updating profile',
-        ne: 'प्रोफाइल अपडेटमा समस्या',
-    },
-    modalHeading: {
-        en: 'Edit Profile',
-        ne: 'प्रोफाइल सम्पादन गर्नुहोस्',
-    },
-    editProfileSaveButtonLabel: {
-        en: 'Save',
-        ne: 'सेभ गर्नुहोस्',
-    },
-    editProfileCancelButtonLabel: {
-        en: 'Cancel',
-        ne: 'रद्द गर्नुहोस्',
-    },
-    editProfileFirstNameInputLabel: {
-        en: 'First Name',
-        ne: 'पहिलो नाम',
-    },
-    editProfileLastNameInputLabel: {
-        en: 'Last Name',
-        ne: 'थर',
-    },
-    editProfilePhoneNumberInputLabel: {
-        en: 'Phone No.',
-        ne: 'फोन नम्बर',
+    profileLoadFailureMessage: {
+        en: 'Failed to load profile',
+        ne: 'Failed to load profile',
     },
 };
 

@@ -11,7 +11,7 @@
         width: 100%;
 
         .page-header {
-            padding: var(--dui-spacing-extra-large);
+            padding: var(--dui-spacing-super-large) var(--dui-spacing-extra-large);
             width: 100%;
             max-width: var(--kitab-page-max-width);
 

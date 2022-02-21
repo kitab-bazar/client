@@ -2,14 +2,8 @@ import React from 'react';
 import { _cs } from '@togglecorp/fujs';
 import {
     Pager,
-    useInputState,
-    TextInput,
-    Header,
     ListView,
 } from '@the-deep/deep-ui';
-import {
-    IoSearchSharp,
-} from 'react-icons/io5';
 import {
     gql,
     useQuery,
@@ -20,8 +14,6 @@ import {
     OrderDetailsQueryVariables,
 } from '#generated/types';
 
-import { orderDetail } from '#base/configs/lang';
-import useTranslation from '#base/hooks/useTranslation';
 import BookItem, { Props as BookItemProps } from '#components/BookItem';
 import OrderItem from '#components/OrderItem';
 
@@ -70,9 +62,7 @@ function OrderDetail(props: Props) {
     } = props;
 
     const [page, setPage] = React.useState<number>(1);
-    const [search, setSearch] = useInputState<string | undefined>(undefined);
 
-    const strings = useTranslation(orderDetail);
     const {
         data: orderResponse,
         error,
