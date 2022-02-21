@@ -95,7 +95,7 @@ query ExploreBooks(
         ordering: $ordering,
         page: $page,
         pageSize: $pageSize,
-        title: $title,
+        search: $title,
         isAddedInWishlist: $isAddedInWishlist,
         grade: $grade,
     ) {

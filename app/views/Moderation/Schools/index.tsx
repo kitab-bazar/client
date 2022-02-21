@@ -1,7 +1,6 @@
 import React from 'react';
 import {
     _cs,
-    isDefined,
 } from '@togglecorp/fujs';
 import {
     ListView,
@@ -27,8 +26,6 @@ import {
 
 import styles from './styles.css';
 
-const MAX_SCHOOL_ITEMS_PER_PAGE = 10;
-
 type VerificationStatusOptionKey = 'all' | 'verified' | 'unverified';
 interface VerificationStatusOption {
     key: VerificationStatusOptionKey,
@@ -44,9 +41,19 @@ const verificationStatusOptions: VerificationStatusOption[] = [
 const verificationStatusKeySelector = (d: VerificationStatusOption) => d.key;
 const verificationStatusLabelSelector = (d: VerificationStatusOption) => d.label;
 
+// TODO: Filter by user type school
+
 const SCHOOL_LIST = gql`
-query SchoolList {
-    users {
+query SchoolList(
+    $pageSize: Int,
+    $page: Int,
+    $search: String,
+) {
+    users(
+        pageSize: $pageSize,
+        page: $page,
+        fullName: $search,
+    ) {
         totalCount
         results {
             id
@@ -110,7 +117,7 @@ function SchoolItem(props: SchoolItemProps) {
                 label="PAN"
                 value={school.panNumber}
             />
-            <div className={styles.actions}>
+            <div>
                 <ConfirmButton
                     name={undefined}
                     variant="tertiary"
@@ -122,6 +129,8 @@ function SchoolItem(props: SchoolItemProps) {
     );
 }
 
+const MAX_ITEMS_PER_PAGE = 10;
+
 interface Props {
     className?: string;
 }
@@ -132,6 +141,7 @@ function Schools(props: Props) {
     const [activePage, setActivePage] = React.useState<number>(1);
     const [verified, setVerified] = useInputState<VerificationStatusOption['key']>('all');
     const [search, setSearch] = useInputState<string | undefined>(undefined);
+    const [maxItemsPerPage, setMaxItemsPerPage] = useInputState<number>(10);
 
     const {
         data,
@@ -139,6 +149,13 @@ function Schools(props: Props) {
         error,
     } = useQuery<SchoolListQuery, SchoolListQueryVariables>(
         SCHOOL_LIST,
+        {
+            variables: {
+                pageSize: MAX_ITEMS_PER_PAGE,
+                page: activePage,
+                search,
+            },
+        },
     );
 
     const schoolItemRendererParams = React.useCallback(
@@ -159,7 +176,7 @@ function Schools(props: Props) {
                     value={search}
                     onChange={setSearch}
                     variant="general"
-                    label="Search by book title"
+                    label="Search by School Name"
                     type="search"
                 />
                 <RadioInput
@@ -174,13 +191,14 @@ function Schools(props: Props) {
             </div>
             <ListView
                 className={styles.schoolItemList}
-                data={data?.users?.results}
+                data={data?.users?.results ?? undefined}
                 pending={loading}
                 rendererParams={schoolItemRendererParams}
                 renderer={SchoolItem}
                 keySelector={schoolItemKeySelector}
                 errored={!!error}
                 filtered={false}
+                messageShown
                 emptyMessage={(
                     <EmptyMessage
                         message="Couldn't find any user"
@@ -190,10 +208,10 @@ function Schools(props: Props) {
             />
             <Pager
                 activePage={activePage}
-                maxItemsPerPage={MAX_SCHOOL_ITEMS_PER_PAGE}
+                maxItemsPerPage={maxItemsPerPage}
                 itemsCount={data?.users?.totalCount ?? 0}
                 onActivePageChange={setActivePage}
-                itemsPerPageControlHidden
+                onItemsPerPageChange={setMaxItemsPerPage}
             />
         </div>
     );
