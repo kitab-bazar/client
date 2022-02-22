@@ -14,6 +14,14 @@
         flex-direction: column;
         gap: var(--dui-spacing-super-large);
     }
+
+    .pager {
+        [class*="styles_items-per-page"] {
+            [class*="styles_input"] {
+                width: 10rem;
+            }
+        }
+    }
 }
 
 .school-item {

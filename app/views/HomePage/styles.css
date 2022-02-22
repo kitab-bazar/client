@@ -124,22 +124,6 @@
                 }
             }
 
-            .explore-by-publishers-section {
-                background-color: unset;
-
-                .publisher-list {
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: var(--dui-spacing-large);
-
-                    .publisher-item {
-                        flex-basis: calc(25% - var(--dui-spacing-large));
-                        background-color: var(--dui-color-foreground);
-                    }
-                }
-            }
-
-
             .featured-books-section {
                 flex-basis: 20rem;
                 background-color: unset;

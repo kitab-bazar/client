@@ -34,7 +34,7 @@ export const common = {
 
 export const nagbar = {
     orderWindowExpiryLabel: {
-        en: 'We are not taking new orders right now.',
+        en: 'We are not taking new orders at the moment.',
         ne: 'हामी अहिले नयाँ अर्डर लिइरहेका छैनौं। ',
     },
 };
@@ -389,6 +389,14 @@ export const footer = {
     contactUsButtonLabel: {
         en: 'Contact Us',
         ne: 'सम्पर्क गर्नुहोस',
+    },
+    exploreByGradeHeading: {
+        en: 'Grade',
+        ne: 'Grade',
+    },
+    exploreByCategoryHeading: {
+        en: 'Category',
+        ne: 'Category',
     },
 };
 

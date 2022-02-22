@@ -1,16 +1,14 @@
 .category-item {
-    display: flex;
-    align-items: stretch;
-    flex-direction: column;
+    border: var(--dui-width-separator-thin) solid var(--dui-color-separator);
+    border-radius: var(--kitab-radius-border);
     text-decoration: none;
-    color: var(--dui-color-brand);
 
     .link {
         display: flex;
         align-items: center;
         flex-direction: column;
-        border: var(--dui-width-separator-thin) solid var(--dui-color-separator);
-        padding: var(--dui-spacing-medium) var(--dui-spacing-super-large);
+        border-radius: var(--kitab-radius-border);
+        color: var(--dui-color-brand);
 
         .preview {
             display: flex;
@@ -22,7 +20,12 @@
         }
 
         .name {
+            align-self: stretch;
             flex-shrink: 0;
+            border-bottom-left-radius: var(--kitab-radius-border);
+            border-bottom-right-radius: var(--kitab-radius-border);
+            background-color: var(--kitab-page-background-color);
+            padding: var(--dui-spacing-medium);
             font-weight: var(--dui-font-weight-bold);
         }
     }

@@ -207,6 +207,7 @@ function Schools(props: Props) {
                 )}
             />
             <Pager
+                className={styles.pager}
                 activePage={activePage}
                 maxItemsPerPage={maxItemsPerPage}
                 itemsCount={data?.users?.totalCount ?? 0}

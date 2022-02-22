@@ -7,14 +7,14 @@ import {
 import { useQuery, gql } from '@apollo/client';
 
 import {
-    CategoryOptionsQuery,
-    CategoryOptionsQueryVariables,
+    CategorySearchOptionsQuery,
+    CategorySearchOptionsQueryVariables,
 } from '#generated/types';
 
 import useDebouncedValue from '#hooks/useDebouncedValue';
 
 const CATEGORIES = gql`
-    query CategoryOptions($search: String) {
+    query CategorySearchOptions($search: String) {
         categories(name: $search) {
             results {
                 id
@@ -25,7 +25,7 @@ const CATEGORIES = gql`
     }
 `;
 
-export type Category = NonNullable<NonNullable<NonNullable<CategoryOptionsQuery['categories']>['results']>[number]>;
+export type Category = NonNullable<NonNullable<NonNullable<CategorySearchOptionsQuery['categories']>['results']>[number]>;
 
 type Def = { containerClassName?: string };
 type CategoryMultiSelectInputProps<K extends string> = SearchMultiSelectInputProps<
@@ -60,7 +60,10 @@ function CategorySearchMultiSelectInput<K extends string>(
         search: debouncedSearchText,
     }), [debouncedSearchText]);
 
-    const { data, loading } = useQuery<CategoryOptionsQuery, CategoryOptionsQueryVariables>(
+    const {
+        data,
+        loading,
+    } = useQuery<CategorySearchOptionsQuery, CategorySearchOptionsQueryVariables>(
         CATEGORIES,
         {
             variables,

@@ -29,6 +29,7 @@ import {
 
 import { explore } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
+import useDidUpdateEffect from '#base/hooks/useDidUpdateEffect';
 import { UserContext } from '#base/context/UserContext';
 import { resolveToString, resolveToComponent } from '#base/utils/lang';
 import {
@@ -187,9 +188,26 @@ function Explore(props: Props) {
     const [categories, setCategories] = useInputState<string[] | undefined>(
         locationState?.category ? [locationState?.category] : undefined,
     );
+
     const [selectedSortKey, setSelectedSortKey] = useInputState<SortKeyType>('id');
     const [search, setSearch] = useInputState<string | undefined>(undefined);
     const [publisher, setPublisher] = useInputState<string | undefined>(locationState?.publisher);
+
+    useDidUpdateEffect(() => {
+        if (locationState) {
+            if (isDefined(locationState.category)) {
+                setCategories([locationState.category]);
+            }
+
+            if (isDefined(locationState.grade)) {
+                setGrade(locationState.grade);
+            }
+
+            if (isDefined(locationState.publisher)) {
+                setPublisher(locationState.publisher);
+            }
+        }
+    }, [locationState, setCategories, setGrade, setPublisher]);
 
     // eslint-disable-next-line no-nested-ternary
     const effectivePublisher = publisherId
