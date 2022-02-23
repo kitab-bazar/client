@@ -22,6 +22,9 @@ import {
 
 import NumberOutput from '#components/NumberOutput';
 
+// FIXME: this components should not import from views
+import { ORDER_SUMMARY } from '#views/Profile/OrderList/queries';
+
 import styles from './styles.css';
 
 const CANCEL_ORDER = gql`
@@ -87,6 +90,7 @@ function OrderItem(props: Props) {
     ] = useMutation<CancelOrderMutation, CancelOrderMutationVariables>(
         CANCEL_ORDER,
         {
+            refetchQueries: ORDER_SUMMARY ? [ORDER_SUMMARY] : undefined,
             onCompleted: (response) => {
                 if (!response?.updateOrder?.ok) {
                     alert.show(

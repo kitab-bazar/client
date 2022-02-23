@@ -548,6 +548,18 @@ export const profile = {
         en: 'Loading books ...',
         ne: 'किताबहरु लोड गर्दै ...',
     },
+    totalAmountLabel: {
+        en: 'Total Amount',
+        ne: 'कुल रकम',
+    },
+    totalBooksLabel: {
+        en: 'Total Books',
+        ne: 'कुल पुस्तकहरू',
+    },
+    uniqueBooksLabel: {
+        en: 'Number of distinct books',
+        ne: 'फरक पुस्तकहरूको संख्या',
+    },
 };
 
 export const school = {

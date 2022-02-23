@@ -5,19 +5,24 @@ import {
     ListView,
     Pager,
     Modal,
+    TextOutput,
 } from '@the-deep/deep-ui';
 
 import OrderItem, {
     Props as OrderItemProps,
     Order,
 } from '#components/OrderItem';
+import NumberOutput from '#components/NumberOutput';
 import useTranslation from '#base/hooks/useTranslation';
 import { profile } from '#base/configs/lang';
 import {
     OrderListWithBooksQuery,
     OrderListWithBooksQueryVariables,
+
+    OrderSummaryQuery,
 } from '#generated/types';
 
+import { ORDER_SUMMARY } from './queries';
 import OrderDetail from './OrderDetail';
 import styles from './styles.css';
 
@@ -74,7 +79,7 @@ function OrderList(props: Props) {
 
     const {
         previousData,
-        data: orderList = previousData,
+        data: response = previousData,
         loading,
         error,
     } = useQuery<OrderListWithBooksQuery, OrderListWithBooksQueryVariables>(
@@ -85,6 +90,13 @@ function OrderList(props: Props) {
                 pageSize: MAX_ITEMS_PER_PAGE,
             },
         },
+    );
+
+    const {
+        previousData: summaryPreviousData,
+        data: summaryResponse = summaryPreviousData,
+    } = useQuery<OrderSummaryQuery>(
+        ORDER_SUMMARY,
     );
 
     const strings = useTranslation(profile);
@@ -101,9 +113,46 @@ function OrderList(props: Props) {
 
     return (
         <div className={_cs(styles.orderList, className)}>
+            {response && summaryResponse?.orderSummary && (
+                <div className={styles.summary}>
+                    <TextOutput
+                        spacing="compact"
+                        block
+                        valueContainerClassName={styles.value}
+                        label={strings.totalAmountLabel}
+                        value={(
+                            <NumberOutput
+                                value={summaryResponse.orderSummary.totalPrice}
+                            />
+                        )}
+                    />
+                    <TextOutput
+                        spacing="compact"
+                        block
+                        valueContainerClassName={styles.value}
+                        label={strings.totalBooksLabel}
+                        value={(
+                            <NumberOutput
+                                value={summaryResponse.orderSummary.totalBooksQuantity}
+                            />
+                        )}
+                    />
+                    <TextOutput
+                        spacing="compact"
+                        block
+                        valueContainerClassName={styles.value}
+                        label={strings.uniqueBooksLabel}
+                        value={(
+                            <NumberOutput
+                                value={summaryResponse.orderSummary.totalBooks}
+                            />
+                        )}
+                    />
+                </div>
+            )}
             <ListView
-                className={styles.orderList}
-                data={orderList?.orders?.results ?? undefined}
+                className={styles.orderItemList}
+                data={response?.orders?.results ?? undefined}
                 keySelector={orderListKeySelector}
                 renderer={OrderItem}
                 rendererParams={orderListRendererParams}
@@ -117,7 +166,7 @@ function OrderList(props: Props) {
             <Pager
                 activePage={page}
                 maxItemsPerPage={MAX_ITEMS_PER_PAGE}
-                itemsCount={orderList?.orders?.totalCount ?? 0}
+                itemsCount={response?.orders?.totalCount ?? 0}
                 onActivePageChange={setPage}
                 itemsPerPageControlHidden
             />
