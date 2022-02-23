@@ -34,7 +34,7 @@ export const common = {
 
 export const nagbar = {
     orderWindowExpiryLabel: {
-        en: 'We are not taking new orders right now.',
+        en: 'We are not taking new orders at the moment.',
         ne: 'हामी अहिले नयाँ अर्डर लिइरहेका छैनौं। ',
     },
 };
@@ -372,7 +372,7 @@ export const explore = {
 export const footer = {
     tagLineLabel: {
         en: 'Where reading gets better!',
-        ne: 'जहाँ पठन बन्छ रमणीय!',
+        ne: 'किताबको पहुँचबाट शिक्षाको बिकास।',
     },
     faqButtonLabel: {
         en: 'FAQs',
@@ -389,6 +389,14 @@ export const footer = {
     contactUsButtonLabel: {
         en: 'Contact Us',
         ne: 'सम्पर्क गर्नुहोस',
+    },
+    exploreByGradeHeading: {
+        en: 'Grade',
+        ne: 'श्रेणी',
+    },
+    exploreByCategoryHeading: {
+        en: 'Category',
+        ne: 'वर्ग',
     },
 };
 

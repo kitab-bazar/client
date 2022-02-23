@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import {
     _cs,
     isDefined,
@@ -101,6 +101,9 @@ function CartItem(props: Props) {
         totalPrice,
     } = cartDetails;
 
+    const [cartQuantity, setCartQuantity] = useState(quantity);
+    const lastValidCartQuantityRef = useRef(quantity);
+
     const strings = useTranslation(ordersBar);
     const alert = useAlert();
 
@@ -141,11 +144,20 @@ function CartItem(props: Props) {
         {
             refetchQueries: CART_ITEMS_NAME ? [CART_ITEMS_NAME] : undefined,
             onCompleted: (response) => {
-                if (!response?.updateCartItem?.ok) {
+                if (!response) {
+                    return;
+                }
+                const { updateCartItem } = response;
+                if (!updateCartItem?.ok) {
                     alert.show(
                         strings.updateCartErrorMessage,
                         { variant: 'error' },
                     );
+                    if (lastValidCartQuantityRef.current) {
+                        setCartQuantity(lastValidCartQuantityRef.current);
+                    }
+                } else if (updateCartItem?.result) {
+                    lastValidCartQuantityRef.current = updateCartItem.result.quantity;
                 }
             },
             onError: (e) => {
@@ -160,6 +172,7 @@ function CartItem(props: Props) {
 
     const handleQuantityChange = React.useCallback((newQuantity: number | undefined) => {
         if (isDefined(newQuantity) && newQuantity > 0) {
+            setCartQuantity(newQuantity);
             updateCartBookQuantity({
                 variables: {
                     id: cartId,
@@ -219,7 +232,7 @@ function CartItem(props: Props) {
                     <NumberInput
                         className={styles.quantityInput}
                         name={undefined}
-                        value={quantity}
+                        value={cartQuantity}
                         type="number"
                         variant="general"
                         onChange={handleQuantityChange}

@@ -94,13 +94,16 @@
 
     &.compact-variant {
         --book-item-width: 15rem;
-        --book-item-height: 20rem;
+        --book-item-height: 15rem;
         border: var(--dui-width-separator-thin) solid var(--dui-color-separator);
+        border-radius: var(--kitab-radius-border);
         cursor: pointer;
         width: var(--book-item-width);
         text-decoration: none;
 
         .preview {
+            border-top-left-radius: var(--kitab-radius-border);
+            border-top-right-radius: var(--kitab-radius-border);
             width: 100%;
             height: var(--book-item-height);
             overflow: hidden;
@@ -151,21 +154,24 @@
     &.list-variant {
         display: flex;
 
+        --preview-width: 9rem;
+        --preview-height: 14rem;
+
         .preview {
             display: flex;
             flex-shrink: 0;
             justify-content: center;
 
             .image {
-                width: 9rem;
-                height: 14rem;
+                width: var(--preview-width);
+                height: var(--preview-height);
                 object-fit: cover;
                 object-position: top center;
             }
 
             .fallback-icon {
-                width: 10rem;
-                height: 16rem;
+                width: var(--preview-width);
+                height: var(--preview-height);
             }
         }
 

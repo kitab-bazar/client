@@ -31,25 +31,6 @@ const login = wrap({
     },
     visibility: 'is-not-authenticated',
 });
-const home = wrap({
-    path: '/',
-    title: 'Home',
-    navbarVisibility: true,
-    component: lazy(() => import('#views/HomePage')),
-    componentProps: {
-    },
-    visibility: 'is-anything',
-});
-const myProfile = wrap({
-    path: '/profile/',
-    title: 'Profile',
-    navbarVisibility: true,
-    component: lazy(() => import('#views/Profile')),
-    componentProps: {
-    },
-    visibility: 'is-authenticated',
-});
-
 const forgotPassword = wrap({
     path: '/forgot-password/',
     title: 'Forgot Password',
@@ -58,15 +39,6 @@ const forgotPassword = wrap({
     componentProps: {
     },
     visibility: 'is-not-authenticated',
-});
-
-const bookList = wrap({
-    path: '/books/',
-    title: 'Books',
-    navbarVisibility: true,
-    component: lazy(() => import('#views/BookList')),
-    componentProps: {},
-    visibility: 'is-anything',
 });
 const activateUser = wrap({
     path: '/user/activate/:userId(\\d+)/:token/',
@@ -77,18 +49,23 @@ const activateUser = wrap({
     },
     visibility: 'is-anything',
 });
-const wishList = wrap({
-    path: '/wish-list/',
-    title: 'Wish List',
+
+const home = wrap({
+    path: '/',
+    title: 'Home',
+    navbarVisibility: true,
+    component: lazy(() => import('#views/HomePage')),
+    componentProps: {
+    },
+    visibility: 'is-anything',
+});
+const bookList = wrap({
+    path: '/books/',
+    title: 'Books',
     navbarVisibility: true,
     component: lazy(() => import('#views/BookList')),
-    componentProps: {
-        wishList: true,
-    },
-    visibility: 'is-authenticated',
-    checkPermissions: (user) => (
-        !user?.publisherId
-    ),
+    componentProps: {},
+    visibility: 'is-anything',
 });
 const about = wrap({
     path: '/about/',
@@ -100,6 +77,27 @@ const about = wrap({
     visibility: 'is-anything',
 });
 
+const myProfile = wrap({
+    path: '/profile/',
+    title: 'Profile',
+    navbarVisibility: true,
+    component: lazy(() => import('#views/Profile')),
+    componentProps: {
+    },
+    visibility: 'is-authenticated',
+    checkPermissions: (user) => user?.type === 'SCHOOL_ADMIN' || user?.type === 'PUBLISHER',
+});
+const wishList = wrap({
+    path: '/wish-list/',
+    title: 'Wish List',
+    navbarVisibility: true,
+    component: lazy(() => import('#views/BookList')),
+    componentProps: {
+        wishList: true,
+    },
+    visibility: 'is-authenticated',
+    checkPermissions: (user) => user?.type === 'SCHOOL_ADMIN',
+});
 const moderation = wrap({
     path: '/moderation/',
     title: 'Moderation',

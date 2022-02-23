@@ -97,6 +97,12 @@ const config = {
 
         'postcss-modules/no-unused-class': 'warn',
         'postcss-modules/no-undef-class': 'warn',
+        'react-hooks/exhaustive-deps': [
+            'warn',
+            {
+                additionalHooks: 'useDidUpdateEffect',
+            },
+        ],
     },
 };
 try {

@@ -1,4 +1,4 @@
-import React, { useMemo, useContext } from 'react';
+import React, { useMemo } from 'react';
 import {
     ListView,
     Container,
@@ -12,7 +12,6 @@ import {
     _cs,
 } from '@togglecorp/fujs';
 
-import { UserContext } from '#base/context/UserContext';
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
 import { homePage } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
@@ -25,14 +24,13 @@ import {
     FeaturedBooksQueryVariables,
     GradeOptionsQuery,
     GradeOptionsQueryVariables,
-    ExploreCategoryAndPublisherOptionsQuery,
-    ExploreCategoryAndPublisherOptionsQueryVariables,
+    CategoryOptionsQuery,
+    CategoryOptionsQueryVariables,
 } from '#generated/types';
 import coverImage from '#resources/img/cover.png';
 
 import GradeItem, { Props as GradeItemProps } from './GradeItem';
 import CategoryItem, { Props as CategoryItemProps } from './CategoryItem';
-import PublisherItem, { Props as PublisherItemProps } from './PublisherItem';
 
 import styles from './styles.css';
 
@@ -60,15 +58,9 @@ query FeaturedBooks($page: Int!, $pageSize: Int!) {
 }
 `;
 
-const EXPLORE_CATEGORY_AND_PUBLISHER_OPTIONS = gql`
-query ExploreCategoryAndPublisherOptions {
+const CATEGORY_OPTIONS = gql`
+query CategoryOptions {
     categories {
-        results {
-            id
-            name
-        }
-    }
-    publishers {
         results {
             id
             name
@@ -102,8 +94,6 @@ interface Props {
 function HomePage(props: Props) {
     const { className } = props;
 
-    const { user } = useContext(UserContext);
-
     const orderVariables = useMemo(() => ({
         pageSize: MAX_ITEMS_PER_PAGE,
         page: 1,
@@ -129,14 +119,14 @@ function HomePage(props: Props) {
     );
 
     const {
-        data: categoryAndPublisherResponse,
-        loading: categoryAndPublisherLoading,
-        error: categoryAndPublisherError,
+        data: categoryOptionsResponse,
+        loading: categoryOptionsLoading,
+        error: categoryOptionsError,
     } = useQuery<
-        ExploreCategoryAndPublisherOptionsQuery,
-        ExploreCategoryAndPublisherOptionsQueryVariables
+        CategoryOptionsQuery,
+        CategoryOptionsQueryVariables
     >(
-        EXPLORE_CATEGORY_AND_PUBLISHER_OPTIONS,
+        CATEGORY_OPTIONS,
     );
 
     const bookItemRendererParams = React.useCallback((_: string, data: Book): BookItemProps => ({
@@ -157,18 +147,10 @@ function HomePage(props: Props) {
 
     const categoryItemRendererParams = React.useCallback((
         _: string,
-        category: NonNullable<NonNullable<ExploreCategoryAndPublisherOptionsQuery['categories']>['results']>[number],
+        category: NonNullable<NonNullable<CategoryOptionsQuery['categories']>['results']>[number],
     ): CategoryItemProps => ({
         className: styles.categoryItem,
         category,
-    }), []);
-
-    const publisherItemRendererParams = React.useCallback((
-        _: string,
-        publisher: NonNullable<NonNullable<ExploreCategoryAndPublisherOptionsQuery['publishers']>['results']>[number],
-    ): PublisherItemProps => ({
-        className: styles.publisherItem,
-        publisher,
     }), []);
 
     return (
@@ -225,32 +207,15 @@ function HomePage(props: Props) {
                     >
                         <ListView
                             className={styles.categoryList}
-                            data={categoryAndPublisherResponse?.categories?.results}
+                            data={categoryOptionsResponse?.categories?.results}
                             keySelector={itemKeySelector}
                             rendererParams={categoryItemRendererParams}
                             renderer={CategoryItem}
-                            errored={!!categoryAndPublisherError}
-                            pending={categoryAndPublisherLoading}
+                            errored={!!categoryOptionsError}
+                            pending={categoryOptionsLoading}
                             filtered={false}
                         />
                     </Container>
-                    {!user?.publisherId && (
-                        <Container
-                            className={styles.exploreByPublishersSection}
-                            heading={strings.exploreByPublisherHeading}
-                        >
-                            <ListView
-                                className={styles.publisherList}
-                                data={categoryAndPublisherResponse?.publishers?.results}
-                                keySelector={itemKeySelector}
-                                rendererParams={publisherItemRendererParams}
-                                renderer={PublisherItem}
-                                errored={!!categoryAndPublisherError}
-                                pending={categoryAndPublisherLoading}
-                                filtered={false}
-                            />
-                        </Container>
-                    )}
                     <Container
                         className={styles.featuredBooksSection}
                         heading={strings.featuredBooksLabel}

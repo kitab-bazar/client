@@ -20,10 +20,8 @@ import {
     useConfirmation,
     DropdownMenu,
     DropdownMenuItem,
-    // QuickActionDropdownMenu,
 } from '@the-deep/deep-ui';
 import {
-    // IoNotificationsOutline,
     IoPerson,
 } from 'react-icons/io5';
 
@@ -42,10 +40,6 @@ import { UserContext } from '#base/context/UserContext';
 import {
     LogoutMutation,
     LogoutMutationVariables,
-    /*
-    UserNotificationsCountQuery,
-    UserNotificationsCountQueryVariables,
-    */
 } from '#generated/types';
 import useRouteMatching from '#base/hooks/useRouteMatching';
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
@@ -53,7 +47,6 @@ import SmartNavLink from '#base/components/SmartNavLink';
 import RelativeTimeOutput from '#components/RelativeTimeOutput';
 import KitabLogo from '#resources/img/KitabLogo.png';
 import { resolveToString, resolveToComponent } from '#base/utils/lang';
-// import Notifications from '#components/Notifications';
 
 import styles from './styles.css';
 
@@ -198,6 +191,10 @@ function Navbar(props: Props) {
                 />
                 <SmartNavLink
                     route={routes.bookList}
+                    className={styles.navLink}
+                />
+                <SmartNavLink
+                    route={routes.moderation}
                     className={styles.navLink}
                 />
             </div>
