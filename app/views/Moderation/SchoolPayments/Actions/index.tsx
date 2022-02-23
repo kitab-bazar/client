@@ -9,11 +9,11 @@ import { Payment } from '../index';
 
 export interface Props {
     className?: string;
-    onEditClick: (data: Payment) => void;
+    onEditClick: (data: string) => void;
     data: Payment;
 }
 
-function TableActions(props: Props) {
+function Actions(props: Props) {
     const {
         className,
         onEditClick,
@@ -21,7 +21,7 @@ function TableActions(props: Props) {
     } = props;
 
     const handleEditClick = useCallback(() => {
-        onEditClick(data);
+        onEditClick(data.id);
     }, [onEditClick, data]);
 
     return (
@@ -37,4 +37,4 @@ function TableActions(props: Props) {
     );
 }
 
-export default TableActions;
+export default Actions;

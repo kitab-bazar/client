@@ -1,12 +1,9 @@
-import React, { ReactNode, useMemo, useState, useCallback } from 'react';
-import { _cs } from '@togglecorp/fujs';
-import { IoBanOutline, IoClose, IoCheckmark } from 'react-icons/io5';
-import { VscLoading } from 'react-icons/vsc';
+import React, { useMemo, useState, useCallback } from 'react';
+import { IoBanOutline } from 'react-icons/io5';
 import {
+    Button,
     Container,
     Pager,
-    Tag,
-    TagProps,
     TableView,
     TableColumn,
     TableHeaderCell,
@@ -15,31 +12,73 @@ import {
     createNumberColumn,
     useModalState,
 } from '@the-deep/deep-ui';
+import {
+    gql,
+    useQuery,
+} from '@apollo/client';
+import {
+    PaymentsQuery,
+    PaymentsQueryVariables,
+} from '#generated/types';
+
+import { createDateColumn } from '#components/tableHelpers';
 
 import Actions, { Props as ActionsProps } from './Actions';
 import UpdatePaymentModal from './UpdatePaymentModal';
 
-export interface Payment {
-    id: string;
-    date: string;
-    school: {
-        id: string;
-        name: string;
+const PAYMENTS = gql`
+    query Payments(
+        $ordering: String,
+        $page: Int,
+        $pageSize: Int,
+        $paymentType: PaymentTypeEnum,
+        $status: StatusEnum,
+        $transactionType: TransactionTypeEnum,
+    ) {
+        moderatorQuery {
+            payments(
+                ordering: $ordering,
+                page: $page,
+                pageSize: $pageSize,
+                paymentType: $paymentType,
+                status: $status,
+                transactionType: $transactionType,
+            ) {
+                page
+                pageSize
+                results {
+                    id
+                    amount
+                    createdAt
+                    createdBy {
+                        id
+                        fullName
+                    }
+                    paidBy {
+                        fullName
+                        id
+                    }
+                    paymentType
+                    status
+                    transactionType
+                }
+                totalCount
+            }
+        }
     }
-    amount: number;
-    status: 'verified' | 'pending' | 'canceled';
-}
+`;
 
-const statusIconMap: { [key in Payment['status']]: ReactNode } = {
-    verified: <IoCheckmark />,
-    canceled: <IoClose />,
-    pending: <VscLoading />,
+export type Payment = NonNullable<NonNullable<NonNullable<PaymentsQuery['moderatorQuery']>['payments']>['results']>[number];
+
+const statusLabelMap: { [key in Payment['status']]: string } = {
+    PENDING: 'Pending',
+    VERIFIED: 'Verified',
+    CANCELLED: 'Canceled',
 };
 
-const statusVariantMap: Record<Payment['status'], 'default' | 'gradient1' | 'complement1'> = {
-    verified: 'default',
-    pending: 'gradient1',
-    canceled: 'complement1',
+const transactionTypeLabelMap: {[key in Payment['transactionType']]: string} = {
+    CREDIT: 'Credit',
+    DEBIT: 'Debit',
 };
 
 function paymentKeySelector(payment: Payment) {
@@ -58,39 +97,38 @@ function SchoolPayments(props: Props) {
     const [activePage, setActivePage] = useState<number>(1);
     const [maxItemsPerPage, setMaxItemsPerPage] = useState(10);
     const [selectedPaymentId, setSelectedPaymentId] = useState<string | undefined | null>();
-    const payments: Payment[] = [];
+    const {
+        data: paymentsQueryResponse,
+        loading: paymentsLoading,
+        refetch: refetchPayments,
+    } = useQuery<PaymentsQuery, PaymentsQueryVariables>(
+        PAYMENTS,
+    );
+
+    const payments = paymentsQueryResponse?.moderatorQuery?.payments?.results;
+
     const [
         updatePaymentModalShown,
         showUpdatePaymentModal,
         hideUpdatePaymentModal,
     ] = useModalState(false);
 
-    const handleEditPayment = useCallback((data: Payment) => {
-        setSelectedPaymentId(data.id);
+    const handleEditPayment = useCallback((id: string) => {
+        setSelectedPaymentId(id);
+        showUpdatePaymentModal();
+    }, [showUpdatePaymentModal]);
+
+    const handleAddPayment = useCallback(() => {
+        setSelectedPaymentId(undefined);
         showUpdatePaymentModal();
     }, [showUpdatePaymentModal]);
 
     const handleUpdateSuccess = useCallback(() => {
-        console.warn('payment successfully updated');
-    }, []);
+        setSelectedPaymentId(undefined);
+        refetchPayments();
+    }, [refetchPayments]);
 
     const columns = useMemo(() => {
-        const statusColumn: TableColumn<
-            Payment, string, TagProps, TableHeaderCellProps
-        > = {
-            id: 'status',
-            title: 'Status',
-            headerCellRenderer: TableHeaderCell,
-            headerCellRendererParams: {
-                sortable: false,
-            },
-            cellRenderer: Tag,
-            cellRendererParams: (_, data) => ({
-                actions: statusIconMap[data.status],
-                variant: statusVariantMap[data.status],
-                children: data.status,
-            }),
-        };
         const actionsColumn: TableColumn<
             Payment, string, ActionsProps, TableHeaderCellProps
         > = {
@@ -103,39 +141,68 @@ function SchoolPayments(props: Props) {
             cellRenderer: Actions,
             cellRendererParams: (_, data) => ({
                 data,
-                onVerifyClick: handleEditPayment,
+                onEditClick: handleEditPayment,
             }),
         };
         return [
             createStringColumn<Payment, string>(
-                'paymentId',
-                'Payment Id',
+                'id',
+                'Payment ID',
                 (item) => item.id,
             ),
-            createStringColumn<Payment, string>(
-                'schoolName',
-                'School',
-                (item) => item.school.name,
+            createDateColumn<Payment, string>(
+                'createdAt',
+                'Payment Added On',
+                (item) => item.createdAt,
             ),
             createNumberColumn<Payment, string>(
                 'amount',
                 'Amount',
                 (item) => item.amount,
             ),
-            statusColumn,
+            createStringColumn<Payment, string>(
+                'createdBy',
+                'Created By',
+                (item) => item.createdBy.fullName,
+            ),
+            createStringColumn<Payment, string>(
+                'paidBy',
+                'Paid By',
+                (item) => item.paidBy.fullName,
+            ),
+            createStringColumn<Payment, string>(
+                'status',
+                'Status',
+                (item) => statusLabelMap[item.status],
+            ),
+            createStringColumn<Payment, string>(
+                'trasactionType',
+                'Type',
+                (item) => transactionTypeLabelMap[item.transactionType],
+            ),
             actionsColumn,
         ];
     }, [handleEditPayment]);
 
-    const selectedPayment = payments.find((payment) => payment.id === selectedPaymentId);
+    const selectedPayment = payments?.find((payment) => payment.id === selectedPaymentId);
+
     return (
         <Container
-            className={_cs(className)}
+            className={className}
             heading="Payments"
+            headerActions={(
+                <Button
+                    name={undefined}
+                    onClick={handleAddPayment}
+                    variant="primary"
+                >
+                    Add Payment
+                </Button>
+            )}
             footerActions={(
                 <Pager
                     activePage={activePage}
-                    itemsCount={0}
+                    itemsCount={paymentsQueryResponse?.moderatorQuery?.payments?.totalCount ?? 0}
                     maxItemsPerPage={maxItemsPerPage}
                     onItemsPerPageChange={setMaxItemsPerPage}
                     onActivePageChange={setActivePage}
@@ -149,7 +216,7 @@ function SchoolPayments(props: Props) {
                 columns={columns}
                 filtered={false}
                 errored={false}
-                pending={false}
+                pending={paymentsLoading}
                 emptyIcon={(
                     <IoBanOutline />
                 )}

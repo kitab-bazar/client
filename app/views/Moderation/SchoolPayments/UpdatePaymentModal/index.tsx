@@ -6,27 +6,91 @@ import {
     createSubmitHandler,
     getErrorObject,
     requiredCondition,
+    removeNull,
 } from '@togglecorp/toggle-form';
 import {
     Modal,
     Button,
     NumberInput,
-    DateInput,
     SelectInput,
+    useAlert,
 } from '@the-deep/deep-ui';
+import {
+    gql,
+    useMutation,
+    useQuery,
+} from '@apollo/client';
 
+import {
+    CreatePaymentMutation,
+    CreatePaymentMutationVariables,
+    UpdatePaymentMutation,
+    UpdatePaymentMutationVariables,
+    PaymentOptionsQuery,
+    PaymentOptionsQueryVariables,
+} from '#generated/types';
 import SchoolSelectInput, { SearchSchoolType } from '#components/SchoolSelectInput';
 import NonFieldError from '#components/NonFieldError';
+import { EnumFix } from '#utils/types';
+import {
+    transformToFormError,
+    ObjectError,
+} from '#base/utils/errorTransform';
 
 import { Payment } from '../index';
 
-type FormType = {
-    id: string;
-    school: string;
-    date: string;
-    amount: number;
-    status: Payment['status'];
-};
+const PAYMENT_OPTIONS = gql`
+    query PaymentOptions {
+        statusOptions: __type(name: "StatusEnum") {
+            enumValues {
+                name
+                description
+            }
+        }
+        transactionTypeOptions: __type(name: "TransactionTypeEnum") {
+            enumValues {
+                name
+                description
+            }
+        }
+        paymentTypeOptions: __type(name: "PaymentTypeEnum") {
+            enumValues {
+                name
+                description
+            }
+        }
+    }
+`;
+
+const CREATE_PAYMENT = gql`
+    mutation CreatePayment($data: PaymentInputType!) {
+        moderatorMutation {
+            createPayment(data: $data) {
+                errors
+                ok
+                result {
+                    id
+                }
+            }
+        }
+    }
+`;
+
+const UPDATE_PAYMENT = gql`
+    mutation UpdatePayment($data: PaymentInputType!, $id: ID!) {
+        moderatorMutation {
+            updatePayment(data: $data, id: $id) {
+                errors
+                ok
+                result {
+                    id
+                }
+            }
+        }
+    }
+`;
+
+type FormType = EnumFix<UpdatePaymentMutationVariables['data'], 'status' | 'paymentType' | 'transactionType'>;
 type PartialFormType = PartialForm<FormType>;
 type FormSchema = ObjectSchema<PartialFormType>;
 type FormSchemaFields = ReturnType<FormSchema['fields']>;
@@ -34,41 +98,24 @@ type FormSchemaFields = ReturnType<FormSchema['fields']>;
 const schema: FormSchema = {
     fields: (): FormSchemaFields => {
         const basicFields: FormSchemaFields = {
-            id: [],
-            school: [requiredCondition],
-            date: [requiredCondition],
             amount: [requiredCondition],
+            paidBy: [requiredCondition],
+            paymentType: [requiredCondition],
             status: [requiredCondition],
+            transactionType: [requiredCondition],
         };
         return basicFields;
     },
 };
 
-interface StatusOption {
-    key: Payment['status'];
-    value: string;
-}
-const statusOptions: StatusOption[] = [
-    {
-        key: 'verified',
-        value: 'Verified',
-    },
-    {
-        key: 'pending',
-        value: 'Pending',
-    },
-    {
-        key: 'canceled',
-        value: 'Canceled',
-    },
-];
+type StatusOption = NonNullable<NonNullable<NonNullable<PaymentOptionsQuery>['statusOptions']>['enumValues']>[number];
 
-function statusKeySelector(status: StatusOption) {
-    return status.key;
+function enumKeySelector(status: StatusOption) {
+    return status.name;
 }
 
-function statusLabelSelector(status: StatusOption) {
-    return status.value;
+function enumLabelSelector(status: StatusOption) {
+    return status.description ?? status.name;
 }
 
 interface Props {
@@ -85,17 +132,20 @@ function UpdatePaymentModal(props: Props) {
     } = props;
 
     const [schoolOptions, setSchoolOptions] = useState<SearchSchoolType[] | undefined | null>([]);
-    const initialValue: PartialFormType = useMemo(() => ({
-        id: paymentDetails?.id,
-        school: paymentDetails?.school.id,
-        date: paymentDetails?.date,
-        amount: paymentDetails?.amount,
-        status: paymentDetails?.status,
-    }), [paymentDetails]);
+    const initialValue: PartialFormType = useMemo(() => (paymentDetails ? {
+        amount: paymentDetails.amount,
+        paidBy: paymentDetails.paidBy.id,
+        paymentType: paymentDetails.paymentType,
+        status: paymentDetails.status,
+        transactionType: paymentDetails.transactionType,
+    } : {}), [paymentDetails]);
 
     useEffect(() => {
-        if (paymentDetails?.school) {
-            setSchoolOptions([paymentDetails.school]);
+        if (paymentDetails?.paidBy) {
+            setSchoolOptions([{
+                id: paymentDetails.paidBy.id,
+                name: paymentDetails.paidBy.fullName,
+            }]);
         }
     }, [paymentDetails]);
 
@@ -108,25 +158,130 @@ function UpdatePaymentModal(props: Props) {
         setError,
     } = useForm(schema, initialValue);
 
+    const alert = useAlert();
     const error = getErrorObject(riskyError);
 
-    const updatePaymentPending = false;
-    const updatePayment = useCallback(({ variables } : { variables: PartialFormType }) => {
-        console.warn('variables', variables);
-        onUpdateSuccess();
-    }, [onUpdateSuccess]);
+    const {
+        data: paymentFieldOptionsResponse,
+        loading: paymentFieldOptionsLoading,
+    } = useQuery<PaymentOptionsQuery, PaymentOptionsQueryVariables>(
+        PAYMENT_OPTIONS,
+    );
 
-    const submit = useMemo(() => (
-        createSubmitHandler(
+    const [
+        createPayment,
+        { loading: createPaymentPending },
+    ] = useMutation<CreatePaymentMutation, CreatePaymentMutationVariables>(
+        CREATE_PAYMENT,
+        {
+            onCompleted: (response) => {
+                const { moderatorMutation } = response;
+                if (!moderatorMutation) {
+                    return;
+                }
+                if (!moderatorMutation.createPayment) {
+                    return;
+                }
+
+                const {
+                    ok,
+                    errors,
+                } = moderatorMutation.createPayment;
+
+                if (ok) {
+                    onUpdateSuccess();
+                    onModalClose();
+                    alert.show(
+                        'Payment added successfully!',
+                        { variant: 'success' },
+                    );
+                } else if (errors) {
+                    const formErrorFromServer = transformToFormError(
+                        removeNull(errors) as ObjectError[],
+                    );
+                    setError(formErrorFromServer);
+
+                    alert.show(
+                        'Failed to add payment.',
+                        { variant: 'error' },
+                    );
+                }
+            },
+            onError: (errors) => {
+                alert.show(
+                    errors.message,
+                    { variant: 'error' },
+                );
+            },
+        },
+    );
+
+    const [
+        updatePayment,
+        { loading: updatePaymentPending },
+    ] = useMutation<UpdatePaymentMutation, UpdatePaymentMutationVariables>(
+        UPDATE_PAYMENT,
+        {
+            onCompleted: (response) => {
+                const { moderatorMutation } = response;
+                if (!moderatorMutation) {
+                    return;
+                }
+                if (!moderatorMutation.updatePayment) {
+                    return;
+                }
+
+                const {
+                    ok,
+                    errors,
+                } = moderatorMutation.updatePayment;
+
+                if (ok) {
+                    onUpdateSuccess();
+                    onModalClose();
+                    alert.show(
+                        'Payment updated successfully!',
+                        { variant: 'success' },
+                    );
+                } else if (errors) {
+                    const formErrorFromServer = transformToFormError(
+                        removeNull(errors) as ObjectError[],
+                    );
+                    setError(formErrorFromServer);
+
+                    alert.show(
+                        'Failed to update payment.',
+                        { variant: 'error' },
+                    );
+                }
+            },
+            onError: (errors) => {
+                alert.show(
+                    errors.message,
+                    { variant: 'error' },
+                );
+            },
+        },
+    );
+
+    const handleSubmit = useCallback(() => {
+        const submit = createSubmitHandler(
             validate,
             setError,
-            (finalValue) => {
-                updatePayment({
-                    variables: finalValue as FormType,
-                });
+            (val) => {
+                if (paymentDetails?.id) {
+                    updatePayment({
+                        variables: { data: val as UpdatePaymentMutationVariables['data'], id: paymentDetails.id },
+                    });
+                } else {
+                    createPayment({
+                        variables: { data: val as UpdatePaymentMutationVariables['data'] },
+                    });
+                }
             },
-        )
-    ), [setError, validate, updatePayment]);
+        );
+        submit();
+    }, [createPayment, updatePayment, paymentDetails, setError, validate]);
 
     return (
         <Modal
@@ -146,8 +301,8 @@ function UpdatePaymentModal(props: Props) {
                     <Button
                         name={undefined}
                         variant="primary"
-                        onClick={submit}
-                        disabled={pristine || updatePaymentPending}
+                        onClick={handleSubmit}
+                        disabled={pristine || updatePaymentPending || createPaymentPending}
                     >
                         Save
                     </Button>
@@ -155,23 +310,6 @@ function UpdatePaymentModal(props: Props) {
             )}
         >
             <NonFieldError error={error} />
-            <SchoolSelectInput
-                name="school"
-                label="School"
-                onChange={setFieldValue}
-                value={value?.school}
-                error={error?.school}
-                options={schoolOptions}
-                onOptionsChange={setSchoolOptions}
-            />
-            <DateInput
-                name="date"
-                label="Payment date"
-                disabled={updatePaymentPending}
-                onChange={setFieldValue}
-                value={value?.date}
-                error={error?.date}
-            />
             <NumberInput
                 name="amount"
                 label="Amount"
@@ -180,18 +318,50 @@ function UpdatePaymentModal(props: Props) {
                 onChange={setFieldValue}
                 disabled={updatePaymentPending}
             />
+            <SchoolSelectInput
+                name="paidBy"
+                label="Paid By"
+                onChange={setFieldValue}
+                value={value?.paidBy}
+                error={error?.paidBy}
+                options={schoolOptions}
+                onOptionsChange={setSchoolOptions}
+            />
+            <SelectInput
+                name="paymentType"
+                label="Payment Type"
+                keySelector={enumKeySelector}
+                labelSelector={enumLabelSelector}
+                options={paymentFieldOptionsResponse?.paymentTypeOptions?.enumValues}
+                value={value?.paymentType}
+                error={error?.paymentType}
+                onChange={setFieldValue}
+                disabled={updatePaymentPending || paymentFieldOptionsLoading}
+            />
+            <SelectInput
+                name="transactionType"
+                label="Transaction Type"
+                keySelector={enumKeySelector}
+                labelSelector={enumLabelSelector}
+                options={paymentFieldOptionsResponse?.transactionTypeOptions?.enumValues}
+                value={value?.transactionType}
+                error={error?.transactionType}
+                onChange={setFieldValue}
+                disabled={updatePaymentPending || paymentFieldOptionsLoading}
+            />
             <SelectInput
                 name="status"
                 label="Status"
-                keySelector={statusKeySelector}
-                labelSelector={statusLabelSelector}
-                options={statusOptions}
+                keySelector={enumKeySelector}
+                labelSelector={enumLabelSelector}
+                options={paymentFieldOptionsResponse?.statusOptions?.enumValues}
                 value={value?.status}
                 error={error?.status}
                 onChange={setFieldValue}
-                disabled={updatePaymentPending}
+                disabled={updatePaymentPending || paymentFieldOptionsLoading}
             />
         </Modal>
+
     );
 }
 
