@@ -31,7 +31,7 @@ import {
 } from '#generated/types';
 import SchoolSelectInput, { SearchSchoolType } from '#components/SchoolSelectInput';
 import NonFieldError from '#components/NonFieldError';
-import { EnumFix } from '#utils/types';
+import { EnumFix, enumKeySelector, enumLabelSelector } from '#utils/types';
 import {
     transformToFormError,
     ObjectError,
@@ -107,16 +107,6 @@ const schema: FormSchema = {
         return basicFields;
     },
 };
-
-type StatusOption = NonNullable<NonNullable<NonNullable<PaymentOptionsQuery>['statusOptions']>['enumValues']>[number];
-
-function enumKeySelector(status: StatusOption) {
-    return status.name;
-}
-
-function enumLabelSelector(status: StatusOption) {
-    return status.description ?? status.name;
-}
 
 interface Props {
     onUpdateSuccess: () => void;

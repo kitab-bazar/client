@@ -6,3 +6,16 @@ export type EnumFix<T, F> = T extends Record<string, unknown>[] ? (
 ) : ({
     [K in keyof T]: K extends F ? Check<T[K]> : EnumFix<T[K], F>;
 })
+
+export type EnumOption = {
+    name: string;
+    description?: string | undefined | null;
+};
+
+export function enumKeySelector(option: EnumOption) {
+    return option.name;
+}
+
+export function enumLabelSelector(option: EnumOption) {
+    return option.description ?? option.name;
+}

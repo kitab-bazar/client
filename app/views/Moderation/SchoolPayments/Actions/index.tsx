@@ -11,6 +11,7 @@ export interface Props {
     className?: string;
     onEditClick: (data: string) => void;
     data: Payment;
+    disabled: boolean;
 }
 
 function Actions(props: Props) {
@@ -18,6 +19,7 @@ function Actions(props: Props) {
         className,
         onEditClick,
         data,
+        disabled,
     } = props;
 
     const handleEditClick = useCallback(() => {
@@ -30,6 +32,7 @@ function Actions(props: Props) {
                 name={undefined}
                 title="Edit payment"
                 onClick={handleEditClick}
+                disabled={disabled}
             >
                 <FiEdit2 />
             </QuickActionButton>

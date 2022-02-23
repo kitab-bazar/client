@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useCallback } from 'react';
-import { IoBanOutline } from 'react-icons/io5';
+import { isDefined } from '@togglecorp/fujs';
+import { IoBanOutline, IoSearchOutline, IoFilterSharp } from 'react-icons/io5';
 import {
     Button,
     Container,
@@ -10,22 +11,49 @@ import {
     TableHeaderCellProps,
     createStringColumn,
     createNumberColumn,
+    SelectInput,
     useModalState,
 } from '@the-deep/deep-ui';
 import {
     gql,
     useQuery,
 } from '@apollo/client';
+
 import {
     PaymentsQuery,
     PaymentsQueryVariables,
+    PaymentOptionsQuery,
+    PaymentOptionsQueryVariables,
 } from '#generated/types';
-
+import { enumKeySelector, enumLabelSelector } from '#utils/types';
 import { createDateColumn } from '#components/tableHelpers';
 
 import Actions, { Props as ActionsProps } from './Actions';
 import UpdatePaymentModal from './UpdatePaymentModal';
+import styles from './styles.css';
 
+const PAYMENT_OPTIONS = gql`
+    query PaymentOptions {
+        statusOptions: __type(name: "StatusEnum") {
+            enumValues {
+                name
+                description
+            }
+        }
+        transactionTypeOptions: __type(name: "TransactionTypeEnum") {
+            enumValues {
+                name
+                description
+            }
+        }
+        paymentTypeOptions: __type(name: "PaymentTypeEnum") {
+            enumValues {
+                name
+                description
+            }
+        }
+    }
+`;
 const PAYMENTS = gql`
     query Payments(
         $ordering: String,
@@ -96,13 +124,41 @@ function SchoolPayments(props: Props) {
 
     const [activePage, setActivePage] = useState<number>(1);
     const [maxItemsPerPage, setMaxItemsPerPage] = useState(10);
+    const [statusFilter, setStatusFilter] = useState<string>();
+    const [paymentTypeFilter, setPaymentTypeFilter] = useState<string>();
+    const [transactionTypeFilter, setTransactionTypeFilter] = useState<string>();
+
     const [selectedPaymentId, setSelectedPaymentId] = useState<string | undefined | null>();
+
+    const variables = useMemo(() => ({
+        pageSize: maxItemsPerPage,
+        page: activePage,
+        status: statusFilter as Payment['status'],
+        paymentType: paymentTypeFilter as Payment['paymentType'],
+        transactionType: transactionTypeFilter as Payment['transactionType'],
+    }), [
+        maxItemsPerPage,
+        activePage,
+        statusFilter,
+        paymentTypeFilter,
+        transactionTypeFilter,
+    ]);
+
+    const {
+        data: paymentFieldOptionsResponse,
+        loading: paymentFieldOptionsLoading,
+    } = useQuery<PaymentOptionsQuery, PaymentOptionsQueryVariables>(
+        PAYMENT_OPTIONS,
+    );
+
     const {
         data: paymentsQueryResponse,
         loading: paymentsLoading,
         refetch: refetchPayments,
+        error,
     } = useQuery<PaymentsQuery, PaymentsQueryVariables>(
         PAYMENTS,
+        { variables },
     );
 
     const payments = paymentsQueryResponse?.moderatorQuery?.payments?.results;
@@ -142,8 +198,10 @@ function SchoolPayments(props: Props) {
             cellRendererParams: (_, data) => ({
                 data,
                 onEditClick: handleEditPayment,
+                disabled: paymentsLoading,
             }),
         };
+
         return [
             createStringColumn<Payment, string>(
                 'id',
@@ -182,9 +240,12 @@ function SchoolPayments(props: Props) {
             ),
             actionsColumn,
         ];
-    }, [handleEditPayment]);
+    }, [handleEditPayment, paymentsLoading]);
 
     const selectedPayment = payments?.find((payment) => payment.id === selectedPaymentId);
+    const filtered = isDefined(paymentTypeFilter)
+                  || isDefined(statusFilter)
+                  || isDefined(transactionTypeFilter);
 
     return (
         <Container
@@ -209,17 +270,51 @@ function SchoolPayments(props: Props) {
                 />
             )}
         >
+            <div className={styles.filters}>
+                <SelectInput
+                    name="paymentType"
+                    label="Payment Type"
+                    keySelector={enumKeySelector}
+                    labelSelector={enumLabelSelector}
+                    options={paymentFieldOptionsResponse?.paymentTypeOptions?.enumValues}
+                    value={paymentTypeFilter}
+                    onChange={setPaymentTypeFilter}
+                    disabled={paymentsLoading || paymentFieldOptionsLoading}
+                />
+                <SelectInput
+                    name="transactionType"
+                    label="Transaction Type"
+                    keySelector={enumKeySelector}
+                    labelSelector={enumLabelSelector}
+                    options={paymentFieldOptionsResponse?.transactionTypeOptions?.enumValues}
+                    value={transactionTypeFilter}
+                    onChange={setTransactionTypeFilter}
+                    disabled={paymentsLoading || paymentFieldOptionsLoading}
+                />
+                <SelectInput
+                    name="status"
+                    label="Status"
+                    keySelector={enumKeySelector}
+                    labelSelector={enumLabelSelector}
+                    options={paymentFieldOptionsResponse?.statusOptions?.enumValues}
+                    value={statusFilter}
+                    onChange={setStatusFilter}
+                    disabled={paymentsLoading || paymentFieldOptionsLoading}
+                />
+            </div>
             <TableView
                 data={payments}
                 keySelector={paymentKeySelector}
-                emptyMessage="No payments available"
+                emptyMessage="No payments available."
                 columns={columns}
-                filtered={false}
-                errored={false}
+                filtered={filtered}
+                errored={!!error}
                 pending={paymentsLoading}
-                emptyIcon={(
-                    <IoBanOutline />
-                )}
+                erroredEmptyIcon={<IoSearchOutline />}
+                erroredEmptyMessage="Failed to fetch payments."
+                filteredEmptyMessage="No matching payments found."
+                filteredEmptyIcon={<IoFilterSharp />}
+                emptyIcon={<IoBanOutline />}
                 messageShown
                 messageIconShown
             />
