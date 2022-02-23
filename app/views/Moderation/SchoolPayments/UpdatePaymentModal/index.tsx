@@ -12,7 +12,7 @@ import {
     Modal,
     Button,
     NumberInput,
-    SelectInput,
+    RadioInput,
     useAlert,
 } from '@the-deep/deep-ui';
 import {
@@ -29,7 +29,7 @@ import {
     PaymentOptionsQuery,
     PaymentOptionsQueryVariables,
 } from '#generated/types';
-import SchoolSelectInput, { SearchSchoolType } from '#components/SchoolSelectInput';
+import SchoolSelectInput, { SearchUserType } from '#components/SchoolSelectInput';
 import NonFieldError from '#components/NonFieldError';
 import { EnumFix, enumKeySelector, enumLabelSelector } from '#utils/types';
 import {
@@ -38,56 +38,57 @@ import {
 } from '#base/utils/errorTransform';
 
 import { Payment } from '../index';
+import styles from './styles.css';
 
 const PAYMENT_OPTIONS = gql`
-    query PaymentOptions {
-        statusOptions: __type(name: "StatusEnum") {
-            enumValues {
-                name
-                description
-            }
-        }
-        transactionTypeOptions: __type(name: "TransactionTypeEnum") {
-            enumValues {
-                name
-                description
-            }
-        }
-        paymentTypeOptions: __type(name: "PaymentTypeEnum") {
-            enumValues {
-                name
-                description
-            }
+query PaymentOptions {
+    statusOptions: __type(name: "StatusEnum") {
+        enumValues {
+            name
+            description
         }
     }
+    transactionTypeOptions: __type(name: "TransactionTypeEnum") {
+        enumValues {
+            name
+            description
+        }
+    }
+    paymentTypeOptions: __type(name: "PaymentTypeEnum") {
+        enumValues {
+            name
+            description
+        }
+    }
+}
 `;
 
 const CREATE_PAYMENT = gql`
-    mutation CreatePayment($data: PaymentInputType!) {
-        moderatorMutation {
-            createPayment(data: $data) {
-                errors
-                ok
-                result {
-                    id
-                }
+mutation CreatePayment($data: PaymentInputType!) {
+    moderatorMutation {
+        createPayment(data: $data) {
+            errors
+            ok
+            result {
+                id
             }
         }
     }
+}
 `;
 
 const UPDATE_PAYMENT = gql`
-    mutation UpdatePayment($data: PaymentInputType!, $id: ID!) {
-        moderatorMutation {
-            updatePayment(data: $data, id: $id) {
-                errors
-                ok
-                result {
-                    id
-                }
+mutation UpdatePayment($data: PaymentInputType!, $id: ID!) {
+    moderatorMutation {
+        updatePayment(data: $data, id: $id) {
+            errors
+            ok
+            result {
+                id
             }
         }
     }
+}
 `;
 
 type FormType = EnumFix<UpdatePaymentMutationVariables['data'], 'status' | 'paymentType' | 'transactionType'>;
@@ -121,20 +122,24 @@ function UpdatePaymentModal(props: Props) {
         paymentDetails,
     } = props;
 
-    const [schoolOptions, setSchoolOptions] = useState<SearchSchoolType[] | undefined | null>([]);
+    const [schoolOptions, setSchoolOptions] = useState<SearchUserType[] | undefined | null>([]);
     const initialValue: PartialFormType = useMemo(() => (paymentDetails ? {
         amount: paymentDetails.amount,
         paidBy: paymentDetails.paidBy.id,
         paymentType: paymentDetails.paymentType,
         status: paymentDetails.status,
         transactionType: paymentDetails.transactionType,
-    } : {}), [paymentDetails]);
+    } : {
+        paymentType: 'CASH',
+        status: 'PENDING',
+        transactionType: 'CREDIT',
+    }), [paymentDetails]);
 
     useEffect(() => {
         if (paymentDetails?.paidBy) {
             setSchoolOptions([{
                 id: paymentDetails.paidBy.id,
-                name: paymentDetails.paidBy.fullName,
+                fullName: paymentDetails.paidBy.fullName,
             }]);
         }
     }, [paymentDetails]);
@@ -275,10 +280,13 @@ function UpdatePaymentModal(props: Props) {
 
     return (
         <Modal
+            className={styles.updatePaymentModal}
             heading={paymentDetails ? 'Edit Payment' : 'Add Payment'}
+            headingSize="small"
             onCloseButtonClick={onModalClose}
             size="small"
             freeHeight
+            bodyClassName={styles.content}
             footerActions={(
                 <>
                     <Button
@@ -317,34 +325,34 @@ function UpdatePaymentModal(props: Props) {
                 options={schoolOptions}
                 onOptionsChange={setSchoolOptions}
             />
-            <SelectInput
+            <RadioInput
                 name="paymentType"
                 label="Payment Type"
                 keySelector={enumKeySelector}
                 labelSelector={enumLabelSelector}
-                options={paymentFieldOptionsResponse?.paymentTypeOptions?.enumValues}
+                options={paymentFieldOptionsResponse?.paymentTypeOptions?.enumValues ?? []}
                 value={value?.paymentType}
                 error={error?.paymentType}
                 onChange={setFieldValue}
                 disabled={updatePaymentPending || paymentFieldOptionsLoading}
             />
-            <SelectInput
+            <RadioInput
                 name="transactionType"
                 label="Transaction Type"
                 keySelector={enumKeySelector}
                 labelSelector={enumLabelSelector}
-                options={paymentFieldOptionsResponse?.transactionTypeOptions?.enumValues}
+                options={paymentFieldOptionsResponse?.transactionTypeOptions?.enumValues ?? []}
                 value={value?.transactionType}
                 error={error?.transactionType}
                 onChange={setFieldValue}
                 disabled={updatePaymentPending || paymentFieldOptionsLoading}
             />
-            <SelectInput
+            <RadioInput
                 name="status"
                 label="Status"
                 keySelector={enumKeySelector}
                 labelSelector={enumLabelSelector}
-                options={paymentFieldOptionsResponse?.statusOptions?.enumValues}
+                options={paymentFieldOptionsResponse?.statusOptions?.enumValues ?? []}
                 value={value?.status}
                 error={error?.status}
                 onChange={setFieldValue}

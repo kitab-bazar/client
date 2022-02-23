@@ -1,9 +1,6 @@
 import React, { useCallback } from 'react';
 import { _cs } from '@togglecorp/fujs';
-import { FiEdit2 } from 'react-icons/fi';
-import {
-    QuickActionButton,
-} from '@the-deep/deep-ui';
+import { Button } from '@the-deep/deep-ui';
 
 import { Payment } from '../index';
 
@@ -28,14 +25,15 @@ function Actions(props: Props) {
 
     return (
         <div className={_cs(className)}>
-            <QuickActionButton
+            <Button
                 name={undefined}
                 title="Edit payment"
                 onClick={handleEditClick}
                 disabled={disabled}
+                variant="tertiary"
             >
-                <FiEdit2 />
-            </QuickActionButton>
+                Edit
+            </Button>
         </div>
     );
 }

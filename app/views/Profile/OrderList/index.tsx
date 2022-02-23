@@ -25,9 +25,8 @@ const ORDER_LIST_WITH_BOOKS = gql`
 query OrderListWithBooks(
     $pageSize: Int,
     $page: Int,
-    $status: [String!],
 ) {
-    orders(pageSize: $pageSize, page: $page, status: $status) {
+    orders(pageSize: $pageSize, page: $page) {
         page
         pageSize
         totalCount
@@ -80,6 +79,12 @@ function OrderList(props: Props) {
         error,
     } = useQuery<OrderListWithBooksQuery, OrderListWithBooksQueryVariables>(
         ORDER_LIST_WITH_BOOKS,
+        {
+            variables: {
+                page,
+                pageSize: MAX_ITEMS_PER_PAGE,
+            },
+        },
     );
 
     const strings = useTranslation(profile);

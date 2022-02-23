@@ -3,23 +3,26 @@ import {
     SearchSelectInput,
     SearchSelectInputProps,
 } from '@the-deep/deep-ui';
-import { useQuery, gql } from '@apollo/client';
+import {
+    useQuery,
+    gql,
+} from '@apollo/client';
 import {
     SchoolOptionsQuery,
     SchoolOptionsQueryVariables,
-    SchoolType,
+    UserType,
 } from '#generated/types';
 
 import useDebouncedValue from '#hooks/useDebouncedValue';
 
-export type SearchSchoolType = Pick<SchoolType, 'id' | 'name'>;
+export type SearchUserType = Pick<UserType, 'id' | 'fullName'>;
 
 const SCHOOLS = gql`
-    query SchoolOptions($name: String) {
-        schools(name: $name) {
+    query SchoolOptions($search: String) {
+        users(search: $search, userType: SCHOOL_ADMIN) {
             results {
                 id
-                name
+                fullName
             }
             totalCount
         }
@@ -30,15 +33,16 @@ type Def = { containerClassName?: string };
 type SchoolSelectInputProps<K extends string> = SearchSelectInputProps<
     string,
     K,
-    SearchSchoolType,
+    SearchUserType,
     Def,
     'onSearchValueChange' | 'searchOptions' | 'optionsPending' | 'keySelector' | 'labelSelector' | 'totalOptionsCount' | 'onShowDropdownChange'
 >;
 
-const keySelector = (d: SearchSchoolType) => d.id;
+const keySelector = (d: SearchUserType) => d.id;
 
-export function schoolTitleSelector(school: SearchSchoolType) {
-    return school.name;
+export function userTitleSelector(user: SearchUserType) {
+    // FIXME: use canonicalName
+    return user.fullName || 'Server will fix this';
 }
 
 function SchoolSelectInput<K extends string>(props: SchoolSelectInputProps<K>) {
@@ -52,7 +56,7 @@ function SchoolSelectInput<K extends string>(props: SchoolSelectInputProps<K>) {
     const debouncedSearchText = useDebouncedValue(searchText);
 
     const variables = useMemo(() => ({
-        name: debouncedSearchText,
+        search: debouncedSearchText,
     }), [debouncedSearchText]);
 
     const {
@@ -72,11 +76,11 @@ function SchoolSelectInput<K extends string>(props: SchoolSelectInputProps<K>) {
             {...otherProps}
             className={className}
             keySelector={keySelector}
-            labelSelector={schoolTitleSelector}
+            labelSelector={userTitleSelector}
             onSearchValueChange={setSearchText}
-            searchOptions={data?.schools?.results}
+            searchOptions={data?.users?.results}
             optionsPending={loading}
-            totalOptionsCount={data?.schools?.totalCount ?? undefined}
+            totalOptionsCount={data?.users?.totalCount ?? undefined}
             onShowDropdownChange={setOpened}
         />
     );

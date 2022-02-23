@@ -1,6 +1,12 @@
-import React, { useMemo, useState, useCallback } from 'react';
-import { isDefined } from '@togglecorp/fujs';
-import { IoBanOutline, IoSearchOutline, IoFilterSharp } from 'react-icons/io5';
+import {
+    isDefined,
+    _cs,
+} from '@togglecorp/fujs';
+import React, {
+    useMemo,
+    useState,
+    useCallback,
+} from 'react';
 import {
     Button,
     Container,
@@ -18,7 +24,6 @@ import {
     gql,
     useQuery,
 } from '@apollo/client';
-
 import {
     PaymentsQuery,
     PaymentsQueryVariables,
@@ -33,67 +38,68 @@ import UpdatePaymentModal from './UpdatePaymentModal';
 import styles from './styles.css';
 
 const PAYMENT_OPTIONS = gql`
-    query PaymentOptions {
-        statusOptions: __type(name: "StatusEnum") {
-            enumValues {
-                name
-                description
-            }
-        }
-        transactionTypeOptions: __type(name: "TransactionTypeEnum") {
-            enumValues {
-                name
-                description
-            }
-        }
-        paymentTypeOptions: __type(name: "PaymentTypeEnum") {
-            enumValues {
-                name
-                description
-            }
+query PaymentOptions {
+    statusOptions: __type(name: "StatusEnum") {
+        enumValues {
+            name
+            description
         }
     }
+    transactionTypeOptions: __type(name: "TransactionTypeEnum") {
+        enumValues {
+            name
+            description
+        }
+    }
+    paymentTypeOptions: __type(name: "PaymentTypeEnum") {
+        enumValues {
+            name
+            description
+        }
+    }
+}
 `;
+
 const PAYMENTS = gql`
-    query Payments(
-        $ordering: String,
-        $page: Int,
-        $pageSize: Int,
-        $paymentType: PaymentTypeEnum,
-        $status: StatusEnum,
-        $transactionType: TransactionTypeEnum,
-    ) {
-        moderatorQuery {
-            payments(
-                ordering: $ordering,
-                page: $page,
-                pageSize: $pageSize,
-                paymentType: $paymentType,
-                status: $status,
-                transactionType: $transactionType,
-            ) {
-                page
-                pageSize
-                results {
+query Payments(
+    $ordering: String,
+    $page: Int,
+    $pageSize: Int,
+    $paymentType: PaymentTypeEnum,
+    $status: StatusEnum,
+    $transactionType: TransactionTypeEnum,
+) {
+    moderatorQuery {
+        payments(
+            ordering: $ordering,
+            page: $page,
+            pageSize: $pageSize,
+            paymentType: $paymentType,
+            status: $status,
+            transactionType: $transactionType,
+        ) {
+            page
+            pageSize
+            results {
+                id
+                amount
+                createdAt
+                createdBy {
                     id
-                    amount
-                    createdAt
-                    createdBy {
-                        id
-                        fullName
-                    }
-                    paidBy {
-                        fullName
-                        id
-                    }
-                    paymentType
-                    status
-                    transactionType
+                    fullName
                 }
-                totalCount
+                paidBy {
+                    fullName
+                    id
+                }
+                paymentType
+                status
+                transactionType
             }
+            totalCount
         }
     }
+}
 `;
 
 export type Payment = NonNullable<NonNullable<NonNullable<PaymentsQuery['moderatorQuery']>['payments']>['results']>[number];
@@ -152,7 +158,8 @@ function SchoolPayments(props: Props) {
     );
 
     const {
-        data: paymentsQueryResponse,
+        previousData,
+        data: paymentsQueryResponse = previousData,
         loading: paymentsLoading,
         refetch: refetchPayments,
         error,
@@ -186,7 +193,10 @@ function SchoolPayments(props: Props) {
 
     const columns = useMemo(() => {
         const actionsColumn: TableColumn<
-            Payment, string, ActionsProps, TableHeaderCellProps
+            Payment,
+            string,
+            ActionsProps,
+            TableHeaderCellProps
         > = {
             id: 'actions',
             title: '',
@@ -200,17 +210,19 @@ function SchoolPayments(props: Props) {
                 onEditClick: handleEditPayment,
                 disabled: paymentsLoading,
             }),
+            columnWidth: 120,
         };
 
         return [
             createStringColumn<Payment, string>(
                 'id',
-                'Payment ID',
+                'ID',
                 (item) => item.id,
+                { columnWidth: 50 },
             ),
             createDateColumn<Payment, string>(
                 'createdAt',
-                'Payment Added On',
+                'Added On',
                 (item) => item.createdAt,
             ),
             createNumberColumn<Payment, string>(
@@ -226,7 +238,8 @@ function SchoolPayments(props: Props) {
             createStringColumn<Payment, string>(
                 'paidBy',
                 'Paid By',
-                (item) => item.paidBy.fullName,
+                // FIXME: use canonicalName
+                (item) => item.paidBy.fullName || 'Will be fixed by server',
             ),
             createStringColumn<Payment, string>(
                 'status',
@@ -249,8 +262,9 @@ function SchoolPayments(props: Props) {
 
     return (
         <Container
-            className={className}
+            className={_cs(styles.schoolPayments, className)}
             heading="Payments"
+            headingSize="small"
             headerActions={(
                 <Button
                     name={undefined}
@@ -269,40 +283,53 @@ function SchoolPayments(props: Props) {
                     onActivePageChange={setActivePage}
                 />
             )}
+            headerDescriptionClassName={styles.filters}
+            headerDescription={(
+                <>
+                    <SelectInput
+                        className={styles.filterInput}
+                        name="paymentType"
+                        label="Payment Type"
+                        placeholder="All"
+                        keySelector={enumKeySelector}
+                        labelSelector={enumLabelSelector}
+                        options={paymentFieldOptionsResponse?.paymentTypeOptions?.enumValues}
+                        value={paymentTypeFilter}
+                        onChange={setPaymentTypeFilter}
+                        disabled={paymentsLoading || paymentFieldOptionsLoading}
+                        variant="general"
+                    />
+                    <SelectInput
+                        className={styles.filterInput}
+                        name="transactionType"
+                        label="Transaction Type"
+                        placeholder="All"
+                        keySelector={enumKeySelector}
+                        labelSelector={enumLabelSelector}
+                        options={paymentFieldOptionsResponse?.transactionTypeOptions?.enumValues}
+                        value={transactionTypeFilter}
+                        onChange={setTransactionTypeFilter}
+                        disabled={paymentsLoading || paymentFieldOptionsLoading}
+                        variant="general"
+                    />
+                    <SelectInput
+                        className={styles.filterInput}
+                        name="status"
+                        label="Status"
+                        placeholder="All"
+                        keySelector={enumKeySelector}
+                        labelSelector={enumLabelSelector}
+                        options={paymentFieldOptionsResponse?.statusOptions?.enumValues}
+                        value={statusFilter}
+                        onChange={setStatusFilter}
+                        disabled={paymentsLoading || paymentFieldOptionsLoading}
+                        variant="general"
+                    />
+                </>
+            )}
         >
-            <div className={styles.filters}>
-                <SelectInput
-                    name="paymentType"
-                    label="Payment Type"
-                    keySelector={enumKeySelector}
-                    labelSelector={enumLabelSelector}
-                    options={paymentFieldOptionsResponse?.paymentTypeOptions?.enumValues}
-                    value={paymentTypeFilter}
-                    onChange={setPaymentTypeFilter}
-                    disabled={paymentsLoading || paymentFieldOptionsLoading}
-                />
-                <SelectInput
-                    name="transactionType"
-                    label="Transaction Type"
-                    keySelector={enumKeySelector}
-                    labelSelector={enumLabelSelector}
-                    options={paymentFieldOptionsResponse?.transactionTypeOptions?.enumValues}
-                    value={transactionTypeFilter}
-                    onChange={setTransactionTypeFilter}
-                    disabled={paymentsLoading || paymentFieldOptionsLoading}
-                />
-                <SelectInput
-                    name="status"
-                    label="Status"
-                    keySelector={enumKeySelector}
-                    labelSelector={enumLabelSelector}
-                    options={paymentFieldOptionsResponse?.statusOptions?.enumValues}
-                    value={statusFilter}
-                    onChange={setStatusFilter}
-                    disabled={paymentsLoading || paymentFieldOptionsLoading}
-                />
-            </div>
             <TableView
+                className={styles.table}
                 data={payments}
                 keySelector={paymentKeySelector}
                 emptyMessage="No payments available."
@@ -310,13 +337,9 @@ function SchoolPayments(props: Props) {
                 filtered={filtered}
                 errored={!!error}
                 pending={paymentsLoading}
-                erroredEmptyIcon={<IoSearchOutline />}
                 erroredEmptyMessage="Failed to fetch payments."
                 filteredEmptyMessage="No matching payments found."
-                filteredEmptyIcon={<IoFilterSharp />}
-                emptyIcon={<IoBanOutline />}
                 messageShown
-                messageIconShown
             />
             {updatePaymentModalShown && (
                 <UpdatePaymentModal
