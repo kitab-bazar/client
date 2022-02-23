@@ -9,7 +9,7 @@ interface ErrorProps {
     content?: string;
 }
 
-function MessagePage(props: ErrorProps) {
+function PreloadMessage(props: ErrorProps) {
     const {
         className,
         heading,
@@ -17,7 +17,7 @@ function MessagePage(props: ErrorProps) {
     } = props;
 
     return (
-        <div className={_cs(className, styles.container)}>
+        <div className={_cs(className, styles.preloadMessage)}>
             {heading && (
                 <h1 className={styles.heading}>
                     {heading}
@@ -32,4 +32,4 @@ function MessagePage(props: ErrorProps) {
     );
 }
 
-export default MessagePage;
+export default PreloadMessage;

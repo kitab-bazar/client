@@ -1,9 +1,10 @@
-.container {
+.preload-message {
     display: flex;
     align-items: center;
     flex-direction: column;
     flex-grow: 1;
     justify-content: center;
+    min-height: 70vh;
 
     .heading {
         color: var(--dui-color-danger);
