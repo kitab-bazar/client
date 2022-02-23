@@ -104,17 +104,6 @@ query Payments(
 
 export type Payment = NonNullable<NonNullable<NonNullable<PaymentsQuery['moderatorQuery']>['payments']>['results']>[number];
 
-const statusLabelMap: { [key in Payment['status']]: string } = {
-    PENDING: 'Pending',
-    VERIFIED: 'Verified',
-    CANCELLED: 'Canceled',
-};
-
-const transactionTypeLabelMap: {[key in Payment['transactionType']]: string} = {
-    CREDIT: 'Credit',
-    DEBIT: 'Debit',
-};
-
 function paymentKeySelector(payment: Payment) {
     return payment.id;
 }
@@ -161,8 +150,8 @@ function SchoolPayments(props: Props) {
         previousData,
         data: paymentsQueryResponse = previousData,
         loading: paymentsLoading,
-        refetch: refetchPayments,
         error,
+        refetch,
     } = useQuery<PaymentsQuery, PaymentsQueryVariables>(
         PAYMENTS,
         { variables },
@@ -188,8 +177,9 @@ function SchoolPayments(props: Props) {
 
     const handleUpdateSuccess = useCallback(() => {
         setSelectedPaymentId(undefined);
-        refetchPayments();
-    }, [refetchPayments]);
+        // FIXME: only refetch on create (not on update)
+        refetch();
+    }, [refetch]);
 
     const columns = useMemo(() => {
         const actionsColumn: TableColumn<
@@ -244,18 +234,19 @@ function SchoolPayments(props: Props) {
             createStringColumn<Payment, string>(
                 'status',
                 'Status',
-                (item) => statusLabelMap[item.status],
+                (item) => item.status,
             ),
             createStringColumn<Payment, string>(
                 'trasactionType',
                 'Type',
-                (item) => transactionTypeLabelMap[item.transactionType],
+                (item) => item.transactionType,
             ),
             actionsColumn,
         ];
     }, [handleEditPayment, paymentsLoading]);
 
     const selectedPayment = payments?.find((payment) => payment.id === selectedPaymentId);
+
     const filtered = isDefined(paymentTypeFilter)
                   || isDefined(statusFilter)
                   || isDefined(transactionTypeFilter);
@@ -296,7 +287,7 @@ function SchoolPayments(props: Props) {
                         options={paymentFieldOptionsResponse?.paymentTypeOptions?.enumValues}
                         value={paymentTypeFilter}
                         onChange={setPaymentTypeFilter}
-                        disabled={paymentsLoading || paymentFieldOptionsLoading}
+                        disabled={paymentFieldOptionsLoading}
                         variant="general"
                     />
                     <SelectInput
@@ -309,7 +300,7 @@ function SchoolPayments(props: Props) {
                         options={paymentFieldOptionsResponse?.transactionTypeOptions?.enumValues}
                         value={transactionTypeFilter}
                         onChange={setTransactionTypeFilter}
-                        disabled={paymentsLoading || paymentFieldOptionsLoading}
+                        disabled={paymentFieldOptionsLoading}
                         variant="general"
                     />
                     <SelectInput
@@ -322,7 +313,7 @@ function SchoolPayments(props: Props) {
                         options={paymentFieldOptionsResponse?.statusOptions?.enumValues}
                         value={statusFilter}
                         onChange={setStatusFilter}
-                        disabled={paymentsLoading || paymentFieldOptionsLoading}
+                        disabled={paymentFieldOptionsLoading}
                         variant="general"
                     />
                 </>

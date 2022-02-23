@@ -1,13 +1,13 @@
 import {
     UserPermissions,
-    UserUserType,
+    UserTypeEnum,
 } from '#generated/types';
 
 export interface User {
     id: string;
     displayName: string | undefined;
     displayPictureUrl: string | undefined;
-    type: UserUserType;
+    type: UserTypeEnum;
     permissions: UserPermissions[];
 
     publisherId: string | undefined;

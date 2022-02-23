@@ -8,7 +8,7 @@ import {
     lengthSmallerThanCondition,
 } from '@togglecorp/toggle-form';
 
-import { UserUserType } from '#generated/types';
+import { UserTypeEnum } from '#generated/types';
 
 interface BaseExtraFields {
     name: string;
@@ -34,7 +34,7 @@ export interface RegisterFormType {
     firstName?: string;
     lastName?: string;
     password: string;
-    userType: UserUserType;
+    userType: UserTypeEnum;
     phoneNumber: string;
     institution?: InstitutionFields;
     publisher?: PublisherFields;

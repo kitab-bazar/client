@@ -27,7 +27,7 @@ import {
     ObjectError,
 } from '#base/utils/errorTransform';
 import {
-    UserUserType,
+    UserTypeEnum,
     RegisterMutation,
     RegisterMutationVariables,
 } from '#generated/types';
@@ -46,7 +46,7 @@ import SchoolForm from './SchoolForm';
 import styles from './styles.css';
 
 interface UserType {
-    id: UserUserType;
+    id: UserTypeEnum;
     title: string;
 }
 

@@ -49,28 +49,30 @@ query SchoolList(
     $page: Int,
     $search: String,
 ) {
-    users(
-        pageSize: $pageSize,
-        page: $page,
-        search: $search,
-    ) {
-        totalCount
-        results {
-            id
-            userType
-            school {
+    moderatorQuery {
+        users(
+            pageSize: $pageSize,
+            page: $page,
+            search: $search,
+        ) {
+            totalCount
+            results {
                 id
-                name
-                localAddress
-                vatNumber
-                panNumber
-                wardNumber
-                municipality {
+                userType
+                school {
                     id
                     name
-                    district {
+                    localAddress
+                    vatNumber
+                    panNumber
+                    wardNumber
+                    municipality {
                         id
                         name
+                        district {
+                            id
+                            name
+                        }
                     }
                 }
             }
@@ -79,7 +81,7 @@ query SchoolList(
 }
 `;
 
-type SchoolItem = NonNullable<NonNullable<SchoolListQuery['users']>['results']>[number];
+type SchoolItem = NonNullable<NonNullable<NonNullable<SchoolListQuery['moderatorQuery']>['users']>['results']>[number];
 const schoolItemKeySelector = (d: SchoolItem) => d.id;
 
 interface SchoolItemProps {
@@ -191,7 +193,7 @@ function Schools(props: Props) {
             </div>
             <ListView
                 className={styles.schoolItemList}
-                data={data?.users?.results ?? undefined}
+                data={data?.moderatorQuery?.users?.results ?? undefined}
                 pending={loading}
                 rendererParams={schoolItemRendererParams}
                 renderer={SchoolItem}
@@ -210,7 +212,7 @@ function Schools(props: Props) {
                 className={styles.pager}
                 activePage={activePage}
                 maxItemsPerPage={maxItemsPerPage}
-                itemsCount={data?.users?.totalCount ?? 0}
+                itemsCount={data?.moderatorQuery?.users?.totalCount ?? 0}
                 onActivePageChange={setActivePage}
                 onItemsPerPageChange={setMaxItemsPerPage}
             />

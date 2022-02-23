@@ -19,12 +19,14 @@ export type SearchUserType = Pick<UserType, 'id' | 'fullName'>;
 
 const SCHOOLS = gql`
     query SchoolOptions($search: String) {
-        users(search: $search, userType: SCHOOL_ADMIN) {
-            results {
-                id
-                fullName
+        moderatorQuery {
+            users(search: $search, userType: SCHOOL_ADMIN) {
+                results {
+                    id
+                    fullName
+                }
+                totalCount
             }
-            totalCount
         }
     }
 `;
@@ -78,9 +80,9 @@ function SchoolSelectInput<K extends string>(props: SchoolSelectInputProps<K>) {
             keySelector={keySelector}
             labelSelector={userTitleSelector}
             onSearchValueChange={setSearchText}
-            searchOptions={data?.users?.results}
+            searchOptions={data?.moderatorQuery?.users?.results}
             optionsPending={loading}
-            totalOptionsCount={data?.users?.totalCount ?? undefined}
+            totalOptionsCount={data?.moderatorQuery?.users?.totalCount ?? undefined}
             onShowDropdownChange={setOpened}
         />
     );

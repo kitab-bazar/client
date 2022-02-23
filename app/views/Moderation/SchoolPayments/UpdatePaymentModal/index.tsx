@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback, useEffect } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import {
     ObjectSchema,
     PartialForm,
@@ -6,6 +6,7 @@ import {
     createSubmitHandler,
     getErrorObject,
     requiredCondition,
+    greaterThanCondition,
     removeNull,
 } from '@togglecorp/toggle-form';
 import {
@@ -85,6 +86,14 @@ mutation UpdatePayment($data: PaymentInputType!, $id: ID!) {
             ok
             result {
                 id
+                amount
+                paidBy {
+                    fullName
+                    id
+                }
+                paymentType
+                status
+                transactionType
             }
         }
     }
@@ -99,7 +108,7 @@ type FormSchemaFields = ReturnType<FormSchema['fields']>;
 const schema: FormSchema = {
     fields: (): FormSchemaFields => {
         const basicFields: FormSchemaFields = {
-            amount: [requiredCondition],
+            amount: [requiredCondition, greaterThanCondition(0)],
             paidBy: [requiredCondition],
             paymentType: [requiredCondition],
             status: [requiredCondition],
@@ -122,7 +131,18 @@ function UpdatePaymentModal(props: Props) {
         paymentDetails,
     } = props;
 
-    const [schoolOptions, setSchoolOptions] = useState<SearchUserType[] | undefined | null>([]);
+    const [schoolOptions, setSchoolOptions] = useState<SearchUserType[] | undefined | null>(
+        () => {
+            if (paymentDetails?.paidBy) {
+                return [{
+                    id: paymentDetails.paidBy.id,
+                    fullName: paymentDetails.paidBy.fullName,
+                }];
+            }
+            return [];
+        },
+    );
+
     const initialValue: PartialFormType = useMemo(() => (paymentDetails ? {
         amount: paymentDetails.amount,
         paidBy: paymentDetails.paidBy.id,
@@ -134,15 +154,6 @@ function UpdatePaymentModal(props: Props) {
         status: 'PENDING',
         transactionType: 'CREDIT',
     }), [paymentDetails]);
-
-    useEffect(() => {
-        if (paymentDetails?.paidBy) {
-            setSchoolOptions([{
-                id: paymentDetails.paidBy.id,
-                fullName: paymentDetails.paidBy.fullName,
-            }]);
-        }
-    }, [paymentDetails]);
 
     const {
         pristine,
@@ -171,10 +182,7 @@ function UpdatePaymentModal(props: Props) {
         {
             onCompleted: (response) => {
                 const { moderatorMutation } = response;
-                if (!moderatorMutation) {
-                    return;
-                }
-                if (!moderatorMutation.createPayment) {
+                if (!moderatorMutation?.createPayment) {
                     return;
                 }
 
@@ -219,10 +227,7 @@ function UpdatePaymentModal(props: Props) {
         {
             onCompleted: (response) => {
                 const { moderatorMutation } = response;
-                if (!moderatorMutation) {
-                    return;
-                }
-                if (!moderatorMutation.updatePayment) {
+                if (!moderatorMutation?.updatePayment) {
                     return;
                 }
 
@@ -324,6 +329,7 @@ function UpdatePaymentModal(props: Props) {
                 error={error?.paidBy}
                 options={schoolOptions}
                 onOptionsChange={setSchoolOptions}
+                disabled={updatePaymentPending}
             />
             <RadioInput
                 name="paymentType"

@@ -35,7 +35,13 @@ const link: ApolloLinkFromClient = ApolloLinkFromClient.concat(
 
 const apolloOptions: ApolloClientOptions<NormalizedCacheObject> = {
     link,
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+        typePolicies: {
+            ModeratorQueryType: {
+                keyFields: [], // empty keyFields means the ModeratorQueryType is a singleton object
+            },
+        },
+    }),
     assumeImmutableResults: true,
     defaultOptions: {
         query: {
