@@ -36,6 +36,7 @@ query OrderListWithBooks(
             orderCode
             status
             totalPrice
+            totalQuantity
             bookOrders {
                 totalCount
                 results {

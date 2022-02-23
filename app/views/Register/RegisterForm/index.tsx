@@ -40,7 +40,7 @@ import {
 } from './common';
 
 import { MunicipalityOption } from './LocationInput';
-import InstitutionForm from './InstitutionForm';
+// import InstitutionForm from './InstitutionForm';
 import PublisherForm from './PublisherForm';
 import SchoolForm from './SchoolForm';
 import styles from './styles.css';
@@ -240,7 +240,7 @@ function RegisterForm() {
                     error={error?.userType}
                     disabled={registerPending}
                 />
-                {value.userType === 'INDIVIDUAL_USER' && (
+                {/* value.userType === 'INDIVIDUAL_USER' && (
                     <>
                         <TextInput
                             name="firstName"
@@ -259,8 +259,8 @@ function RegisterForm() {
                             disabled={registerPending}
                         />
                     </>
-                )}
-                {value.userType === 'INSTITUTIONAL_USER' && (
+                ) */}
+                {/* value.userType === 'INSTITUTIONAL_USER' && (
                     <InstitutionForm
                         name="institution"
                         value={value.institution}
@@ -270,7 +270,7 @@ function RegisterForm() {
                         municipalityOptions={municipalityOptions}
                         onMunicipalityOptionsChange={setMunicipalityOptions}
                     />
-                )}
+                ) */}
                 {value.userType === 'PUBLISHER' && (
                     <PublisherForm
                         name="publisher"

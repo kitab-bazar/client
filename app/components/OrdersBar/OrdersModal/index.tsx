@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
     gql,
     useQuery,
@@ -14,6 +14,7 @@ import {
     useAlert,
     useModalState,
 } from '@the-deep/deep-ui';
+import { NavbarContext } from '#base/context/NavbarContext';
 
 import { ordersBar } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
@@ -101,6 +102,8 @@ function OrdersModal(props: Props) {
     const strings = useTranslation(ordersBar);
     const alert = useAlert();
 
+    const { reset } = useContext(NavbarContext);
+
     const [page, setPage] = useState<number>(1);
     const [
         showOrderSuccessfulModal,
@@ -170,11 +173,6 @@ function OrdersModal(props: Props) {
     const handleOrderBooksClick = React.useCallback(() => {
         createOrderFromCart();
     }, [createOrderFromCart]);
-
-    const handleDoneButtonClick = React.useCallback(() => {
-        window.location.reload();
-        onClose();
-    }, [onClose]);
 
     return (
         <>
@@ -255,7 +253,7 @@ function OrdersModal(props: Props) {
                     footer={(
                         <Button
                             name={undefined}
-                            onClick={handleDoneButtonClick}
+                            onClick={reset}
                         >
                             {strings.doneButtonLabel}
                         </Button>

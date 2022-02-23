@@ -1,17 +1,41 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { _cs } from '@togglecorp/fujs';
+import { gql, useMutation } from '@apollo/client';
 import {
     Container,
     TextOutput,
+    Button,
+    useBooleanState,
+    useAlert,
+    Modal,
+    useInputState,
+    TextArea,
 } from '@the-deep/deep-ui';
 import { orderItem } from '#base/configs/lang';
 import { resolveToString } from '#base/utils/lang';
 import useTranslation from '#base/hooks/useTranslation';
-import { OrderType } from '#generated/types';
+import {
+    OrderType,
+    CancelOrderMutation,
+    CancelOrderMutationVariables,
+} from '#generated/types';
 
 import NumberOutput from '#components/NumberOutput';
 
 import styles from './styles.css';
+
+const CANCEL_ORDER = gql`
+mutation CancelOrder($id: ID!, $comment: String) {
+    updateOrder(data: {comment: $comment, status: CANCELLED}, id: $id) {
+        result {
+            id
+            status
+        }
+        errors
+        ok
+    }
+}
+`;
 
 export type Order = Pick<OrderType, 'id' | 'orderCode' | 'totalPrice' | 'status' | 'totalQuantity'>
 
@@ -35,35 +59,96 @@ function OrderItem(props: Props) {
         status,
     } = order;
 
+    const alert = useAlert();
+
+    const [
+        orderCancelModalShown,
+        showModal,
+        hideModal,
+    ] = useBooleanState(false);
+
+    const [comments, setComments] = useInputState<string | undefined>('');
+
     const strings = useTranslation(orderItem);
     const title = resolveToString(
         strings.orderTitle,
         { code: orderCode?.split('-')?.[0] },
     );
 
-    const handleClick = React.useCallback(() => {
+    const handleClick = useCallback(() => {
         if (onClick) {
             onClick(order.id);
         }
     }, [onClick, order.id]);
 
+    const [
+        cancelOrder,
+        { loading: cancelOrderLoading },
+    ] = useMutation<CancelOrderMutation, CancelOrderMutationVariables>(
+        CANCEL_ORDER,
+        {
+            onCompleted: (response) => {
+                if (!response?.updateOrder?.ok) {
+                    alert.show(
+                        strings.cancelOrderFailureMessage,
+                        { variant: 'error' },
+                    );
+                } else {
+                    hideModal();
+                }
+            },
+            onError: (errors) => {
+                alert.show(
+                    errors.message,
+                    { variant: 'error' },
+                );
+            },
+        },
+    );
+
+    const handleOrderCancel = useCallback(
+        () => {
+            cancelOrder({
+                variables: {
+                    id: order.id,
+                    comment: comments,
+                },
+            });
+        },
+        [order.id, comments, cancelOrder],
+    );
+
     return (
         <Container
             className={_cs(
                 styles.orderItem,
-                onClick && styles.clickable,
                 className,
             )}
-            containerElementProps={
-                onClick ? { onClick: handleClick } : undefined
-            }
             contentClassName={styles.orderMeta}
-            heading={title}
-            headingClassName={styles.heading}
+            heading={(
+                <Button
+                    className={styles.bookTitle}
+                    name={undefined}
+                    variant="action"
+                    onClick={onClick ? handleClick : undefined}
+                >
+                    {title}
+                </Button>
+            )}
             headingSize="extraSmall"
-            headingContainerClassName={styles.heading}
-            footerActions={status}
-            footerActionsContainerClassName={styles.status}
+            headerActions={status}
+            headerActionsContainerClassName={styles.status}
+            footerActions={(
+                status === 'PENDING' && (
+                    <Button
+                        name={undefined}
+                        variant="tertiary"
+                        onClick={showModal}
+                    >
+                        {strings.cancelOrderButtonLabel}
+                    </Button>
+                )
+            )}
         >
             <TextOutput
                 label={strings.booksLabel}
@@ -82,6 +167,41 @@ function OrderItem(props: Props) {
                     />
                 )}
             />
+            {orderCancelModalShown && (
+                <Modal
+                    heading={strings.cancelOrderModalHeader}
+                    onCloseButtonClick={hideModal}
+                    size="medium"
+                    freeHeight
+                    footerActions={(
+                        <>
+                            <Button
+                                name={undefined}
+                                onClick={hideModal}
+                                variant="secondary"
+                            >
+                                {strings.cancelOrderModalCancelButtonLabel}
+                            </Button>
+                            <Button
+                                name={undefined}
+                                variant="primary"
+                                onClick={handleOrderCancel}
+                                disabled={!comments || cancelOrderLoading}
+                            >
+                                {strings.cancelOrderModalSaveButtonLabel}
+                            </Button>
+                        </>
+                    )}
+                >
+                    <TextArea
+                        name="comments"
+                        value={comments}
+                        onChange={setComments}
+                        variant="general"
+                        label={strings.cancelOrderModalCommentsLabel}
+                    />
+                </Modal>
+            )}
         </Container>
     );
 }

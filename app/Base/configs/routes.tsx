@@ -85,7 +85,7 @@ const myProfile = wrap({
     componentProps: {
     },
     visibility: 'is-authenticated',
-    checkPermissions: (user) => user?.type === 'SCHOOL_ADMIN' || user?.type === 'PUBLISHER',
+    checkPermissions: (user) => user?.type !== 'MODERATOR',
 });
 const wishList = wrap({
     path: '/wish-list/',
@@ -96,7 +96,7 @@ const wishList = wrap({
         wishList: true,
     },
     visibility: 'is-authenticated',
-    checkPermissions: (user) => user?.type === 'SCHOOL_ADMIN',
+    checkPermissions: (user) => user?.type !== 'MODERATOR' && user?.type !== 'PUBLISHER',
 });
 const moderation = wrap({
     path: '/moderation/',
