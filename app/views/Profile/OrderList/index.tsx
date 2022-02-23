@@ -18,8 +18,11 @@ import { profile } from '#base/configs/lang';
 import {
     OrderListWithBooksQuery,
     OrderListWithBooksQueryVariables,
+
+    OrderSummaryQuery,
 } from '#generated/types';
 
+import { ORDER_SUMMARY } from './queries';
 import OrderDetail from './OrderDetail';
 import styles from './styles.css';
 
@@ -55,11 +58,6 @@ query OrderListWithBooks(
             }
         }
     }
-    orderSummary {
-        totalBooks
-        totalBooksQuantity
-        totalPrice
-    }
 }
 `;
 
@@ -94,6 +92,13 @@ function OrderList(props: Props) {
         },
     );
 
+    const {
+        previousData: summaryPreviousData,
+        data: summaryResponse = summaryPreviousData,
+    } = useQuery<OrderSummaryQuery>(
+        ORDER_SUMMARY,
+    );
+
     const strings = useTranslation(profile);
 
     const orderListRendererParams = useCallback((_, data: Order): OrderItemProps => ({
@@ -108,28 +113,40 @@ function OrderList(props: Props) {
 
     return (
         <div className={_cs(styles.orderList, className)}>
-            {response && response.orderSummary && (
+            {response && summaryResponse?.orderSummary && (
                 <div className={styles.summary}>
                     <TextOutput
                         spacing="compact"
                         block
                         valueContainerClassName={styles.value}
                         label={strings.totalAmountLabel}
-                        value={<NumberOutput value={response.orderSummary.totalPrice} />}
+                        value={(
+                            <NumberOutput
+                                value={summaryResponse.orderSummary.totalPrice}
+                            />
+                        )}
                     />
                     <TextOutput
                         spacing="compact"
                         block
                         valueContainerClassName={styles.value}
                         label={strings.totalBooksLabel}
-                        value={<NumberOutput value={response.orderSummary.totalBooksQuantity} />}
+                        value={(
+                            <NumberOutput
+                                value={summaryResponse.orderSummary.totalBooksQuantity}
+                            />
+                        )}
                     />
                     <TextOutput
                         spacing="compact"
                         block
                         valueContainerClassName={styles.value}
                         label={strings.uniqueBooksLabel}
-                        value={<NumberOutput value={response.orderSummary.totalBooks} />}
+                        value={(
+                            <NumberOutput
+                                value={summaryResponse.orderSummary.totalBooks}
+                            />
+                        )}
                     />
                 </div>
             )}

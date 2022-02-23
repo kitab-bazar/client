@@ -1,6 +1,4 @@
 .profile {
-    min-height: 70vh;
-
     .page-container {
         width: 100%;
         max-width: var(--kitab-page-max-width);
