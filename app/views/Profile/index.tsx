@@ -88,13 +88,12 @@ function Profile(props: Props) {
 
     const userDetails = profileData?.me;
     let nameLabel;
+
     let profileDetails;
     if (userDetails?.userType === 'SCHOOL_ADMIN') {
         profileDetails = userDetails?.school;
         nameLabel = strings.schoolNameLabel;
-    }
-
-    if (userDetails?.userType === 'PUBLISHER') {
+    } else if (userDetails?.userType === 'PUBLISHER') {
         profileDetails = userDetails?.publisher;
         nameLabel = strings.publisherNameLabel;
     }

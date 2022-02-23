@@ -372,7 +372,7 @@ export const explore = {
 export const footer = {
     tagLineLabel: {
         en: 'Where reading gets better!',
-        ne: 'जहाँ पठन बन्छ रमणीय!',
+        ne: 'किताबको पहुँचबाट शिक्षाको बिकास।',
     },
     faqButtonLabel: {
         en: 'FAQs',
@@ -392,11 +392,11 @@ export const footer = {
     },
     exploreByGradeHeading: {
         en: 'Grade',
-        ne: 'Grade',
+        ne: 'श्रेणी',
     },
     exploreByCategoryHeading: {
         en: 'Category',
-        ne: 'Category',
+        ne: 'वर्ग',
     },
 };
 

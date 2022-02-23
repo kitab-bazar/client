@@ -175,39 +175,35 @@ function Explore(props: Props) {
 
     const canAddBook = user?.permissions.includes('CAN_CREATE_BOOK');
 
-    const [selectedBookId, setSelectedBookId] = React.useState<string | undefined>();
-    const [page, setPage] = useState<number>(1);
-
-    const [grade, setGrade] = useInputState<string | undefined>(locationState?.grade);
-
     // NOTE: A different UI depending on if user is publisher or not
     const publisherId = user?.publisherId;
+
+    const [selectedBookId, setSelectedBookId] = React.useState<string | undefined>();
+    const [selectedSortKey, setSelectedSortKey] = useInputState<SortKeyType>('id');
+    const [page, setPage] = useState<number>(1);
+
+    // Filters
+
     // NOTE: only used when in publisher mode
     const [bookSource, setBookSource] = useInputState<BookSource | undefined>('own');
 
+    const [grade, setGrade] = useInputState<string | undefined>(locationState?.grade);
     const [categories, setCategories] = useInputState<string[] | undefined>(
         locationState?.category ? [locationState?.category] : undefined,
     );
-
-    const [selectedSortKey, setSelectedSortKey] = useInputState<SortKeyType>('id');
     const [search, setSearch] = useInputState<string | undefined>(undefined);
     const [publisher, setPublisher] = useInputState<string | undefined>(locationState?.publisher);
 
     useDidUpdateEffect(() => {
         if (locationState) {
-            if (isDefined(locationState.category)) {
-                setCategories([locationState.category]);
-            }
-
-            if (isDefined(locationState.grade)) {
-                setGrade(locationState.grade);
-            }
-
-            if (isDefined(locationState.publisher)) {
-                setPublisher(locationState.publisher);
-            }
+            setCategories(locationState.category ? [locationState.category] : []);
+            setGrade(locationState.grade);
+            setPublisher(locationState.publisher);
+            setSearch(undefined);
         }
-    }, [locationState, setCategories, setGrade, setPublisher]);
+    }, [locationState, setCategories, setGrade, setPublisher, setSearch]);
+
+    const filtered = (categories && categories.length > 0) || !!publisher || !!grade;
 
     // eslint-disable-next-line no-nested-ternary
     const effectivePublisher = publisherId
@@ -296,7 +292,6 @@ function Explore(props: Props) {
         variant: 'list',
     }), []);
 
-    const filtered = (categories && categories.length > 0) || !!publisher;
     const [
         uploadBookModalShown,
         showUploadBookModal,
