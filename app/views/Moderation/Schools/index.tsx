@@ -52,7 +52,7 @@ query SchoolList(
     users(
         pageSize: $pageSize,
         page: $page,
-        fullName: $search,
+        search: $search,
     ) {
         totalCount
         results {
