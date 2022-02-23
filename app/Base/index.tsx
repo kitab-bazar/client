@@ -53,6 +53,15 @@ function Base() {
     const [navbarVisibility, setNavbarVisibility] = useState(false);
     const [lang, setLang] = useLocalStorage<Lang>('lang', 'ne', false);
 
+    const [logicalTime, setLogicalTime] = useState(0);
+
+    const reset = useCallback(
+        () => {
+            setLogicalTime((val) => val + 1);
+        },
+        [],
+    );
+
     React.useEffect(() => {
         apolloClient.refetchQueries({
             include: 'active',
@@ -113,8 +122,9 @@ function Base() {
         () => ({
             navbarVisibility,
             setNavbarVisibility,
+            reset,
         }),
-        [navbarVisibility, setNavbarVisibility],
+        [navbarVisibility, setNavbarVisibility, reset],
     );
 
     const [alerts, setAlerts] = React.useState<AlertOptions[]>([]);
@@ -184,6 +194,11 @@ function Base() {
         debug: false,
     }), [lang, setLang]);
 
+    // NOTE: make sure page is
+    // destroyed when user is changed
+    // NOTE: adding time to reload even when user doesn't change
+    const key = `${user?.id ?? '0'}:${logicalTime}`;
+
     return (
         <div className={styles.base}>
             <ErrorBoundary
@@ -205,9 +220,7 @@ function Base() {
                                     <Router history={browserHistory}>
                                         <Init
                                             preloadClassName={styles.preload}
-                                            // NOTE: make sure page is
-                                            // destroyed when user is changed
-                                            key={user?.id}
+                                            key={key}
                                         >
                                             <Navbar
                                                 className={_cs(

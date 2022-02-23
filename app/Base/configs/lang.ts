@@ -934,6 +934,30 @@ export const orderItem = {
         en: 'Order #{code}',
         ne: 'अर्डर #{code}',
     },
+    cancelOrderFailureMessage: {
+        en: 'Failed to cancel order',
+        ne: 'अर्डर रद्द गर्न सकिएन',
+    },
+    cancelOrderButtonLabel: {
+        en: 'Cancel Order',
+        ne: 'अर्डर रद्द गर्नुहोस्',
+    },
+    cancelOrderModalHeader: {
+        en: 'Cancel Order',
+        ne: 'अर्डर रद्द गर्नुहोस्',
+    },
+    cancelOrderModalSaveButtonLabel: {
+        en: 'Save',
+        ne: 'सेभ गर्नुहोस्',
+    },
+    cancelOrderModalCancelButtonLabel: {
+        en: 'Cancel',
+        ne: 'रद्द गर्नुहोस्',
+    },
+    cancelOrderModalCommentsLabel: {
+        en: 'Comments',
+        ne: 'टिप्पणीहरू',
+    },
 };
 
 export const ordersBar = {

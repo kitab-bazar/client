@@ -51,15 +51,17 @@ const ORDER_WINDOW = gql`
 
 // TODO: this should come from server or move to utils
 function getDisplayName(data: NonNullable<MeQuery['me']>): string {
-    if (data.userType === 'MODERATOR' || data.userType === 'INDIVIDUAL_USER') {
+    if (data.userType === 'MODERATOR' /* || data.userType === 'INDIVIDUAL_USER' */) {
         return [
             data.firstName,
             data.lastName,
         ].filter(Boolean).join(' ') || data.email;
     }
+    /*
     if (data.userType === 'INSTITUTIONAL_USER') {
         return data.institution?.name || data.email;
     }
+    */
     if (data.userType === 'PUBLISHER') {
         return data.publisher?.name || data.email;
     }

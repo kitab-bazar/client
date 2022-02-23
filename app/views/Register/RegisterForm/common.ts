@@ -94,9 +94,11 @@ export const schema: RegisterFormSchema = {
         const schoolSchema = {
             ...extraSchema,
             panNumber: [],
+            // schoolId: [],
         };
 
         switch (currentFormValue?.userType) {
+            /*
             case 'INDIVIDUAL_USER':
                 return {
                     ...baseSchema,
@@ -110,6 +112,7 @@ export const schema: RegisterFormSchema = {
                         fields: () => extraSchema,
                     },
                 };
+            */
             case 'PUBLISHER':
                 return {
                     ...baseSchema,
@@ -128,6 +131,14 @@ export const schema: RegisterFormSchema = {
                     ...baseSchema,
                     school: {
                         fields: () => schoolSchema,
+                        /*
+                        validation: (value) => {
+                            if (value && !value.panNumber && !value.schoolId) {
+                                return 'Either pan number or school id is required';
+                            }
+                            return undefined;
+                        },
+                        */
                     },
                 };
             default:

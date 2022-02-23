@@ -2,8 +2,8 @@
     background-color: unset;
     padding: var(--dui-spacing-medium) 0;
 
-    .heading {
-        font-weight: var(--dui-font-weight-medium);
+    .book-title {
+        text-align: left;
     }
 
     .order-meta {
@@ -14,13 +14,5 @@
 
     .status {
         color: var(--dui-color-accent);
-    }
-
-    &.clickable {
-        cursor: pointer;
-
-        &:hover {
-            background-color: var(--dui-color-background-hover);
-        }
     }
 }

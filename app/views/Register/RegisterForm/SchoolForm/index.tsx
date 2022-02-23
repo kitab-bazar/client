@@ -97,10 +97,10 @@ function SchoolForm<K extends string>(props: Props<K>) {
             />
             {/*
             <TextInput
-                name="vatNumber"
-                label={strings.vatNumberInputLabel}
-                value={value?.vatNumber}
-                error={error?.vatNumber}
+                name="schoolId"
+                label={strings.schoolIdLabel}
+                value={value?.schoolId}
+                error={error?.schoolId}
                 onChange={setFieldValue}
                 disabled={disabled}
             />
