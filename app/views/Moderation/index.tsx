@@ -28,7 +28,6 @@ function Moderation(props: Props) {
             <Tabs
                 useHash
                 defaultHash="users"
-                initialHash="users"
                 variant="secondary"
             >
                 <TabList className={styles.tabList}>
