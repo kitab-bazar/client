@@ -121,7 +121,6 @@ function Profile(props: Props) {
                     <div className={styles.pageContent}>
                         <Tabs
                             useHash
-                            initialHash="about"
                             defaultHash="about"
                             variant="secondary"
                         >

@@ -1,7 +1,22 @@
 .order-list {
     display: flex;
+    flex-direction: column;
+    gap: var(--dui-spacing-extra-large);
 
-    .order-list {
+    .summary {
+        display: flex;
+        justify-content: space-between;
+        background-color: var(--dui-color-foreground);
+        padding: var(--dui-spacing-large);
+        gap: var(--dui-spacing-extra-large);
+
+        .value {
+            color: var(--dui-color-brand);
+            font-size: var(--dui-font-size-mega-large);
+        }
+    }
+
+    .order-item-list {
         display: flex;
         flex-direction: column;
         flex-grow: 1;
