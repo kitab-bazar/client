@@ -16,6 +16,8 @@ import {
 
 import BookItem, { Props as BookItemProps } from '#components/BookItem';
 import OrderItem from '#components/OrderItem';
+import { profile } from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
 
 import styles from './styles.css';
 
@@ -50,16 +52,22 @@ query OrderDetails($id: ID!, $bookPage: Int, $bookPageSize: Int) {
 }
 `;
 
+type Book = NonNullable<NonNullable<NonNullable<OrderDetailsQuery['order']>['bookOrders']>['results']>[number];
+
 const MAX_ITEMS_PER_PAGE = 10;
+
 interface Props {
     orderId: string;
     className?: string;
 }
+
 function OrderDetail(props: Props) {
     const {
         className,
         orderId,
     } = props;
+
+    const strings = useTranslation(profile);
 
     const [page, setPage] = React.useState<number>(1);
 
@@ -80,7 +88,7 @@ function OrderDetail(props: Props) {
 
     const bookItemRendererParams = React.useCallback((
         _: string,
-        book: NonNullable<NonNullable<NonNullable<OrderDetailsQuery['order']>['bookOrders']>['results']>[number],
+        book: Book,
     ): BookItemProps => ({
         book,
         variant: 'order',
@@ -101,10 +109,12 @@ function OrderDetail(props: Props) {
                 rendererParams={bookItemRendererParams}
                 renderer={BookItem}
                 keySelector={keySelector}
-                messageShown
                 errored={!!error}
                 filtered={false}
                 pending={orderLoading}
+                pendingMessage={strings.pendingBookListMessage}
+                emptyMessage={strings.emptyBookListMessage}
+                messageShown
             />
             <Pager
                 activePage={page}

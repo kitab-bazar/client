@@ -188,15 +188,21 @@ function Navbar(props: Props) {
                     route={routes.home}
                     exact
                     className={styles.navLink}
-                />
+                >
+                    {strings.homeLabel}
+                </SmartNavLink>
                 <SmartNavLink
                     route={routes.bookList}
                     className={styles.navLink}
-                />
+                >
+                    {strings.booksLabel}
+                </SmartNavLink>
                 <SmartNavLink
                     route={routes.moderation}
                     className={styles.navLink}
-                />
+                >
+                    {strings.moderationLabel}
+                </SmartNavLink>
             </div>
             <div className={styles.actions}>
                 {orderWindow && (

@@ -400,12 +400,12 @@ function BookItem(props: Props) {
                     footerIcons={(
                         <>
                             <TextOutput
-                                label="Language"
+                                label={strings.languageLabel}
                                 // eslint-disable-next-line react/destructuring-assignment
                                 value={props.book.language}
                             />
                             <TextOutput
-                                label="Publisher"
+                                label={strings.publisherLabel}
                                 // eslint-disable-next-line react/destructuring-assignment
                                 value={props.book.publisher.name}
                             />
