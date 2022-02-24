@@ -49,6 +49,7 @@ html {
 
     .preload {
         flex-grow: 1;
+        min-height: 70vh;
     }
 
     .navbar {

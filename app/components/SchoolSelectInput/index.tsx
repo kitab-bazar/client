@@ -18,17 +18,17 @@ import useDebouncedValue from '#hooks/useDebouncedValue';
 export type SearchUserType = Pick<UserType, 'id' | 'fullName'>;
 
 const SCHOOLS = gql`
-    query SchoolOptions($search: String) {
-        moderatorQuery {
-            users(search: $search, userType: SCHOOL_ADMIN) {
-                results {
-                    id
-                    fullName
-                }
-                totalCount
+query SchoolOptions($search: String) {
+    moderatorQuery {
+        users(search: $search, userType: SCHOOL_ADMIN) {
+            results {
+                id
+                fullName
             }
+            totalCount
         }
     }
+}
 `;
 
 type Def = { containerClassName?: string };

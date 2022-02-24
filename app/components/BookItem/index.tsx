@@ -6,6 +6,7 @@ import {
     TextOutput,
     Button,
     useAlert,
+    Tag,
 } from '@the-deep/deep-ui';
 import {
     IoCheckmark,
@@ -274,14 +275,9 @@ function BookItem(props: Props) {
         // eslint-disable-next-line react/destructuring-assignment
         if (props.book.cartDetails) {
             return (
-                <Button
-                    variant="secondary"
-                    name={undefined}
-                    icons={<IoCheckmark />}
-                    readOnly
-                >
+                <Tag icons={<IoCheckmark />}>
                     {strings.alreadyInOrderListMessage}
-                </Button>
+                </Tag>
             );
         }
 

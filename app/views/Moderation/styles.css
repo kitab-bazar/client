@@ -1,6 +1,5 @@
 .moderation {
     display: flex;
-    min-height: 70vh;
 
     .tab-list {
         display: flex;
