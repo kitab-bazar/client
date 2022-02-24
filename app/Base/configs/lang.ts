@@ -281,6 +281,10 @@ export const homePage = {
         en: 'Loading books ...',
         ne: 'किताबहरु लोड गर्दै  ...',
     },
+    gotoTopTitle: {
+        en: 'Go to Top',
+        ne: 'शीर्षमा जानुहोस्',
+    },
 };
 
 export const about = {
@@ -434,6 +438,10 @@ export const explore = {
     pendingBookListMessage: {
         en: 'Loading books ...',
         ne: 'पुस्तकहरू लोड गर्दै...',
+    },
+    gotoFirstPageTitle: {
+        en: 'Back to first page',
+        ne: 'पहिलो पृष्ठमा फर्कनुहोस्',
     },
 };
 

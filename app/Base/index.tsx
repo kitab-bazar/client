@@ -1,8 +1,9 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { Router } from 'react-router-dom';
+import { IoArrowUp } from 'react-icons/io5';
 import { init, ErrorBoundary, setUser as setUserOnSentry } from '@sentry/react';
 import { unique, _cs } from '@togglecorp/fujs';
-import { AlertContainer, AlertContext, AlertOptions } from '@the-deep/deep-ui';
+import { AlertContainer, AlertContext, AlertOptions, QuickActionButton } from '@the-deep/deep-ui';
 import { ApolloClient, ApolloProvider } from '@apollo/client';
 import ReactGA from 'react-ga';
 
@@ -23,6 +24,8 @@ import Navbar from '#base/components/Navbar';
 import Footer from '#base/components/Footer';
 import useLocalStorage from '#base/hooks/useLocalStorage';
 import Routes from '#base/components/Routes';
+import useTranslation from '#base/hooks/useTranslation';
+import { homePage } from '#base/configs/lang';
 
 import { User, OrderWindow } from '#base/types/user';
 
@@ -199,8 +202,50 @@ function Base() {
     // NOTE: adding time to reload even when user doesn't change
     const key = `${user?.id ?? '0'}:${logicalTime}`;
 
+    const baseElementRef = useRef<HTMLDivElement>(null);
+    const [gotoTopButtonVisible, setGotoTopButtonVisible] = useState<boolean>(false);
+
+    useEffect(
+        () => {
+            let scrollTimeout: number | undefined;
+            const handlePageScroll = () => {
+                window.clearTimeout(scrollTimeout);
+
+                scrollTimeout = window.setTimeout(() => {
+                    const scrollTop = baseElementRef.current?.scrollTop ?? 0;
+                    setGotoTopButtonVisible(scrollTop > 0);
+                }, 200);
+            };
+            const reff = baseElementRef.current;
+            if (reff) {
+                reff.addEventListener('scroll', handlePageScroll);
+            }
+            return () => {
+                if (reff) {
+                    reff.removeEventListener('scroll', handlePageScroll);
+                }
+                window.clearTimeout(scrollTimeout);
+            };
+        }, []);
+
+    const handleGotoTopButtonClick = useCallback(() => {
+        const c = baseElementRef.current;
+        if (c) {
+            c.scrollTo({
+                top: 0,
+                left: 0,
+                behavior: 'smooth',
+            });
+        }
+    }, [baseElementRef]);
+
+    const strings = useTranslation(homePage);
+
     return (
-        <div className={styles.base}>
+        <div
+            ref={baseElementRef}
+            className={styles.base}
+        >
             <ErrorBoundary
                 showDialog
                 fallback={(
@@ -240,6 +285,18 @@ function Base() {
                     </LanguageContext.Provider>
                 </ApolloProvider>
             </ErrorBoundary>
+            {gotoTopButtonVisible && (
+                <QuickActionButton
+                    name={undefined}
+                    className={styles.gotoTopButton}
+                    title={strings.gotoTopTitle}
+                    onClick={handleGotoTopButtonClick}
+                    spacing="loose"
+                    variant="primary"
+                >
+                    <IoArrowUp />
+                </QuickActionButton>
+            )}
         </div>
     );
 }

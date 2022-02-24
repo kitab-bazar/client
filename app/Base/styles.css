@@ -85,6 +85,25 @@ html {
         width: 100%;
         animation: appear-from-bottom .2s ease-in forwards;
     }
+    .goto-top-button {
+        position: fixed;
+        right: var(--dui-spacing-super-large);
+        bottom: calc(2 * var(--dui-spacing-super-large));
+        transition: ease-in-out;
+        animation: scaleAnimation 0.5s;
+        font-size: var(--dui-font-size-extra-large);
+    }
+}
+
+@keyframes scaleAnimation {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 100%;
+    }
 }
 
 @keyframes appear-from-bottom {
