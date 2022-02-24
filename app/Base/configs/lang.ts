@@ -383,6 +383,14 @@ export const explore = {
         en: 'Clear grade filter',
         ne: 'श्रेणी फिल्टर खाली गर्नुहोस्',
     },
+    languageFilterLabel: {
+        en: 'Language',
+        ne: 'भाषा',
+    },
+    clearLanguageFilterButtonLabel: {
+        en: 'Clear language filter',
+        ne: 'भाषा फिल्टर खाली गर्नुहोस्',
+    },
     clearCategoriesFilterButtonLabel: {
         en: 'Clear categories filter',
         ne: 'वर्ग फिल्टर खाली गर्नुहोस्',
@@ -453,6 +461,10 @@ export const footer = {
     exploreByGradeHeading: {
         en: 'Grade',
         ne: 'श्रेणी',
+    },
+    exploreByLanguageHeading: {
+        en: 'Language',
+        ne: 'भाषा',
     },
     exploreByCategoryHeading: {
         en: 'Category',
