@@ -238,6 +238,11 @@ function SchoolPayments(props: Props) {
                 (item) => item.statusDisplay,
             ),
             createStringColumn<Payment, string>(
+                'paymentType',
+                'Payment Type',
+                (item) => item.paymentType,
+            ),
+            createStringColumn<Payment, string>(
                 'trasactionType',
                 'Type',
                 (item) => item.transactionTypeDisplay,

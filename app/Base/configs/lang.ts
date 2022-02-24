@@ -604,6 +604,46 @@ export const profile = {
         en: 'Number of distinct books',
         ne: 'फरक पुस्तकहरूको संख्या',
     },
+    addedOnLabel: {
+        en: 'Added On',
+        ne: 'मितिमा थपियो',
+    },
+    amountLabel: {
+        en: 'Amount',
+        ne: 'रकम',
+    },
+    paymentTypeLabel: {
+        en: 'Payment Type',
+        ne: 'भुक्तानी प्रकार',
+    },
+    all: {
+        en: 'All',
+        ne: 'सबै',
+    },
+    idLabel: {
+        en: 'ID',
+        ne: 'क्र.सं',
+    },
+    transactionType: {
+        en: 'Transaction Type',
+        ne: 'लेनदेन प्रकार',
+    },
+    status: {
+        en: 'Status',
+        ne: 'स्थिति',
+    },
+    noPaymentsMessage: {
+        en: 'No payments available.',
+        ne: 'कुनै भुक्तानी उपलब्ध छैन।',
+    },
+    paymentsErroredMessage: {
+        en: 'Failed to fetch payments.',
+        ne: 'भुक्तानीहरू प्राप्त गर्न असफल भयो।',
+    },
+    paymentsFilteredEmptyMessage: {
+        en: 'No matching payments found.',
+        ne: 'कुनै मिल्दो भुक्तानी फेला परेन।',
+    },
 };
 
 export const school = {

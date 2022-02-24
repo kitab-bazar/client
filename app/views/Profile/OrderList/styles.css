@@ -1,6 +1,7 @@
 .order-list {
     display: flex;
     flex-direction: column;
+    flex-grow: 1;
     gap: var(--dui-spacing-extra-large);
 
     .summary {
