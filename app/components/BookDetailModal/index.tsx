@@ -30,6 +30,7 @@ query Book($id: ID!) {
         isbn
         edition
         language
+        languageDisplay
         price
         title
         numberOfPages

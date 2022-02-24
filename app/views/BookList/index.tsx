@@ -109,6 +109,7 @@ query ExploreBooks(
             grade
             price
             language
+            languageDisplay
             image {
                 name
                 url

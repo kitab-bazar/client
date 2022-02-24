@@ -33,6 +33,7 @@ mutation CancelOrder($id: ID!, $comment: String) {
         result {
             id
             status
+            statusDisplay
         }
         errors
         ok
@@ -40,7 +41,7 @@ mutation CancelOrder($id: ID!, $comment: String) {
 }
 `;
 
-export type Order = Pick<OrderType, 'id' | 'orderCode' | 'totalPrice' | 'status' | 'totalQuantity'>
+export type Order = Pick<OrderType, 'id' | 'orderCode' | 'totalPrice' | 'status' | 'totalQuantity' | 'statusDisplay'>
 
 export interface Props {
     className?: string;
@@ -60,6 +61,7 @@ function OrderItem(props: Props) {
         totalPrice,
         totalQuantity,
         status,
+        statusDisplay,
     } = order;
 
     const alert = useAlert();
@@ -140,7 +142,7 @@ function OrderItem(props: Props) {
                 </Button>
             )}
             headingSize="extraSmall"
-            headerActions={status}
+            headerActions={statusDisplay}
             headerActionsContainerClassName={styles.status}
             footerActions={(
                 status === 'PENDING' && (

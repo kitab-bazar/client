@@ -18,6 +18,7 @@ const ME = gql`
             email
             firstName
             id
+            canonicalName
             isActive
             lastLogin
             lastName
@@ -48,28 +49,6 @@ const ORDER_WINDOW = gql`
         }
     }
 `;
-
-// TODO: this should come from server or move to utils
-function getDisplayName(data: NonNullable<MeQuery['me']>): string {
-    if (data.userType === 'MODERATOR' /* || data.userType === 'INDIVIDUAL_USER' */) {
-        return [
-            data.firstName,
-            data.lastName,
-        ].filter(Boolean).join(' ') || data.email;
-    }
-    /*
-    if (data.userType === 'INSTITUTIONAL_USER') {
-        return data.institution?.name || data.email;
-    }
-    */
-    if (data.userType === 'PUBLISHER') {
-        return data.publisher?.name || data.email;
-    }
-    if (data.userType === 'SCHOOL_ADMIN') {
-        return data.school?.name || data.email;
-    }
-    return data.email;
-}
 
 interface Props {
     preloadClassName?: string;
@@ -113,7 +92,7 @@ function Init(props: Props) {
                 if (safeMe) {
                     setUser({
                         id: safeMe.id,
-                        displayName: getDisplayName(safeMe),
+                        displayName: safeMe.canonicalName,
                         displayPictureUrl: undefined,
                         type: safeMe.userType,
                         permissions: safeMe.allowedPermissions,

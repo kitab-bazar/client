@@ -26,6 +26,7 @@ interface PublisherFields extends BaseExtraFields {
 }
 
 interface SchoolFields extends BaseExtraFields {
+    schoolId: string;
 }
 
 // TODO: use generated typing
@@ -94,7 +95,7 @@ export const schema: RegisterFormSchema = {
         const schoolSchema = {
             ...extraSchema,
             panNumber: [],
-            // schoolId: [],
+            schoolId: [],
         };
 
         switch (currentFormValue?.userType) {
@@ -131,14 +132,12 @@ export const schema: RegisterFormSchema = {
                     ...baseSchema,
                     school: {
                         fields: () => schoolSchema,
-                        /*
                         validation: (value) => {
                             if (value && !value.panNumber && !value.schoolId) {
                                 return 'Either pan number or school id is required';
                             }
                             return undefined;
                         },
-                        */
                     },
                 };
             default:

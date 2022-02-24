@@ -86,15 +86,17 @@ query Payments(
                 createdAt
                 createdBy {
                     id
-                    fullName
+                    canonicalName
                 }
                 paidBy {
-                    fullName
+                    canonicalName
                     id
                 }
                 paymentType
                 status
+                statusDisplay
                 transactionType
+                transactionTypeDisplay
             }
             totalCount
         }
@@ -223,23 +225,22 @@ function SchoolPayments(props: Props) {
             createStringColumn<Payment, string>(
                 'createdBy',
                 'Created By',
-                (item) => item.createdBy.fullName,
+                (item) => item.createdBy.canonicalName,
             ),
             createStringColumn<Payment, string>(
                 'paidBy',
                 'Paid By',
-                // FIXME: use canonicalName
-                (item) => item.paidBy.fullName || 'Will be fixed by server',
+                (item) => item.paidBy.canonicalName,
             ),
             createStringColumn<Payment, string>(
                 'status',
                 'Status',
-                (item) => item.status,
+                (item) => item.statusDisplay,
             ),
             createStringColumn<Payment, string>(
                 'trasactionType',
                 'Type',
-                (item) => item.transactionType,
+                (item) => item.transactionTypeDisplay,
             ),
             actionsColumn,
         ];

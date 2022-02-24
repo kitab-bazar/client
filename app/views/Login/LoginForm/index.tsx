@@ -34,28 +34,6 @@ import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
 
 import styles from './styles.css';
 
-// TODO: this should come from server or move to utils
-function getDisplayName(data: NonNullable<NonNullable<LoginMutation['login']>['result']>): string {
-    if (data.userType === 'MODERATOR' /* || data.userType === 'INDIVIDUAL_USER' */) {
-        return [
-            data.firstName,
-            data.lastName,
-        ].filter(Boolean).join(' ') || data.email;
-    }
-    /*
-    if (data.userType === 'INSTITUTIONAL_USER') {
-        return data.institution?.name || data.email;
-    }
-    */
-    if (data.userType === 'PUBLISHER') {
-        return data.publisher?.name || data.email;
-    }
-    if (data.userType === 'SCHOOL_ADMIN') {
-        return data.school?.name || data.email;
-    }
-    return data.email;
-}
-
 const LOGIN = gql`
     mutation Login(
         $email: String!,
@@ -74,6 +52,7 @@ const LOGIN = gql`
                 isActive
                 lastLogin
                 lastName
+                canonicalName
                 userType
                 institution {
                     id
@@ -158,7 +137,7 @@ function LoginForm() {
                     const safeUser = removeNull(result);
                     setUser({
                         id: safeUser.id,
-                        displayName: getDisplayName(safeUser),
+                        displayName: safeUser.canonicalName,
                         displayPictureUrl: undefined,
                         type: safeUser.userType,
                         permissions: safeUser.allowedPermissions,

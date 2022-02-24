@@ -95,7 +95,6 @@ function SchoolForm<K extends string>(props: Props<K>) {
                 onChange={setFieldValue}
                 disabled={disabled}
             />
-            {/*
             <TextInput
                 name="schoolId"
                 label={strings.schoolIdLabel}
@@ -104,7 +103,6 @@ function SchoolForm<K extends string>(props: Props<K>) {
                 onChange={setFieldValue}
                 disabled={disabled}
             />
-            */}
         </>
     );
 }

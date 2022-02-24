@@ -206,6 +206,10 @@ export const register = {
         en: 'PAN',
         ne: 'प्यान',
     },
+    schoolIdLabel: {
+        en: 'School ID',
+        ne: 'विद्यालयको आईडी',
+    },
     vatNumberInputLabel: {
         en: 'VAT Number',
         ne: 'भ्याट नम्बर',
@@ -527,6 +531,10 @@ export const profile = {
     panLabel: {
         en: 'PAN No.',
         ne: 'प्यान नं',
+    },
+    schoolIdLabel: {
+        en: 'School ID',
+        ne: 'विद्यालयको आईडी',
     },
     profileLoadFailureMessage: {
         en: 'Failed to load profile',
