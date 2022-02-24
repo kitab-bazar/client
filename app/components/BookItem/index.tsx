@@ -95,12 +95,12 @@ mutation RemoveFromWishList($id: ID!) {
     }
 }
 `;
-type BookForList = Pick<BookType, 'id' | 'title' | 'price' | 'language' | 'authors' | 'categories' | 'image' | 'wishlistId'>
+type BookForList = Pick<BookType, 'id' | 'title' | 'price' | 'languageDisplay' | 'authors' | 'categories' | 'image' | 'wishlistId'>
     & {
         publisher: Pick<BookType['publisher'], 'id' | 'name'>;
         cartDetails?: null | Pick<NonNullable<BookType['cartDetails']>, 'id' | 'quantity'>;
     };
-type BookForDetail = Pick<BookType, 'id' | 'title' | 'description' | 'price' | 'language' | 'numberOfPages' | 'isbn' | 'authors' | 'categories' | 'image' | 'wishlistId'>
+type BookForDetail = Pick<BookType, 'id' | 'title' | 'description' | 'price' | 'languageDisplay' | 'numberOfPages' | 'isbn' | 'authors' | 'categories' | 'image' | 'wishlistId'>
     & {
         publisher: Pick<BookType['publisher'], 'id' | 'name'>
         cartDetails?: null | Pick<NonNullable<BookType['cartDetails']>, 'id' | 'quantity'>;
@@ -398,7 +398,7 @@ function BookItem(props: Props) {
                             <TextOutput
                                 label={strings.languageLabel}
                                 // eslint-disable-next-line react/destructuring-assignment
-                                value={props.book.language}
+                                value={props.book.languageDisplay}
                             />
                             <TextOutput
                                 label={strings.publisherLabel}
@@ -460,7 +460,7 @@ function BookItem(props: Props) {
                         <TextOutput
                             label={strings.languageLabel}
                             // eslint-disable-next-line react/destructuring-assignment
-                            value={props.book.language}
+                            value={props.book.languageDisplay}
                         />
                         <TextOutput
                             label={strings.numberOfPagesLabel}

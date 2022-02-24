@@ -15,7 +15,7 @@ import {
 
 import useDebouncedValue from '#hooks/useDebouncedValue';
 
-export type SearchUserType = Pick<UserType, 'id' | 'fullName'>;
+export type SearchUserType = Pick<UserType, 'id' | 'canonicalName'>;
 
 const SCHOOLS = gql`
 query SchoolOptions($search: String) {
@@ -23,7 +23,7 @@ query SchoolOptions($search: String) {
         users(search: $search, userType: SCHOOL_ADMIN) {
             results {
                 id
-                fullName
+                canonicalName
             }
             totalCount
         }
@@ -43,8 +43,7 @@ type SchoolSelectInputProps<K extends string> = SearchSelectInputProps<
 const keySelector = (d: SearchUserType) => d.id;
 
 export function userTitleSelector(user: SearchUserType) {
-    // FIXME: use canonicalName
-    return user.fullName || 'Server will fix this';
+    return user.canonicalName;
 }
 
 function SchoolSelectInput<K extends string>(props: SchoolSelectInputProps<K>) {

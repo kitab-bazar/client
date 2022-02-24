@@ -88,7 +88,7 @@ mutation UpdatePayment($data: PaymentInputType!, $id: ID!) {
                 id
                 amount
                 paidBy {
-                    fullName
+                    canonicalName
                     id
                 }
                 paymentType
@@ -136,7 +136,7 @@ function UpdatePaymentModal(props: Props) {
             if (paymentDetails?.paidBy) {
                 return [{
                     id: paymentDetails.paidBy.id,
-                    fullName: paymentDetails.paidBy.fullName,
+                    canonicalName: paymentDetails.paidBy.canonicalName,
                 }];
             }
             return [];

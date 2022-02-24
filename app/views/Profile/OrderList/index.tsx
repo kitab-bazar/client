@@ -39,6 +39,7 @@ query OrderListWithBooks(
             id
             orderCode
             status
+            statusDisplay
             totalPrice
             totalQuantity
             bookOrders {
@@ -122,7 +123,7 @@ function OrderList(props: Props) {
                         label={strings.totalAmountLabel}
                         value={(
                             <NumberOutput
-                                value={summaryResponse.orderSummary.totalPrice}
+                                value={summaryResponse.orderSummary.totalPrice ?? 0}
                             />
                         )}
                     />
@@ -133,7 +134,7 @@ function OrderList(props: Props) {
                         label={strings.totalBooksLabel}
                         value={(
                             <NumberOutput
-                                value={summaryResponse.orderSummary.totalBooksQuantity}
+                                value={summaryResponse.orderSummary.totalBooksQuantity ?? 0}
                             />
                         )}
                     />
@@ -144,7 +145,7 @@ function OrderList(props: Props) {
                         label={strings.uniqueBooksLabel}
                         value={(
                             <NumberOutput
-                                value={summaryResponse.orderSummary.totalBooks}
+                                value={summaryResponse.orderSummary.totalBooks ?? 0}
                             />
                         )}
                     />

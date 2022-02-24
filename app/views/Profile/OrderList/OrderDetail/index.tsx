@@ -29,6 +29,7 @@ query OrderDetails($id: ID!, $bookPage: Int, $bookPageSize: Int) {
         id
         orderCode
         status
+        statusDisplay
         totalPrice
         totalQuantity
         bookOrders(page: $bookPage, pageSize: $bookPageSize) {

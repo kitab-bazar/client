@@ -79,6 +79,7 @@ query ModerationSchoolList(
                     localAddress
                     vatNumber
                     panNumber
+                    schoolId
                     wardNumber
                     municipality {
                         id
@@ -154,10 +155,14 @@ function SchoolItem(props: SchoolItemProps) {
                         {school.name}
                     </div>
                     <div className={styles.address}>
+                        {school.localAddress && (
+                            <div>
+                                {school.localAddress}
+                            </div>
+                        )}
                         {`
                             ${school.municipality.name}-${school.wardNumber},
-                            ${school.municipality.district.name},
-                            ${school.localAddress}
+                            ${school.municipality.district.name}
                         `}
                     </div>
                 </div>
@@ -196,6 +201,14 @@ function SchoolItem(props: SchoolItemProps) {
                     className={styles.panNumber}
                     label="PAN"
                     value={school.panNumber}
+                    hideLabelColon
+                    labelContainerClassName={styles.label}
+                />
+                <TextOutput
+                    block
+                    className={styles.schoolId}
+                    label="School ID"
+                    value={school.schoolId}
                     hideLabelColon
                     labelContainerClassName={styles.label}
                 />

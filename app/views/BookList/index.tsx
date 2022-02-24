@@ -2,7 +2,6 @@ import React, { useState, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
     _cs,
-    isDefined,
 } from '@togglecorp/fujs';
 import {
     CheckListInput,
@@ -15,12 +14,10 @@ import {
     TextInput,
     DropdownMenu,
     DropdownMenuItem,
-    useModalState,
     Border,
 } from '@the-deep/deep-ui';
 import {
     IoSearchSharp,
-    IoAdd,
 } from 'react-icons/io5';
 import {
     gql,
@@ -38,11 +35,12 @@ import {
     ExploreBooksQuery,
     ExploreBooksQueryVariables,
     BookGradeEnum,
+    BookLanguageEnum,
     GradeFilterOptionsQuery,
     GradeFilterOptionsQueryVariables,
 } from '#generated/types';
 import BookDetailModal from '#components/BookDetailModal';
-import UploadBookModal from '#components/UploadBookModal';
+// import UploadBookModal from '#components/UploadBookModal';
 import BookItem, { Props as BookItemProps } from '#components/BookItem';
 import NumberOutput from '#components/NumberOutput';
 
@@ -76,29 +74,37 @@ query GradeFilterOptions {
             description
         }
     }
+    languageList: __type(name: "BookLanguageEnum") {
+        enumValues {
+            name
+            description
+        }
+    }
 }
 `;
 
 const EXPLORE_BOOKS = gql`
 query ExploreBooks(
     $categories: [ID!],
-    $publisher: ID,
+    $publishers: [ID!],
     $ordering: String,
     $page: Int,
     $pageSize: Int,
     $title: String,
-    $grade: [BookGradeEnum!],
+    $grades: [BookGradeEnum!],
+    $languages: [BookLanguageEnum!],
     $isAddedInWishlist: Boolean,
 ) {
     books(
         categories: $categories,
-        publisher: $publisher,
+        publishers: $publishers,
         ordering: $ordering,
         page: $page,
         pageSize: $pageSize,
         search: $title,
         isAddedInWishlist: $isAddedInWishlist,
-        grade: $grade,
+        grade: $grades,
+        language: $languages,
     ) {
         page
         pageSize
@@ -109,6 +115,7 @@ query ExploreBooks(
             grade
             price
             language
+            languageDisplay
             image {
                 name
                 url
@@ -171,9 +178,10 @@ function Explore(props: Props) {
         grade?: string;
         category?: string;
         publisher?: string;
+        language?: string;
     } | undefined;
 
-    const canAddBook = user?.permissions.includes('CAN_CREATE_BOOK');
+    // const canAddBook = user?.permissions.includes('CAN_CREATE_BOOK');
 
     // NOTE: A different UI depending on if user is publisher or not
     const publisherId = user?.publisherId;
@@ -187,28 +195,39 @@ function Explore(props: Props) {
     // NOTE: only used when in publisher mode
     const [bookSource, setBookSource] = useInputState<BookSource | undefined>('own');
 
-    const [grade, setGrade] = useInputState<string | undefined>(locationState?.grade);
+    const [grades, setGrades] = useInputState<string[] | undefined>(
+        locationState?.grade ? [locationState.grade] : undefined,
+    );
+    const [languages, setLanguages] = useInputState<string[] | undefined>(
+        locationState?.language ? [locationState.language] : undefined,
+    );
     const [categories, setCategories] = useInputState<string[] | undefined>(
         locationState?.category ? [locationState?.category] : undefined,
     );
     const [search, setSearch] = useInputState<string | undefined>(undefined);
-    const [publisher, setPublisher] = useInputState<string | undefined>(locationState?.publisher);
+    const [publishers, setPublishers] = useInputState<string[] | undefined>(
+        locationState?.publisher ? [locationState.publisher] : undefined,
+    );
 
     useDidUpdateEffect(() => {
         if (locationState) {
             setCategories(locationState.category ? [locationState.category] : []);
-            setGrade(locationState.grade);
-            setPublisher(locationState.publisher);
+            setGrades(locationState.grade ? [locationState.grade] : []);
+            setLanguages(locationState.language ? [locationState.language] : []);
+            setPublishers(locationState.publisher ? [locationState.publisher] : []);
             setSearch(undefined);
         }
-    }, [locationState, setCategories, setGrade, setPublisher, setSearch]);
+    }, [locationState, setCategories, setGrades, setPublishers, setSearch, setLanguages]);
 
-    const filtered = (categories && categories.length > 0) || !!publisher || !!grade;
+    const filtered = (categories && categories.length > 0)
+        || !!publishers
+        || !!grades
+        || !!languages;
 
     // eslint-disable-next-line no-nested-ternary
     const effectivePublisher = publisherId
-        ? (bookSource === 'own' ? publisherId : undefined)
-        : publisher;
+        ? (bookSource === 'own' ? [publisherId] : undefined)
+        : publishers;
 
     const pageTitle = React.useMemo(() => {
         if (publisherId) {
@@ -266,15 +285,16 @@ function Explore(props: Props) {
         data: bookResponse = previousData,
         loading: bookLoading,
         error: bookError,
-        refetch: refetchBooks,
+        // refetch: refetchBooks,
     } = useQuery<ExploreBooksQuery, ExploreBooksQueryVariables>(
         EXPLORE_BOOKS,
         {
             variables: {
                 ordering: selectedSortKey,
                 categories,
-                publisher: effectivePublisher,
-                grade: isDefined(grade) ? [grade as BookGradeEnum] : undefined,
+                publishers: effectivePublisher,
+                grades: grades as BookGradeEnum[] | undefined,
+                languages: languages as BookLanguageEnum[] | undefined,
                 title: (search && search.length >= 3) ? search : undefined,
                 pageSize: MAX_ITEMS_PER_PAGE,
                 page,
@@ -292,11 +312,13 @@ function Explore(props: Props) {
         variant: 'list',
     }), []);
 
+    /*
     const [
         uploadBookModalShown,
         showUploadBookModal,
         hideUploadBookModal,
     ] = useModalState(false);
+    */
 
     return (
         <div className={_cs(styles.explore, className)}>
@@ -305,6 +327,7 @@ function Explore(props: Props) {
                     className={styles.pageHeader}
                     heading={pageTitle}
                     spacing="loose"
+                    /*
                     actions={canAddBook && (
                         <Button
                             name={undefined}
@@ -314,6 +337,7 @@ function Explore(props: Props) {
                             {strings.addBookButtonLabel}
                         </Button>
                     )}
+                    */
                 >
                     <TextInput
                         variant="general"
@@ -326,14 +350,14 @@ function Explore(props: Props) {
                         onChange={setSearch}
                     />
                 </Header>
-                {uploadBookModalShown && effectivePublisher && (
+                {/* uploadBookModalShown && effectivePublisher && (
                     <UploadBookModal
                         publisher={effectivePublisher}
                         onModalClose={hideUploadBookModal}
                         // FIXME: This might not be required
                         onUploadSuccess={refetchBooks}
                     />
-                )}
+                ) */}
             </div>
             <div className={styles.container}>
                 <div className={styles.sideBar}>
@@ -361,7 +385,7 @@ function Explore(props: Props) {
                             />
                         </>
                     )}
-                    <RadioInput
+                    <CheckListInput
                         className={styles.gradeInput}
                         listContainerClassName={styles.gradeList}
                         label={strings.gradeFilterLabel}
@@ -369,14 +393,14 @@ function Explore(props: Props) {
                         options={gradeOptionsResponse?.gradeList?.enumValues ?? undefined}
                         keySelector={enumKeySelector}
                         labelSelector={enumLabelSelector}
-                        value={grade}
-                        onChange={setGrade}
+                        value={grades}
+                        onChange={setGrades}
                     />
-                    {grade && grade.length > 0 && (
+                    {grades && grades.length > 0 && (
                         <>
                             <Button
                                 name={undefined}
-                                onClick={setGrade}
+                                onClick={setGrades}
                                 variant="transparent"
                                 spacing="none"
                                 disabled={gradeLoading}
@@ -384,6 +408,32 @@ function Explore(props: Props) {
                                 {strings.clearGradeFilterButtonLabel}
                             </Button>
                         </>
+                    )}
+                    <Border
+                        inline
+                        width="thin"
+                    />
+                    <CheckListInput
+                        className={styles.languageInput}
+                        listContainerClassName={styles.languageList}
+                        label={strings.languageFilterLabel}
+                        name={undefined}
+                        options={gradeOptionsResponse?.languageList?.enumValues ?? undefined}
+                        keySelector={enumKeySelector}
+                        labelSelector={enumLabelSelector}
+                        value={languages}
+                        onChange={setLanguages}
+                    />
+                    {languages && languages.length > 0 && (
+                        <Button
+                            name={undefined}
+                            onClick={setLanguages}
+                            variant="transparent"
+                            spacing="none"
+                            disabled={gradeLoading}
+                        >
+                            {strings.clearLanguageFilterButtonLabel}
+                        </Button>
                     )}
                     <Border
                         inline
@@ -418,7 +468,7 @@ function Explore(props: Props) {
                     />
                     {!publisherId && (
                         <>
-                            <RadioInput
+                            <CheckListInput
                                 label={strings.publisherFilterLabel}
                                 className={styles.publisherInput}
                                 listContainerClassName={styles.publisherList}
@@ -426,14 +476,14 @@ function Explore(props: Props) {
                                 options={optionsQueryResponse?.publishers?.results ?? undefined}
                                 keySelector={keySelector}
                                 labelSelector={labelSelector}
-                                value={publisher}
-                                onChange={setPublisher}
+                                value={publishers}
+                                onChange={setPublishers}
                                 disabled={filterLoading}
                             />
-                            {publisher && (
+                            {publishers && (
                                 <Button
                                     name={undefined}
-                                    onClick={setPublisher}
+                                    onClick={setPublishers}
                                     variant="transparent"
                                     spacing="none"
                                     disabled={filterLoading}

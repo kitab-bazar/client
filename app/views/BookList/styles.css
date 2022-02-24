@@ -44,6 +44,13 @@
                 }
             }
 
+            .language-input {
+                .language-list {
+                    display: flex;
+                    flex-direction: column;
+                }
+            }
+
             .publisher-input {
                 .publisher-list {
                     display: flex;

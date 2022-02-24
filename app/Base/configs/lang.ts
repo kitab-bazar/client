@@ -206,6 +206,10 @@ export const register = {
         en: 'PAN',
         ne: 'प्यान',
     },
+    schoolIdLabel: {
+        en: 'School ID',
+        ne: 'विद्यालयको आईडी',
+    },
     vatNumberInputLabel: {
         en: 'VAT Number',
         ne: 'भ्याट नम्बर',
@@ -379,6 +383,14 @@ export const explore = {
         en: 'Clear grade filter',
         ne: 'श्रेणी फिल्टर खाली गर्नुहोस्',
     },
+    languageFilterLabel: {
+        en: 'Language',
+        ne: 'भाषा',
+    },
+    clearLanguageFilterButtonLabel: {
+        en: 'Clear language filter',
+        ne: 'भाषा फिल्टर खाली गर्नुहोस्',
+    },
     clearCategoriesFilterButtonLabel: {
         en: 'Clear categories filter',
         ne: 'वर्ग फिल्टर खाली गर्नुहोस्',
@@ -449,6 +461,10 @@ export const footer = {
     exploreByGradeHeading: {
         en: 'Grade',
         ne: 'श्रेणी',
+    },
+    exploreByLanguageHeading: {
+        en: 'Language',
+        ne: 'भाषा',
     },
     exploreByCategoryHeading: {
         en: 'Category',
@@ -527,6 +543,10 @@ export const profile = {
     panLabel: {
         en: 'PAN No.',
         ne: 'प्यान नं',
+    },
+    schoolIdLabel: {
+        en: 'School ID',
+        ne: 'विद्यालयको आईडी',
     },
     profileLoadFailureMessage: {
         en: 'Failed to load profile',

@@ -59,7 +59,7 @@
             }
         }
 
-        .pan-number {
+        .pan-number, .school-id {
             flex-basis: 5rem;
         }
 

@@ -14,8 +14,8 @@ import {
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
 import routes from '#base/configs/routes';
 import {
-    GradeOptionsQuery,
-    GradeOptionsQueryVariables,
+    FooterGradeOptionsQuery,
+    FooterGradeOptionsQueryVariables,
     CategoryOptionsQuery,
     CategoryOptionsQueryVariables,
 } from '#generated/types';
@@ -41,8 +41,14 @@ query CategoryOptions {
 `;
 
 const GRADE_OPTIONS = gql`
-query GradeOptions {
+query FooterGradeOptions {
     gradeList: __type(name: "BookGradeEnum") {
+        enumValues {
+            name
+            description
+        }
+    }
+    languageList: __type(name: "BookLanguageEnum") {
         enumValues {
             name
             description
@@ -73,7 +79,7 @@ function Footer(props: Props) {
         data: gradeResponse,
         loading: gradeLoading,
         error: gradeError,
-    } = useQuery<GradeOptionsQuery, GradeOptionsQueryVariables>(
+    } = useQuery<FooterGradeOptionsQuery, FooterGradeOptionsQueryVariables>(
         GRADE_OPTIONS,
     );
 
@@ -90,13 +96,25 @@ function Footer(props: Props) {
 
     const gradeItemRendererParams = React.useCallback((
         _: string,
-        grade: NonNullable<NonNullable<GradeOptionsQuery['gradeList']>['enumValues']>[number],
+        grade: NonNullable<NonNullable<FooterGradeOptionsQuery['gradeList']>['enumValues']>[number],
     ): LinkProps => ({
         className: styles.link,
         children: grade.description,
         to: {
             pathname: routes.bookList.path,
             state: { grade: grade.name },
+        },
+    }), []);
+
+    const languageItemRendererParams = React.useCallback((
+        _: string,
+        language: NonNullable<NonNullable<FooterGradeOptionsQuery['languageList']>['enumValues']>[number],
+    ): LinkProps => ({
+        className: styles.link,
+        children: language.description,
+        to: {
+            pathname: routes.bookList.path,
+            state: { language: language.name },
         },
     }), []);
 
@@ -144,6 +162,22 @@ function Footer(props: Props) {
                         data={gradeResponse?.gradeList?.enumValues}
                         keySelector={enumKeySelector}
                         rendererParams={gradeItemRendererParams}
+                        renderer={Link}
+                        errored={!!gradeError}
+                        pending={gradeLoading}
+                        filtered={false}
+                    />
+                </Container>
+                <Container
+                    heading={strings.exploreByLanguageHeading}
+                    headingSize="extraSmall"
+                    spacing="loose"
+                >
+                    <ListView
+                        className={styles.languageList}
+                        data={gradeResponse?.languageList?.enumValues}
+                        keySelector={enumKeySelector}
+                        rendererParams={languageItemRendererParams}
                         renderer={Link}
                         errored={!!gradeError}
                         pending={gradeLoading}

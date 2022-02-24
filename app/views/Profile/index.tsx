@@ -53,12 +53,14 @@ query ProfileDetails {
         userType
         phoneNumber
         email
+        canonicalName
         school {
             id
             name
             vatNumber
             panNumber
             localAddress
+            schoolId
         }
         publisher {
             id
@@ -101,7 +103,7 @@ function Profile(props: Props) {
     return (
         <div className={_cs(styles.profile, className)}>
             {loading && <PendingMessage />}
-            {!loading && userDetails && profileDetails ? (
+            {!loading && userDetails ? (
                 <>
                     <div className={styles.pageHeader}>
                         <div className={styles.pageContainer}>
@@ -111,9 +113,9 @@ function Profile(props: Props) {
                                 </div>
                                 <Header
                                     className={styles.header}
-                                    heading={profileDetails.name}
+                                    heading={userDetails.canonicalName}
                                 >
-                                    {profileDetails.localAddress}
+                                    {profileDetails?.localAddress}
                                 </Header>
                             </div>
                         </div>
@@ -167,7 +169,7 @@ function Profile(props: Props) {
                                         <div className={styles.about}>
                                             <AboutOutput
                                                 label={nameLabel}
-                                                value={profileDetails.name}
+                                                value={userDetails.canonicalName}
                                             />
                                             <AboutOutput
                                                 label={strings.emailLabel}
@@ -179,17 +181,22 @@ function Profile(props: Props) {
                                             />
                                             <AboutOutput
                                                 label={strings.addressLabel}
-                                                value={profileDetails.localAddress}
+                                                value={profileDetails?.localAddress}
                                             />
-                                            {profileDetails?.vatNumber ? (
+                                            {userDetails?.publisher && (
                                                 <AboutOutput
                                                     label={strings.vatNumberLabel}
-                                                    value={profileDetails.vatNumber}
+                                                    value={userDetails.publisher.vatNumber}
                                                 />
-                                            ) : (
+                                            )}
+                                            <AboutOutput
+                                                label={strings.panLabel}
+                                                value={profileDetails?.panNumber}
+                                            />
+                                            {userDetails?.school && (
                                                 <AboutOutput
-                                                    label={strings.panLabel}
-                                                    value={profileDetails.panNumber}
+                                                    label={strings.schoolIdLabel}
+                                                    value={userDetails.school.schoolId}
                                                 />
                                             )}
                                         </div>

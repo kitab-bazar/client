@@ -42,6 +42,7 @@ query FeaturedBooks($page: Int!, $pageSize: Int!) {
             id
             isbn
             language
+            languageDisplay
             image {
                 name
                 url
