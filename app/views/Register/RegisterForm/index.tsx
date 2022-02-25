@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { isDefined } from '@togglecorp/fujs';
 import {
     Container,
     RadioInput,
@@ -14,6 +15,7 @@ import {
     getErrorObject,
     createSubmitHandler,
     removeNull,
+    internal,
 } from '@togglecorp/toggle-form';
 import { useMutation, gql } from '@apollo/client';
 
@@ -139,14 +141,31 @@ function RegisterForm() {
                     setError(formErrorFromServer);
 
                     alert.show(
-                        strings.registrationFailureMessage,
+                        <div>
+                            <div>
+                                {strings.registrationFailureMessage}
+                            </div>
+                            {isDefined(formErrorFromServer) && (
+                                <div>
+                                    {formErrorFromServer[internal]}
+                                </div>
+                            )}
+                        </div>,
                         { variant: 'error' },
                     );
                 }
             },
             onError: (errors) => {
+                setError(errors.message);
                 alert.show(
-                    errors.message,
+                    <div>
+                        <div>
+                            {strings.registrationFailureMessage}
+                        </div>
+                        <div>
+                            {errors.message}
+                        </div>
+                    </div>,
                     { variant: 'error' },
                 );
             },

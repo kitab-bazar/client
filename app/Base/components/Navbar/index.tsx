@@ -3,6 +3,7 @@ import React, {
     useContext,
     useCallback,
 } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
     _cs,
     listToMap,
@@ -12,7 +13,6 @@ import {
     useMutation,
     gql,
 } from '@apollo/client';
-import { useLocation } from 'react-router-dom';
 import {
     SelectInput,
     useAlert,
@@ -141,6 +141,7 @@ function Navbar(props: Props) {
                         { variant: 'success' },
                     );
                 } else {
+                    // NOTE: No error from server
                     alert.show(
                         strings.logoutErrorMessage,
                         { variant: 'error' },
@@ -149,7 +150,14 @@ function Navbar(props: Props) {
             },
             onError: (errors) => {
                 alert.show(
-                    errors.message,
+                    <div>
+                        <div>
+                            {strings.logoutErrorMessage}
+                        </div>
+                        <div>
+                            {errors.message}
+                        </div>
+                    </div>,
                     { variant: 'error' },
                 );
             },

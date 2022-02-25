@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { _cs } from '@togglecorp/fujs';
+import { _cs, isDefined } from '@togglecorp/fujs';
 import { getOperationName } from 'apollo-link';
 import {
     Container,
@@ -17,6 +17,10 @@ import {
     gql,
     useMutation,
 } from '@apollo/client';
+import {
+    internal,
+    removeNull,
+} from '@togglecorp/toggle-form';
 
 import { bookItem } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
@@ -31,6 +35,7 @@ import {
 } from '#generated/types';
 import { CART_ITEMS } from '#components/OrdersBar/queries';
 import NumberOutput from '#components/NumberOutput';
+import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
 
 import UserContext from '#base/context/UserContext';
 
@@ -154,16 +159,40 @@ function BookItem(props: Props) {
         {
             refetchQueries: CART_ITEMS_NAME ? [CART_ITEMS_NAME] : undefined,
             onCompleted: (response) => {
-                if (!response?.createCartItem?.ok) {
+                if (response?.createCartItem?.ok) {
                     alert.show(
-                        strings.bookOrderFailedMessage,
+                        strings.bookOrderSuccessMessage,
+                        { variant: 'success' },
+                    );
+                } else if (response?.createCartItem?.errors) {
+                    const transformedError = transformToFormError(
+                        removeNull(response?.createCartItem?.errors) as ObjectError[],
+                    );
+                    alert.show(
+                        <div>
+                            <div>
+                                {strings.bookOrderFailedMessage}
+                            </div>
+                            {isDefined(transformedError) && (
+                                <div>
+                                    {transformedError[internal]}
+                                </div>
+                            )}
+                        </div>,
                         { variant: 'error' },
                     );
                 }
             },
             onError: (errors) => {
                 alert.show(
-                    errors.message,
+                    <div>
+                        <div>
+                            {strings.bookOrderFailedMessage}
+                        </div>
+                        <div>
+                            {errors.message}
+                        </div>
+                    </div>,
                     { variant: 'error' },
                 );
             },
@@ -177,16 +206,40 @@ function BookItem(props: Props) {
         ADD_TO_WISH_LIST,
         {
             onCompleted: (response) => {
-                if (!response?.createWishlist?.ok) {
+                if (response?.createWishlist?.ok) {
                     alert.show(
-                        strings.wishlistAdditionFailedMessage,
+                        strings.wishlistAdditionSuccessMessage,
+                        { variant: 'success' },
+                    );
+                } else if (response?.createWishlist?.errors) {
+                    const transformedError = transformToFormError(
+                        removeNull(response?.createWishlist?.errors) as ObjectError[],
+                    );
+                    alert.show(
+                        <div>
+                            <div>
+                                {strings.wishlistAdditionFailedMessage}
+                            </div>
+                            {isDefined(transformedError) && (
+                                <div>
+                                    {transformedError[internal]}
+                                </div>
+                            )}
+                        </div>,
                         { variant: 'error' },
                     );
                 }
             },
             onError: (errors) => {
                 alert.show(
-                    errors.message,
+                    <div>
+                        <div>
+                            {strings.wishlistAdditionFailedMessage}
+                        </div>
+                        <div>
+                            {errors.message}
+                        </div>
+                    </div>,
                     { variant: 'error' },
                 );
             },
@@ -200,16 +253,40 @@ function BookItem(props: Props) {
         REMOVE_FROM_WISH_LIST,
         {
             onCompleted: (response) => {
-                if (!response?.deleteWishlist?.ok) {
+                if (response?.deleteWishlist?.ok) {
                     alert.show(
-                        strings.wishlistRemovalFailedMessage,
+                        strings.wishlistRemovalSuccessMessage,
+                        { variant: 'success' },
+                    );
+                } else if (response?.deleteWishlist?.errors) {
+                    const transformedError = transformToFormError(
+                        removeNull(response?.deleteWishlist?.errors) as ObjectError[],
+                    );
+                    alert.show(
+                        <div>
+                            <div>
+                                {strings.wishlistRemovalFailedMessage}
+                            </div>
+                            {isDefined(transformedError) && (
+                                <div>
+                                    {transformedError[internal]}
+                                </div>
+                            )}
+                        </div>,
                         { variant: 'error' },
                     );
                 }
             },
             onError: (errors) => {
                 alert.show(
-                    errors.message,
+                    <div>
+                        <div>
+                            {strings.wishlistRemovalFailedMessage}
+                        </div>
+                        <div>
+                            {errors.message}
+                        </div>
+                    </div>,
                     { variant: 'error' },
                 );
             },

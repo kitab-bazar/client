@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useCallback } from 'react';
+import { isDefined } from '@togglecorp/fujs';
 import {
     ObjectSchema,
     PartialForm,
@@ -8,6 +9,7 @@ import {
     requiredCondition,
     greaterThanCondition,
     removeNull,
+    internal,
 } from '@togglecorp/toggle-form';
 import {
     Modal,
@@ -205,14 +207,30 @@ function UpdatePaymentModal(props: Props) {
                     setError(formErrorFromServer);
 
                     alert.show(
-                        'Failed to add payment.',
+                        <div>
+                            <div>
+                                Failed to add payment.
+                            </div>
+                            {isDefined(formErrorFromServer) && (
+                                <div>
+                                    {formErrorFromServer[internal]}
+                                </div>
+                            )}
+                        </div>,
                         { variant: 'error' },
                     );
                 }
             },
             onError: (errors) => {
                 alert.show(
-                    errors.message,
+                    <div>
+                        <div>
+                            Failed to add payment.
+                        </div>
+                        <div>
+                            {errors.message}
+                        </div>
+                    </div>,
                     { variant: 'error' },
                 );
             },
@@ -250,14 +268,30 @@ function UpdatePaymentModal(props: Props) {
                     setError(formErrorFromServer);
 
                     alert.show(
-                        'Failed to update payment.',
+                        <div>
+                            <div>
+                                Failed to update payment.
+                            </div>
+                            {isDefined(formErrorFromServer) && (
+                                <div>
+                                    {formErrorFromServer[internal]}
+                                </div>
+                            )}
+                        </div>,
                         { variant: 'error' },
                     );
                 }
             },
             onError: (errors) => {
                 alert.show(
-                    errors.message,
+                    <div>
+                        <div>
+                            Failed to update payment.
+                        </div>
+                        <div>
+                            {errors.message}
+                        </div>
+                    </div>,
                     { variant: 'error' },
                 );
             },

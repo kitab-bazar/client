@@ -521,6 +521,14 @@ export const notifications = {
         en: 'Loading notifications ...',
         ne: 'सूचनाहरू लोड गर्दै ...',
     },
+    notificationStatusUpdateSuccessMessage: {
+        en: 'Successfully updated notification status to {newStatus}',
+        ne: 'सूचना स्थिति सफलतापूर्वक {newStatus}मा अपडेट गरियो',
+    },
+    notificationStatusUpdateFaillureMessage: {
+        en: 'Failed to update notification status',
+        ne: 'सूचना स्थिति अपडेट गर्न असफल',
+    },
 };
 
 export const profile = {
@@ -971,13 +979,25 @@ export const bookItem = {
         en: 'Failed to add book to the order',
         ne: 'अर्डरमा पुस्तक थप्न समस्या',
     },
+    bookOrderSuccessMessage: {
+        en: 'Book added to order',
+        ne: 'किताब सफलतापूर्वक अर्डरमा थपियो',
+    },
     wishlistAdditionFailedMessage: {
         en: 'Failed to add book to the wish list',
         ne: 'इच्छा-सूचीमा पुस्तक थप्न समस्या',
     },
+    wishlistAdditionSuccessMessage: {
+        en: 'Book added to wishlist',
+        ne: 'किताब सफलतापूर्वक इच्छा सूचीमा थपियो',
+    },
     wishlistRemovalFailedMessage: {
         en: 'Failed to remove book from the wish list',
         ne: 'इच्छा-सूचीबाट पुस्तक हटाउन समस्या',
+    },
+    wishlistRemovalSuccessMessage: {
+        en: 'Book removed from wishlist',
+        ne: 'किताब इच्छा सूचीबाट हटाइयो',
     },
     alreadyInOrderListMessage: {
         en: 'In order list',
@@ -1065,6 +1085,10 @@ export const orderItem = {
     cancelOrderFailureMessage: {
         en: 'Failed to cancel order',
         ne: 'अर्डर रद्द गर्न सकिएन',
+    },
+    cancelOrderSuccessMessage: {
+        en: 'Order cancelled successfully.',
+        ne: 'अर्डर सफलतापूर्वक रद्द गरियो',
     },
     cancelOrderButtonLabel: {
         en: 'Cancel Order',
@@ -1216,6 +1240,14 @@ export const newBookModal = {
         en: 'Authors',
         ne: 'लेखकहरू',
     },
+    newBookUploadSuccessMessage: {
+        en: 'Successfully uploaded book',
+        ne: 'किताब सफलतापूर्वक अपलोड गरियो',
+    },
+    newBookUploadFailureMessage: {
+        en: 'Failed to upload book',
+        ne: 'किताब अपलोड गर्न असफल ',
+    },
 };
 
 export const activateUser = {
@@ -1227,6 +1259,10 @@ export const activateUser = {
     userActivationSuccessfulMessage: {
         en: 'Sucessfully activated the user!',
         ne: 'प्रयोगकर्तालाई सफलतापूर्वक सक्रिय गरियो',
+    },
+    userActivationFailureMessage: {
+        en: 'Failed to activate user',
+        ne: 'प्रयोगकर्ता सक्रिय गर्न असफल',
     },
 };
 

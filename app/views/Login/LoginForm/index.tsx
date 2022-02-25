@@ -1,4 +1,5 @@
 import React, { useCallback, useContext } from 'react';
+import { isDefined } from '@togglecorp/fujs';
 import {
     TextInput,
     Container,
@@ -149,7 +150,16 @@ function LoginForm() {
                     // eslint-disable-next-line no-console
                     console.error(formError);
                     alert.show(
-                        strings.errorLoggingInLabel,
+                        <div>
+                            <div>
+                                {strings.errorLoggingInLabel}
+                            </div>
+                            {isDefined(formError) && (
+                                <div>
+                                    {formError[internal]}
+                                </div>
+                            )}
+                        </div>,
                         { variant: 'error' },
                     );
                 }
@@ -158,6 +168,17 @@ function LoginForm() {
                 setError({
                     [internal]: errors.message,
                 });
+                alert.show(
+                    <div>
+                        <div>
+                            {strings.errorLoggingInLabel}
+                        </div>
+                        <div>
+                            {errors.message}
+                        </div>
+                    </div>,
+                    { variant: 'error' },
+                );
             },
         },
     );

@@ -18,9 +18,14 @@ import {
     gql,
     useMutation,
 } from '@apollo/client';
+import {
+    removeNull,
+    internal,
+} from '@togglecorp/toggle-form';
 
 import { ordersBar } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
+import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
 import {
     CartItemsListQuery,
     UpdateCartBookQuantityMutation,
@@ -120,16 +125,35 @@ function CartItem(props: Props) {
             onCompleted: (response) => {
                 if (response?.deleteCartItem?.ok) {
                     onCartItemRemove();
-                } else {
+                } else if (response?.deleteCartItem?.errors) {
+                    const transformedError = transformToFormError(
+                        removeNull(response?.deleteCartItem?.errors) as ObjectError[],
+                    );
                     alert.show(
-                        strings.removeFromCartErrorMessage,
+                        <div>
+                            <div>
+                                {strings.removeFromCartErrorMessage}
+                            </div>
+                            {isDefined(transformedError) && (
+                                <div>
+                                    {transformedError[internal]}
+                                </div>
+                            )}
+                        </div>,
                         { variant: 'error' },
                     );
                 }
             },
             onError: (errors) => {
                 alert.show(
-                    errors.message,
+                    <div>
+                        <div>
+                            {strings.removeFromCartErrorMessage}
+                        </div>
+                        <div>
+                            {errors.message}
+                        </div>
+                    </div>,
                     { variant: 'error' },
                 );
             },
@@ -149,8 +173,20 @@ function CartItem(props: Props) {
                 }
                 const { updateCartItem } = response;
                 if (!updateCartItem?.ok) {
+                    const transformedError = transformToFormError(
+                        removeNull(updateCartItem?.errors) as ObjectError[],
+                    );
                     alert.show(
-                        strings.updateCartErrorMessage,
+                        <div>
+                            <div>
+                                {strings.updateCartErrorMessage}
+                            </div>
+                            {isDefined(transformedError) && (
+                                <div>
+                                    {transformedError[internal]}
+                                </div>
+                            )}
+                        </div>,
                         { variant: 'error' },
                     );
                     if (lastValidCartQuantityRef.current) {
@@ -161,9 +197,17 @@ function CartItem(props: Props) {
                 }
             },
             onError: (e) => {
-                // eslint-disable-next-line no-console
-                console.error(e);
-                alert.show(e.message, { variant: 'error' });
+                alert.show(
+                    <div>
+                        <div>
+                            {strings.updateCartErrorMessage}
+                        </div>
+                        <div>
+                            {e.message}
+                        </div>
+                    </div>,
+                    { variant: 'error' },
+                );
             },
         },
     );

@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { _cs } from '@togglecorp/fujs';
+import { _cs, isDefined } from '@togglecorp/fujs';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import {
     ObjectSchema,
@@ -13,6 +13,7 @@ import {
     requiredListCondition,
     removeNull,
     defaultEmptyArrayType,
+    internal,
 } from '@togglecorp/toggle-form';
 import {
     Modal,
@@ -160,21 +161,38 @@ function UploadBookModal(props: Props) {
                     const formError = transformToFormError(removeNull(errors) as ObjectError[]);
                     setError(formError);
                     alert.show(
-                        'Error uploading book',
+                        <div>
+                            <div>
+                                {strings.newBookUploadFailureMessage}
+                            </div>
+                            {isDefined(formError) && (
+                                <div>
+                                    {formError[internal]}
+                                </div>
+                            )}
+                        </div>,
                         { variant: 'error' },
                     );
                 } else if (ok) {
                     alert.show(
-                        'Successfully uploaded book',
+                        strings.newBookUploadSuccessMessage,
                         { variant: 'success' },
                     );
                     onUploadSuccess();
                     onModalClose();
                 }
             },
-            onError: () => {
+            onError: (errors) => {
+                setError(errors.message);
                 alert.show(
-                    'Error uploading book',
+                    <div>
+                        <div>
+                            {strings.newBookUploadFailureMessage}
+                        </div>
+                        <div>
+                            {errors.message}
+                        </div>
+                    </div>,
                     { variant: 'error' },
                 );
             },

@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useCallback } from 'react';
+import { isDefined } from '@togglecorp/fujs';
 import {
     TextInput,
     Container,
@@ -126,7 +127,16 @@ function ForgotPasswordForm() {
                     const formError = transformToFormError(removeNull(errors) as ObjectError[]);
                     setError(formError);
                     alert.show(
-                        strings.errorResettingPassword,
+                        <div>
+                            <div>
+                                {strings.errorResettingPassword}
+                            </div>
+                            {isDefined(formError) && (
+                                <div>
+                                    {formError[internal]}
+                                </div>
+                            )}
+                        </div>,
                         { variant: 'error' },
                     );
                 }
@@ -135,6 +145,17 @@ function ForgotPasswordForm() {
                 setError({
                     [internal]: errors.message,
                 });
+                alert.show(
+                    <div>
+                        <div>
+                            {strings.errorResettingPassword}
+                        </div>
+                        <div>
+                            {errors.message}
+                        </div>
+                    </div>,
+                    { variant: 'error' },
+                );
             },
         },
     );
