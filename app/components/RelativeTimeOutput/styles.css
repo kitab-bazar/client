@@ -1,4 +1,6 @@
 .relative-time-output {
     display: flex;
     font-size: inherit;
+
+    gap: var(--dui-spacing-small);
 }

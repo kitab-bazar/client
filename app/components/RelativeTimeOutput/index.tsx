@@ -1,11 +1,12 @@
-import React, { memo, useMemo, useContext } from 'react';
+import React, { memo, useMemo } from 'react';
 import {
     isNotDefined,
     isDefined,
     _cs,
 } from '@togglecorp/fujs';
-
-import LanguageContext, { Lang } from '#base/context/LanguageContext';
+import { common } from '#base/configs/lang';
+import useTranslation from '#base/hooks/useTranslation';
+import NumberOutput from '#components/NumberOutput';
 
 import styles from './styles.css';
 
@@ -15,26 +16,29 @@ function mod(foo: number, bar: number) {
     return [divident, remainder];
 }
 
-function formatRelativeTime(seconds: number, lang: Lang): string {
-    const relativeTimeFormat = new Intl.RelativeTimeFormat(lang, { style: 'long' });
+interface Format {
+    value: number;
+    unit: 'day' | 'hour' | 'minute' | 'second';
+}
 
+function formatRelativeTime(seconds: number): Format | undefined {
     if (Math.abs(seconds) >= 86400) {
         const [days] = mod(seconds, 86400);
-        return relativeTimeFormat.format(days, 'day');
+        return { value: days, unit: 'day' };
     }
     if (Math.abs(seconds) >= 3600) {
         const [hours] = mod(seconds, 3600);
-        return relativeTimeFormat.format(hours, 'hour');
+        return { value: hours, unit: 'hour' };
     }
     if (Math.abs(seconds) >= 60) {
         const [minutes] = mod(seconds, 60);
-        return relativeTimeFormat.format(minutes, 'minute');
+        return { value: minutes, unit: 'minute' };
     }
 
     if (Math.abs(seconds) >= 0) {
-        return relativeTimeFormat.format(seconds, 'second');
+        return { value: seconds, unit: 'second' };
     }
-    return '';
+    return undefined;
 }
 
 function difference(foo: Date, bar?: Date): number {
@@ -56,9 +60,7 @@ function RelativeTimeOutput(props: Props) {
         invalidText,
     } = props;
 
-    const {
-        lang,
-    } = useContext(LanguageContext);
+    const strings = useTranslation(common);
 
     const val = useMemo(
         () => {
@@ -69,12 +71,26 @@ function RelativeTimeOutput(props: Props) {
             const diff = difference(new Date(datetimeAtEod));
             const newValue = formatRelativeTime(
                 diff,
-                lang,
             );
+            if (isNotDefined(newValue)) {
+                return invalidText;
+            }
 
-            return newValue;
+            return (
+                <>
+                    <NumberOutput
+                        value={newValue.value}
+                    />
+                    <div>
+                        {newValue.unit === 'day' && strings.dayLabel}
+                        {newValue.unit === 'hour' && strings.hourLabel}
+                        {newValue.unit === 'minute' && strings.minuteLabel}
+                        {newValue.unit === 'second' && strings.secondLabel}
+                    </div>
+                </>
+            );
         },
-        [value, lang, invalidText],
+        [value, invalidText, strings],
     );
 
     return (
