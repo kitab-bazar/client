@@ -1,19 +1,50 @@
-.payments {
+.payments-container {
     display: flex;
+    flex-direction: column;
     flex-grow: 1;
     background-color: unset;
+    gap: var(--dui-spacing-large);
 
-
-    .filters {
+    .payments-status {
         display: flex;
+        flex-grow: 1;
+        flex-wrap: wrap;
+        justify-content: space-between;
         gap: var(--dui-spacing-large);
 
-        .filter-input {
-            max-width: 10rem;
+        .value {
+            color: var(--dui-color-brand);
+            font-size: var(--dui-font-size-large);
+        }
+    }
+    .payments {
+        display: flex;
+        flex-grow: 1;
+        background-color: unset;
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--dui-spacing-large);
+
+            .filter-input {
+                max-width: 12rem;
+            }
+        }
+
+        .school-payment-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--dui-spacing-medium);
+        }
+
+        .pager {
+            [class*="styles_items-per-page"] {
+                [class*="styles_input"] {
+                    width: 10rem;
+                }
+            }
         }
     }
 
-    .table {
-        min-height: 20rem;
-    }
 }

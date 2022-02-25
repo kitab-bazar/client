@@ -624,7 +624,7 @@ export const profile = {
         en: 'ID',
         ne: 'क्र.सं',
     },
-    transactionType: {
+    transactionTypeLabel: {
         en: 'Transaction Type',
         ne: 'लेनदेन प्रकार',
     },
@@ -636,13 +636,45 @@ export const profile = {
         en: 'No payments available.',
         ne: 'कुनै भुक्तानी उपलब्ध छैन।',
     },
+    noPaymentsSuggestion: {
+        en: 'Your payments will be visible here.',
+        ne: 'तपाईंको भुक्तानीहरू यहाँ देखिने छन्।',
+    },
     paymentsErroredMessage: {
         en: 'Failed to fetch payments.',
         ne: 'भुक्तानीहरू प्राप्त गर्न असफल भयो।',
     },
+    paymentsErroredSuggestion: {
+        en: 'Please refresh the page or contact administrator.',
+        ne: 'कृपया पृष्ठ रिफ्रेस गर्नुहोस् वा प्रशासकलाई सम्पर्क गर्नुहोस्।',
+    },
     paymentsFilteredEmptyMessage: {
         en: 'No matching payments found.',
         ne: 'कुनै मिल्दो भुक्तानी फेला परेन।',
+    },
+    paymentsFilteredEmptySuggestion: {
+        en: 'Please clear filters.',
+        ne: 'कृपया फिल्टरहरू खाली गर्नुहोस्।',
+    },
+    paymentsStatusHeading: {
+        en: 'Payment Status',
+        ne: 'भुक्तानी स्थिति',
+    },
+    totalUnverifieldPaymentLabel: {
+        en: 'Total Unverified Payment',
+        ne: 'कुल अप्रमाणित भुक्तानी',
+    },
+    totalUnverifieldPaymentCountLabel: {
+        en: 'Total Unverified Payments Count',
+        ne: 'कुल अप्रमाणित भुक्तानी गणना',
+    },
+    totalVerifieldPaymentLabel: {
+        en: 'Total Payment',
+        ne: 'कुल भुक्तानी',
+    },
+    totalVerifieldPaymentCountLabel: {
+        en: 'Total Verified Payments Count',
+        ne: 'कुल प्रमाणित भुक्तानी गणना',
     },
 };
 
