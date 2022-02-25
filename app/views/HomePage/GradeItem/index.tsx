@@ -2,7 +2,7 @@ import React from 'react';
 import { _cs } from '@togglecorp/fujs';
 import { Link } from '@the-deep/deep-ui';
 
-import { GradeOptionsQuery, BookGradeEnum } from '#generated/types';
+import { FooterGradeOptionsQuery, BookGradeEnum } from '#generated/types';
 import NumberOutput from '#components/NumberOutput';
 
 import routes from '#base/configs/routes';
@@ -19,7 +19,7 @@ const gradePreviewMap: {
 
 export interface Props {
     className?: string;
-    grade: NonNullable<NonNullable<GradeOptionsQuery['gradeList']>['enumValues']>[number];
+    grade: NonNullable<NonNullable<FooterGradeOptionsQuery['gradeList']>['enumValues']>[number];
 }
 
 function GradeItem(props: Props) {

@@ -22,10 +22,8 @@ import routes from '#base/configs/routes';
 import {
     FeaturedBooksQuery,
     FeaturedBooksQueryVariables,
-    GradeOptionsQuery,
-    GradeOptionsQueryVariables,
-    CategoryOptionsQuery,
-    CategoryOptionsQueryVariables,
+    CategoryWithGradeOptionsQuery,
+    CategoryWithGradeOptionsQueryVariables,
 } from '#generated/types';
 import coverImage from '#resources/img/cover.png';
 
@@ -59,19 +57,14 @@ query FeaturedBooks($page: Int!, $pageSize: Int!) {
 }
 `;
 
-const CATEGORY_OPTIONS = gql`
-query CategoryOptions {
+const CATEGORY_WITH_GRADE_OPTIONS = gql`
+query CategoryWithGradeOptions {
     categories {
         results {
             id
             name
         }
     }
-}
-`;
-
-const GRADE_OPTIONS = gql`
-query GradeOptions {
     gradeList: __type(name: "BookGradeEnum") {
         enumValues {
             name
@@ -112,22 +105,14 @@ function HomePage(props: Props) {
     );
 
     const {
-        data: gradeResponse,
-        loading: gradeLoading,
-        error: gradeError,
-    } = useQuery<GradeOptionsQuery, GradeOptionsQueryVariables>(
-        GRADE_OPTIONS,
-    );
-
-    const {
-        data: categoryOptionsResponse,
-        loading: categoryOptionsLoading,
-        error: categoryOptionsError,
+        data: categoryWithGradeOptionsResponse,
+        loading: categoriesGradesLoading,
+        error: categoriesGradesError,
     } = useQuery<
-        CategoryOptionsQuery,
-        CategoryOptionsQueryVariables
+        CategoryWithGradeOptionsQuery,
+        CategoryWithGradeOptionsQueryVariables
     >(
-        CATEGORY_OPTIONS,
+        CATEGORY_WITH_GRADE_OPTIONS,
     );
 
     const bookItemRendererParams = React.useCallback((_: string, data: Book): BookItemProps => ({
@@ -140,7 +125,7 @@ function HomePage(props: Props) {
 
     const gradeItemRendererParams = React.useCallback((
         _: string,
-        grade: NonNullable<NonNullable<GradeOptionsQuery['gradeList']>['enumValues']>[number],
+        grade: NonNullable<NonNullable<CategoryWithGradeOptionsQuery['gradeList']>['enumValues']>[number],
     ): GradeItemProps => ({
         className: styles.gradeItem,
         grade,
@@ -148,7 +133,7 @@ function HomePage(props: Props) {
 
     const categoryItemRendererParams = React.useCallback((
         _: string,
-        category: NonNullable<NonNullable<CategoryOptionsQuery['categories']>['results']>[number],
+        category: NonNullable<NonNullable<CategoryWithGradeOptionsQuery['categories']>['results']>[number],
     ): CategoryItemProps => ({
         className: styles.categoryItem,
         category,
@@ -193,12 +178,12 @@ function HomePage(props: Props) {
                     >
                         <ListView
                             className={styles.gradeList}
-                            data={gradeResponse?.gradeList?.enumValues}
+                            data={categoryWithGradeOptionsResponse?.gradeList?.enumValues}
                             keySelector={enumKeySelector}
                             rendererParams={gradeItemRendererParams}
                             renderer={GradeItem}
-                            errored={!!gradeError}
-                            pending={gradeLoading}
+                            errored={!!categoriesGradesError}
+                            pending={categoriesGradesLoading}
                             filtered={false}
                             emptyMessage={strings.emptyGradeListMessage}
                             pendingMessage={strings.pendingGradeListMessage}
@@ -211,12 +196,12 @@ function HomePage(props: Props) {
                     >
                         <ListView
                             className={styles.categoryList}
-                            data={categoryOptionsResponse?.categories?.results}
+                            data={categoryWithGradeOptionsResponse?.categories?.results}
                             keySelector={itemKeySelector}
                             rendererParams={categoryItemRendererParams}
                             renderer={CategoryItem}
-                            errored={!!categoryOptionsError}
-                            pending={categoryOptionsLoading}
+                            errored={!!categoriesGradesError}
+                            pending={categoriesGradesLoading}
                             filtered={false}
                             emptyMessage={strings.emptyCategoriesMessage}
                             pendingMessage={strings.pendingCategoriesMessage}

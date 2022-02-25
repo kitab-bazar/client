@@ -16,8 +16,6 @@ import routes from '#base/configs/routes';
 import {
     FooterGradeOptionsQuery,
     FooterGradeOptionsQueryVariables,
-    CategoryOptionsQuery,
-    CategoryOptionsQueryVariables,
 } from '#generated/types';
 
 import {
@@ -29,19 +27,14 @@ import KitabLogo from '#resources/img/KitabLogo.png';
 
 import styles from './styles.css';
 
-const CATEGORY_OPTIONS = gql`
-query CategoryOptions {
+const GRADE_OPTIONS = gql`
+query FooterGradeOptions {
     categories {
         results {
             id
             name
         }
     }
-}
-`;
-
-const GRADE_OPTIONS = gql`
-query FooterGradeOptions {
     gradeList: __type(name: "BookGradeEnum") {
         enumValues {
             name
@@ -83,17 +76,6 @@ function Footer(props: Props) {
         GRADE_OPTIONS,
     );
 
-    const {
-        data: categoryOptionsResponse,
-        loading: categoryOptionsLoading,
-        error: categoryOptionsError,
-    } = useQuery<
-        CategoryOptionsQuery,
-        CategoryOptionsQueryVariables
-    >(
-        CATEGORY_OPTIONS,
-    );
-
     const gradeItemRendererParams = React.useCallback((
         _: string,
         grade: NonNullable<NonNullable<FooterGradeOptionsQuery['gradeList']>['enumValues']>[number],
@@ -120,7 +102,7 @@ function Footer(props: Props) {
 
     const categoryItemRendererParams = React.useCallback((
         _: string,
-        category: NonNullable<NonNullable<CategoryOptionsQuery['categories']>['results']>[number],
+        category: NonNullable<NonNullable<FooterGradeOptionsQuery['categories']>['results']>[number],
     ): LinkProps => ({
         className: styles.link,
         children: category.name,
@@ -191,12 +173,12 @@ function Footer(props: Props) {
                 >
                     <ListView
                         className={styles.categoryList}
-                        data={categoryOptionsResponse?.categories?.results}
+                        data={gradeResponse?.categories?.results}
                         keySelector={itemKeySelector}
                         rendererParams={categoryItemRendererParams}
                         renderer={Link}
-                        errored={!!categoryOptionsError}
-                        pending={categoryOptionsLoading}
+                        errored={!!gradeError}
+                        pending={gradeLoading}
                         filtered={false}
                     />
                 </Container>
