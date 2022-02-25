@@ -75,7 +75,7 @@ function OrdersBar(props: Props) {
                             )}
                         />
                     </div>
-                    <div>
+                    <div className={styles.actions}>
                         <Button
                             name={undefined}
                             variant="tertiary"

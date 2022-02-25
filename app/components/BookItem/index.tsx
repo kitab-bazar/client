@@ -11,7 +11,7 @@ import {
 import {
     IoCheckmark,
     IoClose,
-    IoBook,
+    IoBookOutline,
 } from 'react-icons/io5';
 import {
     gql,
@@ -350,7 +350,7 @@ function BookItem(props: Props) {
                     alt={book.image.name ?? undefined}
                 />
             ) : (
-                <IoBook className={styles.fallbackIcon} />
+                <IoBookOutline className={styles.fallbackIcon} />
             )}
         </div>
     );
@@ -555,9 +555,7 @@ function BookItem(props: Props) {
         >
             {bookCoverPreview}
             <div className={styles.details}>
-                <div
-                    className={styles.title}
-                >
+                <div className={styles.title}>
                     {book.title}
                 </div>
                 <div className={styles.author}>
