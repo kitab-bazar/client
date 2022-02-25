@@ -30,6 +30,22 @@ export const common = {
         en: 'The page does not exist or you do not have permissions to view this page.',
         ne: 'यो पृष्ठ उपलब्ध छैन वा तपाईंसँग यो पृष्ठ हेर्ने अनुमति छैन।',
     },
+    dayLabel: {
+        en: 'day(s)',
+        ne: 'दिन(हरू)',
+    },
+    hourLabel: {
+        en: 'hour(s)',
+        ne: 'घण्टा',
+    },
+    minuteLabel: {
+        en: 'minute(s)',
+        ne: 'मिनेट',
+    },
+    secondLabel: {
+        en: 'second(s)',
+        ne: 'सेकेन्ड',
+    },
 };
 
 export const nagbar = {
@@ -69,8 +85,8 @@ export const navbar = {
         ne: 'लग आउट',
     },
     orderWindowMessage: {
-        en: 'Please order books {relativeTime}',
-        ne: 'कृपया {relativeTime} किताबहरू अर्डर गर्नुहोस्',
+        en: 'Please order books by {relativeTime}',
+        ne: 'कृपया {relativeTime} भित्र किताबहरू अर्डर गर्नुहोस्',
     },
     homeLabel: {
         en: 'Home',
