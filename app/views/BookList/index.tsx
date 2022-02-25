@@ -1,4 +1,8 @@
-import React, { useState, useContext } from 'react';
+import React, {
+    useState,
+    useContext,
+    useCallback,
+} from 'react';
 import { useLocation } from 'react-router-dom';
 import {
     _cs,
@@ -150,7 +154,6 @@ const labelSelector = (d: { name: string }) => d.name;
 
 const MAX_ITEMS_PER_PAGE = 10;
 type SortKeyType = 'price' | '-price' | 'id' | '-id';
-
 type BookSource = 'own' | 'all';
 interface BookSourceOption {
     id: BookSource;
@@ -303,7 +306,7 @@ function Explore(props: Props) {
         },
     );
 
-    const bookItemRendererParams = React.useCallback((
+    const bookItemRendererParams = useCallback((
         _: string,
         book: Book,
     ): BookItemProps => ({
