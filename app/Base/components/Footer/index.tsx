@@ -11,7 +11,7 @@ import {
     useQuery,
 } from '@apollo/client';
 
-import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
+import SmartLink from '#base/components/SmartLink';
 import routes from '#base/configs/routes';
 import {
     FooterGradeOptionsQuery,
@@ -128,7 +128,7 @@ function Footer(props: Props) {
                     <div className={styles.appName}>
                         {strings.kitabBazarAppLabel}
                     </div>
-                    <div className={styles.tagline}>
+                    <div>
                         {strings.tagLineLabel}
                     </div>
                 </div>
@@ -184,6 +184,7 @@ function Footer(props: Props) {
                 </Container>
             </div>
             <div className={styles.actions}>
+                {/*
                 <SmartButtonLikeLink
                     route={routes.about}
                     variant="action"
@@ -208,6 +209,13 @@ function Footer(props: Props) {
                 >
                     {strings.contactUsButtonLabel}
                 </SmartButtonLikeLink>
+                */}
+                <SmartLink
+                    className={styles.aboutUsLink}
+                    route={routes.about}
+                >
+                    {strings.aboutUsButtonLabel}
+                </SmartLink>
             </div>
         </div>
     );

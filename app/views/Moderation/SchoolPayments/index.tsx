@@ -32,6 +32,7 @@ import {
 } from '#generated/types';
 import { enumKeySelector, enumLabelSelector } from '#utils/types';
 import { createDateColumn } from '#components/tableHelpers';
+import useStateWithCallback from '#hooks/useStateWithCallback';
 
 import Actions, { Props as ActionsProps } from './Actions';
 import UpdatePaymentModal from './UpdatePaymentModal';
@@ -120,10 +121,22 @@ function SchoolPayments(props: Props) {
     } = props;
 
     const [activePage, setActivePage] = useState<number>(1);
-    const [maxItemsPerPage, setMaxItemsPerPage] = useState(10);
-    const [statusFilter, setStatusFilter] = useState<string>();
-    const [paymentTypeFilter, setPaymentTypeFilter] = useState<string>();
-    const [transactionTypeFilter, setTransactionTypeFilter] = useState<string>();
+    const [maxItemsPerPage, setMaxItemsPerPage] = useStateWithCallback(10, setActivePage);
+    const [statusFilter, setStatusFilter] = useStateWithCallback<string | undefined>(
+        undefined,
+        setActivePage,
+    );
+    const [paymentTypeFilter, setPaymentTypeFilter] = useStateWithCallback<string | undefined>(
+        undefined,
+        setActivePage,
+    );
+    const [
+        transactionTypeFilter,
+        setTransactionTypeFilter,
+    ] = useStateWithCallback<string | undefined>(
+        undefined,
+        setActivePage,
+    );
 
     const [selectedPaymentId, setSelectedPaymentId] = useState<string | undefined | null>();
 
@@ -176,21 +189,6 @@ function SchoolPayments(props: Props) {
         setSelectedPaymentId(undefined);
         showUpdatePaymentModal();
     }, [showUpdatePaymentModal]);
-
-    const handleSetStatusFilter = useCallback((status: string | undefined) => {
-        setActivePage(1);
-        setStatusFilter(status);
-    }, []);
-
-    const handleSetPaymentTypeFilter = useCallback((paymentType: string | undefined) => {
-        setActivePage(1);
-        setPaymentTypeFilter(paymentType);
-    }, []);
-
-    const handleSetTransactionTypeFilter = useCallback((transactionType: string | undefined) => {
-        setActivePage(1);
-        setTransactionTypeFilter(transactionType);
-    }, []);
 
     const handleUpdateSuccess = useCallback(() => {
         setSelectedPaymentId(undefined);
@@ -307,7 +305,7 @@ function SchoolPayments(props: Props) {
                         labelSelector={enumLabelSelector}
                         options={paymentFieldOptionsResponse?.paymentTypeOptions?.enumValues}
                         value={paymentTypeFilter}
-                        onChange={handleSetPaymentTypeFilter}
+                        onChange={setPaymentTypeFilter}
                         disabled={paymentFieldOptionsLoading}
                         variant="general"
                     />
@@ -320,7 +318,7 @@ function SchoolPayments(props: Props) {
                         labelSelector={enumLabelSelector}
                         options={paymentFieldOptionsResponse?.transactionTypeOptions?.enumValues}
                         value={transactionTypeFilter}
-                        onChange={handleSetTransactionTypeFilter}
+                        onChange={setTransactionTypeFilter}
                         disabled={paymentFieldOptionsLoading}
                         variant="general"
                     />
@@ -333,7 +331,7 @@ function SchoolPayments(props: Props) {
                         labelSelector={enumLabelSelector}
                         options={paymentFieldOptionsResponse?.statusOptions?.enumValues}
                         value={statusFilter}
-                        onChange={handleSetStatusFilter}
+                        onChange={setStatusFilter}
                         disabled={paymentFieldOptionsLoading}
                         variant="general"
                     />

@@ -23,7 +23,6 @@ import {
     FeaturedBooksQuery,
     FeaturedBooksQueryVariables,
     CategoryWithGradeOptionsQuery,
-    CategoryWithGradeOptionsQueryVariables,
 } from '#generated/types';
 import coverImage from '#resources/img/cover.png';
 
@@ -108,10 +107,7 @@ function HomePage(props: Props) {
         data: categoryWithGradeOptionsResponse,
         loading: categoriesGradesLoading,
         error: categoriesGradesError,
-    } = useQuery<
-        CategoryWithGradeOptionsQuery,
-        CategoryWithGradeOptionsQueryVariables
-    >(
+    } = useQuery<CategoryWithGradeOptionsQuery>(
         CATEGORY_WITH_GRADE_OPTIONS,
     );
 

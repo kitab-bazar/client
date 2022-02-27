@@ -53,6 +53,10 @@ export const nagbar = {
         en: 'We are not taking new orders at the moment.',
         ne: 'हामी अहिले नयाँ अर्डर लिइरहेका छैनौं। ',
     },
+    userNotVerifiedLabel: {
+        en: 'Your account has not been verified yet. You will receive a call for verification soon.',
+        ne: 'तपाईंको खाता अझै प्रमाणित गरिएको छैन। तपाईलाइ  छिट्टै प्रमाणीकरणको लागि फोन कल प्राप्त गर्नुहोस्।',
+    },
 };
 
 export const navbar = {
@@ -247,7 +251,7 @@ export const homePage = {
     },
     exploreButtonLabel: {
         en: 'Explore the Platfrom',
-        ne: 'प्लेटफर्म राम्ररी हेर्नुहोस्',
+        ne: 'प्लेटफर्म अन्वेषण गर्नुहोस्',
     },
     featuredBooksLabel: {
         en: 'Featured Books',
@@ -481,6 +485,10 @@ export const footer = {
     contactUsButtonLabel: {
         en: 'Contact Us',
         ne: 'सम्पर्क गर्नुहोस',
+    },
+    aboutUsButtonLabel: {
+        en: 'About Us',
+        ne: 'हाम्रोबारे',
     },
     exploreByGradeHeading: {
         en: 'Grade',

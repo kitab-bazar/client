@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { _cs, isDefined } from '@togglecorp/fujs';
 import { gql, useMutation } from '@apollo/client';
 import {
@@ -12,7 +12,6 @@ import {
     useBooleanState,
     useAlert,
     Modal,
-    useInputState,
     TextArea,
 } from '@the-deep/deep-ui';
 import { orderItem } from '#base/configs/lang';
@@ -77,7 +76,7 @@ function OrderItem(props: Props) {
         hideModal,
     ] = useBooleanState(false);
 
-    const [comments, setComments] = useInputState<string | undefined>('');
+    const [comments, setComments] = useState<string | undefined>('');
 
     const strings = useTranslation(orderItem);
     const title = resolveToString(

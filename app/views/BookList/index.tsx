@@ -2,6 +2,7 @@ import React, {
     useState,
     useContext,
     useCallback,
+    useMemo,
 } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
@@ -10,7 +11,6 @@ import {
 import {
     CheckListInput,
     RadioInput,
-    useInputState,
     ListView,
     Button,
     Pager,
@@ -21,6 +21,7 @@ import {
     Border,
 } from '@the-deep/deep-ui';
 import {
+    IoClose,
     IoSearchSharp,
 } from 'react-icons/io5';
 import {
@@ -31,6 +32,7 @@ import {
 import { explore } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 import useDidUpdateEffect from '#base/hooks/useDidUpdateEffect';
+import useStateWithCallback from '#hooks/useStateWithCallback';
 import { UserContext } from '#base/context/UserContext';
 import { resolveToString, resolveToComponent } from '#base/utils/lang';
 import {
@@ -147,6 +149,8 @@ query ExploreBooks(
 }
 `;
 
+// FIXME: move to hooks/useStateWithCallback
+
 type Book = NonNullable<NonNullable<ExploreBooksQuery['books']>['results']>[number];
 
 const keySelector = (d: { id: string }) => d.id;
@@ -189,27 +193,37 @@ function Explore(props: Props) {
     // NOTE: A different UI depending on if user is publisher or not
     const publisherId = user?.publisherId;
 
-    const [selectedBookId, setSelectedBookId] = React.useState<string | undefined>();
-    const [selectedSortKey, setSelectedSortKey] = useInputState<SortKeyType>('id');
+    const [selectedBookId, setSelectedBookId] = useState<string | undefined>();
+    const [selectedSortKey, setSelectedSortKey] = useState<SortKeyType>('id');
     const [page, setPage] = useState<number>(1);
 
     // Filters
 
     // NOTE: only used when in publisher mode
-    const [bookSource, setBookSource] = useInputState<BookSource | undefined>('own');
+    const [bookSource, setBookSource] = useStateWithCallback<BookSource | undefined>(
+        'own',
+        setPage,
+    );
 
-    const [grades, setGrades] = useInputState<string[] | undefined>(
+    const [grades, setGrades] = useStateWithCallback<string[] | undefined>(
         locationState?.grade ? [locationState.grade] : undefined,
+        setPage,
     );
-    const [languages, setLanguages] = useInputState<string[] | undefined>(
+    const [languages, setLanguages] = useStateWithCallback<string[] | undefined>(
         locationState?.language ? [locationState.language] : undefined,
+        setPage,
     );
-    const [categories, setCategories] = useInputState<string[] | undefined>(
+    const [categories, setCategories] = useStateWithCallback<string[] | undefined>(
         locationState?.category ? [locationState?.category] : undefined,
+        setPage,
     );
-    const [search, setSearch] = useInputState<string | undefined>(undefined);
-    const [publishers, setPublishers] = useInputState<string[] | undefined>(
+    const [search, setSearch] = useStateWithCallback<string | undefined>(
+        undefined,
+        setPage,
+    );
+    const [publishers, setPublishers] = useStateWithCallback<string[] | undefined>(
         locationState?.publisher ? [locationState.publisher] : undefined,
+        setPage,
     );
 
     useDidUpdateEffect(() => {
@@ -218,21 +232,28 @@ function Explore(props: Props) {
             setGrades(locationState.grade ? [locationState.grade] : []);
             setLanguages(locationState.language ? [locationState.language] : []);
             setPublishers(locationState.publisher ? [locationState.publisher] : []);
+            setPage(1);
             setSearch(undefined);
         }
-    }, [locationState, setCategories, setGrades, setPublishers, setSearch, setLanguages]);
+    }, [locationState, setCategories, setGrades, setPublishers, setSearch, setLanguages, setPage]);
 
     const filtered = (categories && categories.length > 0)
         || !!publishers
         || !!grades
         || !!languages;
 
-    // eslint-disable-next-line no-nested-ternary
-    const effectivePublisher = publisherId
-        ? (bookSource === 'own' ? [publisherId] : undefined)
-        : publishers;
+    const effectivePublisher = useMemo(() => (
+        // eslint-disable-next-line no-nested-ternary
+        publisherId
+            ? (bookSource === 'own' ? [publisherId] : undefined)
+            : publishers
+    ), [
+        bookSource,
+        publisherId,
+        publishers,
+    ]);
 
-    const pageTitle = React.useMemo(() => {
+    const pageTitle = useMemo(() => {
         if (publisherId) {
             return strings.pageTitlePublisher;
         }
@@ -247,7 +268,7 @@ function Explore(props: Props) {
     const [
         sortOptions,
         sortKeys,
-    ] = React.useMemo(() => {
+    ] = useMemo(() => {
         const options: {
             [key in SortKeyType]: string;
         } = {
@@ -264,7 +285,7 @@ function Explore(props: Props) {
         ];
     }, [strings]);
 
-    const bookSources: BookSourceOption[] = React.useMemo(() => ([
+    const bookSources: BookSourceOption[] = useMemo(() => ([
         { id: 'own', name: strings.publisherOwnBooksLabel },
         { id: 'all', name: strings.publisherAllBooksLabel },
     ]), [strings]);
@@ -405,7 +426,8 @@ function Explore(props: Props) {
                                 name={undefined}
                                 onClick={setGrades}
                                 variant="transparent"
-                                spacing="none"
+                                spacing="compact"
+                                icons={<IoClose />}
                                 disabled={gradeLoading}
                             >
                                 {strings.clearGradeFilterButtonLabel}
@@ -431,8 +453,9 @@ function Explore(props: Props) {
                         <Button
                             name={undefined}
                             onClick={setLanguages}
+                            icons={<IoClose />}
                             variant="transparent"
-                            spacing="none"
+                            spacing="compact"
                             disabled={gradeLoading}
                         >
                             {strings.clearLanguageFilterButtonLabel}
@@ -459,7 +482,8 @@ function Explore(props: Props) {
                             name={undefined}
                             onClick={setCategories}
                             variant="transparent"
-                            spacing="none"
+                            icons={<IoClose />}
+                            spacing="compact"
                             disabled={filterLoading}
                         >
                             {strings.clearCategoriesFilterButtonLabel}
@@ -487,8 +511,9 @@ function Explore(props: Props) {
                                 <Button
                                     name={undefined}
                                     onClick={setPublishers}
+                                    icons={<IoClose />}
                                     variant="transparent"
-                                    spacing="none"
+                                    spacing="compact"
                                     disabled={filterLoading}
                                 >
                                     {strings.clearPublisherFilterButtonLabel}

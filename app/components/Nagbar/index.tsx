@@ -19,19 +19,34 @@ function Nagbar(props: Props) {
     const {
         authenticated,
         orderWindow,
+        user,
     } = useContext(UserContext);
 
-    const nagbarContent = authenticated && !orderWindow
-        ? strings.orderWindowExpiryLabel
-        : undefined;
+    const nagbarItems = [];
 
-    if (!nagbarContent) {
+    if (authenticated && !user?.isVerified) {
+        nagbarItems.push(strings.userNotVerifiedLabel);
+    }
+    if (authenticated && !orderWindow) {
+        nagbarItems.push(strings.orderWindowExpiryLabel);
+    }
+
+    if (nagbarItems.length <= 0) {
         return null;
     }
 
     return (
         <nav className={_cs(className, styles.nagbar)}>
-            {nagbarContent}
+            {
+                nagbarItems.map((item) => (
+                    <div
+                        className={styles.nagbarItem}
+                        key={item}
+                    >
+                        {item}
+                    </div>
+                ))
+            }
         </nav>
     );
 }

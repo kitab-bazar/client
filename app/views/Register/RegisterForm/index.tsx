@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { isDefined } from '@togglecorp/fujs';
 import {
     Container,
     RadioInput,
     TextInput,
+    PendingMessage,
     PasswordInput,
-    useInputState,
     Button,
     useAlert,
 } from '@the-deep/deep-ui';
@@ -17,7 +17,11 @@ import {
     removeNull,
     internal,
 } from '@togglecorp/toggle-form';
-import { useMutation, gql } from '@apollo/client';
+import {
+    useMutation,
+    useQuery,
+    gql,
+} from '@apollo/client';
 
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
 import { register as registerStrings } from '#base/configs/lang';
@@ -30,6 +34,7 @@ import {
 } from '#base/utils/errorTransform';
 import {
     UserTypeEnum,
+    UserTypeOptionsQuery,
     RegisterMutation,
     RegisterMutationVariables,
 } from '#generated/types';
@@ -47,39 +52,25 @@ import PublisherForm from './PublisherForm';
 import SchoolForm from './SchoolForm';
 import styles from './styles.css';
 
-interface UserType {
-    id: UserTypeEnum;
-    title: string;
-}
-
-// TODO: fetch this from the server
-const userTypes: UserType[] = [
-    /*
-    {
-        id: 'INDIVIDUAL_USER',
-        title: 'Individual User',
-    },
-    {
-        id: 'INSTITUTIONAL_USER',
-        title: 'Institution',
-    },
-    */
-    {
-        id: 'SCHOOL_ADMIN',
-        title: 'School',
-    },
-    {
-        id: 'PUBLISHER',
-        title: 'Publisher',
-    },
-];
+const includedUserTypes: UserTypeEnum[] = ['SCHOOL_ADMIN', 'PUBLISHER'];
 
 const defaultFormValues: PartialRegisterFormType = {
     userType: 'SCHOOL_ADMIN',
 };
 
-const userKeySelector = (u: UserType) => u.id;
-const userLabelSelector = (u: UserType) => u.title;
+const userKeySelector = (u: { name: string }) => u.name;
+const userLabelSelector = (u: { description?: string | null | undefined }) => u.description ?? '';
+
+const USER_TYPES = gql`
+    query UserTypeOptions {
+        userType: __type(name: "UserTypeEnum") {
+            enumValues {
+                name
+                description
+            }
+        }
+    }
+`;
 
 const REGISTER = gql`
     mutation Register($data: RegisterInputType!) {
@@ -104,12 +95,24 @@ function RegisterForm() {
     const error = getErrorObject(formError);
     const history = useHistory();
 
-    const [confirmPassword, setConfirmPassword] = useInputState<string | undefined>(undefined);
+    const [confirmPassword, setConfirmPassword] = useState<string | undefined>(undefined);
 
     const [
         municipalityOptions,
         setMunicipalityOptions,
     ] = useState<MunicipalityOption[] | undefined | null>();
+
+    const {
+        data: userTypeOptions,
+        loading: userTypeLoading,
+    } = useQuery<UserTypeOptionsQuery>(
+        USER_TYPES,
+    );
+
+    const userTypes = useMemo(() => (
+        userTypeOptions?.userType?.enumValues
+            ?.filter((item) => includedUserTypes.includes(item.name as UserTypeEnum))
+    ), [userTypeOptions]);
 
     const [
         register,
@@ -211,6 +214,7 @@ function RegisterForm() {
                 )
             }
         >
+            {userTypeLoading && <PendingMessage />}
             <form
                 className={styles.form}
                 onSubmit={createSubmitHandler(validate, setError, handleSubmit)}

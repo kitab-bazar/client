@@ -55,6 +55,7 @@ const LOGIN = gql`
                 lastName
                 canonicalName
                 userType
+                isVerified
                 institution {
                     id
                     name
@@ -143,6 +144,7 @@ function LoginForm() {
                         type: safeUser.userType,
                         permissions: safeUser.allowedPermissions,
                         publisherId: safeUser.publisher?.id,
+                        isVerified: safeUser.isVerified,
                     });
                 } else if (errors) {
                     const formError = transformToFormError(removeNull(errors) as ObjectError[]);
