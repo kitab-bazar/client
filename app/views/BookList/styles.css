@@ -23,7 +23,6 @@
 
     .container {
         display: flex;
-        flex-wrap: wrap;
         padding: var(--dui-spacing-extra-large);
         width: 100%;
         max-width: var(--kitab-page-max-width);
@@ -70,7 +69,7 @@
             display: flex;
             flex-direction: column;
             flex-grow: 1;
-            padding: var(--dui-spacing-extra-large);
+            padding: var(--dui-spacing-extra-large) 0;
             gap: var(--dui-spacing-large);
 
             .summary {
@@ -92,6 +91,48 @@
                 flex-grow: 1;
                 padding: var(--dui-spacing-extra-large) 0;
                 gap: var(--dui-spacing-medium);
+            }
+        }
+
+        @media(max-width: 900px) {
+            .side-bar {
+                flex-basis: 14rem;
+            }
+        }
+
+        @media(max-width: 720px) {
+            flex-wrap: wrap;
+
+            .side-bar {
+                flex-basis: 100%;
+
+                .grade-input {
+                    .grade-list {
+                        flex-direction: row;
+                        flex-wrap: wrap;
+                    }
+                }
+
+                .language-input {
+                    .language-list {
+                        flex-direction: row;
+                        flex-wrap: wrap;
+                    }
+                }
+
+                .publisher-input {
+                    .publisher-list {
+                        flex-direction: row;
+                        flex-wrap: wrap;
+                    }
+                }
+
+                .categories-input {
+                    .category-list {
+                        flex-direction: row;
+                        flex-wrap: wrap;
+                    }
+                }
             }
         }
     }

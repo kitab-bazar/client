@@ -76,6 +76,29 @@
                 padding: var(--dui-spacing-extra-large);
                 min-height: 50vh;
             }
+
+            @media(max-width: 700px) {
+                flex-direction: column;
+
+                .tab-list {
+                    flex-direction: row;
+                    flex-wrap: wrap;
+                    gap: var(--dui-spacing-small);
+                    padding: var(--dui-spacing-medium);
+                    width: auto;
+
+                    .tab-item {
+                        border-right: none;
+                        border-bottom: var(--dui-width-separator-thick) solid transparent;
+                        width: auto;
+                        text-align: left;
+
+                        &.active {
+                            border-bottom-color: var(--dui-color-accent);
+                        }
+                    }
+                }
+            }
         }
     }
 }

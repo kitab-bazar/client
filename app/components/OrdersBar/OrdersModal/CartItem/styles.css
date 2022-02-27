@@ -41,4 +41,13 @@
             width: 6rem;
         }
     }
+
+
+    @media(max-width: 400px) {
+        flex-direction: column;
+
+        .preview {
+            width: 100%;
+        }
+    }
 }

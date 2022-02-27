@@ -1,17 +1,28 @@
 .orders-bar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    flex-wrap: wrap;
     padding: var(--dui-spacing-large);
+    gap: var(--dui-spacing-medium);
 
     .summary {
         display: flex;
+        flex-grow: 1;
+        flex-wrap: wrap;
         gap: var(--dui-spacing-medium);
 
         .book-selected {
             display: flex;
             gap: var(--dui-spacing-small);
         }
+    }
+
+    .actions {
+        display: flex;
+        flex-grow: 1;
+        flex-shrink: 0;
+        justify-self: flex-end;
+        justify-content: flex-end;
     }
 
     &.hidden {

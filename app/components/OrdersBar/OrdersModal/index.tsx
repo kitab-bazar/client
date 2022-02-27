@@ -182,6 +182,7 @@ function OrdersModal(props: Props) {
                 className={styles.ordersModal}
                 heading={strings.orderListHeading}
                 headingSize="small"
+                footerClassName={styles.footer}
                 footerIcons={(
                     <>
                         <TextOutput
@@ -203,6 +204,7 @@ function OrdersModal(props: Props) {
                         />
                     </>
                 )}
+                footerActionsContainerClassName={styles.footerActions}
                 footerActions={(
                     <Button
                         name={undefined}
