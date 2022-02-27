@@ -1,6 +1,10 @@
 import React, { useCallback } from 'react';
-import { _cs } from '@togglecorp/fujs';
+import { _cs, isDefined } from '@togglecorp/fujs';
 import { gql, useMutation } from '@apollo/client';
+import {
+    internal,
+    removeNull,
+} from '@togglecorp/toggle-form';
 import {
     Container,
     TextOutput,
@@ -19,6 +23,7 @@ import {
     CancelOrderMutation,
     CancelOrderMutationVariables,
 } from '#generated/types';
+import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
 
 import NumberOutput from '#components/NumberOutput';
 
@@ -94,18 +99,53 @@ function OrderItem(props: Props) {
         {
             refetchQueries: ORDER_SUMMARY ? [ORDER_SUMMARY] : undefined,
             onCompleted: (response) => {
-                if (!response?.updateOrder?.ok) {
+                const {
+                    updateOrder,
+                } = response;
+
+                if (!updateOrder) {
+                    return;
+                }
+
+                const {
+                    errors,
+                    ok,
+                } = updateOrder;
+                if (ok) {
                     alert.show(
-                        strings.cancelOrderFailureMessage,
+                        strings.cancelOrderSuccessMessage,
+                        { variant: 'success' },
+                    );
+                } else if (errors) {
+                    const formError = transformToFormError(
+                        removeNull(errors) as ObjectError[],
+                    );
+                    alert.show(
+                        <div>
+                            <div>
+                                {strings.cancelOrderSuccessMessage}
+                            </div>
+                            {isDefined(formError) && (
+                                <div>
+                                    {formError[internal]}
+                                </div>
+                            )}
+                        </div>,
                         { variant: 'error' },
                     );
-                } else {
                     hideModal();
                 }
             },
             onError: (errors) => {
                 alert.show(
-                    errors.message,
+                    <div>
+                        <div>
+                            {strings.cancelOrderFailureMessage}
+                        </div>
+                        <div>
+                            {errors.message}
+                        </div>
+                    </div>,
                     { variant: 'error' },
                 );
             },

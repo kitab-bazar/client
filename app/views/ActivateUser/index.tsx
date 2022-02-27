@@ -3,10 +3,14 @@ import {
     useParams,
     useHistory,
 } from 'react-router-dom';
-import { _cs } from '@togglecorp/fujs';
+import {
+    _cs,
+    isDefined,
+} from '@togglecorp/fujs';
 import {
     Error,
     removeNull,
+    internal,
 } from '@togglecorp/toggle-form';
 import {
     gql,
@@ -86,11 +90,31 @@ function ActivateUser(props: Props) {
                 } else if (errors) {
                     const formError = transformToFormError(removeNull(errors) as ObjectError[]);
                     setError(formError);
+                    alert.show(
+                        <div>
+                            <div>
+                                {strings.userActivationFailureMessage}
+                            </div>
+                            {isDefined(formError) && (
+                                <div>
+                                    {formError[internal]}
+                                </div>
+                            )}
+                        </div>,
+                        { variant: 'error' },
+                    );
                 }
             },
             onError: (errors) => {
                 alert.show(
-                    errors.message,
+                    <div>
+                        <div>
+                            {strings.userActivationFailureMessage}
+                        </div>
+                        <div>
+                            {errors.message}
+                        </div>
+                    </div>,
                     { variant: 'error' },
                 );
             },

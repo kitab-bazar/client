@@ -1,6 +1,7 @@
 import React from 'react';
 import {
     _cs,
+    isDefined,
 } from '@togglecorp/fujs';
 import {
     ListView,
@@ -11,6 +12,7 @@ import {
     useInputState,
     TextInput,
     Pager,
+    useAlert,
 } from '@the-deep/deep-ui';
 import {
     gql,
@@ -18,11 +20,16 @@ import {
     useMutation,
 } from '@apollo/client';
 import {
+    removeNull,
+    internal,
+} from '@togglecorp/toggle-form';
+import {
     IoSearch,
     IoCheckmark,
 } from 'react-icons/io5';
 
 import EmptyMessage from '#components/EmptyMessage';
+import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
 
 import {
     ModerationSchoolListQuery,
@@ -124,6 +131,7 @@ function SchoolItem(props: SchoolItemProps) {
     const { user } = props;
 
     const school = user?.school;
+    const alert = useAlert();
 
     const [
         updateUserVerificationStatus,
@@ -133,6 +141,56 @@ function SchoolItem(props: SchoolItemProps) {
         UpdateUserVerificationStatusMutationVariables
     >(
         UPDATE_USER_VERIFICATION_STATUS,
+        {
+            onCompleted: (response) => {
+                const userVerify = response?.moderatorMutation?.userVerify;
+                if (!userVerify) {
+                    return;
+                }
+
+                const {
+                    errors,
+                    ok,
+                } = userVerify;
+
+                if (ok) {
+                    alert.show(
+                        'User verification successful',
+                        { variant: 'success' },
+                    );
+                } else if (errors) {
+                    const transformedError = transformToFormError(
+                        removeNull(errors) as ObjectError[],
+                    );
+                    alert.show(
+                        <div>
+                            <div>
+                                User Verification Successful
+                            </div>
+                            {isDefined(transformedError) && (
+                                <div>
+                                    {transformedError[internal]}
+                                </div>
+                            )}
+                        </div>,
+                        { variant: 'error' },
+                    );
+                }
+            },
+            onError: (errors) => {
+                alert.show(
+                    <div>
+                        <div>
+                            Failed to verify user.
+                        </div>
+                        <div>
+                            {errors.message}
+                        </div>
+                    </div>,
+                    { variant: 'error' },
+                );
+            },
+        },
     );
 
     const handleVerifyButtonClick = React.useCallback(() => {

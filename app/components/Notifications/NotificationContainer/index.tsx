@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { _cs } from '@togglecorp/fujs';
+import { _cs, isDefined } from '@togglecorp/fujs';
 import { gql, useMutation } from '@apollo/client';
 import {
     IoCheckmark,
@@ -11,6 +11,10 @@ import {
     Container,
     DateOutput,
 } from '@the-deep/deep-ui';
+import {
+    removeNull,
+    internal,
+} from '@togglecorp/toggle-form';
 
 // import Avatar from '#components/Avatar';
 
@@ -18,6 +22,10 @@ import {
     NotificationStatusUpdateMutation,
     NotificationStatusUpdateMutationVariables,
 } from '#generated/types';
+import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
+import useTranslation from '#base/hooks/useTranslation';
+import { notifications } from '#base/configs/lang';
+import { resolveToString } from '#base/utils/lang';
 
 import { Notification } from '../index';
 
@@ -63,6 +71,7 @@ function NotificationContainer(props: Props) {
     } = props;
 
     const alert = useAlert();
+    const strings = useTranslation(notifications);
 
     const [
         updateStatus,
@@ -77,12 +86,24 @@ function NotificationContainer(props: Props) {
                 if (response?.toggleNotification?.ok) {
                     const newStatus = response.toggleNotification?.result?.read;
                     alert.show(
-                        `Successfully updated notification status to ${newStatus ? 'read' : 'unread'}.`,
+                        resolveToString(strings.notificationStatusUpdateSuccessMessage, newStatus),
                         { variant: 'success' },
                     );
-                } else {
+                } else if (response?.toggleNotification?.errors) {
+                    const transformedError = transformToFormError(
+                        removeNull(response?.toggleNotification?.errors) as ObjectError[],
+                    );
                     alert.show(
-                        'Failed to update notification status.',
+                        <div>
+                            <div>
+                                {strings.updateNotificationFailureMessage}
+                            </div>
+                            {isDefined(transformedError) && (
+                                <div>
+                                    {transformedError[internal]}
+                                </div>
+                            )}
+                        </div>,
                         { variant: 'error' },
                     );
                 }
@@ -90,7 +111,14 @@ function NotificationContainer(props: Props) {
 
             onError: (errors) => {
                 alert.show(
-                    errors.message,
+                    <div>
+                        <div>
+                            {strings.updateNotificationFailureMessage}
+                        </div>
+                        <div>
+                            {errors.message}
+                        </div>
+                    </div>,
                     { variant: 'error' },
                 );
             },

@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import { isDefined } from '@togglecorp/fujs';
 import {
     gql,
     useQuery,
@@ -14,10 +15,15 @@ import {
     useAlert,
     useModalState,
 } from '@the-deep/deep-ui';
+import {
+    removeNull,
+    internal,
+} from '@togglecorp/toggle-form';
 import { NavbarContext } from '#base/context/NavbarContext';
 
 import { ordersBar } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
+import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
 import {
     CartItemsListQuery,
     CartItemsListQueryVariables,
@@ -143,16 +149,35 @@ function OrdersModal(props: Props) {
                     );
                     setShowOrderSuccessfulModalTrue();
                     // onClose();
-                } else {
+                } else if (response?.createOrderFromCart?.errors) {
+                    const transformedError = transformToFormError(
+                        removeNull(response?.createOrderFromCart?.errors) as ObjectError[],
+                    );
                     alert.show(
-                        strings.orderPlacementFailureMessage,
+                        <div>
+                            <div>
+                                {strings.orderPlacementFailureMessage}
+                            </div>
+                            {isDefined(transformedError) && (
+                                <div>
+                                    {transformedError[internal]}
+                                </div>
+                            )}
+                        </div>,
                         { variant: 'error' },
                     );
                 }
             },
             onError: (errors) => {
                 alert.show(
-                    errors.message,
+                    <div>
+                        <div>
+                            {strings.orderPlacementFailureMessage}
+                        </div>
+                        <div>
+                            {errors.message}
+                        </div>
+                    </div>,
                     { variant: 'error' },
                 );
             },
