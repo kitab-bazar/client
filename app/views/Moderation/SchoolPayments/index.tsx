@@ -130,9 +130,9 @@ function SchoolPayments(props: Props) {
     const variables = useMemo(() => ({
         pageSize: maxItemsPerPage,
         page: activePage,
-        status: statusFilter as Payment['status'],
-        paymentType: paymentTypeFilter as Payment['paymentType'],
-        transactionType: transactionTypeFilter as Payment['transactionType'],
+        status: statusFilter as PaymentOptionsQueryVariables['status'],
+        paymentType: paymentTypeFilter as PaymentOptionsQueryVariables['paymentType'],
+        transactionType: transactionTypeFilter as PaymentOptionsQueryVariables['transactionType'],
     }), [
         maxItemsPerPage,
         activePage,
@@ -176,6 +176,21 @@ function SchoolPayments(props: Props) {
         setSelectedPaymentId(undefined);
         showUpdatePaymentModal();
     }, [showUpdatePaymentModal]);
+
+    const handleSetStatusFilter = useCallback((status: string | undefined) => {
+        setActivePage(1);
+        setStatusFilter(status);
+    }, []);
+
+    const handleSetPaymentTypeFilter = useCallback((paymentType: string | undefined) => {
+        setActivePage(1);
+        setPaymentTypeFilter(paymentType);
+    }, []);
+
+    const handleSetTransactionTypeFilter = useCallback((transactionType: string | undefined) => {
+        setActivePage(1);
+        setTransactionTypeFilter(transactionType);
+    }, []);
 
     const handleUpdateSuccess = useCallback(() => {
         setSelectedPaymentId(undefined);
@@ -238,6 +253,11 @@ function SchoolPayments(props: Props) {
                 (item) => item.statusDisplay,
             ),
             createStringColumn<Payment, string>(
+                'paymentType',
+                'Payment Type',
+                (item) => item.paymentType,
+            ),
+            createStringColumn<Payment, string>(
                 'trasactionType',
                 'Type',
                 (item) => item.transactionTypeDisplay,
@@ -287,7 +307,7 @@ function SchoolPayments(props: Props) {
                         labelSelector={enumLabelSelector}
                         options={paymentFieldOptionsResponse?.paymentTypeOptions?.enumValues}
                         value={paymentTypeFilter}
-                        onChange={setPaymentTypeFilter}
+                        onChange={handleSetPaymentTypeFilter}
                         disabled={paymentFieldOptionsLoading}
                         variant="general"
                     />
@@ -300,7 +320,7 @@ function SchoolPayments(props: Props) {
                         labelSelector={enumLabelSelector}
                         options={paymentFieldOptionsResponse?.transactionTypeOptions?.enumValues}
                         value={transactionTypeFilter}
-                        onChange={setTransactionTypeFilter}
+                        onChange={handleSetTransactionTypeFilter}
                         disabled={paymentFieldOptionsLoading}
                         variant="general"
                     />
@@ -313,7 +333,7 @@ function SchoolPayments(props: Props) {
                         labelSelector={enumLabelSelector}
                         options={paymentFieldOptionsResponse?.statusOptions?.enumValues}
                         value={statusFilter}
-                        onChange={setStatusFilter}
+                        onChange={handleSetStatusFilter}
                         disabled={paymentFieldOptionsLoading}
                         variant="general"
                     />

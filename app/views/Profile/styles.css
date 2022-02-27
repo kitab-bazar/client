@@ -48,6 +48,7 @@
                 display: flex;
                 gap: var(--dui-spacing-small);
                 flex-direction: column;
+                flex-shrink: 0;
                 padding: var(--dui-spacing-medium);
                 width: 16rem;
 

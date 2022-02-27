@@ -22,6 +22,7 @@ import { profile } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 
 import OrderList from './OrderList';
+import SchoolPayments from './SchoolPayments';
 
 import styles from './styles.css';
 
@@ -220,7 +221,7 @@ function Profile(props: Props) {
                                             name="payments"
                                             className={styles.tabContent}
                                         >
-                                            Payments
+                                            <SchoolPayments />
                                         </TabPanel>
                                     )}
                                 </div>

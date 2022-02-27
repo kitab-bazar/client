@@ -604,6 +604,78 @@ export const profile = {
         en: 'Number of distinct books',
         ne: 'फरक पुस्तकहरूको संख्या',
     },
+    addedOnLabel: {
+        en: 'Added On',
+        ne: 'मितिमा थपियो',
+    },
+    amountLabel: {
+        en: 'Amount',
+        ne: 'रकम',
+    },
+    paymentTypeLabel: {
+        en: 'Payment Type',
+        ne: 'भुक्तानी प्रकार',
+    },
+    all: {
+        en: 'All',
+        ne: 'सबै',
+    },
+    idLabel: {
+        en: 'ID',
+        ne: 'क्र.सं',
+    },
+    transactionTypeLabel: {
+        en: 'Transaction Type',
+        ne: 'लेनदेन प्रकार',
+    },
+    status: {
+        en: 'Status',
+        ne: 'स्थिति',
+    },
+    noPaymentsMessage: {
+        en: 'No payments available.',
+        ne: 'कुनै भुक्तानी उपलब्ध छैन।',
+    },
+    noPaymentsSuggestion: {
+        en: 'Your payments will be visible here.',
+        ne: 'तपाईंको भुक्तानीहरू यहाँ देखिने छन्।',
+    },
+    paymentsErroredMessage: {
+        en: 'Failed to fetch payments.',
+        ne: 'भुक्तानीहरू प्राप्त गर्न असफल भयो।',
+    },
+    paymentsErroredSuggestion: {
+        en: 'Please refresh the page or contact administrator.',
+        ne: 'कृपया पृष्ठ रिफ्रेस गर्नुहोस् वा प्रशासकलाई सम्पर्क गर्नुहोस्।',
+    },
+    paymentsFilteredEmptyMessage: {
+        en: 'No matching payments found.',
+        ne: 'कुनै मिल्दो भुक्तानी फेला परेन।',
+    },
+    paymentsFilteredEmptySuggestion: {
+        en: 'Please clear filters.',
+        ne: 'कृपया फिल्टरहरू खाली गर्नुहोस्।',
+    },
+    paymentsStatusHeading: {
+        en: 'Payment Status',
+        ne: 'भुक्तानी स्थिति',
+    },
+    totalUnverifiedPaymentLabel: {
+        en: 'Unverified Payment Amount',
+        ne: 'कुल अप्रमाणित भुक्तानी',
+    },
+    totalUnverifiedPaymentCountLabel: {
+        en: 'Unverified Payments',
+        ne: 'कुल अप्रमाणित भुक्तानी गणना',
+    },
+    totalVerifiedPaymentLabel: {
+        en: 'Payment Amount',
+        ne: 'कुल भुक्तानी',
+    },
+    totalVerifiedPaymentCountLabel: {
+        en: 'Payments',
+        ne: 'कुल प्रमाणित भुक्तानी गणना',
+    },
 };
 
 export const school = {
