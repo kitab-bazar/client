@@ -660,20 +660,20 @@ export const profile = {
         en: 'Payment Status',
         ne: 'भुक्तानी स्थिति',
     },
-    totalUnverifieldPaymentLabel: {
-        en: 'Total Unverified Payment',
+    totalUnverifiedPaymentLabel: {
+        en: 'Unverified Payment Amount',
         ne: 'कुल अप्रमाणित भुक्तानी',
     },
-    totalUnverifieldPaymentCountLabel: {
-        en: 'Total Unverified Payments Count',
+    totalUnverifiedPaymentCountLabel: {
+        en: 'Unverified Payments',
         ne: 'कुल अप्रमाणित भुक्तानी गणना',
     },
-    totalVerifieldPaymentLabel: {
-        en: 'Total Payment',
+    totalVerifiedPaymentLabel: {
+        en: 'Payment Amount',
         ne: 'कुल भुक्तानी',
     },
-    totalVerifieldPaymentCountLabel: {
-        en: 'Total Verified Payments Count',
+    totalVerifiedPaymentCountLabel: {
+        en: 'Payments',
         ne: 'कुल प्रमाणित भुक्तानी गणना',
     },
 };

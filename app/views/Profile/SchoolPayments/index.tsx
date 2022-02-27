@@ -67,6 +67,12 @@ const INDIVIDUAL_SCHOOL_PAYMENTS = gql`
         $transactionType: TransactionTypeEnum,
     ) {
         schoolQuery {
+            paymentSummary {
+                totalUnverifiedPayment
+                totalUnverifiedPaymentCount
+                totalVerifiedPayment
+                totalVerifiedPaymentCount
+            }
             payments(
                 ordering: $ordering,
                 page: $page,
@@ -78,10 +84,6 @@ const INDIVIDUAL_SCHOOL_PAYMENTS = gql`
                 page
                 pageSize
                 totalCount
-                totalUnverifieldPayment
-                totalUnverifieldPaymentCount
-                totalVerifieldPayment
-                totalVerifieldPaymentCount
                 results {
                     amount
                     createdAt
@@ -188,25 +190,11 @@ function SchoolPayments(props: Props) {
                     block
                     valueContainerClassName={styles.value}
                     hideLabelColon
-                    label={strings.totalVerifieldPaymentLabel}
+                    label={strings.totalVerifiedPaymentLabel}
                     value={(
                         <NumberOutput
                             value={paymentsQueryResponse
-                                ?.schoolQuery?.payments?.totalVerifieldPayment}
-                            currency
-                        />
-                    )}
-                />
-                <TextOutput
-                    spacing="compact"
-                    block
-                    valueContainerClassName={styles.value}
-                    label={strings.totalUnverifieldPaymentLabel}
-                    hideLabelColon
-                    value={(
-                        <NumberOutput
-                            value={paymentsQueryResponse
-                                ?.schoolQuery?.payments?.totalUnverifieldPayment}
+                                ?.schoolQuery?.paymentSummary?.totalVerifiedPayment ?? 0}
                             currency
                         />
                     )}
@@ -216,18 +204,32 @@ function SchoolPayments(props: Props) {
                     block
                     valueContainerClassName={styles.value}
                     hideLabelColon
-                    label={strings.totalVerifieldPaymentCountLabel}
+                    label={strings.totalVerifiedPaymentCountLabel}
                     value={paymentsQueryResponse
-                        ?.schoolQuery?.payments?.totalVerifieldPaymentCount}
+                        ?.schoolQuery?.paymentSummary?.totalVerifiedPaymentCount ?? 0}
+                />
+                <TextOutput
+                    spacing="compact"
+                    block
+                    valueContainerClassName={styles.value}
+                    label={strings.totalUnverifiedPaymentLabel}
+                    hideLabelColon
+                    value={(
+                        <NumberOutput
+                            value={paymentsQueryResponse
+                                ?.schoolQuery?.paymentSummary?.totalUnverifiedPayment ?? 0}
+                            currency
+                        />
+                    )}
                 />
                 <TextOutput
                     spacing="compact"
                     block
                     valueContainerClassName={styles.value}
                     hideLabelColon
-                    label={strings.totalUnverifieldPaymentCountLabel}
+                    label={strings.totalUnverifiedPaymentCountLabel}
                     value={paymentsQueryResponse
-                        ?.schoolQuery?.payments?.totalUnverifieldPaymentCount}
+                        ?.schoolQuery?.paymentSummary?.totalUnverifiedPaymentCount ?? 0}
                 />
             </ContainerCard>
             <Container
