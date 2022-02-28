@@ -10,6 +10,11 @@ import {
 
 import { about } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
+import NumberOutput from '#components/NumberOutput';
+import {
+    resolveToString,
+    resolveToComponent,
+} from '#base/utils/lang';
 
 import styles from './styles.css';
 
@@ -90,6 +95,33 @@ function About(props: Props) {
                         icon={<FaTruck />}
                         description={strings.supplyChainText}
                     />
+                </Container>
+                <Container
+                    className={styles.contactUs}
+                    heading={strings.contactUsLabel}
+                >
+                    <p>
+                        {strings.contactUsDescription}
+                    </p>
+                    <p>
+                        {resolveToString(
+                            strings.sendUsEmailLabel,
+                            { email: 'info@kitabbazar.org' },
+                        )}
+                    </p>
+                    <p className={styles.phone}>
+                        {resolveToComponent(
+                            strings.callUsLabel,
+                            {
+                                phoneNumber: (
+                                    <NumberOutput
+                                        value={9741673214}
+                                        separatorHidden
+                                    />
+                                ),
+                            },
+                        )}
+                    </p>
                 </Container>
             </div>
         </div>

@@ -336,6 +336,22 @@ export const about = {
         en: 'To use the evidence to inform the national education debate, policy, and practice and to expand global understanding of the use of results-based financing to address supply chain issues.',
         ne: 'राष्ट्रिय शिक्षा बहस, नीति, र अभ्यासलाई सूचित गर्न प्रमाणहरू प्रयोग गर्न र आपूर्ति श्रृंखला मुद्दाहरूलाई सम्बोधन गर्न नतिजामा आधारित रिजल्ट बेस्ड फाइनान्सिङको प्रयोगको विश्वव्यापी रूपमा विस्तार गर्न।',
     },
+    contactUsLabel: {
+        en: 'Contact Us',
+        ne: 'हामीलाई सम्पर्क गर्नुहोस',
+    },
+    sendUsEmailLabel: {
+        en: 'Send us an email at {email}',
+        ne: 'हामीलाई {email} मा इमेल पठाउनुहोस्',
+    },
+    callUsLabel: {
+        en: 'Call: {phoneNumber}',
+        ne: 'फोन :{phoneNumber}',
+    },
+    contactUsDescription: {
+        en: 'Have feedback about Kitab Bazar or want to know more about us?',
+        ne: 'किताब बजार बारे प्रतिक्रिया छ वा हाम्रो बारेमा थप जान्न चाहनुहुन्छ?',
+    },
     accessToReadingMaterialText: {
         en: 'Children have access to sufficient supplementary reading materials in schools',
         ne: 'बालबालिकालाई विद्यालयमा पर्याप्त पूरक पठन सामग्रीको पहुँच गराउन',
