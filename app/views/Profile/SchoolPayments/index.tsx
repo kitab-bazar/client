@@ -1,7 +1,6 @@
 import React, {
     useMemo,
     useState,
-    useCallback,
 } from 'react';
 import {
     _cs,
@@ -30,6 +29,7 @@ import { profile } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 import EmptyMessage from '#components/EmptyMessage';
 import NumberOutput from '#components/NumberOutput';
+import useStateWithCallback from '#hooks/useStateWithCallback';
 
 import SchoolPaymentItem from './SchoolPaymentItem';
 import styles from './styles.css';
@@ -115,25 +115,19 @@ function SchoolPayments(props: Props) {
     const strings = useTranslation(profile);
 
     const [activePage, setActivePage] = useState<number>(1);
-    const [maxItemsPerPage, setMaxItemsPerPage] = useState(10);
-    const [statusFilter, setStatusFilter] = useState<string>();
-    const [paymentTypeFilter, setPaymentTypeFilter] = useState<string>();
-    const [transactionTypeFilter, setTransactionTypeFilter] = useState<string>();
-
-    const handleSetStatusFilter = useCallback((status: string | undefined) => {
-        setActivePage(1);
-        setStatusFilter(status);
-    }, []);
-
-    const handleSetPaymentTypeFilter = useCallback((paymentType: string | undefined) => {
-        setActivePage(1);
-        setPaymentTypeFilter(paymentType);
-    }, []);
-
-    const handleSetTransactionTypeFilter = useCallback((transactionType: string | undefined) => {
-        setActivePage(1);
-        setTransactionTypeFilter(transactionType);
-    }, []);
+    const [maxItemsPerPage, setMaxItemsPerPage] = useStateWithCallback(10, setActivePage);
+    const [
+        statusFilter,
+        setStatusFilter,
+    ] = useStateWithCallback<string | undefined>(undefined, setActivePage);
+    const [
+        paymentTypeFilter,
+        setPaymentTypeFilter,
+    ] = useStateWithCallback<string | undefined>(undefined, setActivePage);
+    const [
+        transactionTypeFilter,
+        setTransactionTypeFilter,
+    ] = useStateWithCallback<string | undefined>(undefined, setActivePage);
 
     const variables = useMemo(() => ({
         pageSize: maxItemsPerPage,
@@ -258,7 +252,7 @@ function SchoolPayments(props: Props) {
                             labelSelector={enumLabelSelector}
                             options={paymentFieldOptionsResponse?.paymentTypeOptions?.enumValues}
                             value={paymentTypeFilter}
-                            onChange={handleSetPaymentTypeFilter}
+                            onChange={setPaymentTypeFilter}
                             disabled={paymentFieldOptionsLoading}
                             variant="general"
                         />
@@ -274,7 +268,7 @@ function SchoolPayments(props: Props) {
                                     ?.transactionTypeOptions?.enumValues
                             }
                             value={transactionTypeFilter}
-                            onChange={handleSetTransactionTypeFilter}
+                            onChange={setTransactionTypeFilter}
                             disabled={paymentFieldOptionsLoading}
                             variant="general"
                         />
@@ -287,7 +281,7 @@ function SchoolPayments(props: Props) {
                             labelSelector={enumLabelSelector}
                             options={paymentFieldOptionsResponse?.statusOptions?.enumValues}
                             value={statusFilter}
-                            onChange={handleSetStatusFilter}
+                            onChange={setStatusFilter}
                             disabled={paymentFieldOptionsLoading}
                             variant="general"
                         />

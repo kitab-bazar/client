@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     _cs,
     isDefined,
@@ -9,7 +9,6 @@ import {
     ConfirmButton,
     Tag,
     RadioInput,
-    useInputState,
     TextInput,
     Pager,
     useAlert,
@@ -29,6 +28,7 @@ import {
 } from 'react-icons/io5';
 
 import EmptyMessage from '#components/EmptyMessage';
+import useStateWithCallback from '#hooks/useStateWithCallback';
 import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
 
 import {
@@ -313,9 +313,12 @@ function Schools(props: Props) {
     const { className } = props;
 
     const [activePage, setActivePage] = React.useState<number>(1);
-    const [verified, setVerified] = useInputState<VerificationStatusOption['key']>('all');
-    const [search, setSearch] = useInputState<string | undefined>(undefined);
-    const [maxItemsPerPage, setMaxItemsPerPage] = useInputState<number>(10);
+    const [verified, setVerified] = useStateWithCallback<VerificationStatusOption['key']>(
+        'all',
+        setActivePage,
+    );
+    const [search, setSearch] = useStateWithCallback<string | undefined>(undefined, setActivePage);
+    const [maxItemsPerPage, setMaxItemsPerPage] = useStateWithCallback<number>(10, setActivePage);
 
     const isVerifiedFilter = React.useMemo(() => {
         if (verified === 'verified') {
@@ -328,6 +331,14 @@ function Schools(props: Props) {
 
         return undefined;
     }, [verified]);
+
+    useEffect(() => {
+        setActivePage(1);
+    }, [
+        isVerifiedFilter,
+        maxItemsPerPage,
+        search,
+    ]);
 
     const {
         previousData,

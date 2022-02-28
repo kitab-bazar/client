@@ -21,6 +21,7 @@ const ME = gql`
             canonicalName
             isActive
             lastLogin
+            isVerified
             lastName
             userType
             institution {
@@ -97,6 +98,7 @@ function Init(props: Props) {
                         type: safeMe.userType,
                         permissions: safeMe.allowedPermissions,
                         publisherId: safeMe.publisher?.id,
+                        isVerified: safeMe.isVerified,
                     });
                 } else {
                     setUser(undefined);

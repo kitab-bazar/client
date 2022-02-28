@@ -1,11 +1,40 @@
 import React, { useContext } from 'react';
 import { _cs } from '@togglecorp/fujs';
+import { ListView } from '@the-deep/deep-ui';
+import { IoEllipse } from 'react-icons/io5';
 
 import useTranslation from '#base/hooks/useTranslation';
 import { UserContext } from '#base/context/UserContext';
 import { nagbar as nagbarStrings } from '#base/configs/lang';
 
 import styles from './styles.css';
+
+interface NagbarItemProps {
+    className?: string;
+    item: string;
+}
+
+function NagbarItem(props: NagbarItemProps) {
+    const {
+        className,
+        item,
+    } = props;
+
+    return (
+        <div
+            className={_cs(styles.nagbarItem, className)}
+            key={item}
+        >
+            <IoEllipse className={styles.dot} />
+            {item}
+        </div>
+    );
+}
+
+const itemKeySelector = (item: string) => item;
+const itemRendererParams = (item: string) => ({
+    item,
+});
 
 interface Props {
     className?: string;
@@ -19,20 +48,33 @@ function Nagbar(props: Props) {
     const {
         authenticated,
         orderWindow,
+        user,
     } = useContext(UserContext);
 
-    const nagbarContent = authenticated && !orderWindow
-        ? strings.orderWindowExpiryLabel
-        : undefined;
+    const nagbarItems = [];
 
-    if (!nagbarContent) {
+    if (authenticated && !user?.isVerified) {
+        nagbarItems.push(strings.userNotVerifiedLabel);
+    }
+    if (authenticated && !orderWindow) {
+        nagbarItems.push(strings.orderWindowExpiryLabel);
+    }
+
+    if (nagbarItems.length <= 0) {
         return null;
     }
 
     return (
-        <nav className={_cs(className, styles.nagbar)}>
-            {nagbarContent}
-        </nav>
+        <ListView
+            className={_cs(className, styles.nagbar)}
+            data={nagbarItems}
+            rendererParams={itemRendererParams}
+            keySelector={itemKeySelector}
+            renderer={NagbarItem}
+            filtered={false}
+            errored={false}
+            pending={false}
+        />
     );
 }
 

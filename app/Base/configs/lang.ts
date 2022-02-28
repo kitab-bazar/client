@@ -53,6 +53,10 @@ export const nagbar = {
         en: 'We are not taking new orders at the moment.',
         ne: 'हामी अहिले नयाँ अर्डर लिइरहेका छैनौं। ',
     },
+    userNotVerifiedLabel: {
+        en: 'Your account has not been verified yet. You will receive a call for verification soon.',
+        ne: 'तपाईंको खाता अझै प्रमाणित गरिएको छैन। तपाईलाइ  छिट्टै प्रमाणीकरणको लागि फोन कल प्राप्त गर्नुहोस्।',
+    },
 };
 
 export const navbar = {
@@ -247,7 +251,7 @@ export const homePage = {
     },
     exploreButtonLabel: {
         en: 'Explore the Platfrom',
-        ne: 'प्लेटफर्म राम्ररी हेर्नुहोस्',
+        ne: 'प्लेटफर्म अन्वेषण गर्नुहोस्',
     },
     featuredBooksLabel: {
         en: 'Featured Books',
@@ -331,6 +335,22 @@ export const about = {
     secondGoalDescription: {
         en: 'To use the evidence to inform the national education debate, policy, and practice and to expand global understanding of the use of results-based financing to address supply chain issues.',
         ne: 'राष्ट्रिय शिक्षा बहस, नीति, र अभ्यासलाई सूचित गर्न प्रमाणहरू प्रयोग गर्न र आपूर्ति श्रृंखला मुद्दाहरूलाई सम्बोधन गर्न नतिजामा आधारित रिजल्ट बेस्ड फाइनान्सिङको प्रयोगको विश्वव्यापी रूपमा विस्तार गर्न।',
+    },
+    contactUsLabel: {
+        en: 'Contact Us',
+        ne: 'हामीलाई सम्पर्क गर्नुहोस',
+    },
+    sendUsEmailLabel: {
+        en: 'Send us an email at {email}',
+        ne: 'हामीलाई {email} मा इमेल पठाउनुहोस्',
+    },
+    callUsLabel: {
+        en: 'Call: {phoneNumber}',
+        ne: 'फोन :{phoneNumber}',
+    },
+    contactUsDescription: {
+        en: 'Have feedback about Kitab Bazar or want to know more about us?',
+        ne: 'किताब बजार बारे प्रतिक्रिया छ वा हाम्रो बारेमा थप जान्न चाहनुहुन्छ?',
     },
     accessToReadingMaterialText: {
         en: 'Children have access to sufficient supplementary reading materials in schools',
@@ -481,6 +501,10 @@ export const footer = {
     contactUsButtonLabel: {
         en: 'Contact Us',
         ne: 'सम्पर्क गर्नुहोस',
+    },
+    aboutUsButtonLabel: {
+        en: 'About Us',
+        ne: 'हाम्रोबारे',
     },
     exploreByGradeHeading: {
         en: 'Grade',

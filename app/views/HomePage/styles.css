@@ -123,21 +123,6 @@
                     }
                 }
             }
-
-            .featured-books-section {
-                flex-basis: 20rem;
-                background-color: unset;
-                padding: var(--dui-spacing-large);
-                overflow: unset;
-
-                .book-list {
-                    display: flex;
-                    flex-wrap: wrap;
-                    justify-content: flex-start;
-                    margin-top: var(--dui-spacing-large);
-                    gap: var(--dui-spacing-extra-large);
-                }
-            }
         }
     }
 }

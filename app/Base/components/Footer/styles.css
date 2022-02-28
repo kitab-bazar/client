@@ -1,5 +1,6 @@
 .footer {
     display: flex;
+    align-items: flex-start;
     flex-wrap: wrap;
     gap: var(--dui-spacing-extra-large);
     justify-content: space-between;
@@ -24,13 +25,9 @@
 
             .details {
                 .app-name {
+                    text-transform: uppercase;
                     color: var(--dui-color-accent);
                     font-size: var(--dui-font-size-super-large);
-                    font-weight: var(--dui-font-weight-bold);
-                }
-
-                .tagline {
-                    font-weight: var(--dui-font-weight-bold);
                 }
             }
         }
@@ -61,5 +58,9 @@
         justify-content: flex-end;
         padding: var(--dui-spacing-medium);
         gap: var(--dui-spacing-medium);
+
+        .about-us-link {
+            font-weight: var(--dui-font-weight-bold);
+        }
     }
 }

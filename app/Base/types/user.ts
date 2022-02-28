@@ -11,6 +11,7 @@ export interface User {
     permissions: UserPermissions[];
 
     publisherId: string | undefined;
+    isVerified: boolean;
 }
 
 export interface OrderWindow {

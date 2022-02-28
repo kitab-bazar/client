@@ -8,6 +8,7 @@ import {
     lengthSmallerThanCondition,
 } from '@togglecorp/toggle-form';
 
+import { EnumFix } from '#utils/types';
 import { UserTypeEnum } from '#generated/types';
 
 interface BaseExtraFields {
@@ -42,7 +43,7 @@ export interface RegisterFormType {
     school?: SchoolFields;
 }
 
-export type PartialRegisterFormType = PartialForm<RegisterFormType>;
+export type PartialRegisterFormType = PartialForm<EnumFix<RegisterFormType, 'userType'>>;
 
 export type RegisterFormSchema = ObjectSchema<PartialRegisterFormType, PartialRegisterFormType>;
 export type RegisterFormSchemaFields = ReturnType<RegisterFormSchema['fields']>;
