@@ -149,8 +149,6 @@ query ExploreBooks(
 }
 `;
 
-// FIXME: move to hooks/useStateWithCallback
-
 type Book = NonNullable<NonNullable<ExploreBooksQuery['books']>['results']>[number];
 
 const keySelector = (d: { id: string }) => d.id;

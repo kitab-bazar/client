@@ -115,6 +115,7 @@ function About(props: Props) {
                             {
                                 phoneNumber: (
                                     <NumberOutput
+                                        // NOTE: Currently set as TC's number
                                         value={9741673214}
                                         separatorHidden
                                     />

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import {
     ListView,
     Container,
@@ -8,20 +8,15 @@ import {
     useQuery,
 } from '@apollo/client';
 import {
-    isDefined,
     _cs,
 } from '@togglecorp/fujs';
 
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
 import { homePage } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
-import BookItem, { Props as BookItemProps } from '#components/BookItem';
-import BookDetailsModal from '#components/BookDetailModal';
 
 import routes from '#base/configs/routes';
 import {
-    FeaturedBooksQuery,
-    FeaturedBooksQueryVariables,
     CategoryWithGradeOptionsQuery,
 } from '#generated/types';
 import coverImage from '#resources/img/cover.png';
@@ -30,6 +25,9 @@ import GradeItem, { Props as GradeItemProps } from './GradeItem';
 import CategoryItem, { Props as CategoryItemProps } from './CategoryItem';
 
 import styles from './styles.css';
+
+/*
+const MAX_ITEMS_PER_PAGE = 4;
 
 const FEATURED_BOOKS = gql`
 query FeaturedBooks($page: Int!, $pageSize: Int!) {
@@ -56,6 +54,9 @@ query FeaturedBooks($page: Int!, $pageSize: Int!) {
 }
 `;
 
+type Book = NonNullable<NonNullable<FeaturedBooksQuery['books']>['results']>[number]
+*/
+
 const CATEGORY_WITH_GRADE_OPTIONS = gql`
 query CategoryWithGradeOptions {
     categories {
@@ -73,12 +74,8 @@ query CategoryWithGradeOptions {
 }
 `;
 
-type Book = NonNullable<NonNullable<FeaturedBooksQuery['books']>['results']>[number]
-
 const itemKeySelector = (b: { id: string }) => b.id;
 const enumKeySelector = (d: { name: string }) => d.name;
-
-const MAX_ITEMS_PER_PAGE = 4;
 
 interface Props {
     className?: string;
@@ -87,12 +84,12 @@ interface Props {
 function HomePage(props: Props) {
     const { className } = props;
 
+    /*
     const orderVariables = useMemo(() => ({
         pageSize: MAX_ITEMS_PER_PAGE,
         page: 1,
         ordering: '-id',
     }), []);
-
     const [selectedBook, setSelectedBook] = React.useState<string | undefined>();
     const {
         data: featuredBookResponse,
@@ -102,6 +99,12 @@ function HomePage(props: Props) {
         FEATURED_BOOKS,
         { variables: orderVariables },
     );
+    const bookItemRendererParams = React.useCallback((_: string, data: Book): BookItemProps => ({
+        onClick: setSelectedBook,
+        variant: 'compact',
+        book: data,
+    }), []);
+    */
 
     const {
         data: categoryWithGradeOptionsResponse,
@@ -110,12 +113,6 @@ function HomePage(props: Props) {
     } = useQuery<CategoryWithGradeOptionsQuery>(
         CATEGORY_WITH_GRADE_OPTIONS,
     );
-
-    const bookItemRendererParams = React.useCallback((_: string, data: Book): BookItemProps => ({
-        onClick: setSelectedBook,
-        variant: 'compact',
-        book: data,
-    }), []);
 
     const strings = useTranslation(homePage);
 
@@ -204,6 +201,7 @@ function HomePage(props: Props) {
                             messageShown
                         />
                     </Container>
+                    {/*
                     <Container
                         className={styles.featuredBooksSection}
                         heading={strings.featuredBooksLabel}
@@ -228,6 +226,7 @@ function HomePage(props: Props) {
                             />
                         )}
                     </Container>
+                    */}
                 </div>
             </div>
         </div>

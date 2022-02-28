@@ -9,12 +9,16 @@
     background-color: var(--kitab-warning-color);
     padding: var(--nagbar-padding-v) var(--dui-spacing-extra-large);
     color: var(--dui-color-text);
-    gap: var(--dui-spacing-small);
+    gap: var(--dui-spacing-large);
 
     .nagbar-item {
-        &:before {
-            padding: 0 var(--dui-spacing-small);
-            content: '•';
+        display: flex;
+        align-items: center;
+        gap: var(--dui-spacing-small);
+
+        .dot {
+            flex-shrink: 0;
+            font-size: var(--dui-font-size-extra-small);
         }
     }
 }
