@@ -34,6 +34,7 @@ import {
     RemoveFromWishListMutationVariables,
 } from '#generated/types';
 import { CART_ITEMS } from '#components/OrdersBar/queries';
+import ErrorMessage from '#components/ErrorMessage';
 import NumberOutput from '#components/NumberOutput';
 import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
 
@@ -169,30 +170,24 @@ function BookItem(props: Props) {
                         removeNull(response?.createCartItem?.errors) as ObjectError[],
                     );
                     alert.show(
-                        <div>
-                            <div>
-                                {strings.bookOrderFailedMessage}
-                            </div>
-                            {isDefined(transformedError) && (
-                                <div>
-                                    {transformedError[internal]}
-                                </div>
-                            )}
-                        </div>,
+                        <ErrorMessage
+                            header={strings.bookOrderFailedMessage}
+                            description={
+                                isDefined(transformedError)
+                                    ? transformedError[internal]
+                                    : undefined
+                            }
+                        />,
                         { variant: 'error' },
                     );
                 }
             },
             onError: (errors) => {
                 alert.show(
-                    <div>
-                        <div>
-                            {strings.bookOrderFailedMessage}
-                        </div>
-                        <div>
-                            {errors.message}
-                        </div>
-                    </div>,
+                    <ErrorMessage
+                        header={strings.bookOrderFailedMessage}
+                        description={errors.message}
+                    />,
                     { variant: 'error' },
                 );
             },
@@ -216,30 +211,24 @@ function BookItem(props: Props) {
                         removeNull(response?.createWishlist?.errors) as ObjectError[],
                     );
                     alert.show(
-                        <div>
-                            <div>
-                                {strings.wishlistAdditionFailedMessage}
-                            </div>
-                            {isDefined(transformedError) && (
-                                <div>
-                                    {transformedError[internal]}
-                                </div>
-                            )}
-                        </div>,
+                        <ErrorMessage
+                            header={strings.wishlistAdditionFailedMessage}
+                            description={
+                                isDefined(transformedError)
+                                    ? transformedError[internal]
+                                    : undefined
+                            }
+                        />,
                         { variant: 'error' },
                     );
                 }
             },
             onError: (errors) => {
                 alert.show(
-                    <div>
-                        <div>
-                            {strings.wishlistAdditionFailedMessage}
-                        </div>
-                        <div>
-                            {errors.message}
-                        </div>
-                    </div>,
+                    <ErrorMessage
+                        header={strings.wishlistAdditionFailedMessage}
+                        description={errors.message}
+                    />,
                     { variant: 'error' },
                 );
             },
@@ -263,30 +252,24 @@ function BookItem(props: Props) {
                         removeNull(response?.deleteWishlist?.errors) as ObjectError[],
                     );
                     alert.show(
-                        <div>
-                            <div>
-                                {strings.wishlistRemovalFailedMessage}
-                            </div>
-                            {isDefined(transformedError) && (
-                                <div>
-                                    {transformedError[internal]}
-                                </div>
-                            )}
-                        </div>,
+                        <ErrorMessage
+                            header={strings.wishlistRemovalFailedMessage}
+                            description={
+                                isDefined(transformedError)
+                                    ? transformedError[internal]
+                                    : undefined
+                            }
+                        />,
                         { variant: 'error' },
                     );
                 }
             },
             onError: (errors) => {
                 alert.show(
-                    <div>
-                        <div>
-                            {strings.wishlistRemovalFailedMessage}
-                        </div>
-                        <div>
-                            {errors.message}
-                        </div>
-                    </div>,
+                    <ErrorMessage
+                        header={strings.wishlistRemovalFailedMessage}
+                        description={errors.message}
+                    />,
                     { variant: 'error' },
                 );
             },

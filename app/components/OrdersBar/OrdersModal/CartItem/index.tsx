@@ -35,6 +35,7 @@ import {
 } from '#generated/types';
 import { CART_ITEMS } from '#components/OrdersBar/queries';
 import NumberOutput from '#components/NumberOutput';
+import ErrorMessage from '#components/ErrorMessage';
 
 import UserContext from '#base/context/UserContext';
 
@@ -130,30 +131,24 @@ function CartItem(props: Props) {
                         removeNull(response?.deleteCartItem?.errors) as ObjectError[],
                     );
                     alert.show(
-                        <div>
-                            <div>
-                                {strings.removeFromCartErrorMessage}
-                            </div>
-                            {isDefined(transformedError) && (
-                                <div>
-                                    {transformedError[internal]}
-                                </div>
-                            )}
-                        </div>,
+                        <ErrorMessage
+                            header={strings.removeFromCartErrorMessage}
+                            description={
+                                isDefined(transformedError)
+                                    ? transformedError[internal]
+                                    : undefined
+                            }
+                        />,
                         { variant: 'error' },
                     );
                 }
             },
             onError: (errors) => {
                 alert.show(
-                    <div>
-                        <div>
-                            {strings.removeFromCartErrorMessage}
-                        </div>
-                        <div>
-                            {errors.message}
-                        </div>
-                    </div>,
+                    <ErrorMessage
+                        header={strings.removeFromCartErrorMessage}
+                        description={errors.message}
+                    />,
                     { variant: 'error' },
                 );
             },
@@ -177,16 +172,14 @@ function CartItem(props: Props) {
                         removeNull(updateCartItem?.errors) as ObjectError[],
                     );
                     alert.show(
-                        <div>
-                            <div>
-                                {strings.updateCartErrorMessage}
-                            </div>
-                            {isDefined(transformedError) && (
-                                <div>
-                                    {transformedError[internal]}
-                                </div>
-                            )}
-                        </div>,
+                        <ErrorMessage
+                            header={strings.updateCartErrorMessage}
+                            description={
+                                isDefined(transformedError)
+                                    ? transformedError[internal]
+                                    : undefined
+                            }
+                        />,
                         { variant: 'error' },
                     );
                     if (lastValidCartQuantityRef.current) {
@@ -198,14 +191,10 @@ function CartItem(props: Props) {
             },
             onError: (e) => {
                 alert.show(
-                    <div>
-                        <div>
-                            {strings.updateCartErrorMessage}
-                        </div>
-                        <div>
-                            {e.message}
-                        </div>
-                    </div>,
+                    <ErrorMessage
+                        header={strings.updateCartErrorMessage}
+                        description={e.message}
+                    />,
                     { variant: 'error' },
                 );
             },

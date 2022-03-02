@@ -45,6 +45,7 @@ import useRouteMatching from '#base/hooks/useRouteMatching';
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
 import SmartNavLink from '#base/components/SmartNavLink';
 import RelativeTimeOutput from '#components/RelativeTimeOutput';
+import ErrorMessage from '#components/ErrorMessage';
 import KitabLogo from '#resources/img/KitabLogo.png';
 import { resolveToString, resolveToComponent } from '#base/utils/lang';
 
@@ -150,14 +151,10 @@ function Navbar(props: Props) {
             },
             onError: (errors) => {
                 alert.show(
-                    <div>
-                        <div>
-                            {strings.logoutErrorMessage}
-                        </div>
-                        <div>
-                            {errors.message}
-                        </div>
-                    </div>,
+                    <ErrorMessage
+                        header={strings.logoutErrorMessage}
+                        description={errors.message}
+                    />,
                     { variant: 'error' },
                 );
             },

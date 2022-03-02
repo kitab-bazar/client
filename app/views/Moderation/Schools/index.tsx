@@ -28,6 +28,7 @@ import {
 } from 'react-icons/io5';
 
 import EmptyMessage from '#components/EmptyMessage';
+import ErrorMessage from '#components/ErrorMessage';
 import useStateWithCallback from '#hooks/useStateWithCallback';
 import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
 
@@ -163,30 +164,24 @@ function SchoolItem(props: SchoolItemProps) {
                         removeNull(errors) as ObjectError[],
                     );
                     alert.show(
-                        <div>
-                            <div>
-                                User Verification Successful
-                            </div>
-                            {isDefined(transformedError) && (
-                                <div>
-                                    {transformedError[internal]}
-                                </div>
-                            )}
-                        </div>,
+                        <ErrorMessage
+                            header="User Verification Successful"
+                            description={
+                                isDefined(transformedError)
+                                    ? transformedError[internal]
+                                    : undefined
+                            }
+                        />,
                         { variant: 'error' },
                     );
                 }
             },
             onError: (errors) => {
                 alert.show(
-                    <div>
-                        <div>
-                            Failed to verify user.
-                        </div>
-                        <div>
-                            {errors.message}
-                        </div>
-                    </div>,
+                    <ErrorMessage
+                        header=" Failed to verify user."
+                        description={errors.message}
+                    />,
                     { variant: 'error' },
                 );
             },

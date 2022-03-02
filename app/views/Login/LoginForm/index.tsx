@@ -32,6 +32,7 @@ import routes from '#base/configs/routes';
 import { LoginMutation, LoginMutationVariables } from '#generated/types';
 import { UserContext } from '#base/context/UserContext';
 import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
+import ErrorMessage from '#components/ErrorMessage';
 
 import styles from './styles.css';
 
@@ -152,16 +153,14 @@ function LoginForm() {
                     // eslint-disable-next-line no-console
                     console.error(formError);
                     alert.show(
-                        <div>
-                            <div>
-                                {strings.errorLoggingInLabel}
-                            </div>
-                            {isDefined(formError) && (
-                                <div>
-                                    {formError[internal]}
-                                </div>
-                            )}
-                        </div>,
+                        <ErrorMessage
+                            header={strings.errorLoggingInLabel}
+                            description={
+                                isDefined(formError)
+                                    ? formError[internal]
+                                    : undefined
+                            }
+                        />,
                         { variant: 'error' },
                     );
                 }
@@ -171,14 +170,10 @@ function LoginForm() {
                     [internal]: errors.message,
                 });
                 alert.show(
-                    <div>
-                        <div>
-                            {strings.errorLoggingInLabel}
-                        </div>
-                        <div>
-                            {errors.message}
-                        </div>
-                    </div>,
+                    <ErrorMessage
+                        header={strings.errorLoggingInLabel}
+                        description={errors.message}
+                    />,
                     { variant: 'error' },
                 );
             },

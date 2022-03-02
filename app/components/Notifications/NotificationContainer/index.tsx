@@ -26,6 +26,7 @@ import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
 import useTranslation from '#base/hooks/useTranslation';
 import { notifications } from '#base/configs/lang';
 import { resolveToString } from '#base/utils/lang';
+import ErrorMessage from '#components/ErrorMessage';
 
 import { Notification } from '../index';
 
@@ -94,16 +95,14 @@ function NotificationContainer(props: Props) {
                         removeNull(response?.toggleNotification?.errors) as ObjectError[],
                     );
                     alert.show(
-                        <div>
-                            <div>
-                                {strings.updateNotificationFailureMessage}
-                            </div>
-                            {isDefined(transformedError) && (
-                                <div>
-                                    {transformedError[internal]}
-                                </div>
-                            )}
-                        </div>,
+                        <ErrorMessage
+                            header={strings.updateNotificationFailureMessage}
+                            description={
+                                isDefined(transformedError)
+                                    ? transformedError[internal]
+                                    : undefined
+                            }
+                        />,
                         { variant: 'error' },
                     );
                 }
@@ -111,14 +110,10 @@ function NotificationContainer(props: Props) {
 
             onError: (errors) => {
                 alert.show(
-                    <div>
-                        <div>
-                            {strings.updateNotificationFailureMessage}
-                        </div>
-                        <div>
-                            {errors.message}
-                        </div>
-                    </div>,
+                    <ErrorMessage
+                        header={strings.updateNotificationFailureMessage}
+                        description={errors.message}
+                    />,
                     { variant: 'error' },
                 );
             },
