@@ -1,11 +1,16 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
+import { _cs } from '@togglecorp/fujs';
 import {
     FileInput,
     FileInputProps,
-    ImagePreview,
+    Button,
     useAlert,
+    QuickActionButton,
 } from '@the-deep/deep-ui';
-
+import {
+    MdFileUpload,
+} from 'react-icons/md';
+import { IoClose } from 'react-icons/io5';
 import {
     gql,
     useMutation,
@@ -15,6 +20,8 @@ import {
     CreateActivityLogMutationVariables,
     ActivityLogFileType,
 } from '#generated/types';
+
+import styles from './styles.css';
 
 const CREATE_ACTIVITY_LOG = gql`
     mutation CreateActivityLog(
@@ -30,49 +37,92 @@ const CREATE_ACTIVITY_LOG = gql`
                     url
                 }
                 id
-                type
             }
         }
     }
 `;
 
-export interface Option<N extends string> {
-    id: N;
+export type Option = NonNullable<NonNullable<NonNullable<CreateActivityLogMutation>['createActivityLogFile']>['result']>;
+
+interface PreviewProps<ID extends string> {
+    id: ID,
     file: {
-        name: string;
-        url: string;
-    };
+        name?: string | null | undefined,
+        url?: string | null | undefined,
+    } | null | undefined;
+    onRemoveButtonClick?: (id: ID) => void;
 }
 
-interface Props<T extends string, N extends string> extends Omit<FileInputProps<T>, 'overrideStatus' | 'status' | 'value' | 'onChange' | 'multiple' | 'className' | 'accept'> {
+export function Preview<ID extends string>(props: PreviewProps<ID>) {
+    const {
+        id,
+        file,
+        onRemoveButtonClick,
+    } = props;
+
+    if (!file?.url) {
+        return null;
+    }
+
+    const isPreviewable = file.url.match(/.(jpg|jpeg|png|gif)$/i);
+
+    const removeButton = (
+        <QuickActionButton
+            name={id}
+            onClick={onRemoveButtonClick}
+            className={styles.removeButton}
+        >
+            <IoClose />
+        </QuickActionButton>
+    );
+
+    if (!isPreviewable) {
+        return (
+            <div className={styles.noPreview}>
+                {removeButton}
+                Preview not available!
+            </div>
+        );
+    }
+
+    return (
+        <div className={styles.preview}>
+            <img
+                className={styles.image}
+                src={file.url}
+                alt={file.name ?? id}
+            />
+            {removeButton}
+        </div>
+    );
+}
+
+interface Props<T extends string> extends Omit<FileInputProps<T>, 'overrideStatus' | 'status' | 'value' | 'onChange' | 'multiple' | 'className' | 'accept'> {
     className?: string;
-    previewClassName?: string;
     fileInputClassName?: string;
-    value: N | null | undefined;
-    onChange: (value: N | null | undefined, name: T) => void;
-    option?: Option<N>;
-    onOptionChange: (value: Option<N>) => void;
-    previewVisible?: boolean;
+    value?: Option[] | null | undefined;
+    onChange: (value: Option[] | null | undefined, name: T) => void;
     logFileType: ActivityLogFileType,
+    hidePreview?: boolean;
+    hideClearButton?: boolean;
 }
 
-function KitabImageInput<T extends string, N extends string>(props: Props<T, N>) {
+function KitabImageInput<T extends string>(props: Props<T>) {
     const {
         className,
-        previewClassName,
+        actions,
         fileInputClassName,
-        value: valueFromProps,
-        option,
+        value,
         disabled,
         name,
         onChange,
-        previewVisible,
         maxFileSize = 2,
         logFileType,
+        hidePreview,
+        hideClearButton,
         ...otherProps
     } = props;
 
-    const [value, setValue] = useState<File | undefined>();
     const alert = useAlert();
 
     const [
@@ -90,9 +140,11 @@ function KitabImageInput<T extends string, N extends string>(props: Props<T, N>)
                 const {
                     ok,
                     errors,
+                    result,
                 } = createActivityLogFile;
 
-                if (ok) {
+                if (ok && result) {
+                    onChange([...(value ?? []), result], name);
                     alert.show(
                         'Added file successfully!',
                         { variant: 'success' },
@@ -115,70 +167,89 @@ function KitabImageInput<T extends string, N extends string>(props: Props<T, N>)
 
     const handleChange = useCallback(
         (file: File | undefined) => {
-            setValue(file);
-
             if (file) {
                 uploadFile({
                     variables: {
-                        data: {
-                            file,
-                            type: logFileType,
-                        },
+                        file,
+                        type: logFileType,
                     },
                     context: {
                         hasUpload: true,
                     },
                 });
-            } else {
-                onChange(undefined, name);
             }
         },
-        [uploadFile, name, onChange, logFileType],
+        [uploadFile, logFileType],
     );
+
+    const handleClear = useCallback(() => {
+        onChange(undefined, name);
+    }, [onChange, name]);
+
+    const handleFileRemoveButtonClick = useCallback((id: string) => {
+        const newValue = [...(value ?? [])];
+        const i = newValue.findIndex((f) => f.id === id);
+        if (i === -1) {
+            return;
+        }
+
+        newValue.splice(i, 1);
+        onChange(newValue, name);
+    }, [value, onChange, name]);
 
     let currentStatus: string;
     if (uploadFilePending) {
         currentStatus = 'Upload in progress';
-    } else if (!valueFromProps) {
+    } else if (!value || value.length === 0) {
         currentStatus = 'No files uploaded';
-    } else if (option && option.id === valueFromProps) {
-        currentStatus = option.file.name;
     } else {
-        currentStatus = '?';
-    }
-
-    let src: string;
-    let alt: string;
-    if (option) {
-        src = option.file.url;
-        alt = option.file.url;
-    } else if (value) {
-        src = URL.createObjectURL(value);
-        alt = value.name;
+        currentStatus = Array.isArray(value) ? `${value.length} files selected` : '1 file selected';
     }
 
     return (
-        <div className={className}>
+        <div className={_cs(className, styles.kitabImageInput)}>
             <FileInput
                 {...otherProps}
-                className={fileInputClassName}
+                className={_cs(fileInputClassName, styles.input)}
                 disabled={disabled || uploadFilePending}
+                actions={(
+                    <>
+                        {actions}
+                        {!hideClearButton && value && (value.length > 0) && (
+                            <Button
+                                onClick={handleClear}
+                                disabled={disabled}
+                                variant="action"
+                                name={undefined}
+                                title="Clear"
+                            >
+                                <IoClose />
+                            </Button>
+                        )}
+                    </>
+                )}
                 name={name}
                 overrideStatus
                 status={currentStatus}
-                value={value}
+                value={null}
                 onChange={handleChange}
                 accept="image/*"
                 multiple={false}
                 maxFileSize={maxFileSize}
-            />
-            { previewVisible && src && (
-                <ImagePreview
-                    className={previewClassName}
-                    src={src}
-                    hideTools
-                    alt={alt}
-                />
+            >
+                <MdFileUpload />
+            </FileInput>
+            {!hidePreview && (
+                <div className={styles.previewList}>
+                    {value?.map((file) => (
+                        <Preview
+                            key={file.id}
+                            id={file.id}
+                            file={file.file}
+                            onRemoveButtonClick={handleFileRemoveButtonClick}
+                        />
+                    ))}
+                </div>
             )}
         </div>
     );

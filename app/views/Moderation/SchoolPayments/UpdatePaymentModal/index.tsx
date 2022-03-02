@@ -7,9 +7,11 @@ import {
     createSubmitHandler,
     getErrorObject,
     requiredCondition,
+    tdefaultUndefinedType,
     greaterThanCondition,
     removeNull,
     internal,
+    PurgeNull,
 } from '@togglecorp/toggle-form';
 import {
     Modal,
@@ -34,6 +36,7 @@ import {
 } from '#generated/types';
 import SchoolSelectInput, { SearchUserType } from '#components/SchoolSelectInput';
 import ErrorMessage from '#components/ErrorMessage';
+import PaymentLogForm from './PaymentLogForm';
 import NonFieldError from '#components/NonFieldError';
 import { EnumFix, enumKeySelector, enumLabelSelector } from '#utils/types';
 import {
@@ -102,20 +105,31 @@ mutation UpdatePayment($data: PaymentUpdateInputType!, $id: ID!) {
     }
 }
 `;
-
-type FormType = EnumFix<UpdatePaymentMutationVariables['data'], 'status' | 'paymentType' | 'transactionType'>;
+type FormType = PurgeNull<EnumFix<CreatePaymentMutationVariables['data'], 'status' | 'paymentType' | 'transactionType'>>;
 type PartialFormType = PartialForm<FormType>;
 type FormSchema = ObjectSchema<PartialFormType>;
 type FormSchemaFields = ReturnType<FormSchema['fields']>;
 
-const schema: FormSchema = {
+const createPaymentSchema: FormSchema = {
     fields: (): FormSchemaFields => {
         const basicFields: FormSchemaFields = {
             amount: [requiredCondition, greaterThanCondition(0)],
-            paidBy: [requiredCondition],
+            paidBy: [],
+            paymentLog: [],
             paymentType: [requiredCondition],
             status: [requiredCondition],
             transactionType: [requiredCondition],
+        };
+        return basicFields;
+    },
+};
+
+const updatePaymentSchema: FormSchema = {
+    fields: (): FormSchemaFields => {
+        const basicFields: FormSchemaFields = {
+            amount: [requiredCondition, greaterThanCondition(0)],
+            paymentLog: [],
+            status: [requiredCondition],
         };
         return basicFields;
     },
@@ -148,14 +162,11 @@ function UpdatePaymentModal(props: Props) {
 
     const initialValue: PartialFormType = useMemo(() => (paymentDetails ? {
         amount: paymentDetails.amount,
-        paidBy: paymentDetails.paidBy.id,
-        paymentType: paymentDetails.paymentType,
         status: paymentDetails.status,
-        transactionType: paymentDetails.transactionType,
     } : {
         paymentType: 'CASH',
-        status: 'PENDING',
         transactionType: 'CREDIT',
+        status: 'PENDING',
     }), [paymentDetails]);
 
     const {
@@ -165,7 +176,7 @@ function UpdatePaymentModal(props: Props) {
         setFieldValue,
         validate,
         setError,
-    } = useForm(schema, initialValue);
+    } = useForm(paymentDetails ? updatePaymentSchema : createPaymentSchema, initialValue);
 
     const alert = useAlert();
     const error = getErrorObject(riskyError);
@@ -298,7 +309,7 @@ function UpdatePaymentModal(props: Props) {
                     });
                 } else {
                     createPayment({
-                        variables: { data: val as UpdatePaymentMutationVariables['data'] },
+                        variables: { data: val as CreatePaymentMutationVariables['data'] },
                     });
                 }
             },
@@ -344,37 +355,48 @@ function UpdatePaymentModal(props: Props) {
                 onChange={setFieldValue}
                 disabled={updatePaymentPending}
             />
-            <SchoolSelectInput
-                name="paidBy"
-                label="Paid By"
+            { !paymentDetails && (
+                <>
+                    <SchoolSelectInput
+                        name="paidBy"
+                        label="Paid By"
+                        onChange={setFieldValue}
+                        value={value?.paidBy}
+                        error={error?.paidBy}
+                        options={schoolOptions}
+                        onOptionsChange={setSchoolOptions}
+                        disabled={updatePaymentPending}
+                    />
+                    <RadioInput
+                        name="paymentType"
+                        label="Payment Type"
+                        keySelector={enumKeySelector}
+                        labelSelector={enumLabelSelector}
+                        options={paymentFieldOptionsResponse?.paymentTypeOptions?.enumValues ?? []}
+                        value={value?.paymentType}
+                        error={error?.paymentType}
+                        onChange={setFieldValue}
+                        disabled={updatePaymentPending || paymentFieldOptionsLoading}
+                    />
+                    <RadioInput
+                        name="transactionType"
+                        label="Transaction Type"
+                        keySelector={enumKeySelector}
+                        labelSelector={enumLabelSelector}
+                        options={paymentFieldOptionsResponse?.transactionTypeOptions
+                            ?.enumValues ?? []}
+                        value={value?.transactionType}
+                        error={error?.transactionType}
+                        onChange={setFieldValue}
+                        disabled={updatePaymentPending || paymentFieldOptionsLoading}
+                    />
+                </>
+            )}
+            <PaymentLogForm
+                name="paymentLog"
+                value={value.paymentLog}
                 onChange={setFieldValue}
-                value={value?.paidBy}
-                error={error?.paidBy}
-                options={schoolOptions}
-                onOptionsChange={setSchoolOptions}
-                disabled={updatePaymentPending}
-            />
-            <RadioInput
-                name="paymentType"
-                label="Payment Type"
-                keySelector={enumKeySelector}
-                labelSelector={enumLabelSelector}
-                options={paymentFieldOptionsResponse?.paymentTypeOptions?.enumValues ?? []}
-                value={value?.paymentType}
-                error={error?.paymentType}
-                onChange={setFieldValue}
-                disabled={updatePaymentPending || paymentFieldOptionsLoading}
-            />
-            <RadioInput
-                name="transactionType"
-                label="Transaction Type"
-                keySelector={enumKeySelector}
-                labelSelector={enumLabelSelector}
-                options={paymentFieldOptionsResponse?.transactionTypeOptions?.enumValues ?? []}
-                value={value?.transactionType}
-                error={error?.transactionType}
-                onChange={setFieldValue}
-                disabled={updatePaymentPending || paymentFieldOptionsLoading}
+                error={error?.paymentLog}
             />
             <RadioInput
                 name="status"

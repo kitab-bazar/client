@@ -1,0 +1,16 @@
+.payment-log-input {
+    display: flex;
+    background-color: unset;
+    padding-left: 0;
+
+    .heading {
+        display: flex;
+        color: var(--dui-color-text);
+        font-size: var(--dui-font-size-small);
+        font-weight: var(--dui-font-weight-bold);
+    }
+
+    .content {
+        padding-left: var(--dui-spacing-medium);
+    }
+}
