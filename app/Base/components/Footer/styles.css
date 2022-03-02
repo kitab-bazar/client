@@ -8,26 +8,53 @@
     padding: var(--dui-spacing-extra-large);
     padding-bottom: var(--dui-spacing-mega-large);
 
-    .app-brand {
-        flex-shrink: 0;
-        text-decoration: none;
-        color: var(--dui-color-brand);
+    .support-details {
+        display: flex;
+        flex-direction: column;
+        gap: var(--dui-spacing-super-large);
 
-        .link {
-            display: flex;
-            align-items: center;
-            gap: var(--dui-spacing-medium);
+        .app-brand {
+            flex-shrink: 0;
+            text-decoration: none;
+            color: var(--dui-color-brand);
 
-            .logo {
-                width: auto;
-                height: 5rem;
+            .link {
+                display: flex;
+                align-items: center;
+                gap: var(--dui-spacing-medium);
+
+                .logo {
+                    width: auto;
+                    height: 5rem;
+                }
+
+                .details {
+                    .app-name {
+                        text-transform: uppercase;
+                        color: var(--dui-color-accent);
+                        font-size: var(--dui-font-size-super-large);
+                    }
+                }
             }
+        }
 
-            .details {
-                .app-name {
-                    text-transform: uppercase;
+        .contact-us {
+            background-color: unset;
+
+            .contact-content {
+                display: flex;
+                flex-direction: column;
+                gap: var(--dui-spacing-small);
+
+                .phone-link,
+                .email-link {
+                    text-decoration: none;
                     color: var(--dui-color-accent);
-                    font-size: var(--dui-font-size-super-large);
+                    font-weight: var(--dui-font-weight-medium);
+                }
+
+                .phone-link {
+                    display: flex;
                 }
             }
         }
@@ -58,9 +85,5 @@
         justify-content: flex-end;
         padding: var(--dui-spacing-medium);
         gap: var(--dui-spacing-medium);
-
-        .about-us-link {
-            font-weight: var(--dui-font-weight-bold);
-        }
     }
 }

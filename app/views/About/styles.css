@@ -67,15 +67,5 @@
                 }
             }
         }
-
-        .contact-us {
-            background-color: unset;
-
-            .phone {
-                display: flex;
-                align-items: center;
-                gap: var(--dui-spacing-extra-small);
-            }
-        }
     }
 }
