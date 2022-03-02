@@ -226,7 +226,9 @@ function Base() {
                 }
                 window.clearTimeout(scrollTimeout);
             };
-        }, []);
+        },
+        [],
+    );
 
     const handleGotoTopButtonClick = useCallback(() => {
         const c = baseElementRef.current;

@@ -155,7 +155,7 @@ const keySelector = (d: { id: string }) => d.id;
 const labelSelector = (d: { name: string }) => d.name;
 
 const MAX_ITEMS_PER_PAGE = 10;
-type SortKeyType = 'price' | '-price' | 'id' | '-id';
+type SortKeyType = 'title' | '-title' | 'id' | '-id';
 type BookSource = 'own' | 'all';
 interface BookSourceOption {
     id: BookSource;
@@ -270,8 +270,8 @@ function Explore(props: Props) {
         const options: {
             [key in SortKeyType]: string;
         } = {
-            price: strings.sortOptionsPriceAsc,
-            '-price': strings.sortOptionsPriceDsc,
+            title: strings.sortOptionsTitleAsc,
+            '-title': strings.sortOptionsTitleDsc,
             id: strings.sortOptionsDateAsc,
             '-id': strings.sortOptionsDateDsc,
         };

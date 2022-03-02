@@ -24,6 +24,11 @@ import {
 } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 import KitabLogo from '#resources/img/KitabLogo.png';
+import {
+    resolveToString,
+    resolveToComponent,
+} from '#base/utils/lang';
+import NumberOutput from '#components/NumberOutput';
 
 import styles from './styles.css';
 
@@ -114,25 +119,64 @@ function Footer(props: Props) {
 
     return (
         <div className={_cs(styles.footer, className)}>
-            <Link
-                to="/"
-                className={styles.appBrand}
-                linkElementClassName={styles.link}
-            >
-                <img
-                    className={styles.logo}
-                    src={KitabLogo}
-                    alt="logo"
-                />
-                <div className={styles.details}>
-                    <div className={styles.appName}>
-                        {strings.kitabBazarAppLabel}
+            <div className={styles.supportDetails}>
+                <Link
+                    to="/"
+                    className={styles.appBrand}
+                    linkElementClassName={styles.link}
+                >
+                    <img
+                        className={styles.logo}
+                        src={KitabLogo}
+                        alt="logo"
+                    />
+                    <div className={styles.details}>
+                        <div className={styles.appName}>
+                            {strings.kitabBazarAppLabel}
+                        </div>
+                        <div>
+                            {strings.tagLineLabel}
+                        </div>
                     </div>
+                </Link>
+                <Container
+                    className={styles.contactUs}
+                    heading={strings.contactUsLabel}
+                    headingSize="extraSmall"
+                    withoutExternalPadding
+                    contentClassName={styles.contactContent}
+                >
                     <div>
-                        {strings.tagLineLabel}
+                        {strings.contactUsDescription}
                     </div>
-                </div>
-            </Link>
+                    <a
+                        className={styles.emailLink}
+                        href="mailto:info@kitabbazar.org"
+                    >
+                        {resolveToString(
+                            strings.sendUsEmailLabel,
+                            { email: 'info@kitabbazar.org' },
+                        )}
+                    </a>
+                    <a
+                        className={styles.phoneLink}
+                        href="tel:9741673214"
+                    >
+                        {resolveToComponent(
+                            strings.callUsLabel,
+                            {
+                                phoneNumber: (
+                                    <NumberOutput
+                                        // NOTE: Currently set as TC's number
+                                        value={9741673214}
+                                        separatorHidden
+                                    />
+                                ),
+                            },
+                        )}
+                    </a>
+                </Container>
+            </div>
             <div className={styles.explore}>
                 <Container
                     heading={strings.exploreByGradeHeading}
@@ -211,11 +255,15 @@ function Footer(props: Props) {
                 </SmartButtonLikeLink>
                 */}
                 <SmartLink
-                    className={styles.aboutUsLink}
                     route={routes.about}
                 >
-                    {strings.aboutUsButtonLabel}
+                    {strings.aboutUsLabel}
                 </SmartLink>
+                <Link
+                    to="https://blog.kitabbazar.org"
+                >
+                    {strings.blogLabel}
+                </Link>
             </div>
         </div>
     );

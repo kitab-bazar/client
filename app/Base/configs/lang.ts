@@ -32,7 +32,7 @@ export const common = {
     },
     dayLabel: {
         en: 'day(s)',
-        ne: 'दिन(हरू)',
+        ne: 'दिन',
     },
     hourLabel: {
         en: 'hour(s)',
@@ -55,14 +55,14 @@ export const nagbar = {
     },
     userNotVerifiedLabel: {
         en: 'Your account has not been verified yet. You will receive a call for verification soon.',
-        ne: 'तपाईंको खाता अझै प्रमाणित गरिएको छैन। तपाईलाइ  छिट्टै प्रमाणीकरणको लागि फोन कल प्राप्त गर्नुहोस्।',
+        ne: 'तपाईंको खाता अझै प्रमाणित गरिएको छैन। तपाईंले चाँडै प्रमाणीकरणको लागि कल प्राप्त गर्नुहुनेछ।',
     },
 };
 
 export const navbar = {
     searchAllBooksPlaceholder: {
         en: 'Search all books',
-        ne: 'पुस्तक खोज्नुहोस्',
+        ne: 'किताब खोज्नुहोस्',
     },
     signUpButtonLabel: {
         en: 'Register',
@@ -259,11 +259,11 @@ export const homePage = {
     },
     exploreByGradeHeading: {
         en: 'Explore by Grade',
-        ne: 'ग्रेड द्वारा अन्वेषण',
+        ne: 'कक्षा द्वारा अन्वेषण',
     },
     exploreByCategoryHeading: {
         en: 'Explore by Category',
-        ne: 'श्रेणी द्वारा अन्वेषण',
+        ne: 'कक्षा द्वारा अन्वेषण',
     },
     exploreByPublisherHeading: {
         en: 'Explore by Publisher',
@@ -271,19 +271,19 @@ export const homePage = {
     },
     pendingGradeListMessage: {
         en: 'Loading grades ...',
-        ne: 'ग्रेडहरु लोड गर्दै',
+        ne: 'कक्षाहरु लोड गर्दै',
     },
     emptyGradeListMessage: {
         en: 'No grades found.',
-        ne: 'कुनै ग्रेड फेला परेन',
+        ne: 'कुनै कक्षा फेला परेन',
     },
     emptyCategoriesMessage: {
         en: 'No categories found',
-        ne: 'कुनै श्रेणीहरु भेटिएन ',
+        ne: 'कुनै कक्षाहरु भेटिएन ',
     },
     pendingCategoriesMessage: {
         en: 'Loading categories ...',
-        ne: 'श्रेणीहरु लोड गर्दै ...',
+        ne: 'कक्षाहरु लोड गर्दै ...',
     },
     emptyPublishersMessage: {
         en: 'No publishers found',
@@ -314,7 +314,7 @@ export const about = {
     },
     platformBackground: {
         en: 'The School Sector Development Plan (SSDP), of the Government of Nepal (GoN), has focused on delivering quality education in schools that includes improving the foundational reading skills of the students. National Early Grade Reading Programme (NEGRP) is a core component of the SSDP, to improve the reading skills of students in the early grades. The SSDP has made the establishment of book corners necessary in order to ensure that appropriate and relevant books are available in classrooms for grades 1 to 3. However, the establishment of book corners was constrained by many demand and supply-side challenges. To accelerate the progress towards the PMEC standards, KITAB Bazar focuses on the 5th priority of PMEC, which is the book/learning corner in all classrooms. Therefore, The Project, KITAB was designed to address these challenges and create sustainable access to quality Supplementary Reading Materials (SRM) to help achieve literacy outcomes.',
-        ne: 'नेपाल सरकारको विद्यालय क्षेत्र विकास योजना (SSDP) ले विद्यार्थीहरूको आधारभूत पठन सीपमा सुधार लगायत विद्यालयहरूमा गुणस्तरीय शिक्षा प्रदान गर्नमा केन्द्रित छ। राष्ट्रिय प्रारम्भिक पठन कार्यक्रम (NEGRP) प्रारम्भिक कक्षाहरूमा विद्यार्थीहरूको पढ्ने सीप सुधार गर्नको निम्ति विद्यालय क्षेत्र विकास योजना (SSDP) को मुख्य भाग हो। कक्षा १ देखि ३ सम्मका लागि उपयुक्त र सान्दर्भिक पुस्तकहरू कक्षाकोठामा उपलब्ध छन् भनी सुनिश्चित गर्न SSDP ले बुक कर्नरहरू स्थापना गर्न आवश्यक बनाएको छ। यद्यपि, धेरै माग र आपूर्ति पक्षका चुनौतीहरूले बुक कर्नर स्थापना गर्न सहज थिएन । PMEC मापदण्डहरूमा प्रगतिलाई गति दिन, किताब बजार PMEC को ५ औं प्राथमिकतामा केन्द्रित छ, जुन सबै कक्षाकोठाहरूमा पुस्तक/शिक्षा कर्नर हो। तसर्थ, किताब परियोजना यी चुनौतीहरूलाई सम्बोधन गर्दै साक्षरता परिणाम प्राप्तिका लागि गुणस्तरीय पूरक पठन सामग्री (SRM) मा दिगो पहुँच सिर्जना गर्न डिजाइन गरिएको थियो।',
+        ne: 'नेपाल सरकारको विद्यालय क्षेत्र विकास योजना (SSDP) ले विद्यार्थीहरूको आधारभूत पठन सीपमा सुधार लगायत विद्यालयहरूमा गुणस्तरीय शिक्षा प्रदान गर्नमा केन्द्रित छ। राष्ट्रिय प्रारम्भिक पठन कार्यक्रम (NEGRP) प्रारम्भिक कक्षाहरूमा विद्यार्थीहरूको पढ्ने सीप सुधार गर्नको निम्ति विद्यालय क्षेत्र विकास योजना (SSDP) को मुख्य भाग हो। कक्षा १ देखि ३ सम्मका लागि उपयुक्त र सान्दर्भिक किताबहरू कक्षाकोठामा उपलब्ध छन् भनी सुनिश्चित गर्न SSDP ले बुक कर्नरहरू स्थापना गर्न आवश्यक बनाएको छ। यद्यपि, धेरै माग र आपूर्ति पक्षका चुनौतीहरूले बुक कर्नर स्थापना गर्न सहज थिएन । PMEC मापदण्डहरूमा प्रगतिलाई गति दिन, किताब बजार PMEC को ५ औं प्राथमिकतामा केन्द्रित छ, जुन सबै कक्षाकोठाहरूमा किताब/शिक्षा कर्नर हो। तसर्थ, किताब परियोजना यी चुनौतीहरूलाई सम्बोधन गर्दै साक्षरता परिणाम प्राप्तिका लागि गुणस्तरीय पूरक पठन सामग्री (SRM) मा दिगो पहुँच सिर्जना गर्न डिजाइन गरिएको थियो।',
     },
     whoAreWeLabel: {
         en: 'Who are we?',
@@ -322,7 +322,7 @@ export const about = {
     },
     whoAreWeDescription: {
         en: 'We are an online digital platform with the aim of improving access to quality supplementary reading materials in schools, in order to maintain their book corners. Collaborating with various publishing firms, we have streamlined the process of selecting, ordering, and purchasing books for children. We\'ve also included information on how book corners are implemented in schools and how they are beneficial for the children. If there is any interest in adopting what has been created so far, we will provide further information and answer any concerns about the project.',
-        ne: 'विद्यालयहरूमा गुणस्तरीय पूरक पठन सामग्रीको पहुँच सुधार गर्ने उद्देश्यका साथ बुक कर्नरको अभ्यास बनाउन केन्द्रित अनलाइन डिजिटल प्लेटफर्म हो किताब बजार । विभिन्न प्रकाशनहरूसँग सहकार्य गर्दै, हामीले बालबालिकाका लागि पुस्तकहरू छनोट, अर्डर र खरिद गर्ने प्रक्रियालाई सुव्यवस्थित गरेका छौं। हामीले विद्यालयहरूमा बुक कर्नर कसरी लागू गरिन्छ र यो बालबालिकाहरूको लागि कसरी लाभदायक छन् भन्ने जानकारी पनि समावेश गरेका छौं। हाम्रो यस अभियानमा सम्मिलित हुन चाहने वा अहिलेसम्म भएका कामहरूबारे जानकारी आवश्यक परेमा , हामी यस परियोजना बारेमा सम्पूर्ण जानकारी दिनेछौँ ।',
+        ne: 'विद्यालयहरूमा गुणस्तरीय पूरक पठन सामग्रीको पहुँच सुधार गर्ने उद्देश्यका साथ बुक कर्नरको अभ्यास बनाउन केन्द्रित अनलाइन डिजिटल प्लेटफर्म हो किताब बजार । विभिन्न प्रकाशनहरूसँग सहकार्य गर्दै, हामीले बालबालिकाका लागि किताबहरू छनोट, अर्डर र खरिद गर्ने प्रक्रियालाई सुव्यवस्थित गरेका छौं। हामीले विद्यालयहरूमा बुक कर्नर कसरी लागू गरिन्छ र यो बालबालिकाहरूको लागि कसरी लाभदायक छन् भन्ने जानकारी पनि समावेश गरेका छौं। हाम्रो यस अभियानमा सम्मिलित हुन चाहने वा अहिलेसम्म भएका कामहरूबारे जानकारी आवश्यक परेमा , हामी यस परियोजना बारेमा सम्पूर्ण जानकारी दिनेछौँ ।',
     },
     goalsLabel: {
         en: 'Our Goals',
@@ -335,22 +335,6 @@ export const about = {
     secondGoalDescription: {
         en: 'To use the evidence to inform the national education debate, policy, and practice and to expand global understanding of the use of results-based financing to address supply chain issues.',
         ne: 'राष्ट्रिय शिक्षा बहस, नीति, र अभ्यासलाई सूचित गर्न प्रमाणहरू प्रयोग गर्न र आपूर्ति श्रृंखला मुद्दाहरूलाई सम्बोधन गर्न नतिजामा आधारित रिजल्ट बेस्ड फाइनान्सिङको प्रयोगको विश्वव्यापी रूपमा विस्तार गर्न।',
-    },
-    contactUsLabel: {
-        en: 'Contact Us',
-        ne: 'हामीलाई सम्पर्क गर्नुहोस',
-    },
-    sendUsEmailLabel: {
-        en: 'Send us an email at {email}',
-        ne: 'हामीलाई {email} मा इमेल पठाउनुहोस्',
-    },
-    callUsLabel: {
-        en: 'Call: {phoneNumber}',
-        ne: 'फोन :{phoneNumber}',
-    },
-    contactUsDescription: {
-        en: 'Have feedback about Kitab Bazar or want to know more about us?',
-        ne: 'किताब बजार बारे प्रतिक्रिया छ वा हाम्रो बारेमा थप जान्न चाहनुहुन्छ?',
     },
     accessToReadingMaterialText: {
         en: 'Children have access to sufficient supplementary reading materials in schools',
@@ -366,18 +350,18 @@ export const about = {
     },
     supplyChainText: {
         en: 'Strengthening supply chain mechanism for grade-appropriate supplementary reading materials to rural community schools',
-        ne: 'ग्रामीण सामुदायिक विद्यालयहरूमा ग्रेड-उपयुक्त पूरक पठन सामग्रीहरूको लागि आपूर्ति श्रृंखला संयन्त्रलाई सुदृढ गर्न',
+        ne: 'ग्रामीण सामुदायिक विद्यालयहरूमा कक्षा-उपयुक्त पूरक पठन सामग्रीहरूको लागि आपूर्ति श्रृंखला संयन्त्रलाई सुदृढ गर्न',
     },
 };
 
 export const explore = {
-    sortOptionsPriceAsc: {
-        en: 'Price (Low to High)',
-        ne: 'मूल्य (कम देखि उच्च)',
+    sortOptionsTitleAsc: {
+        en: 'Title (A-Z)',
+        ne: 'शीर्षक (क-ज्ञ)',
     },
-    sortOptionsPriceDsc: {
-        en: 'Price (High to Low)',
-        ne: 'मूल्य (उच्च देखि कम)',
+    sortOptionsTitleDsc: {
+        en: 'Title (A-Z)',
+        ne: 'शीर्षक (ज्ञ-क)',
     },
     sortOptionsDateAsc: {
         en: 'Date added (Older first)',
@@ -389,11 +373,11 @@ export const explore = {
     },
     pageTitlePublisher: {
         en: 'Books',
-        ne: 'पुस्तकहरू',
+        ne: 'किताबहरू',
     },
     pageTitleExploreByCategory: {
         en: 'Explore Books by Category',
-        ne: 'वर्ग अनुसार पुस्तकहरू हेर्नुहोस्',
+        ne: 'वर्ग अनुसार किताबहरू हेर्नुहोस्',
     },
     pageTitleWishList: {
         en: 'Wish List',
@@ -401,15 +385,15 @@ export const explore = {
     },
     pageTitleDefault: {
         en: 'Explore Books',
-        ne: 'पुस्तकहरू हेर्नुहोस्',
+        ne: 'किताबहरू हेर्नुहोस्',
     },
     searchInputPlaceholder: {
         en: 'Search by title (3 or more characters)',
-        ne: 'पुस्तकको शीर्षकले खोज्नुहोस् (३ वा बढी वर्णहरू)',
+        ne: 'किताबको शीर्षकले खोज्नुहोस् (३ वा बढी वर्णहरू)',
     },
     filterBooksHeading: {
         en: 'Filter books',
-        ne: 'पुस्तकहरू फिल्टर गर्नुहोस्',
+        ne: 'किताबहरू फिल्टर गर्नुहोस्',
     },
     categoriesFilterLabel: {
         en: 'Categories',
@@ -417,11 +401,11 @@ export const explore = {
     },
     gradeFilterLabel: {
         en: 'Grade',
-        ne: 'श्रेणी',
+        ne: 'कक्षा',
     },
     clearGradeFilterButtonLabel: {
         en: 'Clear grade filter',
-        ne: 'श्रेणी फिल्टर खाली गर्नुहोस्',
+        ne: 'कक्षा फिल्टर खाली गर्नुहोस्',
     },
     languageFilterLabel: {
         en: 'Language',
@@ -445,7 +429,7 @@ export const explore = {
     },
     booksFoundLabel: {
         en: '{count} book(s) found',
-        ne: '{count} पुस्तक(हरू) भेटियो',
+        ne: '{count} किताब(हरू) भेटियो',
     },
     activeSortLabel: {
         en: 'Order by: {sortLabel}',
@@ -453,15 +437,15 @@ export const explore = {
     },
     addBookButtonLabel: {
         en: 'Add New Book',
-        ne: 'नयाँ पुस्तक थप्नुहोस्',
+        ne: 'नयाँ किताब थप्नुहोस्',
     },
     publisherAllBooksLabel: {
         en: 'All Books',
-        ne: 'सबै पुस्तकहरू',
+        ne: 'सबै किताबहरू',
     },
     publisherOwnBooksLabel: {
         en: 'My Books',
-        ne: 'मेरा पुस्तकहरू',
+        ne: 'मेरा किताबहरू',
     },
     bookListEmptyMessage: {
         en: 'No books found',
@@ -473,7 +457,7 @@ export const explore = {
     },
     pendingBookListMessage: {
         en: 'Loading books ...',
-        ne: 'पुस्तकहरू लोड गर्दै...',
+        ne: 'किताबहरू लोड गर्दै...',
     },
     gotoFirstPageTitle: {
         en: 'Back to first page',
@@ -502,13 +486,17 @@ export const footer = {
         en: 'Contact Us',
         ne: 'सम्पर्क गर्नुहोस',
     },
-    aboutUsButtonLabel: {
+    aboutUsLabel: {
         en: 'About Us',
         ne: 'हाम्रोबारे',
     },
+    blogLabel: {
+        en: 'Blog',
+        ne: 'Blog',
+    },
     exploreByGradeHeading: {
         en: 'Grade',
-        ne: 'श्रेणी',
+        ne: 'कक्षा',
     },
     exploreByLanguageHeading: {
         en: 'Language',
@@ -517,6 +505,22 @@ export const footer = {
     exploreByCategoryHeading: {
         en: 'Category',
         ne: 'वर्ग',
+    },
+    contactUsLabel: {
+        en: 'Contact Us',
+        ne: 'हामीलाई सम्पर्क गर्नुहोस',
+    },
+    contactUsDescription: {
+        en: 'Have feedback about Kitab Bazar or want to know more about us?',
+        ne: 'किताब बजार बारे प्रतिक्रिया छ वा हाम्रो बारेमा थप जान्न चाहनुहुन्छ?',
+    },
+    callUsLabel: {
+        en: 'Call: {phoneNumber}',
+        ne: 'फोन: {phoneNumber}',
+    },
+    sendUsEmailLabel: {
+        en: 'Send us an email at {email}',
+        ne: 'हामीलाई {email} मा इमेल पठाउनुहोस्',
     },
 };
 
@@ -630,11 +634,11 @@ export const profile = {
     },
     totalBooksLabel: {
         en: 'Total Books',
-        ne: 'कुल पुस्तकहरू',
+        ne: 'कुल किताबहरू',
     },
     uniqueBooksLabel: {
         en: 'Number of distinct books',
-        ne: 'फरक पुस्तकहरूको संख्या',
+        ne: 'फरक किताबहरूको संख्या',
     },
     addedOnLabel: {
         en: 'Added On',
@@ -837,7 +841,7 @@ export const school = {
     },
     recentOrderEmptySuggestion: {
         en: 'Add Books that you want to buy later by clicking Add to Wishlist and then goto your Cart to place your Order',
-        ne: '\'इच्छासूचीमा थप्नुहोस्\' क्लिक गरी पछि किन्न चाहनुभएको पुस्तकहरू थप्नुहोस् र त्यसपछि अर्डर राख्नको लागि तपाईंको कार्टमा जानुहोस्',
+        ne: '\'इच्छासूचीमा थप्नुहोस्\' क्लिक गरी पछि किन्न चाहनुभएको किताबहरू थप्नुहोस् र त्यसपछि अर्डर राख्नको लागि तपाईंको कार्टमा जानुहोस्',
     },
 };
 
@@ -967,7 +971,7 @@ export const orderList = {
     },
     searchPlaceholder: {
         en: 'Search by book title (3 or more characters)',
-        ne: 'पुस्तक शीर्षक द्वारा खोज्नुहोस् (३ वा बढी वर्णहरू)',
+        ne: 'किताब शीर्षक द्वारा खोज्नुहोस् (३ वा बढी वर्णहरू)',
     },
     orderCountLabel: {
         en: 'Order Count',
@@ -990,7 +994,7 @@ export const orderList = {
 export const bookDetailModal = {
     bookDetailFetchErrorMessage: {
         en: 'Error while fetching book details!',
-        ne: 'पुस्तक विवरणहरू प्राप्त गर्दा समस्या!',
+        ne: 'किताब विवरणहरू प्राप्त गर्दा समस्या!',
     },
     loadingMessage: {
         en: 'Loading...',
@@ -1001,7 +1005,7 @@ export const bookDetailModal = {
 export const bookItem = {
     bookOrderFailedMessage: {
         en: 'Failed to add book to the order',
-        ne: 'अर्डरमा पुस्तक थप्न समस्या',
+        ne: 'अर्डरमा किताब थप्न समस्या',
     },
     bookOrderSuccessMessage: {
         en: 'Book added to order',
@@ -1009,7 +1013,7 @@ export const bookItem = {
     },
     wishlistAdditionFailedMessage: {
         en: 'Failed to add book to the wish list',
-        ne: 'इच्छा-सूचीमा पुस्तक थप्न समस्या',
+        ne: 'इच्छा-सूचीमा किताब थप्न समस्या',
     },
     wishlistAdditionSuccessMessage: {
         en: 'Book added to wishlist',
@@ -1017,7 +1021,7 @@ export const bookItem = {
     },
     wishlistRemovalFailedMessage: {
         en: 'Failed to remove book from the wish list',
-        ne: 'इच्छा-सूचीबाट पुस्तक हटाउन समस्या',
+        ne: 'इच्छा-सूचीबाट किताब हटाउन समस्या',
     },
     wishlistRemovalSuccessMessage: {
         en: 'Book removed from wishlist',
@@ -1088,7 +1092,7 @@ export const orderItem = {
     },
     booksLabel: {
         en: 'Books',
-        ne: 'पुस्तकहरू',
+        ne: 'किताबहरू',
     },
     totalPriceLabel: {
         en: 'Total price',
@@ -1139,7 +1143,7 @@ export const orderItem = {
 export const ordersBar = {
     booksSelectedMessage: {
         en: '{count} book(s) selected',
-        ne: '{count} पुस्तक(हरू) चयन गरियो',
+        ne: '{count} किताब(हरू) चयन गरियो',
     },
     totalPriceLabel: {
         en: 'Total price',
@@ -1147,7 +1151,7 @@ export const ordersBar = {
     },
     totalBooksLabel: {
         en: 'Total Books',
-        ne: 'कुल पुस्तकहरू',
+        ne: 'कुल किताबहरू',
     },
     viewOrdersLabel: {
         en: 'View Orders',
@@ -1167,7 +1171,7 @@ export const ordersBar = {
     },
     orderBooksButtonLabel: {
         en: 'Order Books',
-        ne: 'पुस्तकहरू अर्डर गर्नुहोस्',
+        ne: 'किताबहरू अर्डर गर्नुहोस्',
     },
     doneButtonLabel: {
         en: 'Done',
@@ -1183,7 +1187,7 @@ export const ordersBar = {
     },
     removeFromCartErrorMessage: {
         en: 'Failed to remove current book from the cart',
-        ne: 'कार्टबाट हालको पुस्तक हटाउन असफल',
+        ne: 'कार्टबाट हालको किताब हटाउन असफल',
     },
     updateCartErrorMessage: {
         en: 'Failed to update the cart',
@@ -1210,7 +1214,7 @@ export const ordersBar = {
 export const newBookModal = {
     modalHeading: {
         en: 'Add New Book',
-        ne: 'नयाँ पुस्तक थप्नुहोस्',
+        ne: 'नयाँ किताब थप्नुहोस्',
     },
     saveButtonLabel: {
         en: 'Save',
@@ -1230,7 +1234,7 @@ export const newBookModal = {
     },
     gradeLabel: {
         en: 'Grade',
-        ne: 'श्रेणी',
+        ne: 'कक्षा',
     },
     descriptionLabel: {
         en: 'Description',
@@ -1293,7 +1297,7 @@ export const activateUser = {
 export const orderDetail = {
     searchInputPlaceholder: {
         en: 'Search for books',
-        ne: 'पुस्तकहरू खोज्नुहोस्',
+        ne: 'किताबहरू खोज्नुहोस्',
     },
     markAsPackedButtonLabel: {
         en: 'Mark as Packed',
