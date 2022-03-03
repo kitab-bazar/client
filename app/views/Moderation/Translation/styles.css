@@ -1,0 +1,23 @@
+.translation {
+    .translation-item {
+        display: table-row;
+
+        .key {
+            display: table-cell;
+            border-bottom: var(--dui-width-separator-thin) solid var(--dui-color-separator);
+            padding: var(--dui-spacing-medium);
+        }
+
+        .en {
+            display: table-cell;
+            border-bottom: var(--dui-width-separator-thin) solid var(--dui-color-separator);
+            padding: var(--dui-spacing-medium);
+        }
+
+        .ne {
+            display: table-cell;
+            border-bottom: var(--dui-width-separator-thin) solid var(--dui-color-separator);
+            padding: var(--dui-spacing-medium);
+        }
+    }
+}

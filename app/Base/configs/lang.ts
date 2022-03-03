@@ -1302,37 +1302,6 @@ export const activateUser = {
     },
 };
 
-export const orderDetail = {
-    searchInputPlaceholder: {
-        en: 'Search for books',
-        ne: 'किताबहरू खोज्नुहोस्',
-    },
-    markAsPackedButtonLabel: {
-        en: 'Mark as Packed',
-        ne: 'प्याक भैसकेको अंकित गर्नुहोस ',
-    },
-    markAsPackedConfirmationMessage: {
-        en: 'Are you sure you want to mark the order as packed?',
-        ne: 'Are you sure you want to mark the order as packed?',
-    },
-    markAsCompletedConfirmationMessage: {
-        en: 'Are you sure you want to mark the order as completed?',
-        ne: 'Are you sure you want to mark the order as completed?',
-    },
-    noGoingBackWarningMessage: {
-        en: 'NOTE: This action cannot be undone',
-        ne: 'NOTE: This action cannot be undone',
-    },
-    markAsCompletedButtonLabel: {
-        en: 'Mark as Completed',
-        ne: 'Mark as Completed',
-    },
-    orderStatusUpdateFailedMessage: {
-        en: 'Failed to update the Order status',
-        ne: 'Failed to update the Order status',
-    },
-};
-
 export const resetPassword = {
     resetPasswordHeaderLabel: {
         en: 'Reset Password',
