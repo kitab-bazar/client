@@ -117,6 +117,16 @@ const moderation = wrap({
     visibility: 'is-authenticated',
     checkPermissions: (user) => user?.type === 'MODERATOR',
 });
+const translationDashboard = wrap({
+    path: '/translation-dashboard/',
+    title: 'Translation Dashboard',
+    navbarVisibility: true,
+    component: lazy(() => import('#views/TranslationDashboard')),
+    componentProps: {
+    },
+    visibility: 'is-anything',
+    // checkPermissions: (user) => user?.type === 'MODERATOR',
+});
 
 const routes = {
     register,
@@ -131,5 +141,6 @@ const routes = {
     about,
     forgotPassword,
     moderation,
+    translationDashboard,
 };
 export default routes;

@@ -95,6 +95,12 @@ function Routes(props: Props) {
                 </Route>
                 <Route
                     exact
+                    path={routes.translationDashboard.path}
+                >
+                    {routes.translationDashboard.load({ className })}
+                </Route>
+                <Route
+                    exact
                     path={routes.fourHundredFour.path}
                 >
                     {routes.fourHundredFour.load({ className })}

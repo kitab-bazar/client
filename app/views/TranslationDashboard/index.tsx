@@ -37,7 +37,7 @@ interface Props {
     className?: string;
 }
 
-function Translation(props: Props) {
+function TranslationDashboard(props: Props) {
     const { className } = props;
     const alert = useAlert();
     const fileInputProps = useButtonFeatures({
@@ -125,14 +125,8 @@ function Translation(props: Props) {
     }, [alert]);
 
     return (
-        <div className={_cs(styles.translation, className)}>
+        <div className={_cs(styles.translationDashboard, className)}>
             <div className={styles.actions}>
-                <Button
-                    name={undefined}
-                    onClick={handleExportButtonClick}
-                >
-                    Export
-                </Button>
                 <label
                     {...fileInputProps}
                     htmlFor="kitab-string-import"
@@ -146,6 +140,12 @@ function Translation(props: Props) {
                         hidden
                     />
                 </label>
+                <Button
+                    name={undefined}
+                    onClick={handleExportButtonClick}
+                >
+                    Export
+                </Button>
             </div>
             <div className={styles.translationItemList}>
                 {stringList.map((str) => (
@@ -169,4 +169,4 @@ function Translation(props: Props) {
     );
 }
 
-export default Translation;
+export default TranslationDashboard;

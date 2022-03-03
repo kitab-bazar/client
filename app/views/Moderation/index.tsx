@@ -12,7 +12,6 @@ import SchoolPayments from './SchoolPayments';
 import PublisherPackages from './PublisherPackages';
 import SchoolPackages from './SchoolPackages';
 import MunicipalityPackages from './MunicipalityPackages';
-import Translation from './Translation';
 
 import styles from './styles.css';
 
@@ -67,13 +66,6 @@ function Moderation(props: Props) {
                     >
                         Municipality Packages
                     </Tab>
-                    <Tab
-                        name="translation"
-                        className={styles.tabItem}
-                        activeClassName={styles.active}
-                    >
-                        Translation
-                    </Tab>
                 </TabList>
                 <TabPanel
                     name="users"
@@ -104,12 +96,6 @@ function Moderation(props: Props) {
                     className={styles.tabPanel}
                 >
                     <MunicipalityPackages />
-                </TabPanel>
-                <TabPanel
-                    name="translation"
-                    className={styles.tabPanel}
-                >
-                    <Translation />
                 </TabPanel>
             </Tabs>
         </div>
