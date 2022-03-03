@@ -26,6 +26,7 @@ import useLocalStorage from '#base/hooks/useLocalStorage';
 import Routes from '#base/components/Routes';
 import useTranslation from '#base/hooks/useTranslation';
 import { homePage } from '#base/configs/lang';
+import { isStaging } from '#base/configs/env';
 
 import { User, OrderWindow } from '#base/types/user';
 
@@ -45,6 +46,10 @@ if (trackingId) {
         ReactGA.set({ page });
         ReactGA.pageview(page);
     });
+}
+
+if (isStaging) {
+    document.documentElement.style.setProperty('--dui-color-accent', '#9c27b0');
 }
 
 const apolloClient = new ApolloClient(apolloConfig);
