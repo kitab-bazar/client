@@ -1,0 +1,12 @@
+.orders {
+    background-color: unset;
+
+    .filters {
+        display: flex;
+        gap: var(--dui-spacing-large);
+
+        .filter-input {
+            max-width: 10rem;
+        }
+    }
+}

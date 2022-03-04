@@ -19,6 +19,8 @@ import {
     OrderListWithBooksQuery,
     OrderListWithBooksQueryVariables,
 
+    OrderStatusEnum,
+
     OrderSummaryQuery,
 } from '#generated/types';
 
@@ -30,8 +32,10 @@ const ORDER_LIST_WITH_BOOKS = gql`
 query OrderListWithBooks(
     $pageSize: Int,
     $page: Int,
+    $status: [OrderStatusEnum!],
+    $users: [ID!],
 ) {
-    orders(pageSize: $pageSize, page: $page) {
+    orders(pageSize: $pageSize, page: $page, status: $status, users: $users) {
         page
         pageSize
         totalCount
@@ -68,11 +72,15 @@ const MAX_ITEMS_PER_PAGE = 10;
 
 interface Props {
     className?: string;
+    school?: string;
+    status?: string;
 }
 
 function OrderList(props: Props) {
     const {
         className,
+        school,
+        status,
     } = props;
 
     const [page, setPage] = useState<number>(1);
@@ -89,6 +97,8 @@ function OrderList(props: Props) {
             variables: {
                 page,
                 pageSize: MAX_ITEMS_PER_PAGE,
+                users: school ? [school] : undefined,
+                status: status ? [status as OrderStatusEnum] : undefined,
             },
         },
     );
