@@ -12,7 +12,7 @@ import {
 } from '@the-deep/deep-ui';
 import {
     IoTrash,
-    IoBook,
+    IoBookOutline,
 } from 'react-icons/io5';
 import {
     gql,
@@ -245,7 +245,7 @@ function CartItem(props: Props) {
                         alt={book.image.name ?? undefined}
                     />
                 ) : (
-                    <IoBook className={styles.fallbackIcon} />
+                    <IoBookOutline className={styles.fallbackIcon} />
                 )}
             </div>
             <Container

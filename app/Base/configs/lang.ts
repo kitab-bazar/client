@@ -89,7 +89,7 @@ export const navbar = {
         ne: 'लग आउट',
     },
     orderWindowMessage: {
-        en: 'Please order books by {relativeTime}',
+        en: 'Please order books within {relativeTime}',
         ne: 'कृपया {relativeTime} भित्र किताबहरू अर्डर गर्नुहोस्',
     },
     homeLabel: {
