@@ -7,7 +7,7 @@ import {
     createSubmitHandler,
     getErrorObject,
     requiredCondition,
-    tdefaultUndefinedType,
+    defaultUndefinedType,
     greaterThanCondition,
     removeNull,
     internal,
@@ -109,13 +109,21 @@ type FormType = PurgeNull<EnumFix<CreatePaymentMutationVariables['data'], 'statu
 type PartialFormType = PartialForm<FormType>;
 type FormSchema = ObjectSchema<PartialFormType>;
 type FormSchemaFields = ReturnType<FormSchema['fields']>;
+type PaymentLogType = NonNullable<FormType['paymentLog']>;
+type PaymentLogSchema = ObjectSchema<PartialForm<PaymentLogType>, PartialFormType>;
+type PaymentLogSchemaFields = ReturnType<PaymentLogSchema['fields']>;
 
 const createPaymentSchema: FormSchema = {
     fields: (): FormSchemaFields => {
         const basicFields: FormSchemaFields = {
             amount: [requiredCondition, greaterThanCondition(0)],
-            paidBy: [],
-            paymentLog: [],
+            paidBy: [requiredCondition],
+            paymentLog: {
+                fields: (): PaymentLogSchemaFields => ({
+                    comment: [requiredCondition],
+                    files: [defaultUndefinedType],
+                }),
+            },
             paymentType: [requiredCondition],
             status: [requiredCondition],
             transactionType: [requiredCondition],
@@ -128,7 +136,7 @@ const updatePaymentSchema: FormSchema = {
     fields: (): FormSchemaFields => {
         const basicFields: FormSchemaFields = {
             amount: [requiredCondition, greaterThanCondition(0)],
-            paymentLog: [],
+            paymentLog: [defaultUndefinedType],
             status: [requiredCondition],
         };
         return basicFields;

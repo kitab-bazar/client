@@ -1,10 +1,12 @@
 .kitab-image-input {
     display: flex;
     flex-direction: column;
+    gap: var(--dui-spacing-medium);
 
     .input {
         display: flex;
     }
+
     .preview-list {
         display: flex;
         flex-wrap: wrap;

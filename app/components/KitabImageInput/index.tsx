@@ -18,7 +18,7 @@ import {
 import {
     CreateActivityLogMutation,
     CreateActivityLogMutationVariables,
-    ActivityLogFileType,
+    Type as ActivityLogFileInputType,
 } from '#generated/types';
 
 import styles from './styles.css';
@@ -102,7 +102,7 @@ interface Props<T extends string> extends Omit<FileInputProps<T>, 'overrideStatu
     fileInputClassName?: string;
     value?: Option[] | null | undefined;
     onChange: (value: Option[] | null | undefined, name: T) => void;
-    logFileType: ActivityLogFileType,
+    logFileType: ActivityLogFileInputType;
     hidePreview?: boolean;
     hideClearButton?: boolean;
 }
@@ -239,7 +239,7 @@ function KitabImageInput<T extends string>(props: Props<T>) {
             >
                 <MdFileUpload />
             </FileInput>
-            {!hidePreview && (
+            {!hidePreview && (value?.length ?? 0) > 0 && (
                 <div className={styles.previewList}>
                     {value?.map((file) => (
                         <Preview

@@ -54,26 +54,25 @@ function PaymentLogForm<K extends string>(props: Props<K>) {
     return (
         <Container
             className={styles.paymentLogInput}
-            heading="Payment Log"
-            headingClassName={styles.heading}
-            headingSize="extraSmall"
+            spacing="none"
             contentClassName={styles.content}
         >
             <NonFieldError error={error} />
-            <TextInput
-                name="comment"
-                label="Comment"
-                value={value?.comment}
-                error={error?.comment}
-                onChange={setFieldValue}
-                disabled={disabled}
-            />
             <KitabImageInput
+                label="Payment receipt photo"
                 name="paymentLog"
                 showStatus
                 value={paymentLogs}
                 onChange={handleAddPaymentLogFiles}
                 logFileType="PAYMENT"
+            />
+            <TextInput
+                name="comment"
+                label="Payment receipt comment"
+                value={value?.comment}
+                error={error?.comment}
+                onChange={setFieldValue}
+                disabled={disabled}
             />
         </Container>
     );
