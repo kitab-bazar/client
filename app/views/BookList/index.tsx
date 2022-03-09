@@ -118,9 +118,8 @@ query ExploreBooks(
         results {
             id
             title
-            grade
             price
-            language
+            gradeDisplay
             languageDisplay
             image {
                 name
