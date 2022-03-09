@@ -418,7 +418,6 @@ function UpdatePaymentModal(props: Props) {
                 disabled={updatePaymentPending || paymentFieldOptionsLoading}
             />
         </Modal>
-
     );
 }
 

@@ -1,0 +1,7 @@
+.update-package-modal {
+    display: flex;
+
+    .content {
+        display: flex;
+    }
+}
