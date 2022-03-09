@@ -7,6 +7,7 @@ import {
 
 import { SchoolPackage } from '../index';
 import UpdatePackageModal from './UpdatePackageModal';
+import RelatedOrdersModal from './RelatedOrdersModal';
 
 export interface Props {
     className?: string;
@@ -26,26 +27,42 @@ function Actions(props: Props) {
         showUpdatePackageModal,
         hideUpdatePackageModal,
     ] = useModalState(false);
-
-    const handleEditClick = useCallback(() => {
-        showUpdatePackageModal();
-    }, [showUpdatePackageModal]);
+    const [
+        viewRelatedOrdersModalShown,
+        showRelatedOrdersModal,
+        hideRelatedOrdersModal,
+    ] = useModalState(false);
 
     return (
         <div className={_cs(className)}>
             <Button
                 name={undefined}
                 title="Edit package"
-                onClick={handleEditClick}
+                onClick={showUpdatePackageModal}
                 disabled={disabled}
                 variant="tertiary"
             >
                 Edit
             </Button>
+            <Button
+                name={undefined}
+                title="View related orders"
+                onClick={showRelatedOrdersModal}
+                disabled={disabled}
+                variant="tertiary"
+            >
+                Show related orders
+            </Button>
             {updatePackageModalShown && (
                 <UpdatePackageModal
                     schoolPackage={data}
                     onModalClose={hideUpdatePackageModal}
+                />
+            )}
+            {viewRelatedOrdersModalShown && (
+                <RelatedOrdersModal
+                    schoolPackage={data}
+                    onModalClose={hideRelatedOrdersModal}
                 />
             )}
         </div>

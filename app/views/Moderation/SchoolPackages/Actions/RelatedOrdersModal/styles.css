@@ -1,0 +1,25 @@
+.modal-backdrop {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+
+    .related-orders-modal {
+        max-width: unset;
+        height: 100%;
+        max-height: unset;
+
+        .order-item-list {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            gap: var(--dui-spacing-extra-small);
+
+            .order-item {
+                display: flex;
+                background-color: var(--dui-color-foreground);
+                padding: var(--dui-spacing-large);
+                width: 100%;
+            }
+        }
+    }
+}

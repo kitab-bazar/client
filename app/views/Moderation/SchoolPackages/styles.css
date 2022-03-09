@@ -12,5 +12,10 @@
 
     .table {
         min-height: 20rem;
+
+        .actions {
+            display: flex;
+            gap: var(--dui-spacing-medium);
+        }
     }
 }

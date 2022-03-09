@@ -42,7 +42,18 @@ const SCHOOL_PACKAGES = gql`
             results {
                 id
                 packageId
-                status
+                statusDisplay
+                school {
+                    canonicalName
+                    id
+                }
+                relatedOrders {
+                    id
+                    orderCode
+                    statusDisplay
+                    totalPrice
+                    totalQuantity
+                }
             }
             totalCount
             page
@@ -109,6 +120,7 @@ function SchoolPackages(props: Props) {
                 sortable: false,
             },
             cellRenderer: Actions,
+            cellRendererClassName: styles.actions,
             cellRendererParams: (_, data) => ({
                 data,
                 disabled: schoolPackagesLoading,
@@ -128,9 +140,14 @@ function SchoolPackages(props: Props) {
                 (item) => item.packageId,
             ),
             createStringColumn<SchoolPackage, string>(
+                'school',
+                'School',
+                (item) => item.school.canonicalName,
+            ),
+            createStringColumn<SchoolPackage, string>(
                 'status',
                 'Status',
-                (item) => item.status,
+                (item) => item.statusDisplay,
             ),
             actionsColumn,
         ];
