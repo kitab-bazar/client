@@ -101,12 +101,24 @@ mutation RemoveFromWishList($id: ID!) {
     }
 }
 `;
-type BookForList = Pick<BookType, 'id' | 'title' | 'price' | 'gradeDisplay' | 'categories' | 'publisher'| 'languageDisplay' | 'authors' | 'image' | 'wishlistId' | 'cartDetails'>;
-type BookForDetail = Pick<BookType, 'id' | 'title' | 'description' | 'gradeDisplay' | 'price' | 'languageDisplay' | 'numberOfPages' | 'isbn' | 'authors' | 'categories' | 'image' | 'wishlistId' | 'publisher' | 'cartDetails'>;
-type BookForCompact = Pick<BookType, 'id' | 'title' | 'image' | 'authors' | 'price'>;
+
+type BookForList = Pick<BookType, 'id' | 'title' | 'price' | 'gradeDisplay' | 'categories' | 'languageDisplay' | 'image' | 'wishlistId'> & {
+    authors: Pick<BookType['authors'][number], 'id' | 'name'>[],
+    publisher: Pick<BookType['publisher'], 'id' | 'name'>,
+    cartDetails?: Pick<NonNullable<BookType['cartDetails']>, 'id' | 'quantity'> | null | undefined,
+};
+type BookForDetail = Pick<BookType, 'id' | 'title' | 'description' | 'gradeDisplay' | 'price' | 'languageDisplay' | 'numberOfPages' | 'isbn' | 'authors' | 'categories' | 'image' | 'wishlistId' | 'publisher'> & {
+    authors: Pick<BookType['authors'][number], 'id' | 'name'>[],
+    publisher: Pick<BookType['publisher'], 'id' | 'name'>,
+    cartDetails?: Pick<NonNullable<BookType['cartDetails']>, 'id' | 'quantity'> | null | undefined,
+};
+type BookForCompact = Pick<BookType, 'id' | 'title' | 'image' | 'price'> & {
+    authors: Pick<BookType['authors'][number], 'id' | 'name'>[],
+};
 type BookForOrder = Pick<BookType, 'id' | 'title' | 'price' | 'image' | 'edition' | 'isbn'> & {
     quantity?: null | NonNullable<BookType['cartDetails']>['quantity'];
 };
+type BookForPackage = Omit<BookForList, 'cartDetails' | 'wishlistId'>;
 
 interface BaseProps {
     className?: string;
@@ -128,6 +140,10 @@ export type Props = BaseProps & ({
 } | {
     variant: 'order';
     book: BookForOrder;
+} | {
+    variant: 'package';
+    book: BookForPackage;
+    quantity: number;
 })
 
 function BookItem(props: Props) {
@@ -286,7 +302,7 @@ function BookItem(props: Props) {
 
     const categoriesDisplay = React.useMemo(() => (
         // eslint-disable-next-line react/destructuring-assignment
-        props.variant === 'list' || props.variant === 'detail'
+        props.variant === 'list' || props.variant === 'detail' || props.variant === 'package'
             // eslint-disable-next-line react/destructuring-assignment
             ? props.book.categories?.map((d) => d.name).join(', ')
             : undefined
@@ -322,7 +338,7 @@ function BookItem(props: Props) {
 
     const orderButton = React.useMemo(() => {
         // eslint-disable-next-line react/destructuring-assignment
-        if (props.variant === 'compact' || props.variant === 'order') {
+        if (props.variant === 'compact' || props.variant === 'order' || props.variant === 'package') {
             return undefined;
         }
 
@@ -353,7 +369,7 @@ function BookItem(props: Props) {
             return undefined;
         }
         // eslint-disable-next-line react/destructuring-assignment
-        if (props.variant === 'compact' || props.variant === 'order') {
+        if (props.variant === 'compact' || props.variant === 'order' || props.variant === 'package') {
             return undefined;
         }
         // eslint-disable-next-line react/destructuring-assignment
@@ -417,6 +433,7 @@ function BookItem(props: Props) {
         props.variant === 'detail' && styles.detailVariant,
         props.variant === 'compact' && styles.compactVariant,
         props.variant === 'order' && styles.orderVariant,
+        props.variant === 'package' && styles.packageVariant,
         /* eslint-enable react/destructuring-assignment */
         styles.bookItem,
         className,
@@ -567,6 +584,62 @@ function BookItem(props: Props) {
                         }
                     />
                 </Container>
+            </div>
+        );
+    }
+    // eslint-disable-next-line react/destructuring-assignment
+    if (props.variant === 'package') {
+        return (
+            <div className={containerClassName}>
+                {bookCoverPreview}
+                <Container
+                    className={styles.details}
+                    heading={book.title}
+                    headingSize="extraSmall"
+                    headingDescription={authorsDisplay}
+                    headerActions={(
+                        <NumberOutput
+                            value={book.price}
+                            currency
+                        />
+                    )}
+                    footerClassName={styles.footer}
+                    footerIconsContainerClassName={styles.meta}
+                    footerIcons={(
+                        <>
+                            <TextOutput
+                                label={strings.languageLabel}
+                                // eslint-disable-next-line react/destructuring-assignment
+                                value={props.book.languageDisplay}
+                            />
+                            <TextOutput
+                                label={strings.publisherLabel}
+                                // eslint-disable-next-line react/destructuring-assignment
+                                value={props.book.publisher.name}
+                            />
+                            <TextOutput
+                                label={strings.gradeLabel}
+                                // eslint-disable-next-line react/destructuring-assignment
+                                value={props.book.gradeDisplay}
+                            />
+                            <div className={styles.categories}>
+                                {categoriesDisplay}
+                            </div>
+                        </>
+                    )}
+                    footerActionsContainerClassName={styles.actions}
+                    footerActions={(
+                        <TextOutput
+                            label={strings.quantityLabel}
+                            value={(
+                                <NumberOutput
+                                // eslint-disable-next-line react/destructuring-assignment
+                                    value={props.quantity}
+                                />
+                            )}
+                        />
+                    )}
+                />
             </div>
         );
     }

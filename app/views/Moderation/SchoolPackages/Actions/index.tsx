@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { _cs } from '@togglecorp/fujs';
 import {
     Button,
@@ -8,6 +8,7 @@ import {
 import { SchoolPackage } from '../index';
 import UpdatePackageModal from './UpdatePackageModal';
 import RelatedOrdersModal from './RelatedOrdersModal';
+import RelatedBooksModal from './RelatedBooksModal';
 
 export interface Props {
     className?: string;
@@ -32,6 +33,11 @@ function Actions(props: Props) {
         showRelatedOrdersModal,
         hideRelatedOrdersModal,
     ] = useModalState(false);
+    const [
+        viewRelatedBooksModalShown,
+        showRelatedBooksModal,
+        hideRelatedBooksModal,
+    ] = useModalState(false);
 
     return (
         <div className={_cs(className)}>
@@ -51,7 +57,16 @@ function Actions(props: Props) {
                 disabled={disabled}
                 variant="tertiary"
             >
-                Show related orders
+                Orders
+            </Button>
+            <Button
+                name={undefined}
+                title="View related books"
+                onClick={showRelatedBooksModal}
+                disabled={disabled}
+                variant="tertiary"
+            >
+                Books
             </Button>
             {updatePackageModalShown && (
                 <UpdatePackageModal
@@ -63,6 +78,12 @@ function Actions(props: Props) {
                 <RelatedOrdersModal
                     schoolPackage={data}
                     onModalClose={hideRelatedOrdersModal}
+                />
+            )}
+            {viewRelatedBooksModalShown && (
+                <RelatedBooksModal
+                    schoolPackage={data}
+                    onModalClose={hideRelatedBooksModal}
                 />
             )}
         </div>

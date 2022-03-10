@@ -163,7 +163,7 @@
         }
     }
 
-    &.list-variant {
+    &.list-variant, &.package-variant {
         display: flex;
 
         --preview-width: 9rem;

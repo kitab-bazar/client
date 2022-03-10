@@ -3,34 +3,22 @@
     align-items: stretch;
     justify-content: flex-end;
 
-    .related-orders-modal {
+    .related-books-modal {
         border-radius: unset;
         height: 100%;
         max-height: unset;
         animation: appear-from-right .3s ease-in forwards;
 
-        .footer {
-            flex-wrap: wrap;
-        }
-
-        .footer-actions {
-            display: flex;
-            flex-grow: 1;
-            flex-shrink: 0;
-            justify-content: flex-end;
-        }
-
-        .order-item-list {
+        .book-item-list {
             display: flex;
             flex-direction: column;
             flex-grow: 1;
             gap: var(--dui-spacing-extra-small);
         }
-
     }
 
     @media(max-width: 700px) {
-        .related-orders-modal {
+        .related-books-modal {
             border-top-left-radius: var(--kitab-radius-border);
             border-top-right-radius: var(--kitab-radius-border);
             width: 100%;
