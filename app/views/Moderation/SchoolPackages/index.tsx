@@ -9,6 +9,7 @@ import {
     TableHeaderCell,
     TableHeaderCellProps,
     createStringColumn,
+    createNumberColumn,
 } from '@the-deep/deep-ui';
 import { useQuery, gql } from '@apollo/client';
 
@@ -19,6 +20,7 @@ import {
     SchoolPackageOptionsQueryVariables,
 } from '#generated/types';
 
+import SchoolSelectInput, { SearchUserType } from '#components/SchoolSelectInput';
 import { enumKeySelector, enumLabelSelector } from '#utils/types';
 import useStateWithCallback from '#hooks/useStateWithCallback';
 
@@ -37,16 +39,19 @@ const SCHOOL_PACKAGE_OPTIONS = gql`
 `;
 
 const SCHOOL_PACKAGES = gql`
-    query SchoolPackages($ordering: String, $page: Int, $pageSize: Int, $status: [SchoolPackageStatusEnum!]) {
-        schoolPackages(ordering: $ordering, page: $page, pageSize: $pageSize, status: $status) {
+    query SchoolPackages($ordering: String, $page: Int, $pageSize: Int, $status: [SchoolPackageStatusEnum!], $schools: [ID!]) {
+        schoolPackages(ordering: $ordering, page: $page, pageSize: $pageSize, status: $status, schools: $schools) {
             results {
                 id
                 packageId
                 statusDisplay
+                status
                 school {
                     canonicalName
                     id
                 }
+                totalPrice
+                totalQuantity
                 relatedOrders {
                     id
                     orderCode
@@ -77,15 +82,19 @@ function SchoolPackages(props: Props) {
     const [activePage, setActivePage] = useState<number>(1);
     const [maxItemsPerPage, setMaxItemsPerPage] = useStateWithCallback(10, setActivePage);
     const [statusFilter, setStatusFilter] = useState<string | undefined>();
+    const [schoolFilter, setSchoolFilter] = useState<string | undefined>();
+    const [schoolOptions, setSchoolOptions] = useState<SearchUserType[] | undefined | null>();
 
     const variables = useMemo(() => ({
         pageSize: maxItemsPerPage,
         page: activePage,
         status: statusFilter as SchoolPackagesQueryVariables['status'],
+        schools: schoolFilter ? [schoolFilter] : undefined,
     }), [
         maxItemsPerPage,
         activePage,
         statusFilter,
+        schoolFilter,
     ]);
 
     const {
@@ -125,6 +134,7 @@ function SchoolPackages(props: Props) {
                 data,
                 disabled: schoolPackagesLoading,
             }),
+            columnWidth: 350,
         };
 
         return [
@@ -149,6 +159,16 @@ function SchoolPackages(props: Props) {
                 'Status',
                 (item) => item.statusDisplay,
             ),
+            createNumberColumn<SchoolPackage, string>(
+                'totalPrice',
+                'Price',
+                (item) => item.totalPrice,
+            ),
+            createNumberColumn<SchoolPackage, string>(
+                'totalQuantity',
+                'Quantity',
+                (item) => item.totalQuantity,
+            ),
             actionsColumn,
         ];
     }, [schoolPackagesLoading]);
@@ -169,19 +189,30 @@ function SchoolPackages(props: Props) {
             )}
             headerDescriptionClassName={styles.filters}
             headerDescription={(
-                <SelectInput
-                    className={styles.filterInput}
-                    name="status"
-                    label="Status"
-                    placeholder="All"
-                    keySelector={enumKeySelector}
-                    labelSelector={enumLabelSelector}
-                    options={schoolPackageOptionsQuery?.schoolPackageStatusOptions?.enumValues}
-                    value={statusFilter}
-                    onChange={setStatusFilter}
-                    disabled={schoolPackageOptionsQueryLoading}
-                    variant="general"
-                />
+                <>
+                    <SelectInput
+                        className={styles.filterInput}
+                        name="status"
+                        label="Status"
+                        placeholder="All"
+                        keySelector={enumKeySelector}
+                        labelSelector={enumLabelSelector}
+                        options={schoolPackageOptionsQuery?.schoolPackageStatusOptions?.enumValues}
+                        value={statusFilter}
+                        onChange={setStatusFilter}
+                        disabled={schoolPackageOptionsQueryLoading}
+                        variant="general"
+                    />
+                    <SchoolSelectInput
+                        name="school"
+                        label="School"
+                        variant="general"
+                        onChange={setSchoolFilter}
+                        value={schoolFilter}
+                        options={schoolOptions}
+                        onOptionsChange={setSchoolOptions}
+                    />
+                </>
             )}
         >
             <TableView

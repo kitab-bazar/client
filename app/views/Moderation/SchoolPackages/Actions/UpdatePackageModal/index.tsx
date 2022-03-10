@@ -4,6 +4,7 @@ import {
     Button,
     RadioInput,
     useAlert,
+    TextArea,
 } from '@the-deep/deep-ui';
 import {
     ObjectSchema,
@@ -12,30 +13,35 @@ import {
     getErrorObject,
     requiredCondition,
     createSubmitHandler,
+    removeNull,
 } from '@togglecorp/toggle-form';
-import { useQuery, gql } from '@apollo/client';
+import { useQuery, gql, useMutation } from '@apollo/client';
 import {
     SchoolPackageOptionsQuery,
     SchoolPackageOptionsQueryVariables,
+    SchoolPackageUpdateInputType,
+    UpdateSchoolPackageMutation,
+    UpdateSchoolPackageMutationVariables,
 } from '#generated/types';
 import NonFieldError from '#components/NonFieldError';
-import { enumKeySelector, enumLabelSelector } from '#utils/types';
+import { enumKeySelector, enumLabelSelector, EnumFix } from '#utils/types';
+import {
+    transformToFormError,
+    ObjectError,
+} from '#base/utils/errorTransform';
 
 import { SchoolPackage } from '../../index';
 import styles from './styles.css';
 
-type FormType = {
-    id: string;
-    status: string;
-};
+type FormType = EnumFix<UpdateSchoolPackageMutationVariables['data'], 'status'>;
 type PartialFormType = PartialForm<FormType>;
 type FormSchema = ObjectSchema<PartialFormType>;
 type FormSchemaFields = ReturnType<FormSchema['fields']>;
 const schema: FormSchema = {
     fields: (): FormSchemaFields => {
         const basicFields: FormSchemaFields = {
-            id: [requiredCondition],
             status: [requiredCondition],
+            comment: [],
         };
         return basicFields;
     },
@@ -52,6 +58,29 @@ const SCHOOL_PACKAGE_OPTIONS = gql`
     }
 `;
 
+const UPDATE_SCHOOL_PACKAGE = gql`
+mutation UpdateSchoolPackage($data: SchoolPackageUpdateInputType!, $id: ID!) {
+    moderatorMutation {
+        updateSchoolPackage(data: $data, id: $id) {
+            errors
+            ok
+            result {
+                id
+                status
+                statusDisplay
+                totalPrice
+                totalQuantity
+                packageId
+                school {
+                    id
+                    canonicalName
+                }
+            }
+        }
+    }
+}
+`;
+
 interface Props {
     schoolPackage: SchoolPackage;
     onModalClose: () => void;
@@ -63,15 +92,7 @@ function UpdatePackageModal(props: Props) {
         onModalClose,
     } = props;
 
-    const {
-        data: schoolPackageOptionsQuery,
-        loading: schoolPackageOptionsQueryLoading,
-    } = useQuery<SchoolPackageOptionsQuery, SchoolPackageOptionsQueryVariables>(
-        SCHOOL_PACKAGE_OPTIONS,
-    );
-
     const initialValue: PartialFormType = useMemo(() => (schoolPackage ? {
-        id: schoolPackage.id,
         status: schoolPackage.status,
     } : {}), [schoolPackage]);
 
@@ -87,16 +108,69 @@ function UpdatePackageModal(props: Props) {
     const alert = useAlert();
     const error = getErrorObject(riskyError);
 
+    const {
+        data: schoolPackageOptionsQuery,
+        loading: schoolPackageOptionsQueryLoading,
+    } = useQuery<SchoolPackageOptionsQuery, SchoolPackageOptionsQueryVariables>(
+        SCHOOL_PACKAGE_OPTIONS,
+    );
+
+    const [
+        updatePackage,
+        { loading: updatePackagePending },
+    ] = useMutation<UpdateSchoolPackageMutation, UpdateSchoolPackageMutationVariables>(
+        UPDATE_SCHOOL_PACKAGE,
+        {
+            onCompleted: (response) => {
+                const { moderatorMutation } = response;
+                if (!moderatorMutation?.updateSchoolPackage) {
+                    return;
+                }
+                const {
+                    ok,
+                    errors,
+                } = moderatorMutation.updateSchoolPackage;
+                if (ok) {
+                    onModalClose();
+                    alert.show(
+                        'Package Update successfully!',
+                        { variant: 'success' },
+                    );
+                } else if (errors) {
+                    const formErrorFromServer = transformToFormError(
+                        removeNull(errors) as ObjectError[],
+                    );
+                    setError(formErrorFromServer);
+                }
+            },
+            onError: (errors) => {
+                alert.show(
+                    <div>
+                        <div>
+                            Failed to update package.
+                        </div>
+                        <div>
+                            {errors.message}
+                        </div>
+                    </div>,
+                    { variant: 'error' },
+                );
+            },
+        },
+    );
+
     const handleSubmit = useCallback(() => {
         const submit = createSubmitHandler(
             validate,
             setError,
             (val) => {
-                alert.show(val, { variant: 'success' });
+                updatePackage({
+                    variables: { data: val as SchoolPackageUpdateInputType, id: schoolPackage.id },
+                });
             },
         );
         submit();
-    }, [setError, validate, alert]);
+    }, [setError, validate, updatePackage, schoolPackage.id]);
 
     return (
         <Modal
@@ -120,7 +194,7 @@ function UpdatePackageModal(props: Props) {
                         name={undefined}
                         variant="primary"
                         onClick={handleSubmit}
-                        disabled={pristine}
+                        disabled={pristine || updatePackagePending}
                     >
                         Save
                     </Button>
@@ -128,6 +202,14 @@ function UpdatePackageModal(props: Props) {
             )}
         >
             <NonFieldError error={error} />
+            <TextArea
+                name="comment"
+                onChange={setFieldValue}
+                label="Comment"
+                value={value?.comment}
+                error={error?.comment}
+                disabled={updatePackagePending}
+            />
             <RadioInput
                 name="status"
                 label="Status"

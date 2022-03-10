@@ -9,6 +9,7 @@ import { SchoolPackage } from '../index';
 import UpdatePackageModal from './UpdatePackageModal';
 import RelatedOrdersModal from './RelatedOrdersModal';
 import RelatedBooksModal from './RelatedBooksModal';
+import styles from './styles.css';
 
 export interface Props {
     className?: string;
@@ -42,6 +43,7 @@ function Actions(props: Props) {
     return (
         <div className={_cs(className)}>
             <Button
+                className={styles.button}
                 name={undefined}
                 title="Edit package"
                 onClick={showUpdatePackageModal}
@@ -51,6 +53,7 @@ function Actions(props: Props) {
                 Edit
             </Button>
             <Button
+                className={styles.button}
                 name={undefined}
                 title="View related orders"
                 onClick={showRelatedOrdersModal}
@@ -60,6 +63,7 @@ function Actions(props: Props) {
                 Orders
             </Button>
             <Button
+                className={styles.button}
                 name={undefined}
                 title="View related books"
                 onClick={showRelatedBooksModal}

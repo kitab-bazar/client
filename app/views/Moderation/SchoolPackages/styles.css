@@ -1,4 +1,6 @@
 .school-packages {
+    display: flex;
+    flex-grow: 1;
     background-color: unset;
 
     .filters {
@@ -16,12 +18,6 @@
         .actions {
             display: flex;
             gap: var(--dui-spacing-medium);
-        }
-        @media(max-width: 1000px) {
-            .actions {
-                display: flex;
-                flex-direction: column;
-            }
         }
     }
 }
