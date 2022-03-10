@@ -27,9 +27,11 @@ function CategoryItem(props: Props) {
             className={_cs(styles.categoryItem, className)}
             linkElementClassName={styles.link}
         >
-            <div className={styles.preview}>
-                {category.name?.[0]}
-            </div>
+            <img
+                className={styles.previewImage}
+                src={category.image?.url ?? undefined}
+                alt={category.name}
+            />
             <div className={styles.name}>
                 {category.name}
             </div>
