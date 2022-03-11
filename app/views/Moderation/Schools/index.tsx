@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
+
 import {
     _cs,
     isDefined,
@@ -6,6 +7,7 @@ import {
 import {
     ListView,
     TextOutput,
+    DateOutput,
     ConfirmButton,
     Tag,
     RadioInput,
@@ -56,8 +58,21 @@ const verificationStatusOptions: VerificationStatusOption[] = [
     { key: 'unverified', label: 'Unverified' },
 ];
 
+type OrderOptionKey = 'date_joined' | '-date_joined';
+interface OrderOption {
+    key: OrderOptionKey;
+    label: string;
+}
+
+const orderOptions: OrderOption[] = [
+    { key: 'date_joined', label: 'Oldest first' },
+    { key: '-date_joined', label: 'Newest first' },
+];
+
 const verificationStatusKeySelector = (d: VerificationStatusOption) => d.key;
 const verificationStatusLabelSelector = (d: VerificationStatusOption) => d.label;
+const orderingKeySelector = (d: OrderOption) => d.key;
+const orderingLabelSelector = (d: OrderOption) => d.label;
 
 type OrderMismatchOptionKey = 'all' | 'mismatched';
 interface OrderMismatchOption {
@@ -80,6 +95,7 @@ query ModerationSchoolList(
     $isVerified: Boolean,
     $isDeactivated: Boolean,
     $orderMismatchUsers: Boolean,
+    $ordering: String,
 ) {
     moderatorQuery {
         users(
@@ -90,6 +106,7 @@ query ModerationSchoolList(
             isVerified: $isVerified,
             isDeactivated: $isDeactivated
             orderMismatchUsers: $orderMismatchUsers,
+            ordering: $ordering,
         ) {
             totalCount
             results {
@@ -101,6 +118,7 @@ query ModerationSchoolList(
                 isVerified
                 isDeactivated
                 outstandingBalance
+                dateJoined
                 school {
                     id
                     name
@@ -356,6 +374,18 @@ function SchoolItem(props: SchoolItemProps) {
                 />
                 <TextOutput
                     block
+                    label="Created At"
+                    labelContainerClassName={styles.label}
+                    value={(
+                        <DateOutput
+                            format="dd-MM-yyyy"
+                            value={user.dateJoined}
+                        />
+                    )}
+                    hideLabelColon
+                />
+                <TextOutput
+                    block
                     className={styles.panNumber}
                     label="PAN"
                     value={school.panNumber}
@@ -450,9 +480,16 @@ function Schools(props: Props) {
     const { className } = props;
 
     const [activePage, setActivePage] = React.useState<number>(1);
-    const [verified, setVerified] = useState<VerificationStatusOption['key']>('all');
-    const [mismatchStatus, setMismatchStatus] = useState<OrderMismatchOption['key']>('all');
-    const [search, setSearch] = useState<string | undefined>(undefined);
+    const [mismatchStatus, setMismatchStatus] = React.useState<OrderMismatchOption['key']>('all');
+    const [verified, setVerified] = useStateWithCallback<VerificationStatusOption['key']>(
+        'all',
+        setActivePage,
+    );
+    const [ordering, setOrdering] = useStateWithCallback<OrderOption['key']>(
+        'date_joined',
+        setActivePage,
+    );
+    const [search, setSearch] = useStateWithCallback<string | undefined>(undefined, setActivePage);
     const [maxItemsPerPage, setMaxItemsPerPage] = useStateWithCallback<number>(10, setActivePage);
 
     const isVerifiedFilter = React.useMemo(() => {
@@ -475,15 +512,6 @@ function Schools(props: Props) {
         return undefined;
     }, [mismatchStatus]);
 
-    useEffect(() => {
-        setActivePage(1);
-    }, [
-        isVerifiedFilter,
-        maxItemsPerPage,
-        isMismatchedFilter,
-        search,
-    ]);
-
     const {
         previousData,
         data = previousData,
@@ -497,6 +525,7 @@ function Schools(props: Props) {
                 pageSize: maxItemsPerPage,
                 page: activePage,
                 search,
+                ordering,
                 isVerified: isVerifiedFilter,
                 isDeactivated: false,
                 orderMismatchUsers: isMismatchedFilter,
@@ -504,7 +533,7 @@ function Schools(props: Props) {
         },
     );
 
-    const handleSchoolDeactivation = useCallback(() => {
+    const handleSchoolDeactivation = React.useCallback(() => {
         refetch();
     }, [refetch]);
 
@@ -547,6 +576,15 @@ function Schools(props: Props) {
                     labelSelector={orderMismatchStatusLabelSelector}
                     value={mismatchStatus}
                     onChange={setMismatchStatus}
+                />
+                <RadioInput
+                    label="Order by"
+                    name={undefined}
+                    options={orderOptions}
+                    keySelector={orderingKeySelector}
+                    labelSelector={orderingLabelSelector}
+                    value={ordering}
+                    onChange={setOrdering}
                 />
             </div>
             <ListView

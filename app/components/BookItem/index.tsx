@@ -107,8 +107,8 @@ type BookForList = Pick<BookType, 'id' | 'title' | 'price' | 'gradeDisplay' | 'c
     publisher: Pick<BookType['publisher'], 'id' | 'name'>,
     cartDetails?: Pick<NonNullable<BookType['cartDetails']>, 'id' | 'quantity'> | null | undefined,
 };
-type BookForDetail = Pick<BookType, 'id' | 'title' | 'description' | 'gradeDisplay' | 'price' | 'languageDisplay' | 'numberOfPages' | 'isbn' | 'authors' | 'categories' | 'image' | 'wishlistId' | 'publisher'> & {
-    authors: Pick<BookType['authors'][number], 'id' | 'name'>[],
+type BookForDetail = Pick<BookType, 'id' | 'title' | 'description' | 'gradeDisplay' | 'price' | 'languageDisplay' | 'numberOfPages' | 'isbn' | 'authors' | 'categories' | 'image' | 'wishlistId'> & {
+    authors: Pick<BookType['authors'][number], 'id' | 'name' | 'aboutAuthor'>[],
     publisher: Pick<BookType['publisher'], 'id' | 'name'>,
     cartDetails?: Pick<NonNullable<BookType['cartDetails']>, 'id' | 'quantity'> | null | undefined,
 };

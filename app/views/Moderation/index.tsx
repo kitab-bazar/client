@@ -53,13 +53,6 @@ function Moderation(props: Props) {
                         Orders
                     </Tab>
                     <Tab
-                        name="publisher-packages"
-                        className={styles.tabItem}
-                        activeClassName={styles.active}
-                    >
-                        Publisher Packages
-                    </Tab>
-                    <Tab
                         name="school-packages"
                         className={styles.tabItem}
                         activeClassName={styles.active}

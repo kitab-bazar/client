@@ -14,7 +14,7 @@ function orderListKeySelector(d: Order) {
 interface PackageType {
     id: string;
     packageId: string;
-    relatedOrders: Order[];
+    relatedOrders?: Order[] | undefined | null;
 }
 
 interface Props {
