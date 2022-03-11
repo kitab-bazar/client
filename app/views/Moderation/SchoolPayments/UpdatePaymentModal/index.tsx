@@ -17,7 +17,6 @@ import {
     Modal,
     Button,
     NumberInput,
-    TextInput,
     RadioInput,
     useAlert,
 } from '@the-deep/deep-ui';

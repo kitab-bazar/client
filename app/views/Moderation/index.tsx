@@ -11,9 +11,8 @@ import Schools from './Schools';
 import SchoolPayments from './SchoolPayments';
 import PublisherPackages from './PublisherPackages';
 import SchoolPackages from './SchoolPackages';
-import MunicipalityPackages from './MunicipalityPackages';
+import CourierPackages from './CourierPackages';
 import Orders from './Orders';
-
 import styles from './styles.css';
 
 interface Props {
@@ -75,11 +74,11 @@ function Moderation(props: Props) {
                         Publisher Packages
                     </Tab>
                     <Tab
-                        name="municipality-packages"
+                        name="courier-packages"
                         className={styles.tabItem}
                         activeClassName={styles.active}
                     >
-                        Municipality Packages
+                        Courier Packages
                     </Tab>
                 </TabList>
                 <TabPanel
@@ -113,10 +112,10 @@ function Moderation(props: Props) {
                     <SchoolPackages />
                 </TabPanel>
                 <TabPanel
-                    name="municipality-packages"
+                    name="courier-packages"
                     className={styles.tabPanel}
                 >
-                    <MunicipalityPackages />
+                    <CourierPackages />
                 </TabPanel>
             </Tabs>
         </div>
