@@ -7,14 +7,14 @@ import {
 
 import RelatedOrdersModal from '#components/RelatedOrdersModal';
 
-import { SchoolPackage } from '../index';
+import { PublisherPackage } from '../index';
 import UpdatePackageModal from './UpdatePackageModal';
 import RelatedBooksModal from './RelatedBooksModal';
 import styles from './styles.css';
 
 export interface Props {
     className?: string;
-    data: SchoolPackage;
+    data: PublisherPackage;
     disabled: boolean;
 }
 
@@ -75,7 +75,7 @@ function Actions(props: Props) {
             </Button>
             {updatePackageModalShown && (
                 <UpdatePackageModal
-                    schoolPackage={data}
+                    publisherPackage={data}
                     onModalClose={hideUpdatePackageModal}
                 />
             )}
@@ -87,7 +87,7 @@ function Actions(props: Props) {
             )}
             {viewRelatedBooksModalShown && (
                 <RelatedBooksModal
-                    schoolPackage={data}
+                    publisherPackage={data}
                     onModalClose={hideRelatedBooksModal}
                 />
             )}

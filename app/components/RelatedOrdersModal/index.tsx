@@ -4,7 +4,6 @@ import {
     ListView,
 } from '@the-deep/deep-ui';
 
-import { SchoolPackage } from '../../index';
 import OrderItem, { Order } from '#components/OrderItem';
 import styles from './styles.css';
 
@@ -12,19 +11,24 @@ function orderListKeySelector(d: Order) {
     return d.id;
 }
 
+interface PackageType {
+    id: string;
+    packageId: string;
+    relatedOrders: Order[];
+}
+
 interface Props {
-    schoolPackage: SchoolPackage;
+    packageItem: PackageType;
     onModalClose: () => void;
 }
 
 function RelatedOrders(props: Props) {
     const {
-        schoolPackage,
+        packageItem,
         onModalClose,
     } = props;
 
     const orderListRendererParams = useCallback((_, data: Order) => ({
-        className: styles.orderItem,
         order: data,
     }), []);
 
@@ -33,10 +37,11 @@ function RelatedOrders(props: Props) {
             className={styles.relatedOrdersModal}
             backdropClassName={styles.modalBackdrop}
             onCloseButtonClick={onModalClose}
+            heading={packageItem.packageId}
         >
             <ListView
                 className={styles.orderItemList}
-                data={schoolPackage.relatedOrders}
+                data={packageItem.relatedOrders}
                 keySelector={orderListKeySelector}
                 renderer={OrderItem}
                 rendererParams={orderListRendererParams}

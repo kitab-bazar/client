@@ -68,6 +68,13 @@ function Moderation(props: Props) {
                         School Packages
                     </Tab>
                     <Tab
+                        name="publisher-packages"
+                        className={styles.tabItem}
+                        activeClassName={styles.active}
+                    >
+                        Publisher Packages
+                    </Tab>
+                    <Tab
                         name="municipality-packages"
                         className={styles.tabItem}
                         activeClassName={styles.active}

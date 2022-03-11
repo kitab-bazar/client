@@ -17,11 +17,11 @@ import {
 } from '@togglecorp/toggle-form';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import {
-    SchoolPackageOptionsQuery,
-    SchoolPackageOptionsQueryVariables,
-    SchoolPackageUpdateInputType,
-    UpdateSchoolPackageMutation,
-    UpdateSchoolPackageMutationVariables,
+    PublisherPackageOptionsQuery,
+    PublisherPackageOptionsQueryVariables,
+    PublisherPackageUpdateInputType,
+    UpdatePublisherPackageMutation,
+    UpdatePublisherPackageMutationVariables,
 } from '#generated/types';
 import NonFieldError from '#components/NonFieldError';
 import { enumKeySelector, enumLabelSelector, EnumFix } from '#utils/types';
@@ -30,10 +30,10 @@ import {
     ObjectError,
 } from '#base/utils/errorTransform';
 
-import { SchoolPackage } from '../../index';
+import { PublisherPackage } from '../../index';
 import styles from './styles.css';
 
-type FormType = EnumFix<UpdateSchoolPackageMutationVariables['data'], 'status'>;
+type FormType = EnumFix<UpdatePublisherPackageMutationVariables['data'], 'status'>;
 type PartialFormType = PartialForm<FormType>;
 type FormSchema = ObjectSchema<PartialFormType>;
 type FormSchemaFields = ReturnType<FormSchema['fields']>;
@@ -47,9 +47,9 @@ const schema: FormSchema = {
     },
 };
 
-const SCHOOL_PACKAGE_OPTIONS = gql`
-    query SchoolPackageOptions {
-        schoolPackageStatusOptions: __type(name: "SchoolPackageStatusEnum") {
+const PUBLISHER_PACKAGE_OPTIONS = gql`
+    query PublisherPackageOptions {
+        publisherPackageStatusOptions: __type(name: "PublisherPackageStatusEnum") {
             enumValues {
                 name
                 description
@@ -58,10 +58,10 @@ const SCHOOL_PACKAGE_OPTIONS = gql`
     }
 `;
 
-const UPDATE_SCHOOL_PACKAGE = gql`
-mutation UpdateSchoolPackage($data: SchoolPackageUpdateInputType!, $id: ID!) {
+const UPDATE_PUBLISHER_PACKAGE = gql`
+mutation UpdatePublisherPackage($data: PublisherPackageUpdateInputType!, $id: ID!) {
     moderatorMutation {
-        updateSchoolPackage(data: $data, id: $id) {
+        updatePublisherPackage(data: $data, id: $id) {
             errors
             ok
             result {
@@ -71,9 +71,9 @@ mutation UpdateSchoolPackage($data: SchoolPackageUpdateInputType!, $id: ID!) {
                 totalPrice
                 totalQuantity
                 packageId
-                school {
+                publisher {
                     id
-                    canonicalName
+                    name
                 }
             }
         }
@@ -82,19 +82,19 @@ mutation UpdateSchoolPackage($data: SchoolPackageUpdateInputType!, $id: ID!) {
 `;
 
 interface Props {
-    schoolPackage: SchoolPackage;
+    publisherPackage: PublisherPackage;
     onModalClose: () => void;
 }
 
 function UpdatePackageModal(props: Props) {
     const {
-        schoolPackage,
+        publisherPackage,
         onModalClose,
     } = props;
 
-    const initialValue: PartialFormType = useMemo(() => (schoolPackage ? {
-        status: schoolPackage.status,
-    } : {}), [schoolPackage]);
+    const initialValue: PartialFormType = useMemo(() => (publisherPackage ? {
+        status: publisherPackage.status,
+    } : {}), [publisherPackage]);
 
     const {
         pristine,
@@ -109,27 +109,27 @@ function UpdatePackageModal(props: Props) {
     const error = getErrorObject(riskyError);
 
     const {
-        data: schoolPackageOptionsQuery,
-        loading: schoolPackageOptionsQueryLoading,
-    } = useQuery<SchoolPackageOptionsQuery, SchoolPackageOptionsQueryVariables>(
-        SCHOOL_PACKAGE_OPTIONS,
+        data: publisherPackageOptionsQuery,
+        loading: publisherPackageOptionsQueryLoading,
+    } = useQuery<PublisherPackageOptionsQuery, PublisherPackageOptionsQueryVariables>(
+        PUBLISHER_PACKAGE_OPTIONS,
     );
 
     const [
         updatePackage,
         { loading: updatePackagePending },
-    ] = useMutation<UpdateSchoolPackageMutation, UpdateSchoolPackageMutationVariables>(
-        UPDATE_SCHOOL_PACKAGE,
+    ] = useMutation<UpdatePublisherPackageMutation, UpdatePublisherPackageMutationVariables>(
+        UPDATE_PUBLISHER_PACKAGE,
         {
             onCompleted: (response) => {
                 const { moderatorMutation } = response;
-                if (!moderatorMutation?.updateSchoolPackage) {
+                if (!moderatorMutation?.updatePublisherPackage) {
                     return;
                 }
                 const {
                     ok,
                     errors,
-                } = moderatorMutation.updateSchoolPackage;
+                } = moderatorMutation.updatePublisherPackage;
                 if (ok) {
                     onModalClose();
                     alert.show(
@@ -165,20 +165,23 @@ function UpdatePackageModal(props: Props) {
             setError,
             (val) => {
                 updatePackage({
-                    variables: { data: val as SchoolPackageUpdateInputType, id: schoolPackage.id },
+                    variables: {
+                        data: val as PublisherPackageUpdateInputType,
+                        id: publisherPackage.id,
+                    },
                 });
             },
         );
         submit();
-    }, [setError, validate, updatePackage, schoolPackage.id]);
+    }, [setError, validate, updatePackage, publisherPackage.id]);
 
     return (
         <Modal
             className={styles.updatePackageModal}
             heading="Edit Package"
             headingSize="small"
+            headingDescription={publisherPackage.packageId}
             onCloseButtonClick={onModalClose}
-            headingDescription={schoolPackage.packageId}
             size="small"
             freeHeight
             bodyClassName={styles.content}
@@ -216,11 +219,13 @@ function UpdatePackageModal(props: Props) {
                 label="Status"
                 keySelector={enumKeySelector}
                 labelSelector={enumLabelSelector}
-                options={schoolPackageOptionsQuery?.schoolPackageStatusOptions?.enumValues ?? []}
+                options={
+                    publisherPackageOptionsQuery?.publisherPackageStatusOptions?.enumValues ?? []
+                }
                 value={value?.status}
                 error={error?.status}
                 onChange={setFieldValue}
-                disabled={schoolPackageOptionsQueryLoading}
+                disabled={publisherPackageOptionsQueryLoading}
             />
         </Modal>
     );

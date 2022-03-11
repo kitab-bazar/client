@@ -9,22 +9,22 @@ import {
     useQuery,
 } from '@apollo/client';
 import {
-    SchoolPackageBooksQuery,
-    SchoolPackageBooksQueryVariables,
+    PublisherPackageBooksQuery,
+    PublisherPackageBooksQueryVariables,
 } from '#generated/types';
 import BookItem, { Props as BookItemProps } from '#components/BookItem';
-import { SchoolPackage } from '../../index';
+import { PublisherPackage } from '../../index';
 
 import styles from './styles.css';
 
-const SCHOOL_PACKAGE_BOOKS = gql`
-    query SchoolPackageBooks(
+const PUBLISHER_PACKAGE_BOOKS = gql`
+    query PublisherPackageBooks(
         $id: ID!,
         $page: Int,
         $pageSize: Int,
     ) {
-        schoolPackage(id: $id) {
-            schoolPackageBooks(page: $page, pageSize: $pageSize) {
+        publisherPackage(id: $id) {
+            publisherPackageBooks(page: $page, pageSize: $pageSize) {
                 page
                 pageSize
                 totalCount
@@ -61,38 +61,38 @@ const SCHOOL_PACKAGE_BOOKS = gql`
     }
 `;
 
-type SchoolPackageBook = NonNullable<NonNullable<NonNullable<NonNullable<SchoolPackageBooksQuery['schoolPackage']>['schoolPackageBooks']>['results']>[number]>;
+type PublisherPackageBook = NonNullable<NonNullable<NonNullable<NonNullable<PublisherPackageBooksQuery['publisherPackage']>['publisherPackageBooks']>['results']>[number]>;
 
 const maxItemsPerPage = 10;
-function keySelector(packageBook: SchoolPackageBook) {
+function keySelector(packageBook: PublisherPackageBook) {
     return packageBook.id;
 }
 
 interface Props {
-    schoolPackage: SchoolPackage;
+    publisherPackage: PublisherPackage;
     onModalClose: () => void;
 }
 
 function RelatedBooks(props: Props) {
     const {
-        schoolPackage,
+        publisherPackage,
         onModalClose,
     } = props;
 
     const [activePage, setActivePage] = useState<number>(1);
 
     const variables = useMemo(() => ({
-        id: schoolPackage.id,
+        id: publisherPackage.id,
         page: activePage,
         pageSize: maxItemsPerPage,
-    }), [activePage, schoolPackage.id]);
+    }), [activePage, publisherPackage.id]);
 
     const {
         data: bookResponse,
         loading: bookLoading,
         error: bookError,
-    } = useQuery<SchoolPackageBooksQuery, SchoolPackageBooksQueryVariables>(
-        SCHOOL_PACKAGE_BOOKS,
+    } = useQuery<PublisherPackageBooksQuery, PublisherPackageBooksQueryVariables>(
+        PUBLISHER_PACKAGE_BOOKS,
         {
             variables,
         },
@@ -100,7 +100,7 @@ function RelatedBooks(props: Props) {
 
     const bookItemRendererParams = useCallback((
         _: string,
-        packageBook: SchoolPackageBook,
+        packageBook: PublisherPackageBook,
     ): BookItemProps => ({
         book: packageBook.book,
         quantity: packageBook.quantity,
@@ -112,12 +112,14 @@ function RelatedBooks(props: Props) {
             className={styles.relatedBooksModal}
             backdropClassName={styles.modalBackdrop}
             onCloseButtonClick={onModalClose}
-            heading={schoolPackage.packageId}
-            headingDescription={schoolPackage.school.canonicalName}
+            heading={publisherPackage.packageId}
+            headingDescription={publisherPackage.publisher.name}
             footerActions={(
                 <Pager
                     activePage={activePage}
-                    itemsCount={bookResponse?.schoolPackage?.schoolPackageBooks?.totalCount ?? 0}
+                    itemsCount={
+                        bookResponse?.publisherPackage?.publisherPackageBooks?.totalCount ?? 0
+                    }
                     maxItemsPerPage={maxItemsPerPage}
                     itemsPerPageControlHidden
                     onActivePageChange={setActivePage}
@@ -126,7 +128,7 @@ function RelatedBooks(props: Props) {
         >
             <ListView
                 className={styles.bookItemList}
-                data={bookResponse?.schoolPackage?.schoolPackageBooks?.results ?? undefined}
+                data={bookResponse?.publisherPackage?.publisherPackageBooks?.results ?? undefined}
                 rendererParams={bookItemRendererParams}
                 renderer={BookItem}
                 keySelector={keySelector}

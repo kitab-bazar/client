@@ -113,7 +113,7 @@ function SchoolPackages(props: Props) {
         { variables },
     );
 
-    const filtered = isDefined(statusFilter);
+    const filtered = isDefined(statusFilter) || isDefined(schoolFilter);
 
     const columns = useMemo(() => {
         const actionsColumn: TableColumn<
