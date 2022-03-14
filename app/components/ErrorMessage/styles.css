@@ -1,0 +1,15 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--dui-spacing-medium);
+
+    .header {
+        display: flex;
+        font-size: var(--dui-font-size-small);
+        font-weight: var(--dui-font-weight-bold);
+    }
+    .description {
+        display: flex;
+        font-weight: var(--dui-font-weight-regular);
+    }
+}

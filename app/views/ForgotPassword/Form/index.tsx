@@ -23,6 +23,7 @@ import {
 
 import SmartLink from '#base/components/SmartLink';
 import NonFieldError from '#components/NonFieldError';
+import ErrorMessage from '#components/ErrorMessage';
 import { resetPassword as resetPasswordStrings } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 import routes from '#base/configs/routes';
@@ -127,16 +128,14 @@ function ForgotPasswordForm() {
                     const formError = transformToFormError(removeNull(errors) as ObjectError[]);
                     setError(formError);
                     alert.show(
-                        <div>
-                            <div>
-                                {strings.errorResettingPassword}
-                            </div>
-                            {isDefined(formError) && (
-                                <div>
-                                    {formError[internal]}
-                                </div>
-                            )}
-                        </div>,
+                        <ErrorMessage
+                            header={strings.errorResettingPassword}
+                            description={
+                                isDefined(formError)
+                                    ? formError[internal]
+                                    : undefined
+                            }
+                        />,
                         { variant: 'error' },
                     );
                 }
@@ -146,14 +145,10 @@ function ForgotPasswordForm() {
                     [internal]: errors.message,
                 });
                 alert.show(
-                    <div>
-                        <div>
-                            {strings.errorResettingPassword}
-                        </div>
-                        <div>
-                            {errors.message}
-                        </div>
-                    </div>,
+                    <ErrorMessage
+                        header={strings.errorResettingPassword}
+                        description={errors.message}
+                    />,
                     { variant: 'error' },
                 );
             },

@@ -25,6 +25,7 @@ import {
 import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
 
 import NumberOutput from '#components/NumberOutput';
+import ErrorMessage from '#components/ErrorMessage';
 
 // FIXME: this components should not import from views
 import { ORDER_SUMMARY } from '#views/Profile/OrderList/queries';
@@ -120,16 +121,14 @@ function OrderItem(props: Props) {
                         removeNull(errors) as ObjectError[],
                     );
                     alert.show(
-                        <div>
-                            <div>
-                                {strings.cancelOrderSuccessMessage}
-                            </div>
-                            {isDefined(formError) && (
-                                <div>
-                                    {formError[internal]}
-                                </div>
-                            )}
-                        </div>,
+                        <ErrorMessage
+                            header={strings.cancelOrderSuccessMessage}
+                            description={
+                                isDefined(formError)
+                                    ? formError[internal]
+                                    : undefined
+                            }
+                        />,
                         { variant: 'error' },
                     );
                     hideModal();
@@ -137,14 +136,10 @@ function OrderItem(props: Props) {
             },
             onError: (errors) => {
                 alert.show(
-                    <div>
-                        <div>
-                            {strings.cancelOrderFailureMessage}
-                        </div>
-                        <div>
-                            {errors.message}
-                        </div>
-                    </div>,
+                    <ErrorMessage
+                        header={strings.cancelOrderFailureMessage}
+                        description={errors.message}
+                    />,
                     { variant: 'error' },
                 );
             },

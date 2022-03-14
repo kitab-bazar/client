@@ -39,6 +39,7 @@ import {
     RegisterMutationVariables,
 } from '#generated/types';
 import NonFieldError from '#components/NonFieldError';
+import ErrorMessage from '#components/ErrorMessage';
 
 import {
     PartialRegisterFormType,
@@ -144,16 +145,14 @@ function RegisterForm() {
                     setError(formErrorFromServer);
 
                     alert.show(
-                        <div>
-                            <div>
-                                {strings.registrationFailureMessage}
-                            </div>
-                            {isDefined(formErrorFromServer) && (
-                                <div>
-                                    {formErrorFromServer[internal]}
-                                </div>
-                            )}
-                        </div>,
+                        <ErrorMessage
+                            header={strings.registrationFailureMessage}
+                            description={
+                                isDefined(formErrorFromServer)
+                                    ? formErrorFromServer[internal]
+                                    : undefined
+                            }
+                        />,
                         { variant: 'error' },
                     );
                 }
@@ -161,14 +160,10 @@ function RegisterForm() {
             onError: (errors) => {
                 setError(errors.message);
                 alert.show(
-                    <div>
-                        <div>
-                            {strings.registrationFailureMessage}
-                        </div>
-                        <div>
-                            {errors.message}
-                        </div>
-                    </div>,
+                    <ErrorMessage
+                        header={strings.registrationFailureMessage}
+                        description={errors.message}
+                    />,
                     { variant: 'error' },
                 );
             },

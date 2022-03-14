@@ -33,6 +33,7 @@ import {
     PaymentOptionsQueryVariables,
 } from '#generated/types';
 import SchoolSelectInput, { SearchUserType } from '#components/SchoolSelectInput';
+import ErrorMessage from '#components/ErrorMessage';
 import NonFieldError from '#components/NonFieldError';
 import { EnumFix, enumKeySelector, enumLabelSelector } from '#utils/types';
 import {
@@ -207,30 +208,24 @@ function UpdatePaymentModal(props: Props) {
                     setError(formErrorFromServer);
 
                     alert.show(
-                        <div>
-                            <div>
-                                Failed to add payment.
-                            </div>
-                            {isDefined(formErrorFromServer) && (
-                                <div>
-                                    {formErrorFromServer[internal]}
-                                </div>
-                            )}
-                        </div>,
+                        <ErrorMessage
+                            header="Failed to add payment."
+                            description={
+                                isDefined(formErrorFromServer)
+                                    ? formErrorFromServer[internal]
+                                    : undefined
+                            }
+                        />,
                         { variant: 'error' },
                     );
                 }
             },
             onError: (errors) => {
                 alert.show(
-                    <div>
-                        <div>
-                            Failed to add payment.
-                        </div>
-                        <div>
-                            {errors.message}
-                        </div>
-                    </div>,
+                    <ErrorMessage
+                        header="Failed to add payment."
+                        description={errors.message}
+                    />,
                     { variant: 'error' },
                 );
             },
@@ -268,30 +263,24 @@ function UpdatePaymentModal(props: Props) {
                     setError(formErrorFromServer);
 
                     alert.show(
-                        <div>
-                            <div>
-                                Failed to update payment.
-                            </div>
-                            {isDefined(formErrorFromServer) && (
-                                <div>
-                                    {formErrorFromServer[internal]}
-                                </div>
-                            )}
-                        </div>,
+                        <ErrorMessage
+                            header="Failed to update payment."
+                            description={
+                                isDefined(formErrorFromServer)
+                                    ? formErrorFromServer[internal]
+                                    : undefined
+                            }
+                        />,
                         { variant: 'error' },
                     );
                 }
             },
             onError: (errors) => {
                 alert.show(
-                    <div>
-                        <div>
-                            Failed to update payment.
-                        </div>
-                        <div>
-                            {errors.message}
-                        </div>
-                    </div>,
+                    <ErrorMessage
+                        header="Failed to update payment."
+                        description={errors.message}
+                    />,
                     { variant: 'error' },
                 );
             },

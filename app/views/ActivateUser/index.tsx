@@ -30,6 +30,7 @@ import {
     ActivateUserMutationVariables,
 } from '#generated/types';
 import NonFieldError from '#components/NonFieldError';
+import ErrorMessage from '#components/ErrorMessage';
 import KitabLogo from '#resources/img/KitabLogo.png';
 
 import styles from './styles.css';
@@ -91,30 +92,24 @@ function ActivateUser(props: Props) {
                     const formError = transformToFormError(removeNull(errors) as ObjectError[]);
                     setError(formError);
                     alert.show(
-                        <div>
-                            <div>
-                                {strings.userActivationFailureMessage}
-                            </div>
-                            {isDefined(formError) && (
-                                <div>
-                                    {formError[internal]}
-                                </div>
-                            )}
-                        </div>,
+                        <ErrorMessage
+                            header={strings.userActivationFailureMessage}
+                            description={
+                                isDefined(formError)
+                                    ? formError[internal]
+                                    : undefined
+                            }
+                        />,
                         { variant: 'error' },
                     );
                 }
             },
             onError: (errors) => {
                 alert.show(
-                    <div>
-                        <div>
-                            {strings.userActivationFailureMessage}
-                        </div>
-                        <div>
-                            {errors.message}
-                        </div>
-                    </div>,
+                    <ErrorMessage
+                        header={strings.userActivationFailureMessage}
+                        description={errors.message}
+                    />,
                     { variant: 'error' },
                 );
             },

@@ -38,6 +38,7 @@ import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
 import AuthorMultiSelectInput, { Author } from '#components/AuthorMultiSelectInput';
 import CategoryMultiSelectInput, { Category } from '#components/CategoryMultiSelectInput';
 import NonFieldError from '#components/NonFieldError';
+import ErrorMessage from '#components/ErrorMessage';
 import { EnumFix } from '#utils/types';
 
 import styles from './styles.css';
@@ -161,16 +162,14 @@ function UploadBookModal(props: Props) {
                     const formError = transformToFormError(removeNull(errors) as ObjectError[]);
                     setError(formError);
                     alert.show(
-                        <div>
-                            <div>
-                                {strings.newBookUploadFailureMessage}
-                            </div>
-                            {isDefined(formError) && (
-                                <div>
-                                    {formError[internal]}
-                                </div>
-                            )}
-                        </div>,
+                        <ErrorMessage
+                            header={strings.newBookUploadFailureMessage}
+                            description={
+                                isDefined(formError)
+                                    ? formError[internal]
+                                    : undefined
+                            }
+                        />,
                         { variant: 'error' },
                     );
                 } else if (ok) {
@@ -185,14 +184,10 @@ function UploadBookModal(props: Props) {
             onError: (errors) => {
                 setError(errors.message);
                 alert.show(
-                    <div>
-                        <div>
-                            {strings.newBookUploadFailureMessage}
-                        </div>
-                        <div>
-                            {errors.message}
-                        </div>
-                    </div>,
+                    <ErrorMessage
+                        header={strings.newBookUploadFailureMessage}
+                        description={errors.message}
+                    />,
                     { variant: 'error' },
                 );
             },

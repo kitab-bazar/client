@@ -34,6 +34,7 @@ import {
 import KitabLogo from '#resources/img/KitabLogo.png';
 import NumberOutput from '#components/NumberOutput';
 import EmptyMessage from '#components/EmptyMessage';
+import ErrorMessage from '#components/ErrorMessage';
 
 import CartItem, { Props as CartItemProps } from './CartItem';
 import { CART_ITEMS } from '../queries';
@@ -154,30 +155,24 @@ function OrdersModal(props: Props) {
                         removeNull(response?.createOrderFromCart?.errors) as ObjectError[],
                     );
                     alert.show(
-                        <div>
-                            <div>
-                                {strings.orderPlacementFailureMessage}
-                            </div>
-                            {isDefined(transformedError) && (
-                                <div>
-                                    {transformedError[internal]}
-                                </div>
-                            )}
-                        </div>,
+                        <ErrorMessage
+                            header={strings.orderPlacementFailureMessage}
+                            description={
+                                isDefined(transformedError)
+                                    ? transformedError[internal]
+                                    : undefined
+                            }
+                        />,
                         { variant: 'error' },
                     );
                 }
             },
             onError: (errors) => {
                 alert.show(
-                    <div>
-                        <div>
-                            {strings.orderPlacementFailureMessage}
-                        </div>
-                        <div>
-                            {errors.message}
-                        </div>
-                    </div>,
+                    <ErrorMessage
+                        header={strings.orderPlacementFailureMessage}
+                        description={errors.message}
+                    />,
                     { variant: 'error' },
                 );
             },
