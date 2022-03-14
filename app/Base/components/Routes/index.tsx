@@ -77,6 +77,12 @@ function Routes(props: Props) {
                 </Route>
                 <Route
                     exact
+                    path={routes.resetPassword.path}
+                >
+                    {routes.resetPassword.load({ className })}
+                </Route>
+                <Route
+                    exact
                     path={routes.about.path}
                 >
                     {routes.about.load({ className })}
