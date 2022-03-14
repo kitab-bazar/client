@@ -175,6 +175,7 @@ function RegisterForm() {
     );
 
     const handleSubmit = React.useCallback((formValues: PartialRegisterFormType) => {
+        elementRef.current?.resetCaptcha();
         register({
             variables: {
                 data: {

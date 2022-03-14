@@ -165,6 +165,7 @@ function ForgotPasswordForm() {
     );
 
     const handleSubmit = useCallback((finalValue: PartialFormType) => {
+        elementRef.current?.resetCaptcha();
         resetPassword({
             variables: {
                 ...finalValue,

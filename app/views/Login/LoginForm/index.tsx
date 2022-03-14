@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useRef, useMemo, useState } from 'react';
 import { isDefined } from '@togglecorp/fujs';
 import {
     TextInput,
@@ -8,8 +8,10 @@ import {
     useAlert,
 } from '@the-deep/deep-ui';
 import { gql, useMutation } from '@apollo/client';
+import Captcha from '@hcaptcha/react-hcaptcha';
 
 import {
+    PurgeNull,
     ObjectSchema,
     PartialForm,
     requiredStringCondition,
@@ -23,6 +25,8 @@ import {
     removeNull,
 } from '@togglecorp/toggle-form';
 
+import HCaptcha from '#components/HCaptcha';
+import { hCaptchaKey } from '#base/configs/env';
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
 // import SmartLink from '#base/components/SmartLink';
 import NonFieldError from '#components/NonFieldError';
@@ -40,11 +44,16 @@ const LOGIN = gql`
     mutation Login(
         $email: String!,
         $password: String!,
+        $captcha: String,
+        $siteKey: String,
     ) {
         login(data: {
             password: $password,
             email: $email,
+            captcha: $captcha,
+            siteKey: $siteKey,
         }) {
+            captchaRequired
             errors
             ok
             result {
@@ -75,16 +84,16 @@ const LOGIN = gql`
     }
 `;
 
-type FormType = LoginMutationVariables;
+type FormType = PurgeNull<LoginMutationVariables>;
 type PartialFormType = PartialForm<FormType>;
 
 type FormSchema = ObjectSchema<PartialFormType>;
 
 type FormSchemaFields = ReturnType<FormSchema['fields']>;
 
-const schema: FormSchema = {
+const schema = (captchaRequired: boolean): FormSchema => ({
     fields: (): FormSchemaFields => {
-        const basicFields: FormSchemaFields = {
+        let basicFields: FormSchemaFields = {
             email: [
                 emailCondition,
                 requiredStringCondition,
@@ -95,13 +104,26 @@ const schema: FormSchema = {
                 lengthSmallerThanCondition(129),
             ],
         };
+        if (captchaRequired) {
+            basicFields = {
+                ...basicFields,
+                captcha: [requiredStringCondition],
+            };
+        }
         return basicFields;
     },
-};
+});
 
 const initialValue: PartialFormType = {};
 
 function LoginForm() {
+    const [captchaRequired, setCaptchaRequired] = useState(false);
+
+    const mySchema = useMemo(
+        () => schema(captchaRequired),
+        [captchaRequired],
+    );
+
     const {
         pristine,
         value,
@@ -109,8 +131,9 @@ function LoginForm() {
         setFieldValue,
         validate,
         setError,
-    } = useForm(schema, initialValue);
+    } = useForm(mySchema, initialValue);
 
+    const elementRef = useRef<Captcha>(null);
     const strings = useTranslation(loginStrings);
 
     const { setUser } = useContext(UserContext);
@@ -133,8 +156,11 @@ function LoginForm() {
                 const {
                     errors,
                     result,
+                    captchaRequired: captchaRequiredFromResponse,
                     ok,
                 } = loginRes;
+
+                setCaptchaRequired(captchaRequiredFromResponse);
 
                 if (ok) {
                     const safeUser = removeNull(result);
@@ -181,8 +207,12 @@ function LoginForm() {
     );
 
     const handleSubmit = useCallback((finalValue: PartialFormType) => {
+        elementRef.current?.resetCaptcha();
         login({
-            variables: finalValue as FormType,
+            variables: {
+                ...finalValue,
+                siteKey: hCaptchaKey,
+            } as FormType,
         });
     }, [login]);
 
@@ -237,6 +267,15 @@ function LoginForm() {
                     error={error?.password}
                     disabled={loginPending}
                 />
+                {captchaRequired && (
+                    <HCaptcha
+                        name="captcha"
+                        elementRef={elementRef}
+                        siteKey={hCaptchaKey}
+                        onChange={setFieldValue}
+                        error={error?.captcha}
+                    />
+                )}
             </Container>
             <div className={styles.footerContent}>
                 {strings.donotHaveAccountYetLabel}
