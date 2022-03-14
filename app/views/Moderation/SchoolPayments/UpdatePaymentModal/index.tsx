@@ -82,7 +82,7 @@ mutation CreatePayment($data: PaymentInputType!) {
 `;
 
 const UPDATE_PAYMENT = gql`
-mutation UpdatePayment($data: PaymentInputType!, $id: ID!) {
+mutation UpdatePayment($data: PaymentUpdateInputType!, $id: ID!) {
     moderatorMutation {
         updatePayment(data: $data, id: $id) {
             errors

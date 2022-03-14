@@ -1792,6 +1792,11 @@
   resolved "https://registry.yarnpkg.com/@graphql-typed-document-node/core/-/core-3.1.1.tgz#076d78ce99822258cf813ecc1e7fa460fa74d052"
   integrity sha512-NQ17ii0rK1b34VZonlmT2QMJFI70m0TRwbknO/ihlbatXyaktDhN/98vBiUU6kNBPljqGqyIrl2T4nY2RpFANg==
 
+"@hcaptcha/react-hcaptcha@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@hcaptcha/react-hcaptcha/-/react-hcaptcha-1.1.1.tgz#b7f9fef825fe52595e38b61f125dc8d87d2a5440"
+  integrity sha512-fydc0ob5NOEYiJPmohOmPqoBjLPhUokvMZBf1hOhrVcpMyZJbc1N/HPV4kysSayC34IQsaBRtEpswQFbHwe54w==
+
 "@humanwhocodes/config-array@^0.5.0":
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.5.0.tgz#1407967d4c6eecd7388f83acf1eaf4d0c6e58ef9"
@@ -9730,6 +9735,11 @@ react-ga@^3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/react-ga/-/react-ga-3.3.0.tgz#c91f407198adcb3b49e2bc5c12b3fe460039b3ca"
   integrity sha512-o8RScHj6Lb8cwy3GMrVH6NJvL+y0zpJvKtc0+wmH7Bt23rszJmnqEQxRbyrqUzk9DTJIHoP42bfO5rswC9SWBQ==
+
+react-hcaptcha@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/react-hcaptcha/-/react-hcaptcha-0.1.1.tgz#da21311166f0153054624caf5784cfd977ef31f5"
+  integrity sha512-p0s7uDOZAh28dbcmP2bXsox2NmIwQ6OtDTgjCYwfe49kHeCU67Omma1DhzYiGWQJRC6eTUZEikjsm+WT7bmy2g==
 
 react-icons@^4.3.1:
   version "4.3.1"

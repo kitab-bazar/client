@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState, useCallback, useRef } from 'react';
 import { isDefined } from '@togglecorp/fujs';
 import {
     TextInput,
@@ -21,12 +21,15 @@ import {
     removeNull,
 } from '@togglecorp/toggle-form';
 
+import Captcha from '@hcaptcha/react-hcaptcha';
+import HCaptcha from '#components/HCaptcha';
 import SmartLink from '#base/components/SmartLink';
 import NonFieldError from '#components/NonFieldError';
 import ErrorMessage from '#components/ErrorMessage';
 import { resetPassword as resetPasswordStrings } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 import routes from '#base/configs/routes';
+import { hCaptchaKey } from '#base/configs/env';
 import {
     GenerateResetPasswordTokenMutation,
     GenerateResetPasswordTokenMutationVariables,
@@ -38,9 +41,13 @@ import styles from './styles.css';
 const FORGOT_PASSWORD = gql`
     mutation generateResetPasswordToken(
         $email: String!,
+        $captcha: String!,
+        $siteKey: String!,
     ) {
         generateResetPasswordToken(data: {
             email: $email,
+            captcha: $captcha,
+            siteKey: $siteKey,
         }) {
             errors
             ok
@@ -62,6 +69,7 @@ const schema: FormSchema = {
                 emailCondition,
                 requiredStringCondition,
             ],
+            captcha: [requiredStringCondition],
         };
         return basicFields;
     },
@@ -70,6 +78,7 @@ const schema: FormSchema = {
 const defaultFormValue: PartialFormType = {};
 
 function ForgotPasswordForm() {
+    const elementRef = useRef<Captcha>(null);
     const [resetPasswordSuccessStatus, setResetPasswordSuccessStatus] = useState(false);
 
     const {
@@ -157,7 +166,10 @@ function ForgotPasswordForm() {
 
     const handleSubmit = useCallback((finalValue: PartialFormType) => {
         resetPassword({
-            variables: finalValue as FormType,
+            variables: {
+                ...finalValue,
+                siteKey: hCaptchaKey,
+            } as FormType,
         });
     }, [resetPassword]);
 
@@ -203,6 +215,13 @@ function ForgotPasswordForm() {
                             value={value?.email}
                             error={error?.email}
                             disabled={resetPasswordPending}
+                        />
+                        <HCaptcha
+                            name="captcha"
+                            elementRef={elementRef}
+                            siteKey={hCaptchaKey}
+                            onChange={setFieldValue}
+                            error={error?.captcha}
                         />
                     </>
                 )}
