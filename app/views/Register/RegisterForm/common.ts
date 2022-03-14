@@ -6,42 +6,13 @@ import {
     requiredStringCondition,
     lengthGreaterThanCondition,
     lengthSmallerThanCondition,
+    PurgeNull,
 } from '@togglecorp/toggle-form';
 
 import { EnumFix } from '#utils/types';
-import { UserTypeEnum } from '#generated/types';
+import { RegisterInputType } from '#generated/types';
 
-interface BaseExtraFields {
-    name: string;
-    municipality: string;
-    wardNumber: number;
-    localAddress: string;
-    panNumber: string;
-    vatNumber: string;
-}
-
-interface InstitutionFields extends BaseExtraFields {
-}
-
-interface PublisherFields extends BaseExtraFields {
-}
-
-interface SchoolFields extends BaseExtraFields {
-    schoolId: string;
-}
-
-// TODO: use generated typing
-export interface RegisterFormType {
-    email: string;
-    firstName?: string;
-    lastName?: string;
-    password: string;
-    userType: UserTypeEnum;
-    phoneNumber: string;
-    institution?: InstitutionFields;
-    publisher?: PublisherFields;
-    school?: SchoolFields;
-}
+export type RegisterFormType = PurgeNull<RegisterInputType>;
 
 export type PartialRegisterFormType = PartialForm<EnumFix<RegisterFormType, 'userType'>>;
 
@@ -76,6 +47,9 @@ export const schema: RegisterFormSchema = {
                 // is usually the case for Nepali phone numbers
                 lengthGreaterThanCondition(5),
                 lengthSmallerThanCondition(15),
+            ],
+            captcha: [
+                requiredStringCondition,
             ],
         };
 
