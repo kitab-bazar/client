@@ -57,6 +57,14 @@ export const nagbar = {
         en: 'Your account has not been verified yet. You will receive a call for verification soon.',
         ne: 'तपाईंको खाता अझै प्रमाणित गरिएको छैन। तपाईंले चाँडै प्रमाणीकरणको लागि कल प्राप्त गर्नुहुनेछ।',
     },
+    isStagingLabel: {
+        en: 'This is a testing server for Kitab Bazar. Please proceed to {link} to place actual orders.',
+        ne: 'यो किताब बजारको लागि परीक्षण सर्भर हो। वास्तविक अर्डरहरू राख्न कृपया {link} मा जानुहोस्।',
+    },
+    kitabBazarAppLabel: {
+        en: 'Kitab Bazar',
+        ne: 'किताब बजार',
+    },
 };
 
 export const navbar = {

@@ -1,11 +1,13 @@
 import React, { useContext } from 'react';
 import { _cs } from '@togglecorp/fujs';
-import { ListView } from '@the-deep/deep-ui';
+import { ListView, Link } from '@the-deep/deep-ui';
 import { IoEllipse } from 'react-icons/io5';
 
 import useTranslation from '#base/hooks/useTranslation';
 import { UserContext } from '#base/context/UserContext';
 import { nagbar as nagbarStrings } from '#base/configs/lang';
+import { isStaging } from '#base/configs/env';
+import { resolveToComponent } from '#base/utils/lang';
 
 import styles from './styles.css';
 
@@ -58,6 +60,23 @@ function Nagbar(props: Props) {
     }
     if (authenticated && !orderWindow) {
         nagbarItems.push(strings.orderWindowExpiryLabel);
+    }
+    if (isStaging) {
+        nagbarItems.push(resolveToComponent(
+            strings.isStagingLabel,
+            {
+                link: (
+                    <Link
+                        to="https://www.kitabbazar.org/"
+                        replace
+                        target={undefined}
+                        rel={undefined}
+                    >
+                        {strings.kitabBazarAppLabel}
+                    </Link>
+                ),
+            },
+        ));
     }
 
     if (nagbarItems.length <= 0) {
