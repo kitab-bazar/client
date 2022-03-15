@@ -38,6 +38,8 @@ import {
     ModerationSchoolListQueryVariables,
     UpdateUserVerificationStatusMutation,
     UpdateUserVerificationStatusMutationVariables,
+    UpdateUserActiveStatusMutation,
+    UpdateUserActiveStatusMutationVariables,
 } from '#generated/types';
 
 import styles from './styles.css';
@@ -76,6 +78,7 @@ query ModerationSchoolList(
     $page: Int,
     $search: String,
     $isVerified: Boolean,
+    $isDeactivated: Boolean,
     $orderMismatchUsers: Boolean,
 ) {
     moderatorQuery {
@@ -85,6 +88,7 @@ query ModerationSchoolList(
             search: $search,
             userType: SCHOOL_ADMIN,
             isVerified: $isVerified,
+            isDeactivated: $isDeactivated
             orderMismatchUsers: $orderMismatchUsers,
         ) {
             totalCount
@@ -95,6 +99,7 @@ query ModerationSchoolList(
                 email
                 phoneNumber
                 isVerified
+                isDeactivated
                 outstandingBalance
                 school {
                     id
@@ -130,6 +135,23 @@ mutation UpdateUserVerificationStatus(
             result {
                 id
                 isVerified
+            }
+        }
+    }
+}
+`;
+const UPDATE_USER_ACTIVE_STATUS = gql`
+mutation UpdateUserActiveStatus(
+    $userId: ID!,
+    $isDeactivated: Boolean,
+) {
+    moderatorMutation {
+        userDeactivateToggle(data: {isDeactivated: $isDeactivated}, id: $userId) {
+            errors
+            ok
+            result {
+                id
+                isDeactivated
             }
         }
     }
@@ -203,6 +225,60 @@ function SchoolItem(props: SchoolItemProps) {
         },
     );
 
+    const [
+        updateUserActiveStatus,
+        { loading: userActiveLoading },
+    ] = useMutation<
+        UpdateUserActiveStatusMutation,
+        UpdateUserActiveStatusMutationVariables
+    >(
+        UPDATE_USER_ACTIVE_STATUS,
+        {
+            onCompleted: (response) => {
+                const userDeactivateToggle = response?.moderatorMutation?.userDeactivateToggle;
+                if (!userDeactivateToggle) {
+                    return;
+                }
+
+                const {
+                    errors,
+                    ok,
+                } = userDeactivateToggle;
+
+                if (ok) {
+                    alert.show(
+                        'User deactived successful',
+                        { variant: 'success' },
+                    );
+                } else if (errors) {
+                    const transformedError = transformToFormError(
+                        removeNull(errors) as ObjectError[],
+                    );
+                    alert.show(
+                        <ErrorMessage
+                            header="User Deactivated Successful"
+                            description={
+                                isDefined(transformedError)
+                                    ? transformedError[internal]
+                                    : undefined
+                            }
+                        />,
+                        { variant: 'error' },
+                    );
+                }
+            },
+            onError: (errors) => {
+                alert.show(
+                    <ErrorMessage
+                        header=" Failed to deactive user."
+                        description={errors.message}
+                    />,
+                    { variant: 'error' },
+                );
+            },
+        },
+    );
+
     const handleVerifyButtonClick = React.useCallback(() => {
         updateUserVerificationStatus({
             variables: {
@@ -210,6 +286,14 @@ function SchoolItem(props: SchoolItemProps) {
             },
         });
     }, [user, updateUserVerificationStatus]);
+
+    const handleActiveButtonClick = React.useCallback(() => {
+        updateUserActiveStatus({
+            variables: {
+                userId: user.id,
+            },
+        });
+    }, [user, updateUserActiveStatus]);
 
     if (!school) {
         return null;
@@ -319,6 +403,32 @@ function SchoolItem(props: SchoolItemProps) {
                         )}
                     >
                         Verify
+                    </ConfirmButton>
+                )}
+                {user.isDeactivated ? (
+                    <Tag
+                        icons={<IoCheckmark />}
+                    >
+                        Deactivate
+                    </Tag>
+                ) : (
+                    <ConfirmButton
+                        name={undefined}
+                        variant="tertiary"
+                        onConfirm={handleActiveButtonClick}
+                        disabled={userActiveLoading}
+                        message={(
+                            <>
+                                <div>
+                                    Are you sure to deactivate the account?
+                                </div>
+                                <strong>
+                                    {user.canonicalName}
+                                </strong>
+                            </>
+                        )}
+                    >
+                        Deactivated
                     </ConfirmButton>
                 )}
             </div>
