@@ -1,0 +1,39 @@
+.payment-logs-modal {
+    display: flex;
+    max-height: 80vh;
+    overflow: auto;
+
+    .content {
+        display: flex;
+        flex-grow: 1;
+
+        .payment-logs-list {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            gap: var(--dui-spacing-small);
+        }
+    }
+}
+
+
+.payment-item {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: var(--dui-spacing-large);
+    border: var(--dui-width-separator-thin) solid var(--dui-color-separator);
+    padding: var(--dui-spacing-small);
+
+    .comment {
+        padding-bottom: var(--dui-spacing-small);
+        color: var(--dui-color-text-label);
+        font-size: var(--dui-font-size-medium);
+    }
+
+    .image-item {
+        display: flex;
+        padding: var(--dui-spacing-small);
+        max-height: 15rem;
+    }
+}

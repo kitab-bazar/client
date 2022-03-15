@@ -36,6 +36,7 @@ import useStateWithCallback from '#hooks/useStateWithCallback';
 
 import Actions, { Props as ActionsProps } from './Actions';
 import UpdatePaymentModal from './UpdatePaymentModal';
+import ViewPaymentLogsModal from './ViewPaymentLogsModal';
 import styles from './styles.css';
 
 const PAYMENT_OPTIONS = gql`
@@ -98,6 +99,9 @@ query Payments(
                 statusDisplay
                 transactionType
                 transactionTypeDisplay
+                paymentLog {
+                    totalCount
+                }
             }
             totalCount
         }
@@ -139,6 +143,10 @@ function SchoolPayments(props: Props) {
     );
 
     const [selectedPaymentId, setSelectedPaymentId] = useState<string | undefined | null>();
+    const [
+        selectedPaymentToViewLogs,
+        setSelectedPaymentToViewLogs,
+    ] = useState<string | undefined | null>();
 
     const variables = useMemo(() => ({
         pageSize: maxItemsPerPage,
@@ -146,6 +154,7 @@ function SchoolPayments(props: Props) {
         status: statusFilter as PaymentOptionsQueryVariables['status'],
         paymentType: paymentTypeFilter as PaymentOptionsQueryVariables['paymentType'],
         transactionType: transactionTypeFilter as PaymentOptionsQueryVariables['transactionType'],
+        ordering: '-id',
     }), [
         maxItemsPerPage,
         activePage,
@@ -180,10 +189,21 @@ function SchoolPayments(props: Props) {
         hideUpdatePaymentModal,
     ] = useModalState(false);
 
+    const [
+        paymentLogsModalShown,
+        showPaymentLogsModal,
+        hidePaymentLogsModal,
+    ] = useModalState(false);
+
     const handleEditPayment = useCallback((id: string) => {
         setSelectedPaymentId(id);
         showUpdatePaymentModal();
     }, [showUpdatePaymentModal]);
+
+    const handlePaymentLogsView = useCallback((id: string) => {
+        setSelectedPaymentToViewLogs(id);
+        showPaymentLogsModal();
+    }, [showPaymentLogsModal]);
 
     const handleAddPayment = useCallback(() => {
         setSelectedPaymentId(undefined);
@@ -192,7 +212,6 @@ function SchoolPayments(props: Props) {
 
     const handleUpdateSuccess = useCallback(() => {
         setSelectedPaymentId(undefined);
-        // FIXME: only refetch on create (not on update)
         refetch();
     }, [refetch]);
 
@@ -210,12 +229,14 @@ function SchoolPayments(props: Props) {
                 sortable: false,
             },
             cellRenderer: Actions,
+            cellRendererClassName: styles.actions,
             cellRendererParams: (_, data) => ({
                 data,
                 onEditClick: handleEditPayment,
                 disabled: paymentsLoading,
+                onViewPaymentLogClick: handlePaymentLogsView,
             }),
-            columnWidth: 120,
+            columnWidth: 230,
         };
 
         return [
@@ -262,7 +283,7 @@ function SchoolPayments(props: Props) {
             ),
             actionsColumn,
         ];
-    }, [handleEditPayment, paymentsLoading]);
+    }, [handleEditPayment, paymentsLoading, handlePaymentLogsView]);
 
     const selectedPayment = payments?.find((payment) => payment.id === selectedPaymentId);
 
@@ -356,6 +377,12 @@ function SchoolPayments(props: Props) {
                     onUpdateSuccess={handleUpdateSuccess}
                     paymentDetails={selectedPayment}
                     onModalClose={hideUpdatePaymentModal}
+                />
+            )}
+            {paymentLogsModalShown && selectedPaymentToViewLogs && (
+                <ViewPaymentLogsModal
+                    paymentId={selectedPaymentToViewLogs}
+                    onModalClose={hidePaymentLogsModal}
                 />
             )}
         </Container>
