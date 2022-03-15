@@ -7,13 +7,13 @@ import {
     TabPanel,
 } from '@the-deep/deep-ui';
 
-import styles from './styles.css';
-
 import Schools from './Schools';
 import SchoolPayments from './SchoolPayments';
 import PublisherPackages from './PublisherPackages';
 import SchoolPackages from './SchoolPackages';
 import MunicipalityPackages from './MunicipalityPackages';
+
+import styles from './styles.css';
 
 interface Props {
     className?: string;

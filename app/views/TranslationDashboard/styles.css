@@ -1,0 +1,39 @@
+.translation-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: var(--dui-spacing-extra-large);
+    padding: var(--dui-spacing-large);
+
+    .actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: var(--dui-spacing-medium);
+    }
+
+    .translation-item-list {
+        display: table;
+
+        .translation-item {
+            display: table-row;
+
+            .key {
+                display: table-cell;
+                border-bottom: var(--dui-width-separator-thin) solid var(--dui-color-separator);
+                padding: var(--dui-spacing-medium);
+                font-family: monospace;
+            }
+
+            .en {
+                display: table-cell;
+                border-bottom: var(--dui-width-separator-thin) solid var(--dui-color-separator);
+                padding: var(--dui-spacing-medium);
+            }
+
+            .ne {
+                display: table-cell;
+                border-bottom: var(--dui-width-separator-thin) solid var(--dui-color-separator);
+                padding: var(--dui-spacing-medium);
+            }
+        }
+    }
+}
