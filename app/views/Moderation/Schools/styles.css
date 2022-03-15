@@ -63,6 +63,10 @@
             flex-basis: 5rem;
         }
 
+        .outstanding-balance {
+            flex-basis: 10rem;
+        }
+
         .phone-link,
         .email-link {
             text-decoration: none;

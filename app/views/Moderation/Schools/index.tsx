@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     _cs,
     isDefined,
@@ -29,6 +29,7 @@ import {
 
 import EmptyMessage from '#components/EmptyMessage';
 import ErrorMessage from '#components/ErrorMessage';
+import NumberOutput from '#components/NumberOutput';
 import useStateWithCallback from '#hooks/useStateWithCallback';
 import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
 
@@ -56,7 +57,18 @@ const verificationStatusOptions: VerificationStatusOption[] = [
 const verificationStatusKeySelector = (d: VerificationStatusOption) => d.key;
 const verificationStatusLabelSelector = (d: VerificationStatusOption) => d.label;
 
-// TODO: Filter by user type school
+type OrderMismatchOptionKey = 'all' | 'mismatched';
+interface OrderMismatchOption {
+    key: OrderMismatchOptionKey,
+    label: string;
+}
+
+const orderMismatchOptions: OrderMismatchOption[] = [
+    { key: 'all', label: 'All' },
+    { key: 'mismatched', label: 'Mismatched' },
+];
+const orderMismatchStatusKeySelector = (d: OrderMismatchOption) => d.key;
+const orderMismatchStatusLabelSelector = (d: OrderMismatchOption) => d.label;
 
 const MODERATION_SCHOOL_LIST = gql`
 query ModerationSchoolList(
@@ -64,6 +76,7 @@ query ModerationSchoolList(
     $page: Int,
     $search: String,
     $isVerified: Boolean,
+    $orderMismatchUsers: Boolean,
 ) {
     moderatorQuery {
         users(
@@ -72,6 +85,7 @@ query ModerationSchoolList(
             search: $search,
             userType: SCHOOL_ADMIN,
             isVerified: $isVerified,
+            orderMismatchUsers: $orderMismatchUsers,
         ) {
             totalCount
             results {
@@ -81,6 +95,7 @@ query ModerationSchoolList(
                 email
                 phoneNumber
                 isVerified
+                outstandingBalance
                 school {
                     id
                     name
@@ -265,6 +280,19 @@ function SchoolItem(props: SchoolItemProps) {
                     hideLabelColon
                     labelContainerClassName={styles.label}
                 />
+                <TextOutput
+                    block
+                    className={styles.outstandingBalance}
+                    label="Outstanding Balance"
+                    value={(
+                        <NumberOutput
+                            value={user.outstandingBalance}
+                            currency
+                        />
+                    )}
+                    hideLabelColon
+                    labelContainerClassName={styles.label}
+                />
             </div>
             <div className={styles.actions}>
                 {user.isVerified ? (
@@ -306,11 +334,9 @@ function Schools(props: Props) {
     const { className } = props;
 
     const [activePage, setActivePage] = React.useState<number>(1);
-    const [verified, setVerified] = useStateWithCallback<VerificationStatusOption['key']>(
-        'all',
-        setActivePage,
-    );
-    const [search, setSearch] = useStateWithCallback<string | undefined>(undefined, setActivePage);
+    const [verified, setVerified] = useState<VerificationStatusOption['key']>('all');
+    const [mismatchStatus, setMismatchStatus] = useState<OrderMismatchOption['key']>('all');
+    const [search, setSearch] = useState<string | undefined>(undefined);
     const [maxItemsPerPage, setMaxItemsPerPage] = useStateWithCallback<number>(10, setActivePage);
 
     const isVerifiedFilter = React.useMemo(() => {
@@ -325,11 +351,20 @@ function Schools(props: Props) {
         return undefined;
     }, [verified]);
 
+    const isMismatchedFilter = React.useMemo(() => {
+        if (mismatchStatus === 'mismatched') {
+            return true;
+        }
+
+        return undefined;
+    }, [mismatchStatus]);
+
     useEffect(() => {
         setActivePage(1);
     }, [
         isVerifiedFilter,
         maxItemsPerPage,
+        isMismatchedFilter,
         search,
     ]);
 
@@ -346,6 +381,7 @@ function Schools(props: Props) {
                 page: activePage,
                 search,
                 isVerified: isVerifiedFilter,
+                orderMismatchUsers: isMismatchedFilter,
             },
         },
     );
@@ -379,6 +415,15 @@ function Schools(props: Props) {
                     labelSelector={verificationStatusLabelSelector}
                     value={verified}
                     onChange={setVerified}
+                />
+                <RadioInput
+                    label="Order Payment Mismatch Status"
+                    name={undefined}
+                    options={orderMismatchOptions}
+                    keySelector={orderMismatchStatusKeySelector}
+                    labelSelector={orderMismatchStatusLabelSelector}
+                    value={mismatchStatus}
+                    onChange={setMismatchStatus}
                 />
             </div>
             <ListView
