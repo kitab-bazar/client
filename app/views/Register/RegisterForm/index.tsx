@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useRef } from 'react';
 import { isDefined } from '@togglecorp/fujs';
 import {
     Container,
@@ -22,12 +22,14 @@ import {
     useQuery,
     gql,
 } from '@apollo/client';
+import Captcha from '@hcaptcha/react-hcaptcha';
 
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
 import { register as registerStrings } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 import { resolveToComponent } from '#base/utils/lang';
 import routes from '#base/configs/routes';
+import { hCaptchaKey } from '#base/configs/env';
 import {
     transformToFormError,
     ObjectError,
@@ -37,13 +39,14 @@ import {
     UserTypeOptionsQuery,
     RegisterMutation,
     RegisterMutationVariables,
+    RegisterInputType,
 } from '#generated/types';
 import NonFieldError from '#components/NonFieldError';
 import ErrorMessage from '#components/ErrorMessage';
+import HCaptcha from '#components/HCaptcha';
 
 import {
     PartialRegisterFormType,
-    RegisterFormType,
     schema,
 } from './common';
 
@@ -91,6 +94,7 @@ function RegisterForm() {
         setError,
     } = useForm(schema, defaultFormValues);
 
+    const elementRef = useRef<Captcha>(null);
     const strings = useTranslation(registerStrings);
     const alert = useAlert();
     const error = getErrorObject(formError);
@@ -171,9 +175,14 @@ function RegisterForm() {
     );
 
     const handleSubmit = React.useCallback((formValues: PartialRegisterFormType) => {
-        const finalValues = formValues as RegisterFormType;
+        elementRef.current?.resetCaptcha();
         register({
-            variables: { data: finalValues },
+            variables: {
+                data: {
+                    ...formValues,
+                    siteKey: hCaptchaKey,
+                } as RegisterInputType,
+            },
         });
     }, [register]);
 
@@ -311,6 +320,13 @@ function RegisterForm() {
                         onMunicipalityOptionsChange={setMunicipalityOptions}
                     />
                 )}
+                <HCaptcha
+                    name="captcha"
+                    elementRef={elementRef}
+                    siteKey={hCaptchaKey}
+                    onChange={setFieldValue}
+                    error={error?.captcha}
+                />
                 <Button
                     className={styles.registerButton}
                     name={undefined}
