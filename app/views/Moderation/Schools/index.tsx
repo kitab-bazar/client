@@ -298,8 +298,6 @@ function SchoolItem(props: SchoolItemProps) {
     );
 }
 
-const MAX_ITEMS_PER_PAGE = 10;
-
 interface Props {
     className?: string;
 }
@@ -344,7 +342,7 @@ function Schools(props: Props) {
         MODERATION_SCHOOL_LIST,
         {
             variables: {
-                pageSize: MAX_ITEMS_PER_PAGE,
+                pageSize: maxItemsPerPage,
                 page: activePage,
                 search,
                 isVerified: isVerifiedFilter,

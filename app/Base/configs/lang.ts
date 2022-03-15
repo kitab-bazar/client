@@ -1358,4 +1358,24 @@ export const resetPassword = {
         en: 'Successfully sent email to reset your password.',
         ne: ' तपाईको पासवर्ड रिसेट गर्न सफलतापूर्वक इमेल पठाइयो।',
     },
+    passwordUpdateSuccessfulMessage: {
+        en: 'Successfully updated your password.',
+        ne: 'तपाईको पासवर्ड सफलतापूर्वक अपडेट गरियो।',
+    },
+    passwordUpdateFailureMessage: {
+        en: 'Failed to update your password.',
+        ne: 'तपाईंको पासवर्ड अपडेट गर्न असफल भयो।',
+    },
+    newPasswordLabel: {
+        en: 'New Password',
+        ne: 'नया पासवर्ड',
+    },
+    passwordConfirmationError: {
+        en: 'Password doesn\'t match',
+        ne: 'पासवर्ड मेल खाँदैन',
+    },
+    confirmPasswordInputLabel: {
+        en: 'Confirm New Password',
+        ne: 'नया पासवर्ड सुनिश्चित गर्नुहोस्',
+    },
 };

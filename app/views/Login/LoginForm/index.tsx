@@ -28,7 +28,7 @@ import {
 import HCaptcha from '#components/HCaptcha';
 import { hCaptchaKey } from '#base/configs/env';
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
-// import SmartLink from '#base/components/SmartLink';
+import SmartLink from '#base/components/SmartLink';
 import NonFieldError from '#components/NonFieldError';
 import { login as loginStrings } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
@@ -228,7 +228,6 @@ function LoginForm() {
                 headingClassName={styles.heading}
                 contentClassName={styles.inputContainer}
                 spacing="loose"
-                /*
                 footerIcons={(
                     <SmartLink
                         route={routes.forgotPassword}
@@ -237,7 +236,6 @@ function LoginForm() {
                         {strings.forgotPasswordLabel}
                     </SmartLink>
                 )}
-                */
                 footerActions={(
                     <Button
                         className={styles.loginButton}

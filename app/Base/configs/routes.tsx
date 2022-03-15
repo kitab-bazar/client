@@ -41,10 +41,19 @@ const forgotPassword = wrap({
     visibility: 'is-not-authenticated',
 });
 const activateUser = wrap({
-    path: '/user/activate/:userId(\\d+)/:token/',
+    path: '/activate/:userId/:token/',
     title: 'Activate User',
     navbarVisibility: true,
     component: lazy(() => import('#views/ActivateUser')),
+    componentProps: {
+    },
+    visibility: 'is-anything',
+});
+const resetPassword = wrap({
+    path: '/reset-password/:userId/:token/',
+    title: 'Reset Password',
+    navbarVisibility: true,
+    component: lazy(() => import('#views/ResetPassword')),
     componentProps: {
     },
     visibility: 'is-anything',
@@ -117,6 +126,7 @@ const routes = {
     wishList,
     fourHundredFour,
     activateUser,
+    resetPassword,
     bookList,
     about,
     forgotPassword,
