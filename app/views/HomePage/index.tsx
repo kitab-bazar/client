@@ -63,6 +63,10 @@ query CategoryWithGradeOptions {
         results {
             id
             name
+            image {
+                name
+                url
+            }
         }
     }
     gradeList: __type(name: "BookGradeEnum") {

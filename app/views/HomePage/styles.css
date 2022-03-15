@@ -119,7 +119,7 @@
                     gap: var(--dui-spacing-large);
 
                     .category-item {
-                        flex-basis: calc(25% - var(--dui-spacing-large));
+                        flex-basis: 25%;
                         background-color: var(--dui-color-foreground);
                         min-width: 15rem;
                     }
