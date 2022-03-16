@@ -320,29 +320,40 @@ export const about = {
         en: 'Background',
         ne: 'पृष्ठभूमि',
     },
-    platformBackground: {
-        en: 'The School Sector Development Plan (SSDP), of the Government of Nepal (GoN), has focused on delivering quality education in schools that includes improving the foundational reading skills of the students. National Early Grade Reading Programme (NEGRP) is a core component of the SSDP, to improve the reading skills of students in the early grades. The SSDP has made the establishment of book corners necessary in order to ensure that appropriate and relevant books are available in classrooms for grades 1 to 3. However, the establishment of book corners was constrained by many demand and supply-side challenges. To accelerate the progress towards the PMEC standards, KITAB Bazar focuses on the 5th priority of PMEC, which is the book/learning corner in all classrooms. Therefore, The Project, KITAB was designed to address these challenges and create sustainable access to quality Supplementary Reading Materials (SRM) to help achieve literacy outcomes.',
+    platformBackgroundPartOne: {
+        en: 'The idea of KITAB Bazar platform was generated through KITAB Project (Knowledge Improvement through Access of Books) launched by World Vision International Nepal (WVI Nepal) in October 2018 through technical support from World Vision Australia (WVA) and financial support of the World Bank with an aim to strengthen the strengthen the education system and the book supply chain by addressing the gaps in the supply chain using Results Based Financing (RBF) mechanism. The project also aligns with one of the PMEC (Priority Enabling Minimum Conditions) standard – establishing book corners as mentioned in the National Early Grade Reading Program (NEGRP) of School Sector Development Plan (SSDP). The plan and the program emphasized on the need for an appropriate environment for enhancing reading skills amongst the children and in ensuring equitable learning across all schools in Nepal.',
         ne: 'नेपाल सरकारको विद्यालय क्षेत्र विकास योजना (SSDP) ले विद्यार्थीहरूको आधारभूत पठन सीपमा सुधार लगायत विद्यालयहरूमा गुणस्तरीय शिक्षा प्रदान गर्नमा केन्द्रित छ। राष्ट्रिय प्रारम्भिक पठन कार्यक्रम (NEGRP) प्रारम्भिक कक्षाहरूमा विद्यार्थीहरूको पढ्ने सीप सुधार गर्नको निम्ति विद्यालय क्षेत्र विकास योजना (SSDP) को मुख्य भाग हो। कक्षा १ देखि ३ सम्मका लागि उपयुक्त र सान्दर्भिक किताबहरू कक्षाकोठामा उपलब्ध छन् भनी सुनिश्चित गर्न SSDP ले बुक कर्नरहरू स्थापना गर्न आवश्यक बनाएको छ। यद्यपि, धेरै माग र आपूर्ति पक्षका चुनौतीहरूले बुक कर्नर स्थापना गर्न सहज थिएन । PMEC मापदण्डहरूमा प्रगतिलाई गति दिन, किताब बजार PMEC को ५ औं प्राथमिकतामा केन्द्रित छ, जुन सबै कक्षाकोठाहरूमा किताब/शिक्षा कर्नर हो। तसर्थ, किताब परियोजना यी चुनौतीहरूलाई सम्बोधन गर्दै साक्षरता परिणाम प्राप्तिका लागि गुणस्तरीय पूरक पठन सामग्री (SRM) मा दिगो पहुँच सिर्जना गर्न डिजाइन गरिएको थियो।',
+    },
+    platformBackgroundPartTwo: {
+        en: 'The project through KITAB Bazar platform has successfully addressed the challenge of unequal opportunities/facilities to students in schools due to difficult geographical terrain, limited availability and accessibility of educational materials and limited funds available to community schools in its implemented areas. The platform was built to promote digital equity and abridge the gap between the schools and suppliers/publication houses for quality reviewed supplementary reading materials.',
+        ne: 'Missing',
     },
     whoAreWeLabel: {
         en: 'Who are we?',
         ne: 'हामी को हौं?',
     },
     whoAreWeDescription: {
-        en: 'We are an online digital platform with the aim of improving access to quality supplementary reading materials in schools, in order to maintain their book corners. Collaborating with various publishing firms, we have streamlined the process of selecting, ordering, and purchasing books for children. We\'ve also included information on how book corners are implemented in schools and how they are beneficial for the children. If there is any interest in adopting what has been created so far, we will provide further information and answer any concerns about the project.',
+        en: 'We are an online digital platform with the aim to improve access to quality supplementary reading materials in schools. Collaborating with various publishing firms, we have streamlined the process of selecting, ordering, and purchasing books for children. The initiative was encouraged through importance of reading from an early age and from one of the necessary PMEC standard of ensuring book corners or reading corners with supplementary reading materials in every grade as mandated by the Government. The platform was launched initially through KITAB project implemented in Sunsari and Morang by World Vision International Nepal.',
         ne: 'विद्यालयहरूमा गुणस्तरीय पूरक पठन सामग्रीको पहुँच सुधार गर्ने उद्देश्यका साथ बुक कर्नरको अभ्यास बनाउन केन्द्रित अनलाइन डिजिटल प्लेटफर्म हो किताब बजार । विभिन्न प्रकाशनहरूसँग सहकार्य गर्दै, हामीले बालबालिकाका लागि किताबहरू छनोट, अर्डर र खरिद गर्ने प्रक्रियालाई सुव्यवस्थित गरेका छौं। हामीले विद्यालयहरूमा बुक कर्नर कसरी लागू गरिन्छ र यो बालबालिकाहरूको लागि कसरी लाभदायक छन् भन्ने जानकारी पनि समावेश गरेका छौं। हाम्रो यस अभियानमा सम्मिलित हुन चाहने वा अहिलेसम्म भएका कामहरूबारे जानकारी आवश्यक परेमा , हामी यस परियोजना बारेमा सम्पूर्ण जानकारी दिनेछौँ ।',
     },
+    whoAreWeDescriptionPartTwo: {
+        en: 'If there is any interest in adopting what has been created so far, we will provide further information and answer any concerns about the project.',
+    },
     goalsLabel: {
-        en: 'Our Goals',
+        en: 'Goals',
         ne: 'हाम्रा लक्ष्यहरू',
     },
     firstGoalDescription: {
-        en: 'To strengthen the evidence-base for the impact that Results Based Financing (RBF) can have on the education system in Nepal by ensuring that children have access to quality supplementary reading materials at their schools.',
+        en: 'Strengthening Equitable Access: Ensure equitable access to reading materials and enhance the learning skills and understanding ability among students from an early age.',
         ne: 'नतिजामा आधारित रिजल्ट बेस्ड फाइनान्सिङ (RBF) ले नेपालको शिक्षा प्रणालीमा पार्न सक्ने प्रभावका लागि प्रमाण-आधारलाई बलियो बनाउन बालबालिकाहरूलाई विद्यालयमा गुणस्तरीय पूरक पठन सामग्रीको पहुँच सुनिश्चित गर्न।',
     },
     secondGoalDescription: {
-        en: 'To use the evidence to inform the national education debate, policy, and practice and to expand global understanding of the use of results-based financing to address supply chain issues.',
+        en: 'Strengthening supply chain mechanism and promote digital equity for grade-appropriate supplementary reading materials to rural community schools through KITAB Bazar and use of ICT in the sector of education',
         ne: 'राष्ट्रिय शिक्षा बहस, नीति, र अभ्यासलाई सूचित गर्न प्रमाणहरू प्रयोग गर्न र आपूर्ति श्रृंखला मुद्दाहरूलाई सम्बोधन गर्न नतिजामा आधारित रिजल्ट बेस्ड फाइनान्सिङको प्रयोगको विश्वव्यापी रूपमा विस्तार गर्न।',
+    },
+    thirdGoalDescription: {
+        en: 'Assist in achieving PMEC standard: Assist in achieving the book corner standard (set by SSDP), which is identified as one of the PMEC standards determining the quality of schools.',
+        ne: 'Missing',
     },
     accessToReadingMaterialText: {
         en: 'Children have access to sufficient supplementary reading materials in schools',

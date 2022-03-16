@@ -51,24 +51,39 @@ function About(props: Props) {
                     className={styles.whoAreWe}
                     heading={strings.whoAreWeLabel}
                 >
-                    {strings.whoAreWeDescription}
+                    <p>
+                        {strings.whoAreWeDescription}
+                    </p>
+                    <p>
+                        {strings.whoAreWeDescriptionPartTwo}
+                    </p>
                 </Container>
                 <Container
                     className={styles.platformBackground}
                     heading={strings.backgroundLabel}
                 >
-                    {strings.platformBackground}
+                    <p>
+                        {strings.platformBackgroundPartOne}
+                    </p>
+                    <p>
+                        {strings.platformBackgroundPartTwo}
+                    </p>
                 </Container>
                 <Container
                     className={styles.goals}
                     heading={strings.goalsLabel}
                 >
-                    <p>
-                        {strings.firstGoalDescription}
-                    </p>
-                    <p>
-                        {strings.secondGoalDescription}
-                    </p>
+                    <ul>
+                        <li>
+                            {strings.firstGoalDescription}
+                        </li>
+                        <li>
+                            {strings.secondGoalDescription}
+                        </li>
+                        <li>
+                            {strings.thirdGoalDescription}
+                        </li>
+                    </ul>
                 </Container>
                 <Container
                     className={styles.goalPoints}
