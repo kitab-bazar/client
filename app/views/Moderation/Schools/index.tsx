@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
     _cs,
     isDefined,
@@ -143,7 +143,7 @@ mutation UpdateUserVerificationStatus(
 const UPDATE_USER_ACTIVE_STATUS = gql`
 mutation UpdateUserActiveStatus(
     $userId: ID!,
-    $isDeactivated: Boolean,
+    $isDeactivated: Boolean!,
 ) {
     moderatorMutation {
         userDeactivateToggle(data: {isDeactivated: $isDeactivated}, id: $userId) {
@@ -163,10 +163,14 @@ const schoolItemKeySelector = (d: SchoolItemType) => d.id;
 
 interface SchoolItemProps {
     user: SchoolItemType;
+    onUserDeactivationSuccess: () => void;
 }
 
 function SchoolItem(props: SchoolItemProps) {
-    const { user } = props;
+    const {
+        user,
+        onUserDeactivationSuccess,
+    } = props;
 
     const school = user?.school;
     const alert = useAlert();
@@ -246,6 +250,7 @@ function SchoolItem(props: SchoolItemProps) {
                 } = userDeactivateToggle;
 
                 if (ok) {
+                    onUserDeactivationSuccess();
                     alert.show(
                         'User deactived successful',
                         { variant: 'success' },
@@ -256,7 +261,7 @@ function SchoolItem(props: SchoolItemProps) {
                     );
                     alert.show(
                         <ErrorMessage
-                            header="User Deactivated Successful"
+                            header="Account Deactivated Successfully"
                             description={
                                 isDefined(transformedError)
                                     ? transformedError[internal]
@@ -270,7 +275,7 @@ function SchoolItem(props: SchoolItemProps) {
             onError: (errors) => {
                 alert.show(
                     <ErrorMessage
-                        header=" Failed to deactive user."
+                        header="Failed to deactive user."
                         description={errors.message}
                     />,
                     { variant: 'error' },
@@ -290,6 +295,7 @@ function SchoolItem(props: SchoolItemProps) {
     const handleActiveButtonClick = React.useCallback(() => {
         updateUserActiveStatus({
             variables: {
+                isDeactivated: true,
                 userId: user.id,
             },
         });
@@ -409,7 +415,7 @@ function SchoolItem(props: SchoolItemProps) {
                     <Tag
                         icons={<IoCheckmark />}
                     >
-                        Deactivate
+                        Deactivated
                     </Tag>
                 ) : (
                     <ConfirmButton
@@ -483,6 +489,7 @@ function Schools(props: Props) {
         data = previousData,
         loading,
         error,
+        refetch,
     } = useQuery<ModerationSchoolListQuery, ModerationSchoolListQueryVariables>(
         MODERATION_SCHOOL_LIST,
         {
@@ -491,16 +498,22 @@ function Schools(props: Props) {
                 page: activePage,
                 search,
                 isVerified: isVerifiedFilter,
+                isDeactivated: false,
                 orderMismatchUsers: isMismatchedFilter,
             },
         },
     );
 
+    const handleSchoolDeactivation = useCallback(() => {
+        refetch();
+    }, [refetch]);
+
     const schoolItemRendererParams = React.useCallback(
         (_: string, user: SchoolItemType): SchoolItemProps => ({
             user,
+            onUserDeactivationSuccess: handleSchoolDeactivation,
         }),
-        [],
+        [handleSchoolDeactivation],
     );
 
     return (
