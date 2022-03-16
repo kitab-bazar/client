@@ -78,6 +78,7 @@
     .actions {
         display: flex;
         align-items: center;
-        flex-shrink: 0;
+        flex-direction: column;
+        gap: var(--dui-spacing-small);
     }
 }

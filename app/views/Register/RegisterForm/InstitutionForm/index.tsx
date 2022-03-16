@@ -15,7 +15,7 @@ import { register as registerStrings } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 import NonFieldError from '#components/NonFieldError';
 import { InstitutionType } from '../common';
-import LocationInput, { MunicipalityOption } from '../LocationInput';
+import LocationInput, { MunicipalityOption } from '#components/LocationInput';
 
 type InstitutionInputValue = PartialForm<InstitutionType> | undefined;
 const defaultInstitutionValue: NonNullable<InstitutionInputValue> = {};

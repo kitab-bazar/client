@@ -16,7 +16,7 @@ import useTranslation from '#base/hooks/useTranslation';
 import NonFieldError from '#components/NonFieldError';
 
 import { SchoolType } from '../common';
-import LocationInput, { MunicipalityOption } from '../LocationInput';
+import LocationInput, { MunicipalityOption } from '#components/LocationInput';
 
 type SchoolInputValue = PartialForm<SchoolType> | undefined;
 const defaultSchoolValue: NonNullable<SchoolInputValue> = {};
