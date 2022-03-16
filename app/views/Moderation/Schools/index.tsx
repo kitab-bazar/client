@@ -261,7 +261,7 @@ function SchoolItem(props: SchoolItemProps) {
                     );
                     alert.show(
                         <ErrorMessage
-                            header="Account Deactivated Successfully"
+                            header="Failed to deactivate the account"
                             description={
                                 isDefined(transformedError)
                                     ? transformedError[internal]
@@ -275,7 +275,7 @@ function SchoolItem(props: SchoolItemProps) {
             onError: (errors) => {
                 alert.show(
                     <ErrorMessage
-                        header="Failed to deactive user."
+                        header="Failed to deactivate the account."
                         description={errors.message}
                     />,
                     { variant: 'error' },
