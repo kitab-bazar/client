@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
     _cs,
     isDefined,
@@ -38,6 +38,8 @@ import {
     ModerationSchoolListQueryVariables,
     UpdateUserVerificationStatusMutation,
     UpdateUserVerificationStatusMutationVariables,
+    UpdateUserActiveStatusMutation,
+    UpdateUserActiveStatusMutationVariables,
 } from '#generated/types';
 
 import styles from './styles.css';
@@ -76,6 +78,7 @@ query ModerationSchoolList(
     $page: Int,
     $search: String,
     $isVerified: Boolean,
+    $isDeactivated: Boolean,
     $orderMismatchUsers: Boolean,
 ) {
     moderatorQuery {
@@ -85,6 +88,7 @@ query ModerationSchoolList(
             search: $search,
             userType: SCHOOL_ADMIN,
             isVerified: $isVerified,
+            isDeactivated: $isDeactivated
             orderMismatchUsers: $orderMismatchUsers,
         ) {
             totalCount
@@ -95,6 +99,7 @@ query ModerationSchoolList(
                 email
                 phoneNumber
                 isVerified
+                isDeactivated
                 outstandingBalance
                 school {
                     id
@@ -135,16 +140,37 @@ mutation UpdateUserVerificationStatus(
     }
 }
 `;
+const UPDATE_USER_ACTIVE_STATUS = gql`
+mutation UpdateUserActiveStatus(
+    $userId: ID!,
+    $isDeactivated: Boolean!,
+) {
+    moderatorMutation {
+        userDeactivateToggle(data: {isDeactivated: $isDeactivated}, id: $userId) {
+            errors
+            ok
+            result {
+                id
+                isDeactivated
+            }
+        }
+    }
+}
+`;
 
 type SchoolItemType = NonNullable<NonNullable<NonNullable<ModerationSchoolListQuery['moderatorQuery']>['users']>['results']>[number];
 const schoolItemKeySelector = (d: SchoolItemType) => d.id;
 
 interface SchoolItemProps {
     user: SchoolItemType;
+    onUserDeactivationSuccess: () => void;
 }
 
 function SchoolItem(props: SchoolItemProps) {
-    const { user } = props;
+    const {
+        user,
+        onUserDeactivationSuccess,
+    } = props;
 
     const school = user?.school;
     const alert = useAlert();
@@ -203,6 +229,61 @@ function SchoolItem(props: SchoolItemProps) {
         },
     );
 
+    const [
+        updateUserActiveStatus,
+        { loading: userActiveLoading },
+    ] = useMutation<
+        UpdateUserActiveStatusMutation,
+        UpdateUserActiveStatusMutationVariables
+    >(
+        UPDATE_USER_ACTIVE_STATUS,
+        {
+            onCompleted: (response) => {
+                const userDeactivateToggle = response?.moderatorMutation?.userDeactivateToggle;
+                if (!userDeactivateToggle) {
+                    return;
+                }
+
+                const {
+                    errors,
+                    ok,
+                } = userDeactivateToggle;
+
+                if (ok) {
+                    onUserDeactivationSuccess();
+                    alert.show(
+                        'User deactived successful',
+                        { variant: 'success' },
+                    );
+                } else if (errors) {
+                    const transformedError = transformToFormError(
+                        removeNull(errors) as ObjectError[],
+                    );
+                    alert.show(
+                        <ErrorMessage
+                            header="Failed to deactivate the account"
+                            description={
+                                isDefined(transformedError)
+                                    ? transformedError[internal]
+                                    : undefined
+                            }
+                        />,
+                        { variant: 'error' },
+                    );
+                }
+            },
+            onError: (errors) => {
+                alert.show(
+                    <ErrorMessage
+                        header="Failed to deactivate the account."
+                        description={errors.message}
+                    />,
+                    { variant: 'error' },
+                );
+            },
+        },
+    );
+
     const handleVerifyButtonClick = React.useCallback(() => {
         updateUserVerificationStatus({
             variables: {
@@ -210,6 +291,15 @@ function SchoolItem(props: SchoolItemProps) {
             },
         });
     }, [user, updateUserVerificationStatus]);
+
+    const handleActiveButtonClick = React.useCallback(() => {
+        updateUserActiveStatus({
+            variables: {
+                isDeactivated: true,
+                userId: user.id,
+            },
+        });
+    }, [user, updateUserActiveStatus]);
 
     if (!school) {
         return null;
@@ -321,6 +411,32 @@ function SchoolItem(props: SchoolItemProps) {
                         Verify
                     </ConfirmButton>
                 )}
+                {user.isDeactivated ? (
+                    <Tag
+                        icons={<IoCheckmark />}
+                    >
+                        Deactivated
+                    </Tag>
+                ) : (
+                    <ConfirmButton
+                        name={undefined}
+                        variant="tertiary"
+                        onConfirm={handleActiveButtonClick}
+                        disabled={userActiveLoading}
+                        message={(
+                            <>
+                                <div>
+                                    Are you sure to deactivate the account?
+                                </div>
+                                <strong>
+                                    {user.canonicalName}
+                                </strong>
+                            </>
+                        )}
+                    >
+                        Deactivated
+                    </ConfirmButton>
+                )}
             </div>
         </div>
     );
@@ -373,6 +489,7 @@ function Schools(props: Props) {
         data = previousData,
         loading,
         error,
+        refetch,
     } = useQuery<ModerationSchoolListQuery, ModerationSchoolListQueryVariables>(
         MODERATION_SCHOOL_LIST,
         {
@@ -381,16 +498,22 @@ function Schools(props: Props) {
                 page: activePage,
                 search,
                 isVerified: isVerifiedFilter,
+                isDeactivated: false,
                 orderMismatchUsers: isMismatchedFilter,
             },
         },
     );
 
+    const handleSchoolDeactivation = useCallback(() => {
+        refetch();
+    }, [refetch]);
+
     const schoolItemRendererParams = React.useCallback(
         (_: string, user: SchoolItemType): SchoolItemProps => ({
             user,
+            onUserDeactivationSuccess: handleSchoolDeactivation,
         }),
-        [],
+        [handleSchoolDeactivation],
     );
 
     return (
