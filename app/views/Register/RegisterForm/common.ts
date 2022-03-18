@@ -7,6 +7,7 @@ import {
     lengthGreaterThanCondition,
     lengthSmallerThanCondition,
     PurgeNull,
+    integerCondition,
 } from '@togglecorp/toggle-form';
 
 import { EnumFix } from '#utils/types';
@@ -56,7 +57,7 @@ export const schema: RegisterFormSchema = {
         const extraSchema = {
             name: [requiredStringCondition],
             municipality: [requiredStringCondition],
-            wardNumber: [requiredCondition],
+            wardNumber: [integerCondition, requiredCondition],
             localAddress: [requiredStringCondition],
             // panNumber: [],
             // vatNumber: [],

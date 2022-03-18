@@ -55,7 +55,7 @@ function Nagbar(props: Props) {
 
     const nagbarItems = [];
 
-    if (authenticated && !user?.isVerified) {
+    if (authenticated && !user?.isVerified && user?.type !== 'MODERATOR') {
         nagbarItems.push(strings.userNotVerifiedLabel);
     }
     if (authenticated && !orderWindow) {
