@@ -1,5 +1,5 @@
 import React from 'react';
-import { LocationState } from 'history';
+import { LocationState, Hash } from 'history';
 import { Link, LinkProps } from '@the-deep/deep-ui';
 
 import useRouteMatching, {
@@ -12,6 +12,7 @@ export type Props = Omit<LinkProps, 'to'> & {
     attrs?: Attrs;
     children?: React.ReactNode;
     state?: LocationState;
+    hash?: Hash;
 };
 
 function SmartLink(props: Props) {
@@ -20,6 +21,7 @@ function SmartLink(props: Props) {
         attrs,
         children,
         state,
+        hash,
         ...otherProps
     } = props;
 
@@ -34,6 +36,7 @@ function SmartLink(props: Props) {
             to={{
                 pathname: routeData.to,
                 state,
+                hash,
             }}
         >
             {children ?? routeData.children}

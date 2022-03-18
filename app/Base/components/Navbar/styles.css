@@ -64,7 +64,6 @@
             gap: var(--dui-spacing-small);
         }
 
-        /*
         .notification-button {
             position: relative;
             overflow: visible;
@@ -85,7 +84,6 @@
                 font-size: var(--dui-font-size-extra-small);
             }
         }
-        */
 
         .language-selection {
             width: 9rem;
@@ -136,8 +134,7 @@
 }
 
 
-/*
+
 .popup {
     max-height: unset!important;
 }
-*/
