@@ -5,6 +5,9 @@ import {
     LinkProps,
     Container,
     ListView,
+    Button,
+    useModalState,
+    Modal,
 } from '@the-deep/deep-ui';
 import {
     gql,
@@ -57,6 +60,7 @@ query FooterGradeOptions {
 
 const enumKeySelector = (d: { name: string }) => d.name;
 const itemKeySelector = (b: { id: string }) => b.id;
+const videoUrl = 'https://www.youtube.com/embed/0zgaCBVPors';
 
 interface Props {
     className?: string;
@@ -72,6 +76,12 @@ function Footer(props: Props) {
         ...footerStrings,
         ...commonStrings,
     };
+
+    const [
+        tutorialModalShown,
+        showTutorialModal,
+        hideTutorialModal,
+    ] = useModalState(false);
 
     const {
         data: gradeResponse,
@@ -259,11 +269,35 @@ function Footer(props: Props) {
                 >
                     {strings.aboutUsLabel}
                 </SmartLink>
+                <Button
+                    name={undefined}
+                    className={styles.videoModalButton}
+                    onClick={showTutorialModal}
+                    variant="transparent"
+                    spacing="none"
+                >
+                    {strings.tutorialModalHeading}
+                </Button>
                 <Link
                     to="https://blog.kitabbazar.org"
                 >
                     {strings.blogLabel}
                 </Link>
+                {tutorialModalShown && (
+                    <Modal
+                        heading={strings.tutorialModalHeading}
+                        onCloseButtonClick={hideTutorialModal}
+                        size="free"
+                    >
+                        <iframe
+                            title={strings.videoTitle}
+                            src={videoUrl}
+                            allowFullScreen
+                            width="1280"
+                            height="720"
+                        />
+                    </Modal>
+                )}
             </div>
         </div>
     );
