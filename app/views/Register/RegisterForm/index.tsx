@@ -50,7 +50,7 @@ import {
     schema,
 } from './common';
 
-import { MunicipalityOption } from './LocationInput';
+import { MunicipalityOption } from '#components/LocationInput';
 // import InstitutionForm from './InstitutionForm';
 import PublisherForm from './PublisherForm';
 import SchoolForm from './SchoolForm';

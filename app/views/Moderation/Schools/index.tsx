@@ -9,11 +9,13 @@ import {
     TextOutput,
     DateOutput,
     ConfirmButton,
+    Button,
     Tag,
     RadioInput,
     TextInput,
     Pager,
     useAlert,
+    useModalState,
 } from '@the-deep/deep-ui';
 import {
     gql,
@@ -43,6 +45,7 @@ import {
     UpdateUserActiveStatusMutation,
     UpdateUserActiveStatusMutationVariables,
 } from '#generated/types';
+import UpdateSchoolModal from './UpdateSchoolModal';
 
 import styles from './styles.css';
 
@@ -176,7 +179,7 @@ mutation UpdateUserActiveStatus(
 }
 `;
 
-type SchoolItemType = NonNullable<NonNullable<NonNullable<ModerationSchoolListQuery['moderatorQuery']>['users']>['results']>[number];
+export type SchoolItemType = NonNullable<NonNullable<NonNullable<ModerationSchoolListQuery['moderatorQuery']>['users']>['results']>[number];
 const schoolItemKeySelector = (d: SchoolItemType) => d.id;
 
 interface SchoolItemProps {
@@ -192,6 +195,15 @@ function SchoolItem(props: SchoolItemProps) {
 
     const school = user?.school;
     const alert = useAlert();
+    const [
+        updateSchoolModalShown,
+        showUpdateSchoolModal,
+        hideUpdateSchoolModal,
+    ] = useModalState(false);
+
+    const handleEditSchoolClick = React.useCallback(() => {
+        showUpdateSchoolModal();
+    }, [showUpdateSchoolModal]);
 
     const [
         updateUserVerificationStatus,
@@ -415,6 +427,13 @@ function SchoolItem(props: SchoolItemProps) {
                 />
             </div>
             <div className={styles.actions}>
+                <Button
+                    name={undefined}
+                    onClick={handleEditSchoolClick}
+                    variant="primary"
+                >
+                    Edit School
+                </Button>
                 {user.isVerified ? (
                     <Tag
                         icons={<IoCheckmark />}
@@ -468,6 +487,12 @@ function SchoolItem(props: SchoolItemProps) {
                     </ConfirmButton>
                 )}
             </div>
+            {updateSchoolModalShown && (
+                <UpdateSchoolModal
+                    school={school}
+                    onModalClose={hideUpdateSchoolModal}
+                />
+            )}
         </div>
     );
 }
