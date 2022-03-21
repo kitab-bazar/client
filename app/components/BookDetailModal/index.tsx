@@ -29,7 +29,7 @@ query Book($id: ID!) {
         }
         isbn
         edition
-        language
+        gradeDisplay
         languageDisplay
         price
         title

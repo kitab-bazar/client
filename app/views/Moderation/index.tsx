@@ -11,9 +11,8 @@ import Schools from './Schools';
 import SchoolPayments from './SchoolPayments';
 import PublisherPackages from './PublisherPackages';
 import SchoolPackages from './SchoolPackages';
-import MunicipalityPackages from './MunicipalityPackages';
+import CourierPackages from './CourierPackages';
 import Orders from './Orders';
-
 import styles from './styles.css';
 
 interface Props {
@@ -54,13 +53,6 @@ function Moderation(props: Props) {
                         Orders
                     </Tab>
                     <Tab
-                        name="publisher-packages"
-                        className={styles.tabItem}
-                        activeClassName={styles.active}
-                    >
-                        Publisher Packages
-                    </Tab>
-                    <Tab
                         name="school-packages"
                         className={styles.tabItem}
                         activeClassName={styles.active}
@@ -68,11 +60,18 @@ function Moderation(props: Props) {
                         School Packages
                     </Tab>
                     <Tab
-                        name="municipality-packages"
+                        name="publisher-packages"
                         className={styles.tabItem}
                         activeClassName={styles.active}
                     >
-                        Municipality Packages
+                        Publisher Packages
+                    </Tab>
+                    <Tab
+                        name="courier-packages"
+                        className={styles.tabItem}
+                        activeClassName={styles.active}
+                    >
+                        Courier Packages
                     </Tab>
                 </TabList>
                 <TabPanel
@@ -106,10 +105,10 @@ function Moderation(props: Props) {
                     <SchoolPackages />
                 </TabPanel>
                 <TabPanel
-                    name="municipality-packages"
+                    name="courier-packages"
                     className={styles.tabPanel}
                 >
-                    <MunicipalityPackages />
+                    <CourierPackages />
                 </TabPanel>
             </Tabs>
         </div>

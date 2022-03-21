@@ -12,24 +12,30 @@ import {
     createNumberColumn,
 } from '@the-deep/deep-ui';
 import { useQuery, gql } from '@apollo/client';
-
 import {
-    SchoolPackagesQuery,
-    SchoolPackagesQueryVariables,
-    SchoolPackageOptionsQuery,
-    SchoolPackageOptionsQueryVariables,
+    CourierPackagesQuery,
+    CourierPackagesQueryVariables,
+    CourierPackageOptionsQuery,
+    CourierPackageOptionsQueryVariables,
 } from '#generated/types';
 
-import SchoolSelectInput, { SearchUserType } from '#components/SchoolSelectInput';
 import { enumKeySelector, enumLabelSelector } from '#utils/types';
 import useStateWithCallback from '#hooks/useStateWithCallback';
 
 import Actions, { Props as ActionsProps } from './Actions';
 import styles from './styles.css';
 
-const SCHOOL_PACKAGE_OPTIONS = gql`
-    query SchoolPackageOptions {
-        schoolPackageStatusOptions: __type(name: "SchoolPackageStatusEnum") {
+export type CourierPackage = NonNullable<NonNullable<CourierPackagesQuery['courierPackages']>['results']>[number];
+function packageKeySelector(courierPackage: CourierPackage) {
+    return courierPackage.id;
+}
+interface Props {
+    className?: string;
+}
+
+const COURIER_PACKAGE_OPTIONS = gql`
+    query CourierPackageOptions {
+        courierPackageStatusOptions: __type(name: "CourierPackageStatusEnum") {
             enumValues {
                 name
                 description
@@ -38,86 +44,66 @@ const SCHOOL_PACKAGE_OPTIONS = gql`
     }
 `;
 
-const SCHOOL_PACKAGES = gql`
-    query SchoolPackages($ordering: String, $page: Int, $pageSize: Int, $status: [SchoolPackageStatusEnum!], $schools: [ID!]) {
-        schoolPackages(ordering: $ordering, page: $page, pageSize: $pageSize, status: $status, schools: $schools) {
+const COURIER_PACKAGES = gql`
+    query CourierPackages($page: Int, $pageSize: Int, $status: [CourierPackageStatusEnum!]) {
+        courierPackages(page: $page, pageSize: $pageSize, status: $status) {
+            page
+            pageSize
+            totalCount
             results {
                 id
                 packageId
-                statusDisplay
                 status
-                school {
-                    canonicalName
-                    id
-                }
+                statusDisplay
                 totalPrice
                 totalQuantity
                 relatedOrders {
                     id
-                    orderCode
                     statusDisplay
                     totalPrice
                     totalQuantity
+                    orderCode
                 }
             }
-            totalCount
-            page
-            pageSize
         }
     }
 `;
 
-export type SchoolPackage = NonNullable<NonNullable<SchoolPackagesQuery['schoolPackages']>['results']>[number];
-
-function packageKeySelector(schoolPackage: SchoolPackage) {
-    return schoolPackage.id;
-}
-
-interface Props {
-    className?: string;
-}
-
-function SchoolPackages(props: Props) {
+function CourierPackages(props: Props) {
     const { className } = props;
     const [activePage, setActivePage] = useState<number>(1);
     const [maxItemsPerPage, setMaxItemsPerPage] = useStateWithCallback(10, setActivePage);
     const [statusFilter, setStatusFilter] = useState<string | undefined>();
-    const [schoolFilter, setSchoolFilter] = useState<string | undefined>();
-    const [schoolOptions, setSchoolOptions] = useState<SearchUserType[] | undefined | null>();
 
     const variables = useMemo(() => ({
         pageSize: maxItemsPerPage,
         page: activePage,
-        status: statusFilter as SchoolPackagesQueryVariables['status'],
-        schools: schoolFilter ? [schoolFilter] : undefined,
+        status: statusFilter as CourierPackagesQueryVariables['status'],
     }), [
         maxItemsPerPage,
         activePage,
         statusFilter,
-        schoolFilter,
     ]);
 
     const {
-        data: schoolPackageOptionsQuery,
-        loading: schoolPackageOptionsQueryLoading,
-    } = useQuery<SchoolPackageOptionsQuery, SchoolPackageOptionsQueryVariables>(
-        SCHOOL_PACKAGE_OPTIONS,
+        data: courierPackageOptionsQuery,
+        loading: courierPackageOptionsQueryLoading,
+    } = useQuery<CourierPackageOptionsQuery, CourierPackageOptionsQueryVariables>(
+        COURIER_PACKAGE_OPTIONS,
     );
 
     const {
-        data: schoolPackagesResponse,
-        loading: schoolPackagesLoading,
+        data: courierPackagesResponse,
+        loading: courierPackagesLoading,
         error,
-    } = useQuery<SchoolPackagesQuery, SchoolPackagesQueryVariables>(
-        SCHOOL_PACKAGES,
+    } = useQuery<CourierPackagesQuery, CourierPackagesQueryVariables>(
+        COURIER_PACKAGES,
         { variables },
     );
 
-    const filtered = isDefined(statusFilter) || isDefined(schoolFilter);
-
     const columns = useMemo(() => {
         const actionsColumn: TableColumn<
-            SchoolPackage,
+            CourierPackage,
             string,
             ActionsProps,
             TableHeaderCellProps
@@ -132,56 +118,53 @@ function SchoolPackages(props: Props) {
             cellRendererClassName: styles.actions,
             cellRendererParams: (_, data) => ({
                 data,
-                disabled: schoolPackagesLoading,
+                disabled: courierPackagesLoading,
             }),
             columnWidth: 350,
         };
 
         return [
-            createStringColumn<SchoolPackage, string>(
+            createStringColumn<CourierPackage, string>(
                 'id',
                 'ID',
                 (item) => item.id,
                 { columnWidth: 50 },
             ),
-            createStringColumn<SchoolPackage, string>(
+            createStringColumn<CourierPackage, string>(
                 'packageId',
                 'Package ID',
                 (item) => item.packageId,
             ),
-            createStringColumn<SchoolPackage, string>(
-                'school',
-                'School',
-                (item) => item.school.canonicalName,
-            ),
-            createStringColumn<SchoolPackage, string>(
+            createStringColumn<CourierPackage, string>(
                 'status',
                 'Status',
                 (item) => item.statusDisplay,
             ),
-            createNumberColumn<SchoolPackage, string>(
+            createNumberColumn<CourierPackage, string>(
                 'totalPrice',
                 'Price',
                 (item) => item.totalPrice,
             ),
-            createNumberColumn<SchoolPackage, string>(
+            createNumberColumn<CourierPackage, string>(
                 'totalQuantity',
                 'Quantity',
                 (item) => item.totalQuantity,
             ),
             actionsColumn,
         ];
-    }, [schoolPackagesLoading]);
+    }, [courierPackagesLoading]);
+
+    const filtered = isDefined(statusFilter);
 
     return (
         <Container
-            className={_cs(styles.schoolPackages, className)}
-            heading="School Packages"
+            className={_cs(styles.courierPackages, className)}
+            heading="Courier Packages"
             headingSize="small"
             footerActions={(
                 <Pager
                     activePage={activePage}
-                    itemsCount={schoolPackagesResponse?.schoolPackages?.totalCount ?? 0}
+                    itemsCount={courierPackagesResponse?.courierPackages?.totalCount ?? 0}
                     maxItemsPerPage={maxItemsPerPage}
                     onItemsPerPageChange={setMaxItemsPerPage}
                     onActivePageChange={setActivePage}
@@ -197,33 +180,26 @@ function SchoolPackages(props: Props) {
                         placeholder="All"
                         keySelector={enumKeySelector}
                         labelSelector={enumLabelSelector}
-                        options={schoolPackageOptionsQuery?.schoolPackageStatusOptions?.enumValues}
+                        options={
+                            courierPackageOptionsQuery?.courierPackageStatusOptions?.enumValues
+                        }
                         value={statusFilter}
                         onChange={setStatusFilter}
-                        disabled={schoolPackageOptionsQueryLoading}
+                        disabled={courierPackageOptionsQueryLoading}
                         variant="general"
-                    />
-                    <SchoolSelectInput
-                        name="school"
-                        label="School"
-                        variant="general"
-                        onChange={setSchoolFilter}
-                        value={schoolFilter}
-                        options={schoolOptions}
-                        onOptionsChange={setSchoolOptions}
                     />
                 </>
             )}
         >
             <TableView
                 className={styles.table}
-                data={schoolPackagesResponse?.schoolPackages?.results}
+                data={courierPackagesResponse?.courierPackages?.results}
                 keySelector={packageKeySelector}
                 emptyMessage="No packages available."
                 columns={columns}
                 filtered={filtered}
                 errored={!!error}
-                pending={schoolPackagesLoading}
+                pending={courierPackagesLoading}
                 erroredEmptyMessage="Failed to fetch packages."
                 filteredEmptyMessage="No matching packages found."
                 messageShown
@@ -232,4 +208,4 @@ function SchoolPackages(props: Props) {
     );
 }
 
-export default SchoolPackages;
+export default CourierPackages;

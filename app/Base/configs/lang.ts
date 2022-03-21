@@ -1071,6 +1071,10 @@ export const bookItem = {
         en: 'ISBN',
         ne: 'आई.एस.बी.एन (ISBN)',
     },
+    gradeLabel: {
+        en: 'Grade',
+        ne: 'कक्षा',
+    },
     publisherLabel: {
         en: 'Publisher',
         ne: 'प्रकाशक',
