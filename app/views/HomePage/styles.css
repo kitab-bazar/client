@@ -75,7 +75,7 @@
                 }
             }
 
-            @media(max-width: 1200px) {
+            @media (max-width: 1200px) {
                 .cover-image {
                     display: none;
                 }
@@ -100,6 +100,7 @@
                 .grade-list {
                     display: flex;
                     flex-wrap: wrap;
+                    justify-content: space-between;
                     gap: var(--dui-spacing-large);
 
                     .grade-item {
@@ -116,6 +117,7 @@
                 .category-list {
                     display: flex;
                     flex-wrap: wrap;
+                    justify-content: space-between;
                     gap: var(--dui-spacing-large);
 
                     .category-item {
@@ -128,4 +130,3 @@
         }
     }
 }
-

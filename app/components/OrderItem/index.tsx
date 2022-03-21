@@ -116,6 +116,7 @@ function OrderItem(props: Props) {
                         strings.cancelOrderSuccessMessage,
                         { variant: 'success' },
                     );
+                    hideModal();
                 } else if (errors) {
                     const formError = transformToFormError(
                         removeNull(errors) as ObjectError[],
