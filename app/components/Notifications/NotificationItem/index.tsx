@@ -27,8 +27,8 @@ function NotificationItem(props: Props) {
     } = props;
 
     const {
-        title,
         id,
+        title,
     } = notification;
     const strings = useTranslation(notifications);
 
@@ -39,8 +39,8 @@ function NotificationItem(props: Props) {
     const orderLink = useMemo(() => (
         notification.order ? (
             <SmartLink
-                route={routes.orderDetail}
-                attrs={{ orderId: notification.order.id }}
+                route={routes.myProfile}
+                hash="#orders"
             >
                 {`order #${notification.order.orderCode.split('-')[0]}`}
             </SmartLink>

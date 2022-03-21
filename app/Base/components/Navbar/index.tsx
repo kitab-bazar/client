@@ -1,5 +1,5 @@
 import React, {
-    // useRef,
+    useRef,
     useContext,
     useCallback,
 } from 'react';
@@ -9,7 +9,7 @@ import {
     listToMap,
 } from '@togglecorp/fujs';
 import {
-    // useQuery,
+    useQuery,
     useMutation,
     gql,
 } from '@apollo/client';
@@ -20,9 +20,11 @@ import {
     useConfirmation,
     DropdownMenu,
     DropdownMenuItem,
+    QuickActionDropdownMenu,
 } from '@the-deep/deep-ui';
 import {
     IoPerson,
+    IoNotificationsOutline,
 } from 'react-icons/io5';
 
 import routes from '#base/configs/routes';
@@ -40,6 +42,8 @@ import { UserContext } from '#base/context/UserContext';
 import {
     LogoutMutation,
     LogoutMutationVariables,
+    UserNotificationsCountQuery,
+    UserNotificationsCountQueryVariables,
 } from '#generated/types';
 import useRouteMatching from '#base/hooks/useRouteMatching';
 import SmartButtonLikeLink from '#base/components/SmartButtonLikeLink';
@@ -47,6 +51,7 @@ import SmartNavLink from '#base/components/SmartNavLink';
 import RelativeTimeOutput from '#components/RelativeTimeOutput';
 import ErrorMessage from '#components/ErrorMessage';
 import KitabLogo from '#resources/img/KitabLogo.png';
+import Notifications from '#components/Notifications';
 import { resolveToString, resolveToComponent } from '#base/utils/lang';
 
 import styles from './styles.css';
@@ -65,7 +70,7 @@ const LOGOUT = gql`
     }
 `;
 
-// const NOTIFICATION_POLL_INTERVAL = 60000;
+const NOTIFICATION_POLL_INTERVAL = 60000;
 
 export const USER_NOTIFICATIONS_COUNT = gql`
     query UserNotificationsCount {
@@ -99,7 +104,6 @@ function Navbar(props: Props) {
     const commonStrings = useTranslation(common);
     const navbarStrings = useTranslation(navbar);
 
-    /*
     const {
         data: notifications,
     } = useQuery<UserNotificationsCountQuery, UserNotificationsCountQueryVariables>(
@@ -119,7 +123,6 @@ function Navbar(props: Props) {
     const handleCloseNotificationClick = useCallback(() => {
         notificationRef?.current?.setShowPopup(false);
     }, []);
-    */
 
     const strings = {
         ...commonStrings,
@@ -257,7 +260,6 @@ function Navbar(props: Props) {
                 </SmartButtonLikeLink>
                 {authenticated && user && (
                     <>
-                        {/*
                         <QuickActionDropdownMenu
                             label={(<IoNotificationsOutline />)}
                             componentRef={notificationRef}
@@ -271,7 +273,6 @@ function Navbar(props: Props) {
                                 onNotificationClose={handleCloseNotificationClick}
                             />
                         </QuickActionDropdownMenu>
-                        */}
                         <DropdownMenu
                             label={<IoPerson />}
                             variant="tertiary"
