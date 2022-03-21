@@ -24,6 +24,7 @@ import {
     UpdatePublisherPackageMutationVariables,
 } from '#generated/types';
 import NonFieldError from '#components/NonFieldError';
+import ErrorMessage from '#components/ErrorMessage';
 import { enumKeySelector, enumLabelSelector, EnumFix } from '#utils/types';
 import {
     transformToFormError,
@@ -145,14 +146,10 @@ function UpdatePackageModal(props: Props) {
             },
             onError: (errors) => {
                 alert.show(
-                    <div>
-                        <div>
-                            Failed to update package.
-                        </div>
-                        <div>
-                            {errors.message}
-                        </div>
-                    </div>,
+                    <ErrorMessage
+                        header="Failed to update package"
+                        description={errors.message}
+                    />,
                     { variant: 'error' },
                 );
             },
