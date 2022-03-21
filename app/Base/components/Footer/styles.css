@@ -85,5 +85,10 @@
         justify-content: flex-end;
         padding: var(--dui-spacing-medium);
         gap: var(--dui-spacing-medium);
+
+    }
+    .video-modal-button {
+        color: var(--dui-color-accent);
+        font-weight: var(--dui-font-weight-light) !important;
     }
 }

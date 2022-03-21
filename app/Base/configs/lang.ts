@@ -530,6 +530,14 @@ export const footer = {
         en: 'Send us an email at {email}',
         ne: 'हामीलाई {email} मा इमेल पठाउनुहोस्',
     },
+    tutorialModalHeading: {
+        en: 'Video Tutorial',
+        ne: 'भिडियो ट्यूटोरियल',
+    },
+    videoTitle: {
+        en: 'Kitab Bazar Video Tutorial',
+        ne: 'किताब बजार भिडियो ट्यूटोरियल',
+    },
 };
 
 export const notifications = {
