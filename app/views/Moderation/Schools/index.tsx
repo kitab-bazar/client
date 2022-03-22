@@ -460,12 +460,8 @@ function SchoolItem(props: SchoolItemProps) {
                         Verify
                     </ConfirmButton>
                 )}
-                {user.isDeactivated ? (
-                    <Tag
-                        icons={<IoCheckmark />}
-                    >
-                        Deactivated
-                    </Tag>
+                {user.isDeactivated || user.isVerified ? (
+                    <></>
                 ) : (
                     <ConfirmButton
                         name={undefined}
@@ -483,7 +479,7 @@ function SchoolItem(props: SchoolItemProps) {
                             </>
                         )}
                     >
-                        Deactivated
+                        Deactivate
                     </ConfirmButton>
                 )}
             </div>

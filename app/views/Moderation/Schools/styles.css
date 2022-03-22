@@ -26,7 +26,6 @@
 
 .school-item {
     display: flex;
-    flex-wrap: wrap;
     border: var(--dui-width-separator-thin) solid var(--dui-color-separator);
     border-radius: var(--dui-radius-border-medium);
     background-color: var(--dui-color-foreground);
@@ -37,7 +36,6 @@
     .details {
         display: flex;
         flex-grow: 1;
-        flex-wrap: wrap;
         gap: var(--dui-spacing-extra-large);
 
         .label {
@@ -59,8 +57,11 @@
             }
         }
 
-        .pan-number, .school-id {
-            flex-basis: 5rem;
+        .pan-number,
+        .school-id {
+            flex-basis: 7rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .outstanding-balance {

@@ -40,7 +40,7 @@ function NotificationItem(props: Props) {
         notification.order ? (
             <SmartLink
                 route={routes.myProfile}
-                hash="#orders"
+                hash="#/orders"
             >
                 {`order #${notification.order.orderCode.split('-')[0]}`}
             </SmartLink>
