@@ -137,13 +137,15 @@ function Profile(props: Props) {
                                         >
                                             {strings.aboutTabLabel}
                                         </Tab>
-                                        <Tab
-                                            activeClassName={styles.active}
-                                            className={styles.tabItem}
-                                            name="orders"
-                                        >
-                                            {strings.ordersTabLabel}
-                                        </Tab>
+                                        {(userDetails.userType === 'PUBLISHER' || userDetails.userType === 'SCHOOL_ADMIN') && (
+                                            <Tab
+                                                activeClassName={styles.active}
+                                                className={styles.tabItem}
+                                                name="orders"
+                                            >
+                                                {strings.ordersTabLabel}
+                                            </Tab>
+                                        )}
                                         {userDetails.userType === 'PUBLISHER' && (
                                             <Tab
                                                 activeClassName={styles.active}
@@ -202,12 +204,14 @@ function Profile(props: Props) {
                                             )}
                                         </div>
                                     </TabPanel>
-                                    <TabPanel
-                                        name="orders"
-                                        className={styles.tabContent}
-                                    >
-                                        <OrderList />
-                                    </TabPanel>
+                                    {(userDetails.userType === 'PUBLISHER' || userDetails.userType === 'SCHOOL_ADMIN') && (
+                                        <TabPanel
+                                            name="orders"
+                                            className={styles.tabContent}
+                                        >
+                                            <OrderList />
+                                        </TabPanel>
+                                    )}
                                     {userDetails.userType === 'PUBLISHER' && (
                                         <TabPanel
                                             name="packages"

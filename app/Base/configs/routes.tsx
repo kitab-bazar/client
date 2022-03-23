@@ -94,7 +94,6 @@ const myProfile = wrap({
     componentProps: {
     },
     visibility: 'is-authenticated',
-    checkPermissions: (user) => user?.type !== 'MODERATOR',
 });
 const wishList = wrap({
     path: '/wish-list/',
