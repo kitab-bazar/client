@@ -96,7 +96,6 @@ query ModerationSchoolList(
     $page: Int,
     $search: String,
     $isVerified: Boolean,
-    $isDeactivated: Boolean,
     $orderMismatchUsers: Boolean,
     $ordering: String,
 ) {
@@ -107,7 +106,6 @@ query ModerationSchoolList(
             search: $search,
             userType: SCHOOL_ADMIN,
             isVerified: $isVerified,
-            isDeactivated: $isDeactivated
             orderMismatchUsers: $orderMismatchUsers,
             ordering: $ordering,
         ) {

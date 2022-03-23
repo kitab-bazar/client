@@ -396,8 +396,8 @@ export const explore = {
         ne: 'किताबहरू हेर्नुहोस्',
     },
     searchInputPlaceholder: {
-        en: 'Search by title (3 or more characters)',
-        ne: 'किताबको शीर्षकले खोज्नुहोस् (३ वा बढी वर्णहरू)',
+        en: 'Search by book title/ISBN (3 or more characters)',
+        ne: 'किताबको शीर्षक/ISBN द्वारा खोज्नुहोस् (३ वा बढी वर्णहरू)',
     },
     filterBooksHeading: {
         en: 'Filter books',
