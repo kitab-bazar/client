@@ -46,6 +46,10 @@
         .goals {
             background-color: unset;
             padding: var(--dui-spacing-large);
+
+            .goalTitle {
+                font-weight: bold;
+            }
         }
 
         .goal-points {
