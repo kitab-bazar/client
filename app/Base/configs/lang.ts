@@ -1138,6 +1138,10 @@ export const orderItem = {
         en: 'Order cancelled successfully.',
         ne: 'अर्डर सफलतापूर्वक रद्द गरियो',
     },
+    cancelPackedOrderSucessMessage: {
+        en: 'Order is packed, you can not cancel the order.',
+        ne: 'अर्डर प्याक गरिएको छ, तपाईं अर्डर रद्द गर्न सक्नुहुन्न।',
+    },
     cancelOrderButtonLabel: {
         en: 'Cancel Order',
         ne: 'अर्डर रद्द गर्नुहोस्',

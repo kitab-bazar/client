@@ -123,7 +123,7 @@ function OrderItem(props: Props) {
                     );
                     alert.show(
                         <ErrorMessage
-                            header={strings.cancelOrderFailureMessage}
+                            header={strings.cancelPackedOrderSucessMessage}
                             description={
                                 isDefined(formError)
                                     ? formError[internal]
