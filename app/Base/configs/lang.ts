@@ -322,11 +322,11 @@ export const about = {
     },
     platformBackgroundPartOne: {
         en: 'The idea of KITAB Bazar platform was generated through KITAB Project (Knowledge Improvement through Access of Books) launched by World Vision International Nepal (WVI Nepal) in October 2018 through technical support from World Vision Australia (WVA) and financial support of the World Bank with an aim to strengthen the strengthen the education system and the book supply chain by addressing the gaps in the supply chain using Results Based Financing (RBF) mechanism. The project also aligns with one of the PMEC (Priority Enabling Minimum Conditions) standard – establishing book corners as mentioned in the National Early Grade Reading Program (NEGRP) of School Sector Development Plan (SSDP). The plan and the program emphasized on the need for an appropriate environment for enhancing reading skills amongst the children and in ensuring equitable learning across all schools in Nepal.',
-        ne: 'नेपाल सरकारको विद्यालय क्षेत्र विकास योजना (SSDP) ले विद्यार्थीहरूको आधारभूत पठन सीपमा सुधार लगायत विद्यालयहरूमा गुणस्तरीय शिक्षा प्रदान गर्नमा केन्द्रित छ। राष्ट्रिय प्रारम्भिक पठन कार्यक्रम (NEGRP) प्रारम्भिक कक्षाहरूमा विद्यार्थीहरूको पढ्ने सीप सुधार गर्नको निम्ति विद्यालय क्षेत्र विकास योजना (SSDP) को मुख्य भाग हो। कक्षा १ देखि ३ सम्मका लागि उपयुक्त र सान्दर्भिक किताबहरू कक्षाकोठामा उपलब्ध छन् भनी सुनिश्चित गर्न SSDP ले बुक कर्नरहरू स्थापना गर्न आवश्यक बनाएको छ। यद्यपि, धेरै माग र आपूर्ति पक्षका चुनौतीहरूले बुक कर्नर स्थापना गर्न सहज थिएन । PMEC मापदण्डहरूमा प्रगतिलाई गति दिन, किताब बजार PMEC को ५ औं प्राथमिकतामा केन्द्रित छ, जुन सबै कक्षाकोठाहरूमा किताब/शिक्षा कर्नर हो। तसर्थ, किताब परियोजना यी चुनौतीहरूलाई सम्बोधन गर्दै साक्षरता परिणाम प्राप्तिका लागि गुणस्तरीय पूरक पठन सामग्री (SRM) मा दिगो पहुँच सिर्जना गर्न डिजाइन गरिएको थियो।',
+        ne: 'यस डिजिटल प्लेटफर्मको पहल KITAB परियोजना (पुस्तकहरूमा पहुँच मार्फत ज्ञान सुधार) मार्फत वल्र्ड भिजन इन्टरनेशनल नेपाल (WVI नेपाल) द्वारा अक्टोबर २०१८ मा वल्र्ड भिजन अष्ट्रेलिया (WVA) को प्राविधिक सहयोग र विश्व बैंकको आर्थिक सहयोगमा सुरु गरिएको थियो। नतिजामा  आधारित वित्तिय संयन्त्र (RBF) प्रयोग गरी माग र आपूर्ति शृङ्खलामा रहेको खाडललाई सम्बोधन गरी शिक्षा प्रणालीलाई सुदृढ पार्ने उद्देश्यले यो परियोजना थालिएको थियो । परियोजना र कार्यक्रमले बालबालिकामा पढ्ने सीप अभिवृद्धि गर्न र नेपालका सबै विध्यालयहरूमा समतामूलक सिकाइ सुनिश्चित गर्न उपयुक्त वातावरणको आवश्यकतामा जोड दिएको थियो।',
     },
     platformBackgroundPartTwo: {
         en: 'The project through KITAB Bazar platform has successfully addressed the challenge of unequal opportunities/facilities to students in schools due to difficult geographical terrain, limited availability and accessibility of educational materials and limited funds available to community schools in its implemented areas. The platform was built to promote digital equity and abridge the gap between the schools and suppliers/publication houses for quality reviewed supplementary reading materials.',
-        ne: 'Missing',
+        ne: 'किताब बजार प्लेटफर्म मार्फत परियोजनाले कठिन भौगोलिक भूभाग, शैक्षिक सामग्रीको सीमित उपलब्धता र पहुँच र सामुदायिक विद्यालयहरूमा उपलब्ध सीमित रकमका कारण विध्यार्थीहरूलाई उपलब्ध हुने असमान अवसर/सुविधाको चुनौतीलाई सफलतापूर्वक सम्बोधन गरेको थियो। यो प्लेटफर्म डिजिटल इक्विटीको प्रवर्द्धन गर्न र गुणस्तर समीक्षा गरिएका पूरक पठन सामग्रीहरूको लागि विध्यालय र प्रकाशनघरहरू बीचको खाडललाई कम गर्न निर्माण गरिएको हो।',
     },
     whoAreWeLabel: {
         en: 'Who are we?',
@@ -334,26 +334,39 @@ export const about = {
     },
     whoAreWeDescription: {
         en: 'We are an online digital platform with the aim to improve access to quality supplementary reading materials in schools. Collaborating with various publishing firms, we have streamlined the process of selecting, ordering, and purchasing books for children. The initiative was encouraged through importance of reading from an early age and from one of the necessary PMEC standard of ensuring book corners or reading corners with supplementary reading materials in every grade as mandated by the Government. The platform was launched initially through KITAB project implemented in Sunsari and Morang by World Vision International Nepal.',
-        ne: 'विद्यालयहरूमा गुणस्तरीय पूरक पठन सामग्रीको पहुँच सुधार गर्ने उद्देश्यका साथ बुक कर्नरको अभ्यास बनाउन केन्द्रित अनलाइन डिजिटल प्लेटफर्म हो किताब बजार । विभिन्न प्रकाशनहरूसँग सहकार्य गर्दै, हामीले बालबालिकाका लागि किताबहरू छनोट, अर्डर र खरिद गर्ने प्रक्रियालाई सुव्यवस्थित गरेका छौं। हामीले विद्यालयहरूमा बुक कर्नर कसरी लागू गरिन्छ र यो बालबालिकाहरूको लागि कसरी लाभदायक छन् भन्ने जानकारी पनि समावेश गरेका छौं। हाम्रो यस अभियानमा सम्मिलित हुन चाहने वा अहिलेसम्म भएका कामहरूबारे जानकारी आवश्यक परेमा , हामी यस परियोजना बारेमा सम्पूर्ण जानकारी दिनेछौँ ।',
+        ne: 'हामी एक अनलाइन डिजिटल प्लेटफर्म हौँ जसले आधुनिक प्रविधि द्वारा हरेक विध्यालयहरूमा र विध्यार्थीहरु समक्ष्य गुणस्तरीय पूरक पठन सामग्रीहरूको पहुँच सुधार गर्न र पुस्तक माग र आपूर्तिको खाडललाई कम गर्न मद्दत पुर्याइरहेको छ । विभिन्न प्रकाशनहरूसँग सहकार्य गर्दै, हामीले बालबालिकाका लागि पुस्तकहरू छनोट गर्ने, अर्डर र खरिद गर्ने प्रक्रियालाई सुव्यवस्थित गरेका छौं। सानै उमेरदेखि पढाइको महत्वलाई ध्यानमा राखी, स्कूलको गुणस्तर निर्धारण गर्ने PMEC मापदण्डहरू मध्ये एकको रूपमा पहिचान गरिएको पुस्तक कुनाको अवधारणाले नै यस पहललाई प्रोत्साहित गरेको थियो । वल्र्ड भिजन इन्टरनेशनल नेपालले सुनसरी र मोरङमा लागू गरेको Knowledge Improvement through Access of Books (KITAB) परियोजनामार्फत यो प्लेटफर्मको सुरुवात भएको थियो ।',
     },
     whoAreWeDescriptionPartTwo: {
         en: 'If there is any interest in adopting what has been created so far, we will provide further information and answer any concerns about the project.',
+        ne: 'हाम्रो यस अभियानमा सम्मिलित हुन चाहने वा अहिलेसम्म भएका कामहरूबारे जानकारी आवश्यक परेमा , हामी यस परियोजना बारेमा सम्पूर्ण जानकारी दिनेछौँ ।',
     },
     goalsLabel: {
         en: 'Goals',
         ne: 'हाम्रा लक्ष्यहरू',
     },
+    firstGoalTitle: {
+        en: 'Strengthening Equitable Access: ',
+        ne: 'समतामूलक पहुँचलाई सुदृढ गर्न: ',
+    },
     firstGoalDescription: {
-        en: 'Strengthening Equitable Access: Ensure equitable access to reading materials and enhance the learning skills and understanding ability among students from an early age.',
+        en: 'Ensure equitable access to reading materials and enhance the learning skills and understanding ability among students from an early age.',
         ne: 'नतिजामा आधारित रिजल्ट बेस्ड फाइनान्सिङ (RBF) ले नेपालको शिक्षा प्रणालीमा पार्न सक्ने प्रभावका लागि प्रमाण-आधारलाई बलियो बनाउन बालबालिकाहरूलाई विद्यालयमा गुणस्तरीय पूरक पठन सामग्रीको पहुँच सुनिश्चित गर्न।',
     },
+    secondGoalTitle: {
+        en: 'Strengthening supply chain mechanism and promote digital equity ',
+        ne: 'आपूर्ति श्रृंखला संयन्त्रलाई आधुनिक प्रविधि द्वारा सुदृढ गर्न: ',
+    },
     secondGoalDescription: {
-        en: 'Strengthening supply chain mechanism and promote digital equity for grade-appropriate supplementary reading materials to rural community schools through KITAB Bazar and use of ICT in the sector of education',
-        ne: 'राष्ट्रिय शिक्षा बहस, नीति, र अभ्यासलाई सूचित गर्न प्रमाणहरू प्रयोग गर्न र आपूर्ति श्रृंखला मुद्दाहरूलाई सम्बोधन गर्न नतिजामा आधारित रिजल्ट बेस्ड फाइनान्सिङको प्रयोगको विश्वव्यापी रूपमा विस्तार गर्न।',
+        en: 'for grade-appropriate supplementary reading materials to rural community schools through KITAB Bazar and use of ICT in the sector of education',
+        ne: 'ग्रामीण सामुदायिक विध्यालयहरूमा कक्षा-उपयुक्त पूरक पठन सामग्रीहरूको लागि आपूर्ति श्रृंखला संयन्त्रलाई सुदृढ गर्न र शिक्षाको क्षेत्रमा ICT को प्रयोग।',
+    },
+    thirdGoalTitle: {
+        en: 'Assist in achieving PMEC standard: ',
+        ne: 'PMEC मापदण्ड प्राप्त गर्नमा सहयोग पुर्याउन: ',
     },
     thirdGoalDescription: {
-        en: 'Assist in achieving PMEC standard: Assist in achieving the book corner standard (set by SSDP), which is identified as one of the PMEC standards determining the quality of schools.',
-        ne: 'Missing',
+        en: 'Assist in achieving the book corner standard (set by SSDP), which is identified as one of the PMEC standards determining the quality of schools.',
+        ne: ' स्कूलको गुणस्तर निर्धारण गर्ने PMEC मापदण्डहरू मध्ये एकको रूपमा पहिचान गरिएको पुस्तक कुनामा मानक (SSDP द्वारा सेट गरिएको) प्राप्त गर्न मद्दत गर्न।',
     },
     accessToReadingMaterialText: {
         en: 'Children have access to sufficient supplementary reading materials in schools',

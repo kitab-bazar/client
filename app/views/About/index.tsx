@@ -75,12 +75,15 @@ function About(props: Props) {
                 >
                     <ul>
                         <li>
+                            <span className={styles.goalTitle}>{strings.firstGoalTitle}</span>
                             {strings.firstGoalDescription}
                         </li>
                         <li>
+                            <span className={styles.goalTitle}>{strings.secondGoalTitle}</span>
                             {strings.secondGoalDescription}
                         </li>
                         <li>
+                            <span className={styles.goalTitle}>{strings.thirdGoalTitle}</span>
                             {strings.thirdGoalDescription}
                         </li>
                     </ul>
