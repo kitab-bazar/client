@@ -36,6 +36,7 @@
     .details {
         display: flex;
         flex-grow: 1;
+        flex-wrap: wrap;
         gap: var(--dui-spacing-extra-large);
 
         .label {
@@ -57,11 +58,24 @@
             }
         }
 
+        .created-at,
+        .phone-number {
+            flex-basis: 7rem;
+            word-break:break-all;
+        }
         .pan-number,
         .school-id {
-            flex-basis: 7rem;
+            flex-basis: 5rem;
             overflow: hidden;
             text-overflow: ellipsis;
+            word-break:break-all;
+        }
+
+        .email {
+            flex-basis: 12rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            word-break:break-all;
         }
 
         .outstanding-balance {

@@ -355,6 +355,7 @@ function SchoolItem(props: SchoolItemProps) {
                 <TextOutput
                     block
                     label="Phone No."
+                    className={styles.phoneNumber}
                     labelContainerClassName={styles.label}
                     value={(
                         <a
@@ -369,6 +370,7 @@ function SchoolItem(props: SchoolItemProps) {
                 <TextOutput
                     block
                     label="Email"
+                    className={styles.email}
                     labelContainerClassName={styles.label}
                     value={(
                         <a
@@ -385,6 +387,7 @@ function SchoolItem(props: SchoolItemProps) {
                 <TextOutput
                     block
                     label="Created At"
+                    className={styles.createdAt}
                     labelContainerClassName={styles.label}
                     value={(
                         <DateOutput
