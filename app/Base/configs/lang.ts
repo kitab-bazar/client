@@ -396,8 +396,8 @@ export const explore = {
         ne: 'किताबहरू हेर्नुहोस्',
     },
     searchInputPlaceholder: {
-        en: 'Search by title (3 or more characters)',
-        ne: 'किताबको शीर्षकले खोज्नुहोस् (३ वा बढी वर्णहरू)',
+        en: 'Search by book title/ISBN (3 or more characters)',
+        ne: 'किताबको शीर्षक/ISBN द्वारा खोज्नुहोस् (३ वा बढी वर्णहरू)',
     },
     filterBooksHeading: {
         en: 'Filter books',
@@ -1137,6 +1137,10 @@ export const orderItem = {
     cancelOrderSuccessMessage: {
         en: 'Order cancelled successfully.',
         ne: 'अर्डर सफलतापूर्वक रद्द गरियो',
+    },
+    cancelPackedOrderSucessMessage: {
+        en: 'Order is packed, you can not cancel the order.',
+        ne: 'अर्डर प्याक गरिएको छ, तपाईं अर्डर रद्द गर्न सक्नुहुन्न।',
     },
     cancelOrderButtonLabel: {
         en: 'Cancel Order',

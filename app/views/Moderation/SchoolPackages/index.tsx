@@ -1,6 +1,7 @@
-import React, { useMemo, useState } from 'react';
+import React, { ReactNode, useMemo, useState } from 'react';
 import { _cs, isDefined } from '@togglecorp/fujs';
 import {
+    Element,
     Container,
     Pager,
     SelectInput,
@@ -11,6 +12,7 @@ import {
     createStringColumn,
     createNumberColumn,
 } from '@the-deep/deep-ui';
+import { IoCheckmark, IoClose } from 'react-icons/io5';
 import { useQuery, gql } from '@apollo/client';
 
 import {
@@ -45,6 +47,7 @@ const SCHOOL_PACKAGES = gql`
                 id
                 packageId
                 statusDisplay
+                isEligibleForIncentive
                 status
                 school {
                     canonicalName
@@ -136,6 +139,25 @@ function SchoolPackages(props: Props) {
             }),
             columnWidth: 350,
         };
+        const incentiveColumn: TableColumn<
+            SchoolPackage,
+            string,
+            ReactNode,
+            TableHeaderCellProps
+        > = {
+            id: 'isEligibleForIncentive',
+            title: 'Incentive',
+            headerCellRenderer: TableHeaderCell,
+            headerCellRendererParams: {
+                sortable: false,
+            },
+            cellRenderer: Element,
+            cellRendererClassName: styles.actions,
+            cellRendererParams: (_, data) => ({
+                children: data.isEligibleForIncentive ? <IoCheckmark /> : <IoClose />,
+            }),
+            columnWidth: 100,
+        };
 
         return [
             createStringColumn<SchoolPackage, string>(
@@ -169,6 +191,7 @@ function SchoolPackages(props: Props) {
                 'Quantity',
                 (item) => item.totalQuantity,
             ),
+            incentiveColumn,
             actionsColumn,
         ];
     }, [schoolPackagesLoading]);
