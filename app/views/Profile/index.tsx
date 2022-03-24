@@ -192,10 +192,12 @@ function Profile(props: Props) {
                                                     value={userDetails.publisher.vatNumber}
                                                 />
                                             )}
-                                            <AboutOutput
-                                                label={strings.panLabel}
-                                                value={profileDetails?.panNumber}
-                                            />
+                                            {(userDetails.userType === 'PUBLISHER' || userDetails.userType === 'SCHOOL_ADMIN') && (
+                                                <AboutOutput
+                                                    label={strings.panLabel}
+                                                    value={profileDetails?.panNumber}
+                                                />
+                                            )}
                                             {userDetails?.school && (
                                                 <AboutOutput
                                                     label={strings.schoolIdLabel}
