@@ -61,6 +61,9 @@ const COURIER_PACKAGES = gql`
                 totalPrice
                 totalQuantity
                 isEligibleForIncentive
+                municipality {
+                    name
+                }
                 relatedOrders {
                     id
                     statusDisplay
@@ -143,7 +146,7 @@ function CourierPackages(props: Props) {
             cellRendererParams: (_, data) => ({
                 children: data.isEligibleForIncentive ? <IoCheckmark /> : <IoClose />,
             }),
-            columnWidth: 100,
+            columnWidth: 120,
         };
 
         return [
@@ -172,6 +175,11 @@ function CourierPackages(props: Props) {
                 'totalQuantity',
                 'Quantity',
                 (item) => item.totalQuantity,
+            ),
+            createStringColumn<CourierPackage, string>(
+                'municipality',
+                'Municipality',
+                (item) => item.municipality.name,
             ),
             incentiveColumn,
             actionsColumn,
