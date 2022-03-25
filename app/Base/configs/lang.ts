@@ -271,7 +271,7 @@ export const homePage = {
     },
     exploreByCategoryHeading: {
         en: 'Explore by Category',
-        ne: 'कक्षा द्वारा अन्वेषण',
+        ne: 'श्रेणी द्वारा अन्वेषण गर्नुहोस्',
     },
     exploreByPublisherHeading: {
         en: 'Explore by Publisher',
@@ -522,9 +522,13 @@ export const footer = {
         en: 'About Us',
         ne: 'हाम्रोबारे',
     },
+    userManualLabel: {
+        en: 'User Manual',
+        ne: 'प्रयोगकर्ता पुस्तिका',
+    },
     blogLabel: {
         en: 'Blog',
-        ne: 'Blog',
+        ne: 'ब्लग',
     },
     exploreByGradeHeading: {
         en: 'Grade',
@@ -561,6 +565,14 @@ export const footer = {
     videoTitle: {
         en: 'Kitab Bazar Video Tutorial',
         ne: 'किताब बजार भिडियो ट्यूटोरियल',
+    },
+    userManualHeading: {
+        en: 'User Manual',
+        ne: 'प्रयोगकर्ता पुस्तिका',
+    },
+    userManualTitle: {
+        en: 'Kitab Bazar User Manual',
+        ne: 'किताब बजार प्रयोगकर्ता पुस्तिका',
     },
 };
 

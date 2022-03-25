@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { _cs } from '@togglecorp/fujs';
 import {
     Link,
@@ -34,6 +34,7 @@ import {
 import NumberOutput from '#components/NumberOutput';
 
 import styles from './styles.css';
+import LanguageContext from '#base/context/LanguageContext';
 
 const GRADE_OPTIONS = gql`
 query FooterGradeOptions {
@@ -60,7 +61,10 @@ query FooterGradeOptions {
 
 const enumKeySelector = (d: { name: string }) => d.name;
 const itemKeySelector = (b: { id: string }) => b.id;
+
 const videoUrl = 'https://www.youtube.com/embed/0zgaCBVPors';
+const userManualEn = 'https://docs.google.com/document/d/e/2PACX-1vSB2Vmfj54ROqwzKlgzY8IMKi_sGEg7s0PqTXth2bFIU2aQcnnt70hmwHSVm6so0r6msaDTBezuRhTj/pub';
+const userManualNe = 'https://docs.google.com/document/d/e/2PACX-1vSFNuJiS4gaUF2FngC_odt9kawf_WkujSY_GZvWrbWEc2ToPI1m1zY3FGa7g_KPzYVCAesqlyxnqtpQ/pub';
 
 interface Props {
     className?: string;
@@ -83,6 +87,13 @@ function Footer(props: Props) {
         hideTutorialModal,
     ] = useModalState(false);
 
+    const [
+        userManualModalShown,
+        showUserManualModal,
+        hideUserManualModal,
+    ] = useModalState(false);
+
+    const activeLanguage = useContext(LanguageContext);
     const {
         data: gradeResponse,
         loading: gradeLoading,
@@ -269,6 +280,32 @@ function Footer(props: Props) {
                 >
                     {strings.aboutUsLabel}
                 </SmartLink>
+                <Button
+                    name={undefined}
+                    className={styles.videoModalButton}
+                    onClick={showUserManualModal}
+                    variant="transparent"
+                    spacing="none"
+                >
+                    {strings.userManualHeading}
+                </Button>
+                {userManualModalShown && (
+                    <Modal
+                        heading={strings.userManualLabel}
+                        onCloseButtonClick={hideUserManualModal}
+                        size="free"
+                    >
+                        <iframe
+                            title={strings.userManualTitle}
+                            src={activeLanguage.lang === 'ne'
+                                ? userManualNe
+                                : userManualEn}
+                            allowFullScreen
+                            width="1280"
+                            height="720"
+                        />
+                    </Modal>
+                )}
                 <Button
                     name={undefined}
                     className={styles.videoModalButton}
