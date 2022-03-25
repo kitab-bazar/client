@@ -68,10 +68,9 @@ const INDIVIDUAL_SCHOOL_PAYMENTS = gql`
     ) {
         schoolQuery {
             paymentSummary {
-                totalUnverifiedPayment
-                totalUnverifiedPaymentCount
-                totalVerifiedPayment
-                totalVerifiedPaymentCount
+                outstandingBalance
+                paymentCreditSum
+                paymentDebitSum
             }
             payments(
                 ordering: $ordering,
@@ -163,8 +162,8 @@ function SchoolPayments(props: Props) {
     const payments = paymentsQueryResponse?.schoolQuery?.payments?.results;
 
     const filtered = isDefined(paymentTypeFilter)
-                  || isDefined(statusFilter)
-                  || isDefined(transactionTypeFilter);
+        || isDefined(statusFilter)
+        || isDefined(transactionTypeFilter);
 
     const schoolPaymentItemRendererParams = React.useCallback(
         (_: string, payment: SchoolPayment) => ({
@@ -184,11 +183,11 @@ function SchoolPayments(props: Props) {
                     block
                     valueContainerClassName={styles.value}
                     hideLabelColon
-                    label={strings.totalVerifiedPaymentLabel}
+                    label={strings.outstandingBalanceLabel}
                     value={(
                         <NumberOutput
                             value={paymentsQueryResponse
-                                ?.schoolQuery?.paymentSummary?.totalVerifiedPayment ?? 0}
+                                ?.schoolQuery?.paymentSummary?.outstandingBalance ?? 0}
                             currency
                         />
                     )}
@@ -198,32 +197,23 @@ function SchoolPayments(props: Props) {
                     block
                     valueContainerClassName={styles.value}
                     hideLabelColon
-                    label={strings.totalVerifiedPaymentCountLabel}
+                    label={strings.totalCreditAmountLabel}
                     value={paymentsQueryResponse
-                        ?.schoolQuery?.paymentSummary?.totalVerifiedPaymentCount ?? 0}
+                        ?.schoolQuery?.paymentSummary?.paymentCreditSum ?? 0}
                 />
                 <TextOutput
                     spacing="compact"
                     block
                     valueContainerClassName={styles.value}
-                    label={strings.totalUnverifiedPaymentLabel}
+                    label={strings.totalDebitAmountLabel}
                     hideLabelColon
                     value={(
                         <NumberOutput
                             value={paymentsQueryResponse
-                                ?.schoolQuery?.paymentSummary?.totalUnverifiedPayment ?? 0}
+                                ?.schoolQuery?.paymentSummary?.paymentDebitSum ?? 0}
                             currency
                         />
                     )}
-                />
-                <TextOutput
-                    spacing="compact"
-                    block
-                    valueContainerClassName={styles.value}
-                    hideLabelColon
-                    label={strings.totalUnverifiedPaymentCountLabel}
-                    value={paymentsQueryResponse
-                        ?.schoolQuery?.paymentSummary?.totalUnverifiedPaymentCount ?? 0}
                 />
             </ContainerCard>
             <Container
