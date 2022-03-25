@@ -242,6 +242,10 @@ export const register = {
         en: 'VAT Number',
         ne: 'भ्याट नम्बर',
     },
+    requiredFieldLabel: {
+        en: 'Either pan number or school id is required',
+        ne: 'या त प्यान नम्बर वा स्कूल आईडी आवश्यक छ',
+    },
 };
 
 export const homePage = {
@@ -748,21 +752,17 @@ export const profile = {
         en: 'Payment Status',
         ne: 'भुक्तानी स्थिति',
     },
-    totalUnverifiedPaymentLabel: {
-        en: 'Unverified Payment Amount',
-        ne: 'कुल अप्रमाणित भुक्तानी',
+    outstandingBalanceLabel: {
+        en: 'Outstanding Balance',
+        ne: 'बकाया मौज्दात',
     },
-    totalUnverifiedPaymentCountLabel: {
-        en: 'Unverified Payments',
-        ne: 'कुल अप्रमाणित भुक्तानी गणना',
+    totalCreditAmountLabel: {
+        en: 'Total Credit Amount',
+        ne: 'कुल क्रेडिट रकम',
     },
-    totalVerifiedPaymentLabel: {
-        en: 'Payment Amount',
-        ne: 'कुल भुक्तानी',
-    },
-    totalVerifiedPaymentCountLabel: {
-        en: 'Payments',
-        ne: 'कुल प्रमाणित भुक्तानी गणना',
+    totalDebitAmountLabel: {
+        en: 'Total Debit Amount',
+        ne: 'कुल डेबिट रकम',
     },
 };
 
