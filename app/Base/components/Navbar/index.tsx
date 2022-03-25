@@ -117,7 +117,7 @@ function Navbar(props: Props) {
     const notificationsCount = notifications?.notifications?.unreadCount;
 
     const notificationRef = useRef<
-    { setShowPopup: React.Dispatch<React.SetStateAction<boolean>> }
+        { setShowPopup: React.Dispatch<React.SetStateAction<boolean>> }
     >(null);
 
     const handleCloseNotificationClick = useCallback(() => {
@@ -213,7 +213,7 @@ function Navbar(props: Props) {
                 </SmartNavLink>
             </div>
             <div className={styles.actions}>
-                {orderWindow && (
+                {orderWindow && user?.type === 'SCHOOL_ADMIN' && (
                     <div className={styles.orderWindowMessage}>
                         {resolveToComponent(
                             strings.orderWindowMessage,
@@ -290,8 +290,8 @@ function Navbar(props: Props) {
                                 <DropdownMenuItem
                                     name={undefined}
                                     onClick={setShowLogoutConfirmationTrue}
-                                    // TODO: disable dropdown menu item
-                                    // disabled={logoutLoading}
+                                // TODO: disable dropdown menu item
+                                // disabled={logoutLoading}
                                 >
                                     {strings.logoutButtonLabel}
                                 </DropdownMenuItem>

@@ -198,8 +198,13 @@ function SchoolPayments(props: Props) {
                     valueContainerClassName={styles.value}
                     hideLabelColon
                     label={strings.totalCreditAmountLabel}
-                    value={paymentsQueryResponse
-                        ?.schoolQuery?.paymentSummary?.paymentCreditSum ?? 0}
+                    value={(
+                        <NumberOutput
+                            value={paymentsQueryResponse
+                                ?.schoolQuery?.paymentSummary?.paymentCreditSum ?? 0}
+                            currency
+                        />
+                    )}
                 />
                 <TextOutput
                     spacing="compact"
