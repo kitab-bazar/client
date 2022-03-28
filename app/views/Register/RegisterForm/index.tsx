@@ -92,7 +92,7 @@ function RegisterForm() {
         error: formError,
         validate,
         setError,
-    } = useForm(schema, defaultFormValues);
+    } = useForm(schema, { value: defaultFormValues });
 
     const elementRef = useRef<Captcha>(null);
     const strings = useTranslation(registerStrings);

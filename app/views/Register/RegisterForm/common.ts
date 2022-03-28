@@ -12,6 +12,8 @@ import {
 
 import { EnumFix } from '#utils/types';
 import { RegisterInputType } from '#generated/types';
+import useTranslation from '#base/hooks/useTranslation';
+import { register } from '#base/configs/lang';
 
 export type RegisterFormType = PurgeNull<RegisterInputType>;
 
@@ -53,7 +55,6 @@ export const schema: RegisterFormSchema = {
                 requiredStringCondition,
             ],
         };
-
         const extraSchema = {
             name: [requiredStringCondition],
             municipality: [requiredStringCondition],
@@ -73,6 +74,7 @@ export const schema: RegisterFormSchema = {
             panNumber: [],
             schoolId: [],
         };
+        const strings = useTranslation(register);
 
         switch (currentFormValue?.userType) {
             /*
@@ -97,7 +99,7 @@ export const schema: RegisterFormSchema = {
                         fields: () => publisherExtraSchema,
                         validation: (value) => {
                             if (value && !value.panNumber && !value.vatNumber) {
-                                return 'Either pan number or vat number is required';
+                                return strings.requiredFieldVatLabel;
                             }
                             return undefined;
                         },
@@ -110,7 +112,7 @@ export const schema: RegisterFormSchema = {
                         fields: () => schoolSchema,
                         validation: (value) => {
                             if (value && !value.panNumber && !value.schoolId) {
-                                return 'Either pan number or school id is required';
+                                return strings.requiredFieldPanLabel;
                             }
                             return undefined;
                         },

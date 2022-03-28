@@ -242,7 +242,11 @@ export const register = {
         en: 'VAT Number',
         ne: 'भ्याट नम्बर',
     },
-    requiredFieldLabel: {
+    requiredFieldVatLabel: {
+        en: 'Either vat number or school id is required',
+        ne: 'भ्याट नम्बर वा स्कूल आईडी आवश्यक छ',
+    },
+    requiredFieldPanLabel: {
         en: 'Either pan number or school id is required',
         ne: 'या त प्यान नम्बर वा स्कूल आईडी आवश्यक छ',
     },
