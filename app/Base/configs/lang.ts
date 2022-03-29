@@ -171,8 +171,8 @@ export const register = {
         ne: 'पहिले नै खाता छ? {loginLink}',
     },
     individualUsersComingsoon: {
-        en: '"Kitab Bazar will be open to individual users soon. Please stay tuned."',
-        ne: '"किताब बजार चाँडै व्यक्तिगत प्रयोगकर्ताहरूको लागि खुला हुनेछ। कृपया सम्पर्कमा रहनुहोस्।"',
+        en: 'Kitab Bazar will be open to individual users soon. Please stay tuned.',
+        ne: 'किताब बजार चाँडै व्यक्तिगत प्रयोगकर्ताहरूको लागि खुला हुनेछ। कृपया सम्पर्कमा रहनुहोस्।',
     },
     loginLinkLabel: {
         en: 'Login',

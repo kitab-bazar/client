@@ -326,7 +326,7 @@ function RegisterForm() {
                         onMunicipalityOptionsChange={setMunicipalityOptions}
                     />
                 )}
-                {value.userType === 'INSTITUTIONAL_USER' && (
+                {value.userType !== 'INDIVIDUAL_USER' && (
                     <HCaptcha
                         name="captcha"
                         elementRef={elementRef}
