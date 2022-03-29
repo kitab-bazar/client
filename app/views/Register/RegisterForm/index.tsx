@@ -339,7 +339,7 @@ function RegisterForm() {
                     className={styles.registerButton}
                     name={undefined}
                     type="submit"
-                    disabled={registerPending}
+                    disabled={registerPending || value.userType === 'INDIVIDUAL_USER'}
                 >
                     {strings.registerButtonLabel}
                 </Button>

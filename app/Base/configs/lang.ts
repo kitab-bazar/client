@@ -617,6 +617,14 @@ export const notifications = {
         en: 'Failed to update notification status',
         ne: 'सूचना स्थिति अपडेट गर्न असफल',
     },
+    readStatus: {
+        en: 'read',
+        ne: 'पढिएको',
+    },
+    unseenStatus: {
+        en: 'unseen',
+        ne: 'नपढिएको',
+    },
 };
 
 export const profile = {
