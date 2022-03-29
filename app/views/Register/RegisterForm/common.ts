@@ -76,12 +76,13 @@ export const schema: RegisterFormSchema = {
 
         switch (currentFormValue?.userType) {
             /*
-            case 'INDIVIDUAL_USER':
-                return {
-                    ...baseSchema,
-                    firstName: [requiredCondition],
-                    lastName: [requiredCondition],
-                };
+           case 'INDIVIDUAL_USER':
+               return {
+                   ...baseSchema,
+                   firstName: [requiredCondition],
+                   lastName: [requiredCondition],
+               };
+           */
             case 'INSTITUTIONAL_USER':
                 return {
                     ...baseSchema,
@@ -89,7 +90,6 @@ export const schema: RegisterFormSchema = {
                         fields: () => extraSchema,
                     },
                 };
-            */
             case 'PUBLISHER':
                 return {
                     ...baseSchema,

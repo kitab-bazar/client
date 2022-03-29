@@ -274,7 +274,8 @@ function RegisterForm() {
                 />
                 {value.userType === 'INDIVIDUAL_USER' && (
                     <>
-                        <TextInput
+                        {strings.individualUsersComingsoon}
+                        {/* <TextInput
                             name="firstName"
                             label={strings.firstNameInputLabel}
                             value={value?.firstName}
@@ -289,7 +290,7 @@ function RegisterForm() {
                             error={error?.lastName}
                             onChange={setFieldValue}
                             disabled={registerPending}
-                        />
+                        /> */}
                     </>
                 )}
                 {value.userType === 'INSTITUTIONAL_USER' && (
@@ -325,13 +326,15 @@ function RegisterForm() {
                         onMunicipalityOptionsChange={setMunicipalityOptions}
                     />
                 )}
-                <HCaptcha
-                    name="captcha"
-                    elementRef={elementRef}
-                    siteKey={hCaptchaKey}
-                    onChange={setFieldValue}
-                    error={error?.captcha}
-                />
+                {value.userType === 'INSTITUTIONAL_USER' && (
+                    <HCaptcha
+                        name="captcha"
+                        elementRef={elementRef}
+                        siteKey={hCaptchaKey}
+                        onChange={setFieldValue}
+                        error={error?.captcha}
+                    />
+                )}
                 <Button
                     className={styles.registerButton}
                     name={undefined}
