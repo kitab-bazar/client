@@ -320,6 +320,11 @@ function Footer(props: Props) {
                 >
                     {strings.blogLabel}
                 </Link>
+                <SmartLink
+                    route={routes.eBook}
+                >
+                    {strings.eBookLabel}
+                </SmartLink>
                 {tutorialModalShown && (
                     <Modal
                         heading={strings.tutorialModalHeading}

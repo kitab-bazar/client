@@ -126,6 +126,15 @@ const translationDashboard = wrap({
     visibility: 'is-anything',
     // checkPermissions: (user) => user?.type === 'MODERATOR',
 });
+const eBook = wrap({
+    path: '/ebook/',
+    title: 'eBook',
+    navbarVisibility: true,
+    component: lazy(() => import('#views/Ebook')),
+    componentProps: {
+    },
+    visibility: 'is-authenticated',
+});
 
 const routes = {
     register,
@@ -141,5 +150,6 @@ const routes = {
     forgotPassword,
     moderation,
     translationDashboard,
+    eBook,
 };
 export default routes;

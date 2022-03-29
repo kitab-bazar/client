@@ -534,6 +534,10 @@ export const footer = {
         en: 'About Us',
         ne: 'हाम्रोबारे',
     },
+    eBookLabel: {
+        en: 'ebook',
+        ne: 'e पुस्तक',
+    },
     userManualLabel: {
         en: 'User Manual',
         ne: 'प्रयोगकर्ता पुस्तिका',
