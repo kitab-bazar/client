@@ -99,6 +99,9 @@ function Profile(props: Props) {
     } else if (userDetails?.userType === 'PUBLISHER') {
         profileDetails = userDetails?.publisher;
         nameLabel = strings.publisherNameLabel;
+    } else if (userDetails?.userType === 'INSTITUTIONAL_USER') {
+        profileDetails = userDetails?.publisher;
+        nameLabel = strings.publisherNameLabel;
     }
 
     return (
@@ -156,6 +159,15 @@ function Profile(props: Props) {
                                             </Tab>
                                         )}
                                         {userDetails.userType === 'SCHOOL_ADMIN' && (
+                                            <Tab
+                                                activeClassName={styles.active}
+                                                className={styles.tabItem}
+                                                name="payments"
+                                            >
+                                                {strings.paymentsTabLabel}
+                                            </Tab>
+                                        )}
+                                        {userDetails.userType === 'INSTITUTIONAL_USER' && (
                                             <Tab
                                                 activeClassName={styles.active}
                                                 className={styles.tabItem}
