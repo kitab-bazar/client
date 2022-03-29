@@ -549,7 +549,6 @@ function Schools(props: Props) {
                 search,
                 ordering,
                 isVerified: isVerifiedFilter,
-                isDeactivated: false,
                 orderMismatchUsers: isMismatchedFilter,
             },
         },

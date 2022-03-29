@@ -51,12 +51,17 @@ import {
 } from './common';
 
 import { MunicipalityOption } from '#components/LocationInput';
-// import InstitutionForm from './InstitutionForm';
+import InstitutionForm from './InstitutionForm';
 import PublisherForm from './PublisherForm';
 import SchoolForm from './SchoolForm';
 import styles from './styles.css';
 
-const includedUserTypes: UserTypeEnum[] = ['SCHOOL_ADMIN', 'PUBLISHER'];
+const includedUserTypes: UserTypeEnum[] = [
+    'SCHOOL_ADMIN',
+    'PUBLISHER',
+    'INSTITUTIONAL_USER',
+    'INDIVIDUAL_USER',
+];
 
 const defaultFormValues: PartialRegisterFormType = {
     userType: 'SCHOOL_ADMIN',
@@ -267,9 +272,10 @@ function RegisterForm() {
                     error={error?.userType}
                     disabled={registerPending}
                 />
-                {/* value.userType === 'INDIVIDUAL_USER' && (
+                {value.userType === 'INDIVIDUAL_USER' && (
                     <>
-                        <TextInput
+                        {strings.individualUsersComingsoon}
+                        {/* <TextInput
                             name="firstName"
                             label={strings.firstNameInputLabel}
                             value={value?.firstName}
@@ -284,10 +290,10 @@ function RegisterForm() {
                             error={error?.lastName}
                             onChange={setFieldValue}
                             disabled={registerPending}
-                        />
+                        /> */}
                     </>
-                ) */}
-                {/* value.userType === 'INSTITUTIONAL_USER' && (
+                )}
+                {value.userType === 'INSTITUTIONAL_USER' && (
                     <InstitutionForm
                         name="institution"
                         value={value.institution}
@@ -297,7 +303,7 @@ function RegisterForm() {
                         municipalityOptions={municipalityOptions}
                         onMunicipalityOptionsChange={setMunicipalityOptions}
                     />
-                ) */}
+                )}
                 {value.userType === 'PUBLISHER' && (
                     <PublisherForm
                         name="publisher"
@@ -320,18 +326,20 @@ function RegisterForm() {
                         onMunicipalityOptionsChange={setMunicipalityOptions}
                     />
                 )}
-                <HCaptcha
-                    name="captcha"
-                    elementRef={elementRef}
-                    siteKey={hCaptchaKey}
-                    onChange={setFieldValue}
-                    error={error?.captcha}
-                />
+                {value.userType !== 'INDIVIDUAL_USER' && (
+                    <HCaptcha
+                        name="captcha"
+                        elementRef={elementRef}
+                        siteKey={hCaptchaKey}
+                        onChange={setFieldValue}
+                        error={error?.captcha}
+                    />
+                )}
                 <Button
                     className={styles.registerButton}
                     name={undefined}
                     type="submit"
-                    disabled={registerPending}
+                    disabled={registerPending || value.userType === 'INDIVIDUAL_USER'}
                 >
                     {strings.registerButtonLabel}
                 </Button>

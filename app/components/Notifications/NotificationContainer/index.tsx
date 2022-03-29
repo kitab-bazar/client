@@ -39,6 +39,7 @@ mutation NotificationStatusUpdate($notificationId: ID!, $read: Boolean!) {
         data: { read: $read },
     ) {
         ok
+        errors
         result {
             title
             read
@@ -85,9 +86,13 @@ function NotificationContainer(props: Props) {
             refetchQueries: ['UserNotificationsCount'],
             onCompleted: (response) => {
                 if (response?.toggleNotification?.ok) {
-                    const newStatus = response.toggleNotification?.result?.read;
+                    const newStatus = response.toggleNotification?.result?.read
+                        ? strings.readStatus : strings.unseenStatus;
                     alert.show(
-                        resolveToString(strings.notificationStatusUpdateSuccessMessage, newStatus),
+                        resolveToString(
+                            strings.notificationStatusUpdateSuccessMessage,
+                            { newStatus },
+                        ),
                         { variant: 'success' },
                     );
                 } else if (response?.toggleNotification?.errors) {
@@ -96,7 +101,7 @@ function NotificationContainer(props: Props) {
                     );
                     alert.show(
                         <ErrorMessage
-                            header={strings.updateNotificationFailureMessage}
+                            header={strings.notificationStatusUpdateFaillureMessage}
                             description={
                                 isDefined(transformedError)
                                     ? transformedError[internal]
@@ -111,7 +116,7 @@ function NotificationContainer(props: Props) {
             onError: (errors) => {
                 alert.show(
                     <ErrorMessage
-                        header={strings.updateNotificationFailureMessage}
+                        header={strings.notificationStatusUpdateFaillureMessage}
                         description={errors.message}
                     />,
                     { variant: 'error' },
