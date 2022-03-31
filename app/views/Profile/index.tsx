@@ -137,7 +137,11 @@ function Profile(props: Props) {
                                         >
                                             {strings.aboutTabLabel}
                                         </Tab>
-                                        {(userDetails.userType === 'PUBLISHER' || userDetails.userType === 'SCHOOL_ADMIN') && (
+                                        {(
+                                            userDetails.userType === 'PUBLISHER'
+                                            || userDetails.userType === 'SCHOOL_ADMIN'
+                                            || userDetails.userType === 'INSTITUTIONAL_USER'
+                                        ) && (
                                             <Tab
                                                 activeClassName={styles.active}
                                                 className={styles.tabItem}
@@ -155,7 +159,10 @@ function Profile(props: Props) {
                                                 {strings.packagesTabLabel}
                                             </Tab>
                                         )}
-                                        {userDetails.userType === 'SCHOOL_ADMIN' && (
+                                        {(
+                                            userDetails.userType === 'SCHOOL_ADMIN'
+                                            || userDetails.userType === 'INSTITUTIONAL_USER'
+                                        ) && (
                                             <Tab
                                                 activeClassName={styles.active}
                                                 className={styles.tabItem}
@@ -206,7 +213,11 @@ function Profile(props: Props) {
                                             )}
                                         </div>
                                     </TabPanel>
-                                    {(userDetails.userType === 'PUBLISHER' || userDetails.userType === 'SCHOOL_ADMIN') && (
+                                    {(
+                                        userDetails.userType === 'PUBLISHER'
+                                        || userDetails.userType === 'SCHOOL_ADMIN'
+                                        || userDetails.userType === 'INSTITUTIONAL_USER'
+                                    ) && (
                                         <TabPanel
                                             name="orders"
                                             className={styles.tabContent}
@@ -222,7 +233,10 @@ function Profile(props: Props) {
                                             Packages
                                         </TabPanel>
                                     )}
-                                    {userDetails.userType === 'SCHOOL_ADMIN' && (
+                                    {(
+                                        userDetails.userType === 'SCHOOL_ADMIN'
+                                        || userDetails.userType === 'INSTITUTIONAL_USER'
+                                    ) && (
                                         <TabPanel
                                             name="payments"
                                             className={styles.tabContent}
