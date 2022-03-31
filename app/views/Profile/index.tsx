@@ -10,7 +10,9 @@ import {
     Header,
     PendingMessage,
     Message,
+    Button,
     TextOutput,
+    useModalState,
 } from '@the-deep/deep-ui';
 
 import {
@@ -21,6 +23,7 @@ import {
 import { profile } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 
+import UpdateInstitutionDetailModal from './UpdateInstitutionDetailModal';
 import OrderList from './OrderList';
 import SchoolPayments from './SchoolPayments';
 
@@ -70,6 +73,13 @@ query ProfileDetails {
             panNumber
             localAddress
         }
+        institution {
+            id
+            name
+            panNumber
+            vatNumber
+            localAddress
+        }
     }
 }
 `;
@@ -99,7 +109,16 @@ function Profile(props: Props) {
     } else if (userDetails?.userType === 'PUBLISHER') {
         profileDetails = userDetails?.publisher;
         nameLabel = strings.publisherNameLabel;
+    } else if (userDetails?.userType === 'INSTITUTIONAL_USER') {
+        profileDetails = userDetails.institution;
+        nameLabel = strings.institution;
     }
+
+    const [
+        updateInstitutionDetailModalShown,
+        showUpdateInstitutionDetailModal,
+        hideUpdateInstitutionDetailModal,
+    ] = useModalState(false);
 
     return (
         <div className={_cs(styles.profile, className)}>
@@ -177,6 +196,16 @@ function Profile(props: Props) {
                                         className={styles.tabContent}
                                     >
                                         <div className={styles.about}>
+                                            {userDetails.userType === 'INSTITUTIONAL_USER' && (
+                                                <Button
+                                                    className={styles.button}
+                                                    name={undefined}
+                                                    onClick={showUpdateInstitutionDetailModal}
+                                                    variant="primary"
+                                                >
+                                                    {strings.updateInstitutionDetail}
+                                                </Button>
+                                            )}
                                             <AboutOutput
                                                 label={nameLabel}
                                                 value={userDetails.canonicalName}
@@ -199,7 +228,10 @@ function Profile(props: Props) {
                                                     value={userDetails.publisher.vatNumber}
                                                 />
                                             )}
-                                            {(userDetails.userType === 'PUBLISHER' || userDetails.userType === 'SCHOOL_ADMIN') && (
+                                            {(
+                                                userDetails.userType === 'PUBLISHER'
+                                                || userDetails.userType === 'SCHOOL_ADMIN'
+                                            ) && (
                                                 <AboutOutput
                                                     label={strings.panLabel}
                                                     value={profileDetails?.panNumber}
@@ -243,6 +275,13 @@ function Profile(props: Props) {
                                         >
                                             <SchoolPayments />
                                         </TabPanel>
+                                    )}
+                                    {updateInstitutionDetailModalShown
+                                    && userDetails.institution && (
+                                        <UpdateInstitutionDetailModal
+                                            institution={userDetails.institution}
+                                            onModalClose={hideUpdateInstitutionDetailModal}
+                                        />
                                     )}
                                 </div>
                             </div>
