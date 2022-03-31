@@ -112,6 +112,10 @@ export const navbar = {
         en: 'Moderation',
         ne: 'मध्यस्थता',
     },
+    cancelLabel: {
+        en: 'Cancel',
+        ne: 'रद्द गर्नुहोस्',
+    },
 };
 
 export const login = {

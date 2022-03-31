@@ -173,6 +173,10 @@ function Navbar(props: Props) {
 
     const [logoutConfirmationModal, setShowLogoutConfirmationTrue] = useConfirmation({
         onConfirm: handleLogout,
+        message: strings.logoutConfirmMessage,
+        heading: strings.logoutButtonLabel,
+        confirmButtonContent: strings.logoutButtonLabel,
+        denyButtonContent: strings.cancelLabel,
     });
 
     return (
