@@ -75,6 +75,10 @@
                 background-color: var(--dui-color-foreground);
                 padding: var(--dui-spacing-extra-large);
                 min-height: 50vh;
+
+                .button {
+                    align-self: flex-end;
+                }
             }
 
             @media(max-width: 700px) {

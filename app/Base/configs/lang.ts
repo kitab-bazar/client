@@ -112,6 +112,10 @@ export const navbar = {
         en: 'Moderation',
         ne: 'मध्यस्थता',
     },
+    cancelLabel: {
+        en: 'Cancel',
+        ne: 'रद्द गर्नुहोस्',
+    },
 };
 
 export const login = {
@@ -775,6 +779,50 @@ export const profile = {
     totalDebitAmountLabel: {
         en: 'Total Debit Amount',
         ne: 'कुल डेबिट रकम',
+    },
+    institution: {
+        en: 'Institution',
+        ne: 'संस्था',
+    },
+    urlLabel: {
+        en: 'Web Address',
+        ne: 'वेब ठेगाना',
+    },
+    logoUrlLabel: {
+        en: 'Logo Web Address',
+        ne: 'लोगो वेब ठेगाना',
+    },
+    ebookLibraryLinkLabel: {
+        en: 'E-library Web Address',
+        ne: 'ई-पुस्तकालय वेब ठेगाना',
+    },
+    updateInstitutionDetail: {
+        en: 'Update Institution Detail',
+        ne: 'संस्थाको विवरण अपडेट गर्नुहोस्',
+    },
+    cancelLabel: {
+        en: 'Cancel',
+        ne: 'रद्द गर्नुहोस्',
+    },
+    saveLabel: {
+        en: 'Save',
+        ne: 'सेभ गर्नुहोस्',
+    },
+    updateInstitutionSuccess: {
+        en: 'Successfully updated institution',
+        ne: 'संस्था सफलतापूर्वक अद्यावधिक गरियो',
+    },
+    updateInstitutionFailureMessage: {
+        en: 'Failed to update institution',
+        ne: 'संस्था अद्यावधिक गर्न असफल भयो',
+    },
+    websiteUrl: {
+        en: 'website',
+        ne: 'वेबसाइट',
+    },
+    libraryUrl: {
+        en: 'E-Library',
+        ne: 'ई-लाइब्रेरी',
     },
 };
 

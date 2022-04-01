@@ -149,7 +149,7 @@ function RegisterForm() {
                     history.replace(routes.login.path);
                 } else if (errors) {
                     const formErrorFromServer = transformToFormError(
-                        removeNull(registerResponse?.errors) as ObjectError[],
+                        removeNull(errors) as ObjectError[],
                     );
                     setError(formErrorFromServer);
 
