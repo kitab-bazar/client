@@ -1,8 +1,8 @@
 .ebook {
     display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 6vh var(--dui-spacing-medium);
+    align-items: center;
+    flex-direction: column;
+    padding: 5vh var(--dui-spacing-medium);
     scrollbar-gutter: stable;
     min-height: 60vh;
 }
