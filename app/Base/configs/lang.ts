@@ -592,6 +592,17 @@ export const footer = {
     },
 };
 
+export const ebook = {
+    gotoSiteLabel: {
+        en: 'Goto site',
+        ne: 'साइटमा जानुहोस्',
+    },
+    eBookSiteLabel: {
+        en: 'Ebook site',
+        ne: 'e पुस्तक साइट',
+    },
+};
+
 export const notifications = {
     newOrderReceived: {
         en: 'You have just received a new {orderLink}',

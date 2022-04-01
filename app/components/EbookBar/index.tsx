@@ -3,23 +3,54 @@ import {
     IoBookSharp,
     IoGlobeOutline,
 } from 'react-icons/io5';
-import { Button, Container } from '@the-deep/deep-ui';
+import { Button, ButtonLikeLink, Container, ElementFragments, useModalState } from '@the-deep/deep-ui';
+import {
+    gql,
+} from '@apollo/client';
+import Avatar from '../Avatar';
+import {
+    MyElinksQuery,
+    MyElinksQueryVariables,
+} from '#generated/types';
 import SaveChild from './savechild.jpg';
+import useTranslation from '#base/hooks/useTranslation';
+import { ebook } from '#base/configs/lang';
+
 import styles from './styles.css';
 
-const bookCoverPreview = (
-    <div className={styles.preview}>
-        <img
-            className={styles.image}
-            src={SaveChild}
-            alt="img not found"
-        />
-    </div>
-);
+const ELINKS = gql`
+query MyElinks {
+    institutions {
+        results {
+        name
+        libraryUrl
+        logoUrl
+        websiteUrl
+        id
+        }
+    }
+}
+`;
+export type Elink = NonNullable<NonNullable<MyElinksQuery['institutions']>['results']>[number];
+
+const websiteUrl = 'https://www.togglecorp.com';
+const libraryUrl = 'https://blog.kitabbazar.org';
+
+const elinkKeySelector = (n: Elink) => n.id;
+
 function EbookBar() {
+    const strings = useTranslation(ebook);
+
     return (
         <div className={styles.ebook}>
-            {bookCoverPreview}
+            <ElementFragments
+                icons={(
+                    <Avatar
+                        className={styles.displayPicture}
+                        src={SaveChild}
+                    />
+                )}
+            />
             <div className={styles.linkContent}>
                 <Container
                     className={styles.details}
@@ -27,26 +58,20 @@ function EbookBar() {
                     heading="Save the Children"
                 />
                 <div className={styles.content}>
-                    <Button
-                        className={styles.bookButton}
-                        name="link"
-                        variant="primary"
-                        // eslint-disable-next-line react/destructuring-assignment
-                        onClick={undefined}
+                    <ButtonLikeLink
+                        to={websiteUrl}
+                        className={styles.button}
                     >
-                        Goto Site
+                        {strings.gotoSiteLabel}
                         <IoGlobeOutline className={styles.fallbackIcon} />
-                    </Button>
-                    <Button
-                        className={styles.bookButton}
-                        name="link"
-                        variant="primary"
-                        // eslint-disable-next-line react/destructuring-assignment
-                        onClick={undefined}
+                    </ButtonLikeLink>
+                    <ButtonLikeLink
+                        to={libraryUrl}
+                        className={styles.button}
                     >
-                        Ebook Site
+                        {strings.eBookSiteLabel}
                         <IoBookSharp className={styles.fallbackIcon} />
-                    </Button>
+                    </ButtonLikeLink>
                 </div>
             </div>
         </div>
