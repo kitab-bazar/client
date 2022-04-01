@@ -808,6 +808,22 @@ export const profile = {
         en: 'Save',
         ne: 'सेभ गर्नुहोस्',
     },
+    updateInstitutionSuccess: {
+        en: 'Successfully updated institution',
+        ne: 'संस्था सफलतापूर्वक अद्यावधिक गरियो',
+    },
+    updateInstitutionFailureMessage: {
+        en: 'Failed to update institution',
+        ne: 'संस्था अद्यावधिक गर्न असफल भयो',
+    },
+    websiteUrl: {
+        en: 'website',
+        ne: 'वेबसाइट',
+    },
+    libraryUrl: {
+        en: 'E-Library',
+        ne: 'ई-लाइब्रेरी',
+    },
 };
 
 export const school = {

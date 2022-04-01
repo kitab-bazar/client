@@ -13,6 +13,7 @@ import {
     Button,
     TextOutput,
     useModalState,
+    Link,
 } from '@the-deep/deep-ui';
 
 import {
@@ -79,6 +80,13 @@ query ProfileDetails {
             panNumber
             vatNumber
             localAddress
+            libraryUrl
+            logoUrl
+            websiteUrl
+            wardNumber
+            municipality {
+                id
+            }
         }
     }
 }
@@ -241,6 +249,30 @@ function Profile(props: Props) {
                                                 <AboutOutput
                                                     label={strings.schoolIdLabel}
                                                     value={userDetails.school.schoolId}
+                                                />
+                                            )}
+                                            {userDetails?.institution?.websiteUrl && (
+                                                <AboutOutput
+                                                    label={strings.websiteUrl}
+                                                    value={(
+                                                        <Link
+                                                            to={userDetails.institution.websiteUrl}
+                                                        >
+                                                            {userDetails.institution.websiteUrl}
+                                                        </Link>
+                                                    )}
+                                                />
+                                            )}
+                                            {userDetails?.institution?.libraryUrl && (
+                                                <AboutOutput
+                                                    label={strings.libraryUrl}
+                                                    value={(
+                                                        <Link
+                                                            to={userDetails.institution.libraryUrl}
+                                                        >
+                                                            {userDetails.institution.libraryUrl}
+                                                        </Link>
+                                                    )}
                                                 />
                                             )}
                                         </div>
