@@ -9,7 +9,7 @@ import {
 
 import Schools from './Schools';
 import Institutions from './Institutions';
-import SchoolPayments from './SchoolPayments';
+import Payments from './Payments';
 import PublisherPackages from './PublisherPackages';
 import SchoolPackages from './SchoolPackages';
 import CourierPackages from './CourierPackages';
@@ -47,11 +47,11 @@ function Moderation(props: Props) {
                         Institutions
                     </Tab>
                     <Tab
-                        name="school-payments"
+                        name="payments"
                         className={styles.tabItem}
                         activeClassName={styles.active}
                     >
-                        School Payments
+                        Payments
                     </Tab>
                     <Tab
                         name="orders"
@@ -101,10 +101,10 @@ function Moderation(props: Props) {
                     <Orders />
                 </TabPanel>
                 <TabPanel
-                    name="school-payments"
+                    name="payments"
                     className={styles.tabPanel}
                 >
-                    <SchoolPayments />
+                    <Payments />
                 </TabPanel>
                 <TabPanel
                     name="publisher-packages"

@@ -33,6 +33,7 @@ import {
 import { enumKeySelector, enumLabelSelector } from '#utils/types';
 import { createDateColumn } from '#components/tableHelpers';
 import useStateWithCallback from '#hooks/useStateWithCallback';
+import UserSelectInput, { SearchUserType } from '#components/UserSelectInput';
 
 import Actions, { Props as ActionsProps } from './Actions';
 import UpdatePaymentModal from './UpdatePaymentModal';
@@ -70,6 +71,7 @@ query Payments(
     $paymentType: PaymentTypeEnum,
     $status: StatusEnum,
     $transactionType: TransactionTypeEnum,
+    $paidByUsers: [ID!],
 ) {
     moderatorQuery {
         payments(
@@ -79,6 +81,7 @@ query Payments(
             paymentType: $paymentType,
             status: $status,
             transactionType: $transactionType,
+            paidByUsers: $paidByUsers,
         ) {
             page
             pageSize
@@ -119,12 +122,17 @@ interface Props {
     className?: string;
 }
 
-function SchoolPayments(props: Props) {
+function Payments(props: Props) {
     const {
         className,
     } = props;
 
     const [activePage, setActivePage] = useState<number>(1);
+    const [userOptions, setUserOptions] = useState<SearchUserType[] | undefined | null>();
+    const [
+        selectedUser,
+        setSelectedUser,
+    ] = useStateWithCallback<string | undefined>(undefined, setActivePage);
     const [maxItemsPerPage, setMaxItemsPerPage] = useStateWithCallback(10, setActivePage);
     const [statusFilter, setStatusFilter] = useStateWithCallback<string | undefined>(
         undefined,
@@ -154,6 +162,7 @@ function SchoolPayments(props: Props) {
         status: statusFilter as PaymentOptionsQueryVariables['status'],
         paymentType: paymentTypeFilter as PaymentOptionsQueryVariables['paymentType'],
         transactionType: transactionTypeFilter as PaymentOptionsQueryVariables['transactionType'],
+        paidByUsers: selectedUser ? [selectedUser] : undefined,
         ordering: '-id',
     }), [
         maxItemsPerPage,
@@ -161,6 +170,7 @@ function SchoolPayments(props: Props) {
         statusFilter,
         paymentTypeFilter,
         transactionTypeFilter,
+        selectedUser,
     ]);
 
     const {
@@ -317,6 +327,15 @@ function SchoolPayments(props: Props) {
             headerDescriptionClassName={styles.filters}
             headerDescription={(
                 <>
+                    <UserSelectInput
+                        name="user"
+                        label="User"
+                        variant="general"
+                        onChange={setSelectedUser}
+                        value={selectedUser}
+                        options={userOptions}
+                        onOptionsChange={setUserOptions}
+                    />
                     <SelectInput
                         className={styles.filterInput}
                         name="paymentType"
@@ -389,4 +408,4 @@ function SchoolPayments(props: Props) {
     );
 }
 
-export default SchoolPayments;
+export default Payments;

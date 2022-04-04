@@ -8,8 +8,8 @@ import {
     gql,
 } from '@apollo/client';
 import {
-    InstitutionOptionsQuery,
-    InstitutionOptionsQueryVariables,
+    UserOptionsQuery,
+    UserOptionsQueryVariables,
     UserType,
 } from '#generated/types';
 
@@ -17,10 +17,10 @@ import useDebouncedValue from '#hooks/useDebouncedValue';
 
 export type SearchUserType = Pick<UserType, 'id' | 'canonicalName'>;
 
-const INSTITUTIONS = gql`
-query InstitutionOptions($search: String) {
+const USERS = gql`
+query UserOptions($search: String) {
     moderatorQuery {
-        users(search: $search, userType: INSTITUTIONAL_USER) {
+        users(search: $search, userType: [SCHOOL_ADMIN, INSTITUTIONAL_USER]) {
             results {
                 id
                 canonicalName
@@ -32,7 +32,7 @@ query InstitutionOptions($search: String) {
 `;
 
 type Def = { containerClassName?: string };
-type InstitutionSelectInputProps<K extends string> = SearchSelectInputProps<
+type UserSelectInputProps<K extends string> = SearchSelectInputProps<
     string,
     K,
     SearchUserType,
@@ -46,7 +46,7 @@ export function userTitleSelector(user: SearchUserType) {
     return user.canonicalName;
 }
 
-function InstitutionSelectInput<K extends string>(props: InstitutionSelectInputProps<K>) {
+function UserSelectInput<K extends string>(props: UserSelectInputProps<K>) {
     const {
         className,
         ...otherProps
@@ -64,8 +64,8 @@ function InstitutionSelectInput<K extends string>(props: InstitutionSelectInputP
         previousData,
         data = previousData,
         loading,
-    } = useQuery<InstitutionOptionsQuery, InstitutionOptionsQueryVariables>(
-        INSTITUTIONS,
+    } = useQuery<UserOptionsQuery, UserOptionsQueryVariables>(
+        USERS,
         {
             variables,
             skip: !opened,
@@ -87,4 +87,4 @@ function InstitutionSelectInput<K extends string>(props: InstitutionSelectInputP
     );
 }
 
-export default InstitutionSelectInput;
+export default UserSelectInput;

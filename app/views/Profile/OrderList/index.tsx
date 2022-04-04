@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { _cs } from '@togglecorp/fujs';
 import { useQuery, gql } from '@apollo/client';
 import {
@@ -76,18 +76,21 @@ const MAX_ITEMS_PER_PAGE = 10;
 
 interface Props {
     className?: string;
-    school?: string;
+    user?: string;
     status?: string;
 }
 
 function OrderList(props: Props) {
     const {
         className,
-        school,
+        user,
         status,
     } = props;
 
     const [page, setPage] = useState<number>(1);
+    useEffect(() => {
+        setPage(1);
+    }, [user]);
     const [clickedOrderId, setClickedOrderId] = useState<Order['id']>();
 
     const {
@@ -101,7 +104,7 @@ function OrderList(props: Props) {
             variables: {
                 page,
                 pageSize: MAX_ITEMS_PER_PAGE,
-                users: school ? [school] : undefined,
+                users: user ? [user] : undefined,
                 status: status ? [status as OrderStatusEnum] : undefined,
             },
         },
