@@ -15,7 +15,6 @@ import {
     createSubmitHandler,
     removeNull,
     internal,
-    PurgeNull,
 } from '@togglecorp/toggle-form';
 import {
     useMutation,
@@ -53,7 +52,7 @@ const schema: FormSchema = {
 };
 
 const UPDATE_INSTITUTION = gql`
-    mutation UpdateInstitution($data: InstitutionCreateInputType!, $id: ID!) {
+    mutation UpdateInstitutionDetail($data: InstitutionCreateInputType!, $id: ID!) {
         updateInstitution(data: $data, id: $id) {
             errors
             ok

@@ -46,7 +46,12 @@ mutation CancelOrder($id: ID!, $comment: String) {
 }
 `;
 
-export type Order = Pick<OrderType, 'id' | 'orderCode' | 'totalPrice' | 'status' | 'totalQuantity' | 'statusDisplay'>
+export type Order = Pick<OrderType, 'id' | 'orderCode' | 'totalPrice' | 'status' | 'totalQuantity' | 'statusDisplay'> & {
+    createdBy?: {
+        id: string;
+        canonicalName: string;
+    }
+}
 
 export interface Props {
     className?: string;
@@ -67,6 +72,7 @@ function OrderItem(props: Props) {
         totalQuantity,
         status,
         statusDisplay,
+        createdBy,
     } = order;
 
     const alert = useAlert();
@@ -191,6 +197,12 @@ function OrderItem(props: Props) {
                 )
             )}
         >
+            {createdBy?.canonicalName && (
+                <TextOutput
+                    label={strings.orderedByLabel}
+                    value={createdBy?.canonicalName}
+                />
+            )}
             <TextOutput
                 label={strings.booksLabel}
                 value={(

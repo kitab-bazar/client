@@ -46,6 +46,10 @@ query OrderListWithBooks(
             statusDisplay
             totalPrice
             totalQuantity
+             createdBy {
+                 canonicalName
+                 id
+             }
             bookOrders {
                 totalCount
                 results {

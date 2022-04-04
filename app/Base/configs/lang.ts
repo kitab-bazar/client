@@ -1214,6 +1214,10 @@ export const orderItem = {
         en: 'Total price',
         ne: 'कुल रकम',
     },
+    orderedByLabel: {
+        en: 'Ordered By',
+        ne: 'द्वारा अर्डर',
+    },
     statusLabel: {
         en: 'Status',
         ne: 'अवस्था',
