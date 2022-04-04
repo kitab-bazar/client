@@ -8,6 +8,7 @@ import {
 } from '@the-deep/deep-ui';
 
 import Schools from './Schools';
+import Institutions from './Institutions';
 import SchoolPayments from './SchoolPayments';
 import PublisherPackages from './PublisherPackages';
 import SchoolPackages from './SchoolPackages';
@@ -27,16 +28,23 @@ function Moderation(props: Props) {
         >
             <Tabs
                 useHash
-                defaultHash="users"
+                defaultHash="schools"
                 variant="secondary"
             >
                 <TabList className={styles.tabList}>
                     <Tab
-                        name="users"
+                        name="schools"
                         className={styles.tabItem}
                         activeClassName={styles.active}
                     >
                         Schools
+                    </Tab>
+                    <Tab
+                        name="institutions"
+                        className={styles.tabItem}
+                        activeClassName={styles.active}
+                    >
+                        Institutions
                     </Tab>
                     <Tab
                         name="school-payments"
@@ -75,10 +83,16 @@ function Moderation(props: Props) {
                     </Tab>
                 </TabList>
                 <TabPanel
-                    name="users"
+                    name="schools"
                     className={styles.tabPanel}
                 >
                     <Schools />
+                </TabPanel>
+                <TabPanel
+                    name="institutions"
+                    className={styles.tabPanel}
+                >
+                    <Institutions />
                 </TabPanel>
                 <TabPanel
                     name="orders"

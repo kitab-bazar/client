@@ -1,0 +1,9 @@
+.update-institution-modal {
+    display: flex;
+
+    .content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--dui-spacing-small);
+    }
+}

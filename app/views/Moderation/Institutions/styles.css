@@ -1,0 +1,93 @@
+.institutions {
+    display: flex;
+    flex-direction: column;
+    padding: var(--dui-spacing-medium);
+    gap: var(--dui-spacing-super-large);
+
+    .filters {
+        display: flex;
+        gap: var(--dui-spacing-large);
+    }
+
+    .institution-item-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--dui-spacing-medium);
+    }
+
+    .pager {
+        [class*="styles_items-per-page"] {
+            [class*="styles_input"] {
+                width: 10rem;
+            }
+        }
+    }
+}
+
+.institution-item {
+    display: flex;
+    border: var(--dui-width-separator-thin) solid var(--dui-color-separator);
+    border-radius: var(--dui-radius-border-medium);
+    background-color: var(--dui-color-foreground);
+    padding: var(--dui-spacing-large);
+    width: 100%;
+    gap: var(--dui-spacing-extra-large);
+
+    .details {
+        display: flex;
+        flex-grow: 1;
+        flex-wrap: wrap;
+        gap: var(--dui-spacing-extra-large);
+
+        .label {
+            font-size: var(--dui-font-size-small);
+        }
+
+        .name-and-address {
+            display: flex;
+            flex-basis: 20rem;
+            flex-direction: column;
+            gap: var(--dui-spacing-small);
+
+            .name {
+                font-weight: var(--dui-font-weight-bold);
+            }
+
+            .address {
+                opacity: 0.8;
+            }
+        }
+
+        .created-at,
+        .phone-number {
+            flex-basis: 7rem;
+            word-break:break-all;
+        }
+        .pan-number,
+
+        .email {
+            flex-basis: 12rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            word-break:break-all;
+        }
+
+        .outstanding-balance {
+            flex-basis: 10rem;
+        }
+
+        .phone-link,
+        .email-link {
+            text-decoration: none;
+            color: var(--dui-color-accent);
+            font-weight: var(--dui-font-weight-medium);
+        }
+    }
+
+    .actions {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        gap: var(--dui-spacing-small);
+    }
+}

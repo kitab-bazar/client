@@ -37,15 +37,15 @@ import useStateWithCallback from '#hooks/useStateWithCallback';
 import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
 
 import {
-    ModerationSchoolListQuery,
-    ModerationSchoolListQueryVariables,
+    ModerationInstitutionListQuery,
+    ModerationInstitutionListQueryVariables,
     UpdateUserVerificationStatusMutation,
     UpdateUserVerificationStatusMutationVariables,
     UpdateUserActiveStatusMutation,
     UpdateUserActiveStatusMutationVariables,
 } from '#generated/types';
-import UpdateSchoolModal from './UpdateSchoolModal';
 
+import UpdateInstitutionModal from './UpdateInstitutionModal';
 import styles from './styles.css';
 
 type VerificationStatusOptionKey = 'all' | 'verified' | 'unverified';
@@ -89,118 +89,117 @@ const orderMismatchOptions: OrderMismatchOption[] = [
 const orderMismatchStatusKeySelector = (d: OrderMismatchOption) => d.key;
 const orderMismatchStatusLabelSelector = (d: OrderMismatchOption) => d.label;
 
-const MODERATION_SCHOOL_LIST = gql`
-query ModerationSchoolList(
-    $pageSize: Int,
-    $page: Int,
-    $search: String,
-    $isVerified: Boolean,
-    $orderMismatchUsers: Boolean,
-    $ordering: String,
-) {
-    moderatorQuery {
-        users(
-            pageSize: $pageSize,
-            page: $page,
-            search: $search,
-            isVerified: $isVerified,
-            orderMismatchUsers: $orderMismatchUsers,
-            ordering: $ordering,
-            userType: SCHOOL_ADMIN,
-        ) {
-            totalCount
-            results {
-               id
-                userType
-                canonicalName
-                email
-                phoneNumber
-                isVerified
-                isDeactivated
-                outstandingBalance
-                dateJoined
-                school {
+const MODERATION_INSTITUTION_LIST = gql`
+    query ModerationInstitutionList(
+        $pageSize: Int,
+        $page: Int,
+        $search: String,
+        $isVerified: Boolean,
+        $orderMismatchUsers: Boolean,
+        $ordering: String,
+    ) {
+        moderatorQuery {
+            users(
+                pageSize: $pageSize,
+                page: $page,
+                search: $search,
+                isVerified: $isVerified,
+                orderMismatchUsers: $orderMismatchUsers,
+                ordering: $ordering,
+                userType: INSTITUTIONAL_USER,
+            ) {
+                totalCount
+                results {
                     id
-                    name
-                    localAddress
-                    vatNumber
-                    panNumber
-                    schoolId
-                    wardNumber
-                    municipality {
+                    userType
+                    canonicalName
+                    email
+                    phoneNumber
+                    isVerified
+                    isDeactivated
+                    outstandingBalance
+                    dateJoined
+                    institution {
                         id
                         name
-                        district {
+                        localAddress
+                        vatNumber
+                        panNumber
+                        wardNumber
+                        municipality {
                             id
                             name
+                            district {
+                                id
+                                name
+                            }
                         }
                     }
                 }
             }
         }
     }
-}
 `;
 
 const UPDATE_USER_VERIFICATION_STATUS = gql`
-mutation UpdateUserVerificationStatus(
-    $userId: ID!,
-) {
-    moderatorMutation {
-        userVerify(id: $userId) {
-            ok
-            errors
-            result {
-                id
-                isVerified
+    mutation UpdateUserVerificationStatus(
+        $userId: ID!,
+    ) {
+        moderatorMutation {
+            userVerify(id: $userId) {
+                ok
+                errors
+                result {
+                    id
+                    isVerified
+                }
             }
         }
     }
-}
 `;
+
 const UPDATE_USER_ACTIVE_STATUS = gql`
-mutation UpdateUserActiveStatus(
-    $userId: ID!,
-    $isDeactivated: Boolean!,
-) {
-    moderatorMutation {
-        userDeactivateToggle(data: {isDeactivated: $isDeactivated}, id: $userId) {
-            errors
-            ok
-            result {
-                id
-                isDeactivated
+    mutation UpdateUserActiveStatus(
+        $userId: ID!,
+        $isDeactivated: Boolean!,
+    ) {
+        moderatorMutation {
+            userDeactivateToggle(data: {isDeactivated: $isDeactivated}, id: $userId) {
+                errors
+                ok
+                result {
+                    id
+                    isDeactivated
+                }
             }
         }
     }
-}
 `;
 
-export type SchoolItemType = NonNullable<NonNullable<NonNullable<ModerationSchoolListQuery['moderatorQuery']>['users']>['results']>[number];
-const schoolItemKeySelector = (d: SchoolItemType) => d.id;
+export type InstitutionItemType = NonNullable<NonNullable<NonNullable<ModerationInstitutionListQuery['moderatorQuery']>['users']>['results']>[number];
+const institutionItemKeySelector = (d: InstitutionItemType) => d.id;
 
-interface SchoolItemProps {
-    user: SchoolItemType;
+interface InstitutionItemProps {
+    user: InstitutionItemType;
     onUserDeactivationSuccess: () => void;
 }
 
-function SchoolItem(props: SchoolItemProps) {
+function InstitutionItem(props: InstitutionItemProps) {
     const {
         user,
         onUserDeactivationSuccess,
     } = props;
 
-    const school = user?.school;
+    const institution = user?.institution;
     const alert = useAlert();
     const [
-        updateSchoolModalShown,
-        showUpdateSchoolModal,
-        hideUpdateSchoolModal,
+        updateInstitutionModalShown,
+        showUpdateInstitutionModal,
+        hideUpdateInstitutionModal,
     ] = useModalState(false);
-
-    const handleEditSchoolClick = React.useCallback(() => {
-        showUpdateSchoolModal();
-    }, [showUpdateSchoolModal]);
+    const handleEditInstitutionClick = React.useCallback(() => {
+        showUpdateInstitutionModal();
+    }, [showUpdateInstitutionModal]);
 
     const [
         updateUserVerificationStatus,
@@ -212,7 +211,7 @@ function SchoolItem(props: SchoolItemProps) {
         UPDATE_USER_VERIFICATION_STATUS,
         {
             onCompleted: (response) => {
-                const userVerify = response?.moderatorMutation?.userVerify;
+                const userVerify = response.moderatorMutation?.userVerify;
                 if (!userVerify) {
                     return;
                 }
@@ -328,26 +327,26 @@ function SchoolItem(props: SchoolItemProps) {
         });
     }, [user, updateUserActiveStatus]);
 
-    if (!school) {
+    if (!institution) {
         return null;
     }
 
     return (
-        <div className={styles.schoolItem}>
+        <div className={styles.institutionItem}>
             <div className={styles.details}>
                 <div className={styles.nameAndAddress}>
                     <div className={styles.name}>
-                        {school.name}
+                        {institution.name}
                     </div>
                     <div className={styles.address}>
-                        {school.localAddress && (
+                        {institution.localAddress && (
                             <div>
-                                {school.localAddress}
+                                {institution.localAddress}
                             </div>
                         )}
                         {`
-                            ${school.municipality.name}-${school.wardNumber},
-                            ${school.municipality.district.name}
+                            ${institution.municipality.name}-${institution.wardNumber},
+                            ${institution.municipality.district.name}
                         `}
                     </div>
                 </div>
@@ -400,15 +399,7 @@ function SchoolItem(props: SchoolItemProps) {
                     block
                     className={styles.panNumber}
                     label="PAN"
-                    value={school.panNumber}
-                    hideLabelColon
-                    labelContainerClassName={styles.label}
-                />
-                <TextOutput
-                    block
-                    className={styles.schoolId}
-                    label="School ID"
-                    value={school.schoolId}
+                    value={institution.panNumber}
                     hideLabelColon
                     labelContainerClassName={styles.label}
                 />
@@ -429,10 +420,10 @@ function SchoolItem(props: SchoolItemProps) {
             <div className={styles.actions}>
                 <Button
                     name={undefined}
-                    onClick={handleEditSchoolClick}
+                    onClick={handleEditInstitutionClick}
                     variant="primary"
                 >
-                    Edit School
+                    Edit Institution
                 </Button>
                 {user.isVerified ? (
                     <Tag
@@ -449,10 +440,10 @@ function SchoolItem(props: SchoolItemProps) {
                         message={(
                             <>
                                 <div>
-                                    Are you sure to mark following school as verified?
+                                    Are you sure to mark following institution as verified?
                                 </div>
                                 <strong>
-                                    {user?.school?.name}
+                                    {user?.institution?.name}
                                 </strong>
                             </>
                         )}
@@ -474,7 +465,7 @@ function SchoolItem(props: SchoolItemProps) {
                                     Are you sure to deactivate the account?
                                 </div>
                                 <strong>
-                                    {user?.school?.name}
+                                    {user?.institution?.name}
                                 </strong>
                             </>
                         )}
@@ -483,10 +474,10 @@ function SchoolItem(props: SchoolItemProps) {
                     </ConfirmButton>
                 )}
             </div>
-            {updateSchoolModalShown && (
-                <UpdateSchoolModal
-                    school={school}
-                    onModalClose={hideUpdateSchoolModal}
+            {updateInstitutionModalShown && (
+                <UpdateInstitutionModal
+                    institution={institution}
+                    onModalClose={hideUpdateInstitutionModal}
                 />
             )}
         </div>
@@ -497,11 +488,14 @@ interface Props {
     className?: string;
 }
 
-function Schools(props: Props) {
+function Institutions(props: Props) {
     const { className } = props;
 
     const [activePage, setActivePage] = React.useState<number>(1);
-    const [mismatchStatus, setMismatchStatus] = useStateWithCallback<OrderMismatchOption['key']>('all', setActivePage);
+    const [mismatchStatus, setMismatchStatus] = useStateWithCallback<OrderMismatchOption['key']>(
+        'all',
+        setActivePage,
+    );
     const [verified, setVerified] = useStateWithCallback<VerificationStatusOption['key']>(
         'all',
         setActivePage,
@@ -548,28 +542,28 @@ function Schools(props: Props) {
         loading,
         error,
         refetch,
-    } = useQuery<ModerationSchoolListQuery, ModerationSchoolListQueryVariables>(
-        MODERATION_SCHOOL_LIST,
+    } = useQuery<ModerationInstitutionListQuery, ModerationInstitutionListQueryVariables>(
+        MODERATION_INSTITUTION_LIST,
         {
             variables,
         },
     );
 
-    const handleSchoolDeactivation = React.useCallback(() => {
+    const handleInstitutionDeactivation = React.useCallback(() => {
         refetch();
     }, [refetch]);
 
-    const schoolItemRendererParams = React.useCallback(
-        (_: string, user: SchoolItemType): SchoolItemProps => ({
+    const institutionItemRendererParams = React.useCallback(
+        (_: string, user: InstitutionItemType): InstitutionItemProps => ({
             user,
-            onUserDeactivationSuccess: handleSchoolDeactivation,
+            onUserDeactivationSuccess: handleInstitutionDeactivation,
         }),
-        [handleSchoolDeactivation],
+        [handleInstitutionDeactivation],
     );
 
     return (
         <div
-            className={_cs(styles.schools, className)}
+            className={_cs(styles.institutions, className)}
         >
             <div className={styles.filters}>
                 <TextInput
@@ -578,7 +572,7 @@ function Schools(props: Props) {
                     value={search}
                     onChange={setSearch}
                     variant="general"
-                    label="Search by School Name"
+                    label="Search by Institution Name"
                     type="search"
                 />
                 <RadioInput
@@ -610,12 +604,12 @@ function Schools(props: Props) {
                 />
             </div>
             <ListView
-                className={styles.schoolItemList}
+                className={styles.institutionItemList}
                 data={data?.moderatorQuery?.users?.results ?? undefined}
                 pending={loading}
-                rendererParams={schoolItemRendererParams}
-                renderer={SchoolItem}
-                keySelector={schoolItemKeySelector}
+                rendererParams={institutionItemRendererParams}
+                renderer={InstitutionItem}
+                keySelector={institutionItemKeySelector}
                 errored={!!error}
                 filtered={false}
                 messageShown
@@ -638,4 +632,4 @@ function Schools(props: Props) {
     );
 }
 
-export default Schools;
+export default Institutions;
