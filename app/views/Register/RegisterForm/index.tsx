@@ -84,6 +84,7 @@ const USER_TYPES = gql`
 const REGISTER = gql`
     mutation Register($data: RegisterInputType!) {
         register(data: $data) {
+            captchaRequired
             errors
             ok
         }
@@ -91,13 +92,19 @@ const REGISTER = gql`
 `;
 
 function RegisterForm() {
+    const [captchaRequired, setCaptchaRequired] = useState(false);
+
+    const mySchema = useMemo(
+        () => schema(captchaRequired),
+        [captchaRequired],
+    );
     const {
         setFieldValue,
         value,
         error: formError,
         validate,
         setError,
-    } = useForm(schema, defaultFormValues);
+    } = useForm(mySchema, defaultFormValues);
 
     const elementRef = useRef<Captcha>(null);
     const strings = useTranslation(registerStrings);
@@ -139,8 +146,10 @@ function RegisterForm() {
                 const {
                     ok,
                     errors,
+                    captchaRequired: captchaRequiredFromResponse,
                 } = registerResponse;
 
+                setCaptchaRequired(captchaRequiredFromResponse);
                 if (ok) {
                     alert.show(
                         strings.registrationSuccessMessage,
@@ -326,7 +335,7 @@ function RegisterForm() {
                         onMunicipalityOptionsChange={setMunicipalityOptions}
                     />
                 )}
-                {value.userType !== 'INDIVIDUAL_USER' && (
+                {value.userType !== 'INDIVIDUAL_USER' && captchaRequired && (
                     <HCaptcha
                         name="captcha"
                         elementRef={elementRef}

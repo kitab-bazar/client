@@ -32,9 +32,9 @@ export type SchoolType = NonNullable<PartialRegisterFormType['school']>;
 export type SchoolSchema = ObjectSchema<PartialForm<SchoolType>, PartialRegisterFormType>;
 export type SchoolSchemaFields = ReturnType<SchoolSchema['fields']>;
 
-export const schema: RegisterFormSchema = {
+export const schema = (captchaRequired: boolean): RegisterFormSchema => ({
     fields: (currentFormValue): RegisterFormSchemaFields => {
-        const baseSchema: RegisterFormSchemaFields = {
+        let baseSchema: RegisterFormSchemaFields = {
             email: [emailCondition, requiredStringCondition],
             userType: [requiredCondition],
             password: [
@@ -49,10 +49,14 @@ export const schema: RegisterFormSchema = {
                 lengthGreaterThanCondition(5),
                 lengthSmallerThanCondition(15),
             ],
-            captcha: [
-                requiredStringCondition,
-            ],
         };
+
+        if (captchaRequired) {
+            baseSchema = {
+                ...baseSchema,
+                captcha: [requiredStringCondition],
+            };
+        }
 
         const extraSchema = {
             name: [requiredStringCondition],
@@ -120,4 +124,4 @@ export const schema: RegisterFormSchema = {
                 return baseSchema;
         }
     },
-};
+});
