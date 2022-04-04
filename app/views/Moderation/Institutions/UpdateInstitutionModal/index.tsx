@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
+import { isDefined } from '@togglecorp/fujs';
 import {
     Modal,
     Button,
@@ -15,6 +16,7 @@ import {
     requiredStringCondition,
     createSubmitHandler,
     removeNull,
+    internal,
 } from '@togglecorp/toggle-form';
 import { gql, useMutation } from '@apollo/client';
 import {
@@ -23,6 +25,7 @@ import {
     UpdateInstitutionMutationVariables,
 } from '#generated/types';
 import NonFieldError from '#components/NonFieldError';
+import ErrorMessage from '#components/ErrorMessage';
 import {
     transformToFormError,
     ObjectError,
@@ -137,18 +140,25 @@ function UpdateInstitutionModal(props: Props) {
                         removeNull(errors) as ObjectError[],
                     );
                     setError(formErrorFromServer);
+                    alert.show(
+                        <ErrorMessage
+                            header="Failed to update institution."
+                            description={
+                                isDefined(formErrorFromServer)
+                                    ? formErrorFromServer[internal]
+                                    : undefined
+                            }
+                        />,
+                        { variant: 'error' },
+                    );
                 }
             },
             onError: (errors) => {
                 alert.show(
-                    <div>
-                        <div>
-                            Failed to update institution.
-                        </div>
-                        <div>
-                            {errors.message}
-                        </div>
-                    </div>,
+                    <ErrorMessage
+                        header="Failed to update institution."
+                        description={errors.message}
+                    />,
                     { variant: 'error' },
                 );
             },

@@ -149,7 +149,10 @@ function RegisterForm() {
                     captchaRequired: captchaRequiredFromResponse,
                 } = registerResponse;
 
-                setCaptchaRequired(captchaRequiredFromResponse);
+                if (captchaRequiredFromResponse) {
+                    setCaptchaRequired(captchaRequiredFromResponse);
+                }
+
                 if (ok) {
                     alert.show(
                         strings.registrationSuccessMessage,

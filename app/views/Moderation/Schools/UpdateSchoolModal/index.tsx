@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
+import { isDefined } from '@togglecorp/fujs';
 import {
     Modal,
     Button,
@@ -15,6 +16,7 @@ import {
     requiredStringCondition,
     createSubmitHandler,
     removeNull,
+    internal,
 } from '@togglecorp/toggle-form';
 import { gql, useMutation } from '@apollo/client';
 import {
@@ -29,6 +31,8 @@ import {
 } from '#base/utils/errorTransform';
 
 import LocationInput, { MunicipalityOption } from '#components/LocationInput';
+import ErrorMessage from '#components/ErrorMessage';
+
 import { SchoolItemType } from '../index';
 import styles from './styles.css';
 
@@ -146,18 +150,25 @@ function UpdateSchoolModal(props: Props) {
                         removeNull(errors) as ObjectError[],
                     );
                     setError(formErrorFromServer);
+                    alert.show(
+                        <ErrorMessage
+                            header="Failed to update school."
+                            description={
+                                isDefined(formErrorFromServer)
+                                    ? formErrorFromServer[internal]
+                                    : undefined
+                            }
+                        />,
+                        { variant: 'error' },
+                    );
                 }
             },
             onError: (errors) => {
                 alert.show(
-                    <div>
-                        <div>
-                            Failed to update school.
-                        </div>
-                        <div>
-                            {errors.message}
-                        </div>
-                    </div>,
+                    <ErrorMessage
+                        header="Failed to update institution."
+                        description={errors.message}
+                    />,
                     { variant: 'error' },
                 );
             },

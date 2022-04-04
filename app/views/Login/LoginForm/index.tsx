@@ -160,7 +160,9 @@ function LoginForm() {
                     ok,
                 } = loginRes;
 
-                setCaptchaRequired(captchaRequiredFromResponse);
+                if (captchaRequiredFromResponse) {
+                    setCaptchaRequired(captchaRequiredFromResponse);
+                }
 
                 if (ok) {
                     const safeUser = removeNull(result);
