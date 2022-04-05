@@ -40,40 +40,40 @@ import styles from './styles.css';
 
 const FORGOT_PASSWORD = gql`
     mutation generateResetPasswordToken(
-        $email: String!,
-        $captcha: String!,
-        $siteKey: String!,
+        $data: GenerateResetPasswordTokenType!,
     ) {
-        generateResetPasswordToken(data: {
-            email: $email,
-            captcha: $captcha,
-            siteKey: $siteKey,
-        }) {
+        generateResetPasswordToken(data: $data) {
+            captchaRequired
             errors
             ok
         }
     }
 `;
 
-type FormType = GenerateResetPasswordTokenMutationVariables;
+type FormType = NonNullable<GenerateResetPasswordTokenMutationVariables['data']>;
 type PartialFormType = PartialForm<FormType>;
 
 type FormSchema = ObjectSchema<PartialFormType>;
 
 type FormSchemaFields = ReturnType<FormSchema['fields']>;
 
-const schema: FormSchema = {
+const schema = (captchaRequired: boolean): FormSchema => ({
     fields: (): FormSchemaFields => {
-        const basicFields: FormSchemaFields = {
+        let basicFields: FormSchemaFields = {
             email: [
                 emailCondition,
                 requiredStringCondition,
             ],
-            captcha: [requiredStringCondition],
         };
+        if (captchaRequired) {
+            basicFields = {
+                ...basicFields,
+                captcha: [requiredStringCondition],
+            };
+        }
         return basicFields;
     },
-};
+});
 
 const defaultFormValue: PartialFormType = {};
 
@@ -90,6 +90,12 @@ function ForgotPasswordForm() {
         (): PartialFormType => (emailFromState ? { email: emailFromState } : defaultFormValue),
         [emailFromState],
     );
+    const [captchaRequired, setCaptchaRequired] = useState(false);
+
+    const mySchema = useMemo(
+        () => schema(captchaRequired),
+        [captchaRequired],
+    );
 
     const {
         pristine,
@@ -98,7 +104,7 @@ function ForgotPasswordForm() {
         setFieldValue,
         validate,
         setError,
-    } = useForm(schema, initialValue);
+    } = useForm(mySchema, initialValue);
 
     const strings = useTranslation(resetPasswordStrings);
 
@@ -123,10 +129,14 @@ function ForgotPasswordForm() {
                     return;
                 }
                 const {
+                    captchaRequired: captchaRequiredFromResponse,
                     errors,
                     ok,
                 } = resp;
 
+                if (captchaRequiredFromResponse) {
+                    setCaptchaRequired(captchaRequiredFromResponse);
+                }
                 if (ok) {
                     alert.show(
                         strings.resetPasswordEmailSentLabel,
@@ -168,9 +178,11 @@ function ForgotPasswordForm() {
         elementRef.current?.resetCaptcha();
         resetPassword({
             variables: {
-                ...finalValue,
-                siteKey: hCaptchaKey,
-            } as FormType,
+                data: {
+                    ...finalValue,
+                    siteKey: hCaptchaKey,
+                } as FormType,
+            },
         });
     }, [resetPassword]);
 
@@ -217,13 +229,15 @@ function ForgotPasswordForm() {
                             error={error?.email}
                             disabled={resetPasswordPending}
                         />
-                        <HCaptcha
-                            name="captcha"
-                            elementRef={elementRef}
-                            siteKey={hCaptchaKey}
-                            onChange={setFieldValue}
-                            error={error?.captcha}
-                        />
+                        {captchaRequired && (
+                            <HCaptcha
+                                name="captcha"
+                                elementRef={elementRef}
+                                siteKey={hCaptchaKey}
+                                onChange={setFieldValue}
+                                error={error?.captcha}
+                            />
+                        )}
                     </>
                 )}
             </Container>

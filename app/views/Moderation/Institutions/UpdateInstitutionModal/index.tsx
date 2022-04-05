@@ -20,32 +20,30 @@ import {
 } from '@togglecorp/toggle-form';
 import { gql, useMutation } from '@apollo/client';
 import {
-    SchoolCreateInputType,
-    UpdateSchoolMutation,
-    UpdateSchoolMutationVariables,
+    InstitutionCreateInputType,
+    UpdateInstitutionMutation,
+    UpdateInstitutionMutationVariables,
 } from '#generated/types';
 import NonFieldError from '#components/NonFieldError';
+import ErrorMessage from '#components/ErrorMessage';
 import {
     transformToFormError,
     ObjectError,
 } from '#base/utils/errorTransform';
 
 import LocationInput, { MunicipalityOption } from '#components/LocationInput';
-import ErrorMessage from '#components/ErrorMessage';
-
-import { SchoolItemType } from '../index';
+import { InstitutionItemType } from '../index';
 import styles from './styles.css';
 
-const UPDATE_SCHOOL = gql`
-    mutation UpdateSchool($data:  SchoolCreateInputType!, $id: ID!) {
-        updateSchool(id: $id, data: $data) {
+const UPDATE_INSTITUTION = gql`
+    mutation UpdateInstitution($data:  InstitutionCreateInputType!, $id: ID!) {
+        updateInstitution(id: $id, data: $data) {
             errors
             ok
             result {
                 id
                 name
                 panNumber
-                schoolId
                 vatNumber
                 wardNumber
                 localAddress
@@ -66,7 +64,7 @@ const UPDATE_SCHOOL = gql`
     }
 `;
 
-type FormType = UpdateSchoolMutationVariables['data'];
+type FormType = UpdateInstitutionMutationVariables['data'];
 type PartialFormType = PartialForm<FormType>;
 type FormSchema = ObjectSchema<PartialFormType>;
 type FormSchemaFields = ReturnType<FormSchema['fields']>;
@@ -77,41 +75,33 @@ const schema: FormSchema = {
         municipality: [requiredStringCondition],
         localAddress: [],
         panNumber: [],
-        schoolId: [],
         wardNumber: [requiredCondition],
     }),
-    validation: (value) => {
-        if (value && !value.panNumber && !value.schoolId) {
-            return 'Either pan number or school id is required';
-        }
-        return undefined;
-    },
 };
 
 interface Props {
-    school: NonNullable<SchoolItemType['school']>;
+    institution: NonNullable<InstitutionItemType['institution']>;
     onModalClose: () => void;
 }
 
-function UpdateSchoolModal(props: Props) {
+function UpdateInstitutionModal(props: Props) {
     const {
-        school,
+        institution,
         onModalClose,
     } = props;
 
     const [
         municipalityOptions,
         setMunicipalityOptions,
-    ] = useState<MunicipalityOption[] | undefined | null>([school.municipality]);
+    ] = useState<MunicipalityOption[] | undefined | null>([institution.municipality]);
 
-    const initialValue: PartialFormType = useMemo(() => (school ? ({
-        name: school.name,
-        municipality: school.municipality.id,
-        localAddress: school.localAddress ?? '',
-        panNumber: school.panNumber,
-        schoolId: school.schoolId,
-        wardNumber: school.wardNumber,
-    }) : {}), [school]);
+    const initialValue: PartialFormType = useMemo(() => (institution ? ({
+        name: institution.name,
+        municipality: institution.municipality.id,
+        localAddress: institution.localAddress ?? '',
+        panNumber: institution.panNumber,
+        wardNumber: institution.wardNumber,
+    }) : {}), [institution]);
 
     const {
         pristine,
@@ -126,23 +116,23 @@ function UpdateSchoolModal(props: Props) {
     const error = getErrorObject(riskyError);
 
     const [
-        updateSchool,
-        { loading: updateSchoolPending },
-    ] = useMutation<UpdateSchoolMutation, UpdateSchoolMutationVariables>(
-        UPDATE_SCHOOL,
+        updateInstitution,
+        { loading: updateInstitutionPending },
+    ] = useMutation<UpdateInstitutionMutation, UpdateInstitutionMutationVariables>(
+        UPDATE_INSTITUTION,
         {
             onCompleted: (response) => {
-                if (!response.updateSchool) {
+                if (!response.updateInstitution) {
                     return;
                 }
                 const {
                     ok,
                     errors,
-                } = response.updateSchool;
+                } = response.updateInstitution;
                 if (ok) {
                     onModalClose();
                     alert.show(
-                        'School updated successfully!',
+                        'Institution updated successfully!',
                         { variant: 'success' },
                     );
                 } else if (errors) {
@@ -152,7 +142,7 @@ function UpdateSchoolModal(props: Props) {
                     setError(formErrorFromServer);
                     alert.show(
                         <ErrorMessage
-                            header="Failed to update school."
+                            header="Failed to update institution."
                             description={
                                 isDefined(formErrorFromServer)
                                     ? formErrorFromServer[internal]
@@ -180,21 +170,21 @@ function UpdateSchoolModal(props: Props) {
             validate,
             setError,
             (val) => {
-                updateSchool({
-                    variables: { data: val as SchoolCreateInputType, id: school.id },
+                updateInstitution({
+                    variables: { data: val as InstitutionCreateInputType, id: institution.id },
                 });
             },
         );
         submit();
-    }, [setError, validate, updateSchool, school.id]);
+    }, [setError, validate, updateInstitution, institution.id]);
 
     return (
         <Modal
-            className={styles.updateSchoolModal}
-            heading="Edit School"
+            className={styles.updateInstitutionModal}
+            heading="Edit Institution"
             headingSize="small"
             onCloseButtonClick={onModalClose}
-            headingDescription={school.name}
+            headingDescription={institution.name}
             size="small"
             freeHeight
             bodyClassName={styles.content}
@@ -211,7 +201,7 @@ function UpdateSchoolModal(props: Props) {
                         name={undefined}
                         variant="primary"
                         onClick={handleSubmit}
-                        disabled={pristine || updateSchoolPending}
+                        disabled={pristine || updateInstitutionPending}
                     >
                         Save
                     </Button>
@@ -221,11 +211,11 @@ function UpdateSchoolModal(props: Props) {
             <NonFieldError error={error} />
             <TextInput
                 name="name"
-                label="School Name"
+                label="Institution Name"
                 value={value?.name}
                 error={error?.name}
                 onChange={setFieldValue}
-                disabled={updateSchoolPending}
+                disabled={updateInstitutionPending}
             />
             <LocationInput
                 name="municipality"
@@ -235,7 +225,7 @@ function UpdateSchoolModal(props: Props) {
                 onChange={setFieldValue}
                 options={municipalityOptions}
                 onOptionsChange={setMunicipalityOptions}
-                disabled={updateSchoolPending}
+                disabled={updateInstitutionPending}
             />
             <NumberInput
                 name="wardNumber"
@@ -243,7 +233,7 @@ function UpdateSchoolModal(props: Props) {
                 value={value?.wardNumber}
                 error={error?.wardNumber}
                 onChange={setFieldValue}
-                disabled={updateSchoolPending}
+                disabled={updateInstitutionPending}
                 min={1}
                 max={99}
             />
@@ -253,7 +243,7 @@ function UpdateSchoolModal(props: Props) {
                 value={value?.localAddress}
                 error={error?.localAddress}
                 onChange={setFieldValue}
-                disabled={updateSchoolPending}
+                disabled={updateInstitutionPending}
             />
             <TextInput
                 name="panNumber"
@@ -261,18 +251,10 @@ function UpdateSchoolModal(props: Props) {
                 value={value?.panNumber}
                 error={error?.panNumber}
                 onChange={setFieldValue}
-                disabled={updateSchoolPending}
-            />
-            <TextInput
-                name="schoolId"
-                label="School ID"
-                value={value?.schoolId}
-                error={error?.schoolId}
-                onChange={setFieldValue}
-                disabled={updateSchoolPending}
+                disabled={updateInstitutionPending}
             />
         </Modal>
     );
 }
 
-export default UpdateSchoolModal;
+export default UpdateInstitutionModal;

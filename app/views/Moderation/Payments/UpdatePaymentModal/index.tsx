@@ -34,7 +34,7 @@ import {
     PaymentOptionsQuery,
     PaymentOptionsQueryVariables,
 } from '#generated/types';
-import SchoolSelectInput, { SearchUserType } from '#components/SchoolSelectInput';
+import UserSelectInput, { SearchUserType } from '#components/UserSelectInput';
 import ErrorMessage from '#components/ErrorMessage';
 import PaymentLogForm from './PaymentLogForm';
 import NonFieldError from '#components/NonFieldError';
@@ -156,7 +156,7 @@ function UpdatePaymentModal(props: Props) {
         paymentDetails,
     } = props;
 
-    const [schoolOptions, setSchoolOptions] = useState<SearchUserType[] | undefined | null>(
+    const [userOptions, setUserOptions] = useState<SearchUserType[] | undefined | null>(
         () => {
             if (paymentDetails?.paidBy) {
                 return [{
@@ -365,14 +365,14 @@ function UpdatePaymentModal(props: Props) {
             />
             { !paymentDetails && (
                 <>
-                    <SchoolSelectInput
+                    <UserSelectInput
                         name="paidBy"
                         label="Paid By"
                         onChange={setFieldValue}
                         value={value?.paidBy}
                         error={error?.paidBy}
-                        options={schoolOptions}
-                        onOptionsChange={setSchoolOptions}
+                        options={userOptions}
+                        onOptionsChange={setUserOptions}
                         disabled={updatePaymentPending}
                     />
                     <RadioInput

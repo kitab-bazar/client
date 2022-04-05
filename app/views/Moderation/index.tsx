@@ -8,7 +8,8 @@ import {
 } from '@the-deep/deep-ui';
 
 import Schools from './Schools';
-import SchoolPayments from './SchoolPayments';
+import Institutions from './Institutions';
+import Payments from './Payments';
 import PublisherPackages from './PublisherPackages';
 import SchoolPackages from './SchoolPackages';
 import CourierPackages from './CourierPackages';
@@ -27,23 +28,30 @@ function Moderation(props: Props) {
         >
             <Tabs
                 useHash
-                defaultHash="users"
+                defaultHash="schools"
                 variant="secondary"
             >
                 <TabList className={styles.tabList}>
                     <Tab
-                        name="users"
+                        name="schools"
                         className={styles.tabItem}
                         activeClassName={styles.active}
                     >
                         Schools
                     </Tab>
                     <Tab
-                        name="school-payments"
+                        name="institutions"
                         className={styles.tabItem}
                         activeClassName={styles.active}
                     >
-                        School Payments
+                        Institutions
+                    </Tab>
+                    <Tab
+                        name="payments"
+                        className={styles.tabItem}
+                        activeClassName={styles.active}
+                    >
+                        Payments
                     </Tab>
                     <Tab
                         name="orders"
@@ -75,10 +83,16 @@ function Moderation(props: Props) {
                     </Tab>
                 </TabList>
                 <TabPanel
-                    name="users"
+                    name="schools"
                     className={styles.tabPanel}
                 >
                     <Schools />
+                </TabPanel>
+                <TabPanel
+                    name="institutions"
+                    className={styles.tabPanel}
+                >
+                    <Institutions />
                 </TabPanel>
                 <TabPanel
                     name="orders"
@@ -87,10 +101,10 @@ function Moderation(props: Props) {
                     <Orders />
                 </TabPanel>
                 <TabPanel
-                    name="school-payments"
+                    name="payments"
                     className={styles.tabPanel}
                 >
-                    <SchoolPayments />
+                    <Payments />
                 </TabPanel>
                 <TabPanel
                     name="publisher-packages"

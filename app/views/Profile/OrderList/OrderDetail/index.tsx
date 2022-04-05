@@ -32,6 +32,10 @@ query OrderDetails($id: ID!, $bookPage: Int, $bookPageSize: Int) {
         statusDisplay
         totalPrice
         totalQuantity
+        createdBy {
+            id
+            canonicalName
+        }
         bookOrders(page: $bookPage, pageSize: $bookPageSize) {
             page
             pageSize

@@ -14,7 +14,7 @@ import {
 } from '#generated/types';
 import { enumKeySelector, enumLabelSelector } from '#utils/types';
 
-import SchoolSelectInput, { SearchUserType } from '#components/SchoolSelectInput';
+import UserSelectInput, { SearchUserType } from '#components/UserSelectInput';
 import OrderList from '#views/Profile/OrderList';
 import styles from './styles.css';
 
@@ -38,8 +38,8 @@ function Orders(props: Props) {
         className,
     } = props;
 
-    const [schoolOptions, setSchoolOptions] = useState<SearchUserType[] | undefined | null>();
-    const [selectedSchool, setSelectedSchool] = useState<string | undefined>();
+    const [userOptions, setUserOptions] = useState<SearchUserType[] | undefined | null>();
+    const [selectedUser, setSelectedUser] = useState<string | undefined>();
     const [statusFilter, setStatusFilter] = useState<string | undefined>();
 
     const {
@@ -57,14 +57,14 @@ function Orders(props: Props) {
             headerDescriptionClassName={styles.filters}
             headerDescription={(
                 <>
-                    <SchoolSelectInput
-                        name="school"
-                        label="School"
+                    <UserSelectInput
+                        name="user"
+                        label="User"
                         variant="general"
-                        onChange={setSelectedSchool}
-                        value={selectedSchool}
-                        options={schoolOptions}
-                        onOptionsChange={setSchoolOptions}
+                        onChange={setSelectedUser}
+                        value={selectedUser}
+                        options={userOptions}
+                        onOptionsChange={setUserOptions}
                     />
                     <SelectInput
                         name="status"
@@ -83,7 +83,7 @@ function Orders(props: Props) {
             )}
         >
             <OrderList
-                school={selectedSchool}
+                user={selectedUser}
                 status={statusFilter}
             />
         </Container>
