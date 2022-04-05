@@ -536,7 +536,7 @@ export const footer = {
     },
     eBookLabel: {
         en: 'ebook',
-        ne: 'e पुस्तक',
+        ne: 'ई-पुस्तक',
     },
     userManualLabel: {
         en: 'User Manual',
@@ -593,13 +593,25 @@ export const footer = {
 };
 
 export const ebook = {
-    gotoSiteLabel: {
+    ebookTitle: {
+        en: 'Ebooks',
+        ne: 'ई-पुस्तकहरू',
+    },
+    gotoWebSiteLabel: {
         en: 'Goto site',
         ne: 'साइटमा जानुहोस्',
     },
-    eBookSiteLabel: {
-        en: 'Ebook site',
-        ne: 'e पुस्तक साइट',
+    gotoElibraryLink: {
+        en: 'Ebook website',
+        ne: 'ई-पुस्तक वेबसाइट',
+    },
+    ebooksErroredMessage: {
+        en: 'Failed to fetch institutions having e-library',
+        ne: 'ई-पुस्तकालय भएका संस्थाहरू ल्याउन असफल भयो',
+    },
+    noEbooksMessage: {
+        en: 'There are no institutions with e-library',
+        ne: 'ई-पुस्तकालय भएको कुनै संस्था छैन',
     },
 };
 

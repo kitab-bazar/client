@@ -14,7 +14,7 @@ function getInitials(name?: string) {
             <IoPersonOutline className={styles.defaultUser} />
         );
     }
-    const letters = name.trim().split(/\s/);
+    const letters = name.trim().split(/\s/).map((item) => item[0]);
     return (
         letters.length <= 1
             ? letters[0]
@@ -93,6 +93,7 @@ function Avatar(props: AvatarProps) {
 
     if (!hasImage || hasError || isLoading) {
         const initials = getInitials(name);
+        console.warn('initials', initials);
         const backgroundColor = name && name.trim().length > 0
             ? getHexFromString(name) : '#fff';
         const textColor = getColorOnBgColor(backgroundColor);

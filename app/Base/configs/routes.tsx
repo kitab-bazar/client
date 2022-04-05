@@ -130,12 +130,11 @@ const eBook = wrap({
     path: '/ebook/',
     title: 'eBook',
     navbarVisibility: true,
-    component: lazy(() => import('#views/EBook')),
+    component: lazy(() => import('#views/Ebook')),
     componentProps: {
     },
     visibility: 'is-authenticated',
 });
-
 const routes = {
     register,
     login,
