@@ -24,7 +24,7 @@ const COURIER_PACKAGE_BOOKS = gql`
         $pageSize: Int,
     ) {
         courierPackage(id: $id) {
-            courierPackageBooks(page: $page, pageSize: $pageSize) {
+            schoolCourierPackageBooks(page: $page, pageSize: $pageSize) {
                 page
                 pageSize
                 totalCount
@@ -61,7 +61,7 @@ const COURIER_PACKAGE_BOOKS = gql`
     }
 `;
 
-type CourierPackageBook = NonNullable<NonNullable<NonNullable<NonNullable<CourierPackageBooksQuery['courierPackage']>['courierPackageBooks']>['results']>[number]>;
+type CourierPackageBook = NonNullable<NonNullable<NonNullable<NonNullable<CourierPackageBooksQuery['courierPackage']>['schoolCourierPackageBooks']>['results']>[number]>;
 
 const maxItemsPerPage = 10;
 function keySelector(packageBook: CourierPackageBook) {
@@ -117,7 +117,7 @@ function RelatedBooks(props: Props) {
                 <Pager
                     activePage={activePage}
                     itemsCount={
-                        bookResponse?.courierPackage?.courierPackageBooks?.totalCount ?? 0
+                        bookResponse?.courierPackage?.schoolCourierPackageBooks?.totalCount ?? 0
                     }
                     maxItemsPerPage={maxItemsPerPage}
                     itemsPerPageControlHidden
@@ -127,7 +127,7 @@ function RelatedBooks(props: Props) {
         >
             <ListView
                 className={styles.bookItemList}
-                data={bookResponse?.courierPackage?.courierPackageBooks?.results ?? undefined}
+                data={bookResponse?.courierPackage?.schoolCourierPackageBooks?.results ?? undefined}
                 rendererParams={bookItemRendererParams}
                 renderer={BookItem}
                 keySelector={keySelector}
