@@ -1,0 +1,49 @@
+.institution-item {
+    display: flex;
+    align-items: center;
+    flex-basis: 45%;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--dui-spacing-medium);
+    border: var(--dui-width-separator-thin) solid var(--dui-color-separator);
+    background: var(--dui-color-foreground);
+    padding: var(--dui-spacing-medium);
+
+    .left {
+        display: flex;
+        flex-basis: 30%;
+        flex-shrink: 0;
+        justify-content: center;
+        max-width: 15em;
+
+        .display-picture {
+            display: flex;
+            --size: 10em;
+        }
+    }
+
+    .right {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        gap: var(--dui-spacing-medium);
+
+        .name {
+            font-size: var(--dui-font-size-extra-large);
+            font-weight: var(--dui-font-weight-bold);
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--dui-spacing-medium);
+        }
+    }
+
+}
+
+@media (max-width: 780px) {
+    .institution-item {
+        flex-basis: 100%;
+    }
+}

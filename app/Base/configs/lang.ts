@@ -534,6 +534,10 @@ export const footer = {
         en: 'About Us',
         ne: 'हाम्रोबारे',
     },
+    eBookLabel: {
+        en: 'ebook',
+        ne: 'ई-पुस्तक',
+    },
     userManualLabel: {
         en: 'User Manual',
         ne: 'प्रयोगकर्ता पुस्तिका',
@@ -585,6 +589,29 @@ export const footer = {
     userManualTitle: {
         en: 'Kitab Bazar User Manual',
         ne: 'किताब बजार प्रयोगकर्ता पुस्तिका',
+    },
+};
+
+export const ebook = {
+    ebookTitle: {
+        en: 'Ebooks',
+        ne: 'ई-पुस्तकहरू',
+    },
+    gotoWebSiteLabel: {
+        en: 'Goto site',
+        ne: 'साइटमा जानुहोस्',
+    },
+    gotoElibraryLink: {
+        en: 'Ebook website',
+        ne: 'ई-पुस्तक वेबसाइट',
+    },
+    ebooksErroredMessage: {
+        en: 'Failed to fetch institutions having e-library',
+        ne: 'ई-पुस्तकालय भएका संस्थाहरू ल्याउन असफल भयो',
+    },
+    noEbooksMessage: {
+        en: 'There are no institutions with e-library',
+        ne: 'ई-पुस्तकालय भएको कुनै संस्था छैन',
     },
 };
 

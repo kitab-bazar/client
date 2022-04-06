@@ -1,0 +1,20 @@
+.ebook {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: var(--dui-spacing-medium);
+
+    .heading {
+        padding: var(--dui-spacing-medium);
+        font-size: var(--dui-font-size-super-large);
+        font-weight: var(--dui-font-weight-bold);
+    }
+
+    .institution-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--dui-spacing-medium);
+        justify-content: center;
+        width: 90%;
+    }
+}
