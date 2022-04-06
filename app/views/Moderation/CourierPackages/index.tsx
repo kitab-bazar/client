@@ -61,6 +61,8 @@ const COURIER_PACKAGES = gql`
                 totalPrice
                 totalQuantity
                 isEligibleForIncentive
+                type
+                typeDisplay
                 municipality {
                     name
                 }
@@ -160,6 +162,11 @@ function CourierPackages(props: Props) {
                 'packageId',
                 'Package ID',
                 (item) => item.packageId,
+            ),
+            createStringColumn<CourierPackage, string>(
+                'type',
+                'Type',
+                (item) => item.typeDisplay,
             ),
             createStringColumn<CourierPackage, string>(
                 'status',
