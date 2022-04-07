@@ -28,6 +28,7 @@ import UpdateInstitutionDetailModal from './UpdateInstitutionDetailModal';
 import OrderList from './OrderList';
 import SchoolPayments from './SchoolPayments';
 import InstitutionPayments from './InstitutionPayments';
+import PackageList from './PackageList';
 
 import styles from './styles.css';
 
@@ -295,7 +296,7 @@ function Profile(props: Props) {
                                             name="packages"
                                             className={styles.tabContent}
                                         >
-                                            Packages
+                                            <PackageList />
                                         </TabPanel>
                                     )}
                                     {(
