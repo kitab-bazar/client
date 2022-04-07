@@ -12,6 +12,7 @@ import Institutions from './Institutions';
 import Payments from './Payments';
 import PublisherPackages from './PublisherPackages';
 import SchoolPackages from './SchoolPackages';
+import InstitutionPackages from './InstitutionPackages';
 import CourierPackages from './CourierPackages';
 import Orders from './Orders';
 import styles from './styles.css';
@@ -68,6 +69,13 @@ function Moderation(props: Props) {
                         School Packages
                     </Tab>
                     <Tab
+                        name="institution-packages"
+                        className={styles.tabItem}
+                        activeClassName={styles.active}
+                    >
+                        Institution Packages
+                    </Tab>
+                    <Tab
                         name="publisher-packages"
                         className={styles.tabItem}
                         activeClassName={styles.active}
@@ -107,16 +115,22 @@ function Moderation(props: Props) {
                     <Payments />
                 </TabPanel>
                 <TabPanel
-                    name="publisher-packages"
-                    className={styles.tabPanel}
-                >
-                    <PublisherPackages />
-                </TabPanel>
-                <TabPanel
                     name="school-packages"
                     className={styles.tabPanel}
                 >
                     <SchoolPackages />
+                </TabPanel>
+                <TabPanel
+                    name="institution-packages"
+                    className={styles.tabPanel}
+                >
+                    <InstitutionPackages />
+                </TabPanel>
+                <TabPanel
+                    name="publisher-packages"
+                    className={styles.tabPanel}
+                >
+                    <PublisherPackages />
                 </TabPanel>
                 <TabPanel
                     name="courier-packages"
