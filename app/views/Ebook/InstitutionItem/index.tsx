@@ -3,6 +3,7 @@ import { _cs } from '@togglecorp/fujs';
 import {
     ButtonLikeLink,
 } from '@the-deep/deep-ui';
+import { IoHome, IoBook } from 'react-icons/io5';
 
 import Avatar from '#components/Avatar';
 import useTranslation from '#base/hooks/useTranslation';
@@ -45,11 +46,13 @@ function InstitutionItem(props: Props) {
                     <ButtonLikeLink
                         to={institution.websiteUrl ?? ''}
                         variant="primary"
+                        icons={<IoHome />}
                     >
                         {strings.gotoWebSiteLabel}
                     </ButtonLikeLink>
                     <ButtonLikeLink
                         to={institution.libraryUrl ?? ''}
+                        icons={<IoBook />}
                     >
                         {strings.gotoElibraryLink}
                     </ButtonLikeLink>
