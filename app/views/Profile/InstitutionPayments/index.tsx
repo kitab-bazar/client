@@ -19,8 +19,8 @@ import {
     useQuery,
 } from '@apollo/client';
 import {
-    IndividualSchoolPaymentsQuery,
-    IndividualSchoolPaymentsQueryVariables,
+    IndividualInstitutionPaymentsQuery,
+    IndividualInstitutionPaymentsQueryVariables,
     PaymentOptionsQuery,
     PaymentOptionsQueryVariables,
 } from '#generated/types';
@@ -57,8 +57,8 @@ const PAYMENT_OPTIONS = gql`
     }
 `;
 
-const INDIVIDUAL_SCHOOL_PAYMENTS = gql`
-    query IndividualSchoolPayments(
+const INDIVIDUAL_INSTITUTION_PAYMENTS = gql`
+    query IndividualInstitutionPayments(
         $ordering: String,
         $page: Int,
         $pageSize: Int,
@@ -66,7 +66,7 @@ const INDIVIDUAL_SCHOOL_PAYMENTS = gql`
         $status: StatusEnum,
         $transactionType: TransactionTypeEnum,
     ) {
-        schoolQuery {
+        institutionQuery {
             paymentSummary {
                 outstandingBalance
                 paymentCreditSum
@@ -97,9 +97,9 @@ const INDIVIDUAL_SCHOOL_PAYMENTS = gql`
     }
 `;
 
-export type SchoolPayment = NonNullable<NonNullable<NonNullable<IndividualSchoolPaymentsQuery['schoolQuery']>['payments']>['results']>[number];
+export type InstitutionPayment = NonNullable<NonNullable<NonNullable<IndividualInstitutionPaymentsQuery['institutionQuery']>['payments']>['results']>[number];
 
-function schoolPaymentItemKeySelector(payment: SchoolPayment) {
+function institutionPaymentItemKeySelector(payment: InstitutionPayment) {
     return payment.id;
 }
 
@@ -107,7 +107,7 @@ interface Props {
     className?: string;
 }
 
-function SchoolPayments(props: Props) {
+function InstitutionPayments(props: Props) {
     const {
         className,
     } = props;
@@ -131,9 +131,9 @@ function SchoolPayments(props: Props) {
     const variables = useMemo(() => ({
         pageSize: maxItemsPerPage,
         page: activePage,
-        status: statusFilter as IndividualSchoolPaymentsQueryVariables['status'],
-        paymentType: paymentTypeFilter as IndividualSchoolPaymentsQueryVariables['paymentType'],
-        transactionType: transactionTypeFilter as IndividualSchoolPaymentsQueryVariables['transactionType'],
+        status: statusFilter as IndividualInstitutionPaymentsQueryVariables['status'],
+        paymentType: paymentTypeFilter as IndividualInstitutionPaymentsQueryVariables['paymentType'],
+        transactionType: transactionTypeFilter as IndividualInstitutionPaymentsQueryVariables['transactionType'],
     }), [
         maxItemsPerPage,
         activePage,
@@ -154,19 +154,19 @@ function SchoolPayments(props: Props) {
         data: paymentsQueryResponse = previousData,
         loading: paymentsLoading,
         error,
-    } = useQuery<IndividualSchoolPaymentsQuery, IndividualSchoolPaymentsQueryVariables>(
-        INDIVIDUAL_SCHOOL_PAYMENTS,
+    } = useQuery<IndividualInstitutionPaymentsQuery, IndividualInstitutionPaymentsQueryVariables>(
+        INDIVIDUAL_INSTITUTION_PAYMENTS,
         { variables },
     );
 
-    const payments = paymentsQueryResponse?.schoolQuery?.payments?.results;
+    const payments = paymentsQueryResponse?.institutionQuery?.payments?.results;
 
     const filtered = isDefined(paymentTypeFilter)
         || isDefined(statusFilter)
         || isDefined(transactionTypeFilter);
 
-    const schoolPaymentItemRendererParams = React.useCallback(
-        (_: string, payment: SchoolPayment) => ({
+    const institutionPaymentItemRendererParams = React.useCallback(
+        (_: string, payment: InstitutionPayment) => ({
             payment,
         }),
         [],
@@ -187,7 +187,7 @@ function SchoolPayments(props: Props) {
                     value={(
                         <NumberOutput
                             value={paymentsQueryResponse
-                                ?.schoolQuery?.paymentSummary?.outstandingBalance ?? 0}
+                                ?.institutionQuery?.paymentSummary?.outstandingBalance ?? 0}
                             currency
                         />
                     )}
@@ -201,7 +201,7 @@ function SchoolPayments(props: Props) {
                     value={(
                         <NumberOutput
                             value={paymentsQueryResponse
-                                ?.schoolQuery?.paymentSummary?.paymentCreditSum ?? 0}
+                                ?.institutionQuery?.paymentSummary?.paymentCreditSum ?? 0}
                             currency
                         />
                     )}
@@ -215,7 +215,7 @@ function SchoolPayments(props: Props) {
                     value={(
                         <NumberOutput
                             value={paymentsQueryResponse
-                                ?.schoolQuery?.paymentSummary?.paymentDebitSum ?? 0}
+                                ?.institutionQuery?.paymentSummary?.paymentDebitSum ?? 0}
                             currency
                         />
                     )}
@@ -229,7 +229,8 @@ function SchoolPayments(props: Props) {
                     <Pager
                         className={styles.pager}
                         activePage={activePage}
-                        itemsCount={paymentsQueryResponse?.schoolQuery?.payments?.totalCount ?? 0}
+                        itemsCount={paymentsQueryResponse
+                            ?.institutionQuery?.payments?.totalCount ?? 0}
                         maxItemsPerPage={maxItemsPerPage}
                         onItemsPerPageChange={setMaxItemsPerPage}
                         onActivePageChange={setActivePage}
@@ -284,12 +285,12 @@ function SchoolPayments(props: Props) {
                 )}
             >
                 <ListView
-                    className={styles.schoolPaymentList}
+                    className={styles.institutionPaymentList}
                     data={payments}
                     pending={paymentsLoading}
-                    rendererParams={schoolPaymentItemRendererParams}
+                    rendererParams={institutionPaymentItemRendererParams}
                     renderer={PaymentItem}
-                    keySelector={schoolPaymentItemKeySelector}
+                    keySelector={institutionPaymentItemKeySelector}
                     errored={!!error}
                     filtered={filtered}
                     messageShown
@@ -317,4 +318,4 @@ function SchoolPayments(props: Props) {
     );
 }
 
-export default SchoolPayments;
+export default InstitutionPayments;

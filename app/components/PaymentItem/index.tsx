@@ -6,32 +6,42 @@ import {
 } from '@the-deep/deep-ui';
 import { BiLoaderCircle } from 'react-icons/bi';
 import { IoCheckmark, IoClose } from 'react-icons/io5';
+import { StatusEnum } from '#generated/types';
 
 import useTranslation from '#base/hooks/useTranslation';
 import NumberOutput from '#components/NumberOutput';
 import { profile } from '#base/configs/lang';
 
-import { SchoolPayment } from '../index';
 import styles from './styles.css';
 
-const paymentStatusMap: Record<SchoolPayment['status'], ReactNode> = {
+interface Payment {
+    amount: number;
+    createdAt: string;
+    id: string;
+    paymentTypeDisplay: string;
+    status: StatusEnum;
+    statusDisplay: string;
+    transactionTypeDisplay: string;
+}
+
+const paymentStatusMap: Record<Payment['status'], ReactNode> = {
     PENDING: <BiLoaderCircle />,
     VERIFIED: <IoCheckmark />,
     CANCELLED: <IoClose />,
 };
 
 interface Props {
-    payment: SchoolPayment;
+    payment: Payment;
 }
 
-function SchoolPaymentItem(props: Props) {
+function PaymentItem(props: Props) {
     const {
         payment,
     } = props;
     const strings = useTranslation(profile);
 
     return (
-        <div className={styles.schoolPaymentItem}>
+        <div className={styles.paymentItem}>
             <div className={styles.details}>
                 <div className={styles.paymentDetails}>
                     <DateOutput
@@ -70,4 +80,4 @@ function SchoolPaymentItem(props: Props) {
     );
 }
 
-export default SchoolPaymentItem;
+export default PaymentItem;

@@ -1,4 +1,4 @@
-.school-payment-item {
+.payment-item {
     display: flex;
     flex-wrap: wrap;
     border: var(--dui-width-separator-thin) solid var(--dui-color-separator);

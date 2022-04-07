@@ -9,22 +9,23 @@ import {
     useQuery,
 } from '@apollo/client';
 import {
-    CourierPackageBooksQuery,
-    CourierPackageBooksQueryVariables,
+    SchoolCourierPackageBooksQuery,
+    SchoolCourierPackageBooksQueryVariables,
+    InstitutionCourierPackageBooksQuery,
+    InstitutionCourierPackageBooksQueryVariables,
 } from '#generated/types';
 import BookItem, { Props as BookItemProps } from '#components/BookItem';
 import { CourierPackage } from '../../index';
-
 import styles from './styles.css';
 
-const COURIER_PACKAGE_BOOKS = gql`
-    query CourierPackageBooks(
+const SCHOOL_COURIER_PACKAGE_BOOKS = gql`
+    query SchoolCourierPackageBooks(
         $id: ID!,
         $page: Int,
         $pageSize: Int,
     ) {
         courierPackage(id: $id) {
-            courierPackageBooks(page: $page, pageSize: $pageSize) {
+            schoolCourierPackageBooks(page: $page, pageSize: $pageSize) {
                 page
                 pageSize
                 totalCount
@@ -61,7 +62,51 @@ const COURIER_PACKAGE_BOOKS = gql`
     }
 `;
 
-type CourierPackageBook = NonNullable<NonNullable<NonNullable<NonNullable<CourierPackageBooksQuery['courierPackage']>['courierPackageBooks']>['results']>[number]>;
+const INSTITUTION_COURIER_PACKAGE_BOOKS = gql`
+    query InstitutionCourierPackageBooks(
+        $id: ID!,
+        $page: Int,
+        $pageSize: Int,
+    ) {
+        courierPackage(id: $id) {
+            institutionCourierPackageBooks(page: $page, pageSize: $pageSize) {
+                page
+                pageSize
+                totalCount
+                results {
+                    id
+                    quantity
+                    book {
+                        id
+                        title
+                        price
+                        gradeDisplay
+                        languageDisplay
+                        publisher {
+                            id
+                            name
+                        }
+                        authors {
+                            id
+                            name
+                        }
+                        categories {
+                            id
+                            name
+                        }
+                        image {
+                            name
+                            url
+                        }
+                    }
+                }
+            }
+            id
+        }
+    }
+`;
+
+type CourierPackageBook = NonNullable<NonNullable<NonNullable<NonNullable<SchoolCourierPackageBooksQuery['courierPackage']>['schoolCourierPackageBooks']>['results']>[number]>;
 
 const maxItemsPerPage = 10;
 function keySelector(packageBook: CourierPackageBook) {
@@ -88,15 +133,31 @@ function RelatedBooks(props: Props) {
     }), [activePage, courierPackage.id]);
 
     const {
-        data: bookResponse,
-        loading: bookLoading,
-        error: bookError,
-    } = useQuery<CourierPackageBooksQuery, CourierPackageBooksQueryVariables>(
-        COURIER_PACKAGE_BOOKS,
+        data: schoolBookResponse,
+        loading: schoolBookLoading,
+        error: schoolBookError,
+    } = useQuery<SchoolCourierPackageBooksQuery, SchoolCourierPackageBooksQueryVariables>(
+        SCHOOL_COURIER_PACKAGE_BOOKS,
         {
             variables,
+            skip: courierPackage.type === 'INSTITUTION',
         },
     );
+
+    const {
+        data: institutionBookResponse,
+        loading: institutionBookLoading,
+        error: institutionBookError,
+    } = useQuery<InstitutionCourierPackageBooksQuery, InstitutionCourierPackageBooksQueryVariables>(
+        INSTITUTION_COURIER_PACKAGE_BOOKS,
+        {
+            variables,
+            skip: courierPackage.type === 'SCHOOL',
+        },
+    );
+
+    const loading = institutionBookLoading || schoolBookLoading;
+    const error = schoolBookError || institutionBookError;
 
     const bookItemRendererParams = useCallback((
         _: string,
@@ -117,7 +178,12 @@ function RelatedBooks(props: Props) {
                 <Pager
                     activePage={activePage}
                     itemsCount={
-                        bookResponse?.courierPackage?.courierPackageBooks?.totalCount ?? 0
+                        (courierPackage.type === 'SCHOOL'
+                            ? schoolBookResponse
+                                ?.courierPackage?.schoolCourierPackageBooks?.totalCount
+                            : institutionBookResponse
+                                ?.courierPackage?.institutionCourierPackageBooks?.totalCount)
+                        ?? 0
                     }
                     maxItemsPerPage={maxItemsPerPage}
                     itemsPerPageControlHidden
@@ -127,13 +193,18 @@ function RelatedBooks(props: Props) {
         >
             <ListView
                 className={styles.bookItemList}
-                data={bookResponse?.courierPackage?.courierPackageBooks?.results ?? undefined}
+                data={(
+                    courierPackage.type === 'SCHOOL'
+                        ? schoolBookResponse?.courierPackage?.schoolCourierPackageBooks?.results
+                        : institutionBookResponse
+                            ?.courierPackage?.institutionCourierPackageBooks?.results
+                ) ?? undefined}
                 rendererParams={bookItemRendererParams}
                 renderer={BookItem}
                 keySelector={keySelector}
-                errored={!!bookError}
+                errored={!!error}
                 filtered={false}
-                pending={bookLoading}
+                pending={loading}
                 messageShown
             />
         </Modal>

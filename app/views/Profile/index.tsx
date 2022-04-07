@@ -27,6 +27,7 @@ import useTranslation from '#base/hooks/useTranslation';
 import UpdateInstitutionDetailModal from './UpdateInstitutionDetailModal';
 import OrderList from './OrderList';
 import SchoolPayments from './SchoolPayments';
+import InstitutionPayments from './InstitutionPayments';
 
 import styles from './styles.css';
 
@@ -299,7 +300,6 @@ function Profile(props: Props) {
                                     )}
                                     {(
                                         userDetails.userType === 'SCHOOL_ADMIN'
-                                        || userDetails.userType === 'INSTITUTIONAL_USER'
                                     ) && (
                                         <TabPanel
                                             name="payments"
@@ -308,8 +308,18 @@ function Profile(props: Props) {
                                             <SchoolPayments />
                                         </TabPanel>
                                     )}
+                                    {(
+                                        userDetails.userType === 'INSTITUTIONAL_USER'
+                                    ) && (
+                                        <TabPanel
+                                            name="payments"
+                                            className={styles.tabContent}
+                                        >
+                                            <InstitutionPayments />
+                                        </TabPanel>
+                                    )}
                                     {updateInstitutionDetailModalShown
-                                    && userDetails.institution && (
+                                        && userDetails.institution && (
                                         <UpdateInstitutionDetailModal
                                             institution={userDetails.institution}
                                             onModalClose={hideUpdateInstitutionDetailModal}
