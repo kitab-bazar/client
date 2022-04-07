@@ -1,7 +1,8 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useMemo } from 'react';
 import { _cs } from '@togglecorp/fujs';
 import { useQuery, gql } from '@apollo/client';
 import {
+    Pager,
     ListView,
     TextOutput,
     Container,
@@ -18,14 +19,24 @@ import {
 import styles from './styles.css';
 
 const PUBLISHER_PACKAGES_FOR_PROFILE = gql`
-query PublisherPackagesForProfile($publisherIds: [ID!]) {
-    publisherPackages(publishers: $publisherIds) {
+query PublisherPackagesForProfile(
+    $publisherIds: [ID!],
+    $pageSize: Int,
+    $page: Int,
+) {
+    publisherPackages(
+        publishers: $publisherIds,
+        page: $page,
+        pageSize: $pageSize,
+    ) {
+        page
+        pageSize
         totalCount
         results {
             id
-            incentive
             status
             statusDisplay
+            incentive
             totalPrice
             totalQuantity
             packageId
@@ -50,6 +61,7 @@ query PublisherPackagesForProfile($publisherIds: [ID!]) {
 export type PublisherPackage = NonNullable<NonNullable<PublisherPackagesForProfileQuery['publisherPackages']>['results']>[number];
 
 const publisherPackageKeySelector = (p: PublisherPackage) => p.id;
+const MAX_ITEMS_PER_PAGE = 10;
 
 interface PackageItemProps {
     data: PublisherPackage;
@@ -114,28 +126,34 @@ function PackageItem(props: PackageItemProps) {
     );
 }
 
-interface Props {
-    className?: string;
-    user?: string;
+interface Props{
+    publisherId: string;
 }
 
-function OrderList(props: Props) {
+function PublisherPackageList(props: Props) {
     const {
-        className,
-        user,
+        publisherId,
     } = props;
 
     const [page, setPage] = useState<number>(1);
     useEffect(() => {
         setPage(1);
-    }, [user]);
+    }, []);
 
     const {
         loading: publisherPackagePending,
         previousData: publisherPackagePreviousData,
         data: publisherPackageResponse = publisherPackagePreviousData,
+        error: publisherPackageError,
     } = useQuery<PublisherPackagesForProfileQuery, PublisherPackagesForProfileQueryVariables>(
         PUBLISHER_PACKAGES_FOR_PROFILE,
+        {
+            variables: {
+                publisherIds: [publisherId],
+                page,
+                pageSize: MAX_ITEMS_PER_PAGE,
+            },
+        },
     );
 
     const strings = useTranslation(profile);
@@ -151,14 +169,23 @@ function OrderList(props: Props) {
             </h2>
             <ListView
                 className={styles.packageList}
-                data={publisherPackageResponse?.publisherPackages?.results ?? undefined}
+                data={publisherPackageResponse?.publisherPackages?.results}
                 keySelector={publisherPackageKeySelector}
                 rendererParams={packageListRendererParams}
                 renderer={PackageItem}
                 pending={publisherPackagePending}
+                errored={!!publisherPackageError}
+                filtered={false}
+            />
+            <Pager
+                activePage={page}
+                maxItemsPerPage={MAX_ITEMS_PER_PAGE}
+                itemsCount={publisherPackageResponse?.publisherPackages?.totalCount ?? 0}
+                onActivePageChange={setPage}
+                itemsPerPageControlHidden
             />
         </div>
     );
 }
 
-export default OrderList;
+export default PublisherPackageList;

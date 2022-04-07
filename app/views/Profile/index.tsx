@@ -28,7 +28,8 @@ import UpdateInstitutionDetailModal from './UpdateInstitutionDetailModal';
 import OrderList from './OrderList';
 import SchoolPayments from './SchoolPayments';
 import InstitutionPayments from './InstitutionPayments';
-import PackageList from './PackageList';
+import PublisherPackageList from './PublisherPackageList';
+import InstitutionPackageList from './InstitutionPackageList';
 
 import styles from './styles.css';
 
@@ -179,7 +180,7 @@ function Profile(props: Props) {
                                                 {strings.ordersTabLabel}
                                             </Tab>
                                         )}
-                                        {userDetails.userType === 'PUBLISHER' && (
+                                        {(userDetails.userType === 'PUBLISHER' || 'INSTITUTIONAL_USER') && (
                                             <Tab
                                                 activeClassName={styles.active}
                                                 className={styles.tabItem}
@@ -291,12 +292,25 @@ function Profile(props: Props) {
                                             <OrderList />
                                         </TabPanel>
                                     )}
-                                    {userDetails.userType === 'PUBLISHER' && (
+                                    {(
+                                        userDetails.userType === 'PUBLISHER'
+                                        || userDetails.userType === 'INSTITUTIONAL_USER'
+                                    ) && (
                                         <TabPanel
                                             name="packages"
                                             className={styles.tabContent}
                                         >
-                                            <PackageList />
+                                            {userDetails.userType === 'PUBLISHER'
+                                                ? (
+                                                    <PublisherPackageList
+                                                        publisherId={userDetails?.id}
+                                                    />
+                                                )
+                                                : (
+                                                    <InstitutionPackageList
+                                                        institutionId={userDetails?.id}
+                                                    />
+                                                )}
                                         </TabPanel>
                                     )}
                                     {(
