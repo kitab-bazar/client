@@ -871,6 +871,10 @@ export const profile = {
         en: 'Package ID',
         ne: 'प्याकेज आईडी',
     },
+    noPackagesFound: {
+        en: 'No packages available.',
+        ne: 'कुनै प्याकेजहरू उपलब्ध छैन।',
+    },
 };
 
 export const school = {

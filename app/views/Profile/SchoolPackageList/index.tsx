@@ -12,20 +12,20 @@ import useTranslation from '#base/hooks/useTranslation';
 import { profile } from '#base/configs/lang';
 import NumberOutput from '#components/NumberOutput';
 import {
-    InstitutionalPackagesForProfileQuery,
-    InstitutionalPackagesForProfileQueryVariables,
+    SchoolPackagesForProfileQuery,
+    SchoolPackagesForProfileQueryVariables,
 } from '#generated/types';
 
 import styles from './styles.css';
 
-const INSTITUTIONAL_PACKAGES_FOR_PROFILE = gql`
-query InstitutionalPackagesForProfile(
-    $page: Int,
+const SCHOOL_PACKAGES_FOR_PROFILE = gql`
+query SchoolPackagesForProfile(
     $pageSize: Int,
+    $page: Int,
 ) {
-    institutionPackages(
+    schoolPackages(
         page: $page,
-        pageSize: $pageSize
+        pageSize: $pageSize,
     ) {
         page
         pageSize
@@ -37,7 +37,7 @@ query InstitutionalPackagesForProfile(
             totalPrice
             totalQuantity
             packageId
-            institutionPackageBooks {
+            schoolPackageBooks {
                 totalCount
                 results {
                     id
@@ -55,13 +55,13 @@ query InstitutionalPackagesForProfile(
 }
 `;
 
-export type InstitutionPackage = NonNullable<NonNullable<InstitutionalPackagesForProfileQuery['institutionPackages']>['results']>[number];
+export type SchoolPackage = NonNullable<NonNullable<SchoolPackagesForProfileQuery['schoolPackages']>['results']>[number];
 
-const institutionPackageKeySelector = (p: InstitutionPackage) => p.id;
+const schoolPackageKeySelector = (p: SchoolPackage) => p.id;
 const MAX_ITEMS_PER_PAGE = 10;
 
 interface PackageItemProps {
-    data: InstitutionPackage;
+    data: SchoolPackage;
 }
 
 function PackageItem(props: PackageItemProps) {
@@ -114,10 +114,11 @@ function PackageItem(props: PackageItemProps) {
     );
 }
 
-interface Props {
+interface Props{
     className?: string;
 }
-function InstitutionPackageList(props: Props) {
+
+function SchoolPackageList(props: Props) {
     const {
         className,
     } = props;
@@ -125,15 +126,12 @@ function InstitutionPackageList(props: Props) {
     const [page, setPage] = useState<number>(1);
 
     const {
-        loading: institutionPackagePending,
-        previousData: institutionPackagePreviousData,
-        data: institutionPackageResponse = institutionPackagePreviousData,
-        error: institutionPackageError,
-    } = useQuery<
-        InstitutionalPackagesForProfileQuery,
-        InstitutionalPackagesForProfileQueryVariables
-    >(
-        INSTITUTIONAL_PACKAGES_FOR_PROFILE,
+        loading: schoolPackagePending,
+        previousData: schoolPackagePreviousData,
+        data: schoolPackageResponse = schoolPackagePreviousData,
+        error: schoolPackageError,
+    } = useQuery<SchoolPackagesForProfileQuery, SchoolPackagesForProfileQueryVariables>(
+        SCHOOL_PACKAGES_FOR_PROFILE,
         {
             variables: {
                 page,
@@ -144,7 +142,8 @@ function InstitutionPackageList(props: Props) {
 
     const strings = useTranslation(profile);
 
-    const packageListRendererParams = useCallback((_, data: InstitutionPackage) => ({
+    console.warn('out', schoolPackageResponse?.schoolPackages?.results);
+    const packageListRendererParams = useCallback((_, data: SchoolPackage) => ({
         data,
     }), []);
 
@@ -155,25 +154,25 @@ function InstitutionPackageList(props: Props) {
             </h2>
             <ListView
                 className={styles.packageList}
-                data={institutionPackageResponse?.institutionPackages?.results}
-                keySelector={institutionPackageKeySelector}
+                data={schoolPackageResponse?.schoolPackages?.results}
+                keySelector={schoolPackageKeySelector}
                 rendererParams={packageListRendererParams}
                 renderer={PackageItem}
-                pending={institutionPackagePending}
-                errored={!!institutionPackageError}
+                pending={schoolPackagePending}
                 emptyMessage={strings.noPackagesFound}
                 messageShown
+                errored={!!schoolPackageError}
                 filtered={false}
             />
             <Pager
                 activePage={page}
-                onActivePageChange={setPage}
                 maxItemsPerPage={MAX_ITEMS_PER_PAGE}
-                itemsCount={institutionPackageResponse?.institutionPackages?.totalCount ?? 0}
+                itemsCount={schoolPackageResponse?.schoolPackages?.totalCount ?? 0}
+                onActivePageChange={setPage}
                 itemsPerPageControlHidden
             />
         </div>
     );
 }
 
-export default InstitutionPackageList;
+export default SchoolPackageList;
