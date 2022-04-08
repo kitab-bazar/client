@@ -30,6 +30,7 @@ import SchoolPayments from './SchoolPayments';
 import InstitutionPayments from './InstitutionPayments';
 import PublisherPackageList from './PublisherPackageList';
 import InstitutionPackageList from './InstitutionPackageList';
+import SchoolPackageList from './SchoolPackageList';
 
 import styles from './styles.css';
 
@@ -310,6 +311,16 @@ function Profile(props: Props) {
                                             className={styles.tabContent}
                                         >
                                             <InstitutionPackageList />
+                                        </TabPanel>
+                                    )}
+                                    {(
+                                        userDetails.userType === 'SCHOOL_ADMIN'
+                                    ) && (
+                                        <TabPanel
+                                            name="packages"
+                                            className={styles.tabContent}
+                                        >
+                                            <SchoolPackageList />
                                         </TabPanel>
                                     )}
                                     {(
