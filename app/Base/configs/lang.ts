@@ -851,6 +851,26 @@ export const profile = {
         en: 'E-Library',
         ne: 'ई-लाइब्रेरी',
     },
+    packageListLabel: {
+        en: 'Packages',
+        ne: 'प्याकेजहरू',
+    },
+    booksCountLabel: {
+        en: 'Total Books',
+        ne: 'कुल पुस्तकहरू',
+    },
+    totalPriceLabel: {
+        en: 'Total Amount',
+        ne: 'कुल रकम',
+    },
+    incentiveLabel: {
+        en: 'Incentive',
+        ne: 'प्रोत्साहन',
+    },
+    packageIdLabel: {
+        en: 'Package ID',
+        ne: 'प्याकेज आईडी',
+    },
 };
 
 export const school = {

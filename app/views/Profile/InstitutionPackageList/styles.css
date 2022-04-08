@@ -1,0 +1,16 @@
+.packages {
+    display: flex;
+    flex-direction: column;
+    padding: var(--dui-spacing-medium);
+
+    .package-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--dui-spacing-medium);
+    }
+
+    .package-item {
+        border: var(--dui-width-separator-thin) solid var(--dui-color-separator);
+        background-color: var(--dui-color-foreground);
+    }
+}

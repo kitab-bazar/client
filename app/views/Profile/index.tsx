@@ -28,6 +28,8 @@ import UpdateInstitutionDetailModal from './UpdateInstitutionDetailModal';
 import OrderList from './OrderList';
 import SchoolPayments from './SchoolPayments';
 import InstitutionPayments from './InstitutionPayments';
+import PublisherPackageList from './PublisherPackageList';
+import InstitutionPackageList from './InstitutionPackageList';
 
 import styles from './styles.css';
 
@@ -178,7 +180,7 @@ function Profile(props: Props) {
                                                 {strings.ordersTabLabel}
                                             </Tab>
                                         )}
-                                        {userDetails.userType === 'PUBLISHER' && (
+                                        {(userDetails.userType === 'PUBLISHER' || 'INSTITUTIONAL_USER') && (
                                             <Tab
                                                 activeClassName={styles.active}
                                                 className={styles.tabItem}
@@ -290,12 +292,24 @@ function Profile(props: Props) {
                                             <OrderList />
                                         </TabPanel>
                                     )}
-                                    {userDetails.userType === 'PUBLISHER' && (
+                                    {(
+                                        userDetails.userType === 'PUBLISHER'
+                                    ) && (
                                         <TabPanel
                                             name="packages"
                                             className={styles.tabContent}
                                         >
-                                            Packages
+                                            <PublisherPackageList />
+                                        </TabPanel>
+                                    )}
+                                    {(
+                                        userDetails.userType === 'INSTITUTIONAL_USER'
+                                    ) && (
+                                        <TabPanel
+                                            name="packages"
+                                            className={styles.tabContent}
+                                        >
+                                            <InstitutionPackageList />
                                         </TabPanel>
                                     )}
                                     {(
