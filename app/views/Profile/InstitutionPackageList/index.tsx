@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useMemo } from 'react';
+import React, { useCallback, useState } from 'react';
 import { _cs } from '@togglecorp/fujs';
 import { useQuery, gql } from '@apollo/client';
 import {
@@ -20,12 +20,10 @@ import styles from './styles.css';
 
 const INSTITUTIONAL_PACKAGES_FOR_PROFILE = gql`
 query InstitutionalPackagesForProfile(
-    $institutionIds: [ID!],
     $page: Int,
     $pageSize: Int,
 ) {
     institutionPackages(
-        institutions: $institutionIds,
         page: $page,
         pageSize: $pageSize
     ) {
@@ -68,11 +66,13 @@ interface PackageItemProps {
 
 function PackageItem(props: PackageItemProps) {
     const {
-        packageId,
-        statusDisplay,
-        totalPrice,
-        totalQuantity,
-    } = props.data;
+        data: {
+            packageId,
+            statusDisplay,
+            totalPrice,
+            totalQuantity,
+        },
+    } = props;
 
     const strings = useTranslation(profile);
 
@@ -92,7 +92,6 @@ function PackageItem(props: PackageItemProps) {
                     value={statusDisplay}
                 />
             )}
-            headerActionsContainerClassName={styles.status}
         >
             <TextOutput
                 label={strings.booksCountLabel}
@@ -116,17 +115,14 @@ function PackageItem(props: PackageItemProps) {
 }
 
 interface Props {
-    institutionId: string;
+    className?: string;
 }
 function InstitutionPackageList(props: Props) {
     const {
-        institutionId,
+        className,
     } = props;
 
     const [page, setPage] = useState<number>(1);
-    useEffect(() => {
-        setPage(1);
-    }, []);
 
     const {
         loading: institutionPackagePending,
@@ -140,7 +136,6 @@ function InstitutionPackageList(props: Props) {
         INSTITUTIONAL_PACKAGES_FOR_PROFILE,
         {
             variables: {
-                institutionIds: [institutionId],
                 page,
                 pageSize: MAX_ITEMS_PER_PAGE,
             },
@@ -154,7 +149,7 @@ function InstitutionPackageList(props: Props) {
     }), []);
 
     return (
-        <div className={styles.packages}>
+        <div className={_cs(styles.packages, className)}>
             <h2>
                 {strings.packageListLabel}
             </h2>

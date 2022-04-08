@@ -294,23 +294,22 @@ function Profile(props: Props) {
                                     )}
                                     {(
                                         userDetails.userType === 'PUBLISHER'
-                                        || userDetails.userType === 'INSTITUTIONAL_USER'
                                     ) && (
                                         <TabPanel
                                             name="packages"
                                             className={styles.tabContent}
                                         >
-                                            {userDetails.userType === 'PUBLISHER'
-                                                ? (
-                                                    <PublisherPackageList
-                                                        publisherId={userDetails?.id}
-                                                    />
-                                                )
-                                                : (
-                                                    <InstitutionPackageList
-                                                        institutionId={userDetails?.id}
-                                                    />
-                                                )}
+                                            <PublisherPackageList />
+                                        </TabPanel>
+                                    )}
+                                    {(
+                                        userDetails.userType === 'INSTITUTIONAL_USER'
+                                    ) && (
+                                        <TabPanel
+                                            name="packages"
+                                            className={styles.tabContent}
+                                        >
+                                            <InstitutionPackageList />
                                         </TabPanel>
                                     )}
                                     {(

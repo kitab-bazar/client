@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useMemo } from 'react';
+import React, { useCallback, useState } from 'react';
 import { _cs } from '@togglecorp/fujs';
 import { useQuery, gql } from '@apollo/client';
 import {
@@ -20,12 +20,10 @@ import styles from './styles.css';
 
 const PUBLISHER_PACKAGES_FOR_PROFILE = gql`
 query PublisherPackagesForProfile(
-    $publisherIds: [ID!],
     $pageSize: Int,
     $page: Int,
 ) {
     publisherPackages(
-        publishers: $publisherIds,
         page: $page,
         pageSize: $pageSize,
     ) {
@@ -69,12 +67,14 @@ interface PackageItemProps {
 
 function PackageItem(props: PackageItemProps) {
     const {
-        packageId,
-        statusDisplay,
-        totalPrice,
-        totalQuantity,
-        incentive,
-    } = props.data;
+        data: {
+            packageId,
+            statusDisplay,
+            totalPrice,
+            totalQuantity,
+            incentive,
+        },
+    } = props;
 
     const strings = useTranslation(profile);
 
@@ -94,7 +94,6 @@ function PackageItem(props: PackageItemProps) {
                     value={statusDisplay}
                 />
             )}
-            headerActionsContainerClassName={styles.status}
         >
             <TextOutput
                 label={strings.booksCountLabel}
@@ -127,18 +126,14 @@ function PackageItem(props: PackageItemProps) {
 }
 
 interface Props{
-    publisherId: string;
+    className?: string;
 }
 
 function PublisherPackageList(props: Props) {
     const {
-        publisherId,
+        className,
     } = props;
-
     const [page, setPage] = useState<number>(1);
-    useEffect(() => {
-        setPage(1);
-    }, []);
 
     const {
         loading: publisherPackagePending,
@@ -149,7 +144,6 @@ function PublisherPackageList(props: Props) {
         PUBLISHER_PACKAGES_FOR_PROFILE,
         {
             variables: {
-                publisherIds: [publisherId],
                 page,
                 pageSize: MAX_ITEMS_PER_PAGE,
             },
@@ -163,7 +157,7 @@ function PublisherPackageList(props: Props) {
     }), []);
 
     return (
-        <div className={styles.packages}>
+        <div className={_cs(styles.packages, className)}>
             <h2>
                 {strings.packageListLabel}
             </h2>
