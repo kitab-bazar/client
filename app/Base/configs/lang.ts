@@ -1269,6 +1269,10 @@ export const orderItem = {
         en: 'Ordered By',
         ne: 'द्वारा अर्डर',
     },
+    createdAtLabel: {
+        en: 'Ordered On',
+        ne: 'मा अर्डर गरियो',
+    },
     statusLabel: {
         en: 'Status',
         ne: 'अवस्था',

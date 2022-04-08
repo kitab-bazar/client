@@ -8,6 +8,7 @@ import {
 import {
     Container,
     TextOutput,
+    DateOutput,
     Button,
     useBooleanState,
     useAlert,
@@ -46,7 +47,7 @@ mutation CancelOrder($id: ID!, $comment: String) {
 }
 `;
 
-export type Order = Pick<OrderType, 'id' | 'orderCode' | 'totalPrice' | 'status' | 'totalQuantity' | 'statusDisplay'> & {
+export type Order = Pick<OrderType, 'id' | 'orderCode' | 'totalPrice' | 'status' | 'totalQuantity' | 'statusDisplay' | 'createdAt'> & {
     createdBy?: {
         id: string;
         canonicalName: string;
@@ -73,6 +74,7 @@ function OrderItem(props: Props) {
         status,
         statusDisplay,
         createdBy,
+        createdAt,
     } = order;
 
     const alert = useAlert();
@@ -201,6 +203,17 @@ function OrderItem(props: Props) {
                 <TextOutput
                     label={strings.orderedByLabel}
                     value={createdBy?.canonicalName}
+                />
+            )}
+            {createdAt && (
+                <TextOutput
+                    label={strings.createdAtLabel}
+                    value={(
+                        <DateOutput
+                            format="dd-MM-yyyy"
+                            value={createdAt}
+                        />
+                    )}
                 />
             )}
             <TextOutput
