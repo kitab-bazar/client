@@ -2,9 +2,11 @@ import { lazy } from 'react';
 
 import { wrap } from '#base/utils/routes';
 
+const title = 'Kitab Bazar';
+
 const fourHundredFour = wrap({
     path: '*',
-    title: '404',
+    title: `${title} - 404`,
     component: lazy(() => import('#base/components/PreloadMessage')),
     componentProps: {
         heading: '404',
@@ -15,7 +17,7 @@ const fourHundredFour = wrap({
 });
 const register = wrap({
     path: '/register/',
-    title: 'Register',
+    title: `${title} - Register`,
     navbarVisibility: true,
     component: lazy(() => import('#views/Register')),
     componentProps: {
@@ -24,7 +26,7 @@ const register = wrap({
 });
 const login = wrap({
     path: '/login/',
-    title: 'Login',
+    title: `${title} - Login`,
     navbarVisibility: true,
     component: lazy(() => import('#views/Login')),
     componentProps: {
@@ -33,7 +35,7 @@ const login = wrap({
 });
 const forgotPassword = wrap({
     path: '/forgot-password/',
-    title: 'Forgot Password',
+    title: `${title} - Forgot Password`,
     navbarVisibility: true,
     component: lazy(() => import('#views/ForgotPassword')),
     componentProps: {
@@ -42,7 +44,7 @@ const forgotPassword = wrap({
 });
 const activateUser = wrap({
     path: '/activate/:userId/:token/',
-    title: 'Activate User',
+    title: `${title} - Activate User`,
     navbarVisibility: true,
     component: lazy(() => import('#views/ActivateUser')),
     componentProps: {
@@ -51,7 +53,7 @@ const activateUser = wrap({
 });
 const resetPassword = wrap({
     path: '/reset-password/:userId/:token/',
-    title: 'Reset Password',
+    title: `${title} - Reset Password`,
     navbarVisibility: true,
     component: lazy(() => import('#views/ResetPassword')),
     componentProps: {
@@ -61,7 +63,7 @@ const resetPassword = wrap({
 
 const home = wrap({
     path: '/',
-    title: 'Home',
+    title: `${title} - Home`,
     navbarVisibility: true,
     component: lazy(() => import('#views/HomePage')),
     componentProps: {
@@ -70,7 +72,7 @@ const home = wrap({
 });
 const bookList = wrap({
     path: '/books/',
-    title: 'Books',
+    title: `${title} - Books`,
     navbarVisibility: true,
     component: lazy(() => import('#views/BookList')),
     componentProps: {},
@@ -78,7 +80,7 @@ const bookList = wrap({
 });
 const about = wrap({
     path: '/about/',
-    title: 'About',
+    title: `${title} - About`,
     navbarVisibility: true,
     component: lazy(() => import('#views/About')),
     componentProps: {
@@ -88,7 +90,7 @@ const about = wrap({
 
 const myProfile = wrap({
     path: '/profile/',
-    title: 'Profile',
+    title: `${title} - Profile`,
     navbarVisibility: true,
     component: lazy(() => import('#views/Profile')),
     componentProps: {
@@ -97,7 +99,7 @@ const myProfile = wrap({
 });
 const wishList = wrap({
     path: '/wish-list/',
-    title: 'Wish List',
+    title: `${title}  - Wish List`,
     navbarVisibility: true,
     component: lazy(() => import('#views/BookList')),
     componentProps: {
@@ -108,7 +110,7 @@ const wishList = wrap({
 });
 const moderation = wrap({
     path: '/moderation/',
-    title: 'Moderation',
+    title: `${title} - Moderation`,
     navbarVisibility: true,
     component: lazy(() => import('#views/Moderation')),
     componentProps: {
@@ -118,7 +120,7 @@ const moderation = wrap({
 });
 const translationDashboard = wrap({
     path: '/translation-dashboard/',
-    title: 'Translation Dashboard',
+    title: `${title} - Translation Dashboard`,
     navbarVisibility: true,
     component: lazy(() => import('#views/TranslationDashboard')),
     componentProps: {
@@ -128,7 +130,7 @@ const translationDashboard = wrap({
 });
 const eBook = wrap({
     path: '/ebook/',
-    title: 'eBook',
+    title: `${title} - eBook`,
     navbarVisibility: true,
     component: lazy(() => import('#views/Ebook')),
     componentProps: {
