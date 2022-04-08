@@ -169,6 +169,8 @@ function PublisherPackageList(props: Props) {
                 renderer={PackageItem}
                 pending={publisherPackagePending}
                 errored={!!publisherPackageError}
+                emptyMessage={strings.noPackagesFound}
+                messageShown
                 filtered={false}
             />
             <Pager

@@ -142,6 +142,7 @@ function SchoolPackageList(props: Props) {
 
     const strings = useTranslation(profile);
 
+    console.warn('out', schoolPackageResponse?.schoolPackages?.results);
     const packageListRendererParams = useCallback((_, data: SchoolPackage) => ({
         data,
     }), []);
@@ -158,6 +159,8 @@ function SchoolPackageList(props: Props) {
                 rendererParams={packageListRendererParams}
                 renderer={PackageItem}
                 pending={schoolPackagePending}
+                emptyMessage={strings.noPackagesFound}
+                messageShown
                 errored={!!schoolPackageError}
                 filtered={false}
             />

@@ -161,6 +161,8 @@ function InstitutionPackageList(props: Props) {
                 renderer={PackageItem}
                 pending={institutionPackagePending}
                 errored={!!institutionPackageError}
+                emptyMessage={strings.noPackagesFound}
+                messageShown
                 filtered={false}
             />
             <Pager
