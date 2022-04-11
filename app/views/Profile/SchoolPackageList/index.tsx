@@ -142,7 +142,6 @@ function SchoolPackageList(props: Props) {
 
     const strings = useTranslation(profile);
 
-    console.warn('out', schoolPackageResponse?.schoolPackages?.results);
     const packageListRendererParams = useCallback((_, data: SchoolPackage) => ({
         data,
     }), []);
