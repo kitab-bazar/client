@@ -84,8 +84,14 @@ function SchoolPackages(props: Props) {
     const { className } = props;
     const [activePage, setActivePage] = useState<number>(1);
     const [maxItemsPerPage, setMaxItemsPerPage] = useStateWithCallback(10, setActivePage);
-    const [statusFilter, setStatusFilter] = useState<string | undefined>();
-    const [schoolFilter, setSchoolFilter] = useState<string | undefined>();
+    const [
+        statusFilter,
+        setStatusFilter,
+    ] = useStateWithCallback<string | undefined>(undefined, setActivePage);
+    const [
+        schoolFilter,
+        setSchoolFilter,
+    ] = useStateWithCallback<string | undefined>(undefined, setActivePage);
     const [schoolOptions, setSchoolOptions] = useState<SearchUserType[] | undefined | null>();
 
     const variables = useMemo(() => ({

@@ -81,8 +81,14 @@ function InstitutionPackages(props: Props) {
     const { className } = props;
     const [activePage, setActivePage] = useState<number>(1);
     const [maxItemsPerPage, setMaxItemsPerPage] = useStateWithCallback(10, setActivePage);
-    const [statusFilter, setStatusFilter] = useState<string | undefined>();
-    const [institutionFilter, setInstitutionFilter] = useState<string | undefined>();
+    const [statusFilter, setStatusFilter] = useStateWithCallback<string | undefined>(
+        undefined,
+        setActivePage,
+    );
+    const [institutionFilter, setInstitutionFilter] = useStateWithCallback<string | undefined>(
+        undefined,
+        setActivePage,
+    );
     const [
         institutionOptions,
         setInstitutionOptions,
