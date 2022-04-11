@@ -18,8 +18,8 @@ import { IoCheckmark, IoClose } from 'react-icons/io5';
 import {
     CourierPackagesQuery,
     CourierPackagesQueryVariables,
-    CourierPackageOptionsQuery,
-    CourierPackageOptionsQueryVariables,
+    CourierPackageOptionsWithTypeQuery,
+    CourierPackageOptionsWithTypeQueryVariables,
 } from '#generated/types';
 
 import { enumKeySelector, enumLabelSelector } from '#utils/types';
@@ -36,9 +36,15 @@ interface Props {
     className?: string;
 }
 
-const COURIER_PACKAGE_OPTIONS = gql`
-    query CourierPackageOptions {
+const COURIER_PACKAGE_OPTIONS_WITH_TYPE = gql`
+    query CourierPackageOptionsWithType {
         courierPackageStatusOptions: __type(name: "CourierPackageStatusEnum") {
+            enumValues {
+                name
+                description
+            }
+        }
+        courierPackageTypeOptions: __type(name: "CourierPackageTypeEnum") {
             enumValues {
                 name
                 description
@@ -48,8 +54,8 @@ const COURIER_PACKAGE_OPTIONS = gql`
 `;
 
 const COURIER_PACKAGES = gql`
-    query CourierPackages($page: Int, $pageSize: Int, $status: [CourierPackageStatusEnum!]) {
-        courierPackages(page: $page, pageSize: $pageSize, status: $status) {
+    query CourierPackages($page: Int, $pageSize: Int, $status: [CourierPackageStatusEnum!], $type: [CourierPackageTypeEnum!]) {
+        courierPackages(page: $page, pageSize: $pageSize, status: $status, type: $type) {
             page
             pageSize
             totalCount
@@ -83,22 +89,25 @@ function CourierPackages(props: Props) {
     const [activePage, setActivePage] = useState<number>(1);
     const [maxItemsPerPage, setMaxItemsPerPage] = useStateWithCallback(10, setActivePage);
     const [statusFilter, setStatusFilter] = useState<string | undefined>();
+    const [typeFilter, setTypeFilter] = useState<string | undefined>();
 
     const variables = useMemo(() => ({
         pageSize: maxItemsPerPage,
         page: activePage,
         status: statusFilter as CourierPackagesQueryVariables['status'],
+        type: typeFilter as CourierPackagesQueryVariables['type'],
     }), [
         maxItemsPerPage,
         activePage,
         statusFilter,
+        typeFilter,
     ]);
 
     const {
         data: courierPackageOptionsQuery,
         loading: courierPackageOptionsQueryLoading,
-    } = useQuery<CourierPackageOptionsQuery, CourierPackageOptionsQueryVariables>(
-        COURIER_PACKAGE_OPTIONS,
+    } = useQuery<CourierPackageOptionsWithTypeQuery, CourierPackageOptionsWithTypeQueryVariables>(
+        COURIER_PACKAGE_OPTIONS_WITH_TYPE,
     );
 
     const {
@@ -224,6 +233,21 @@ function CourierPackages(props: Props) {
                         }
                         value={statusFilter}
                         onChange={setStatusFilter}
+                        disabled={courierPackageOptionsQueryLoading}
+                        variant="general"
+                    />
+                    <SelectInput
+                        className={styles.filterInput}
+                        name="type"
+                        label="Courier Type"
+                        placeholder="All"
+                        keySelector={enumKeySelector}
+                        labelSelector={enumLabelSelector}
+                        options={
+                            courierPackageOptionsQuery?.courierPackageTypeOptions?.enumValues
+                        }
+                        value={typeFilter}
+                        onChange={setTypeFilter}
                         disabled={courierPackageOptionsQueryLoading}
                         variant="general"
                     />
