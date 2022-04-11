@@ -41,7 +41,6 @@ export function districtTitleSelector(m: SearchDistrictType) {
     return m.name;
 }
 
-// FIXME: remove this component
 function DistrictMultiSelectInput<K extends string>(props: DistrictMultiSelectInputProps<K>) {
     const {
         className,

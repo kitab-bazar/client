@@ -32,7 +32,7 @@ type MunicipalityMultiSelectInputProps<K extends string> = SearchMultiSelectInpu
     K,
     SearchMunicipalityType,
     Def,
-    'onSearchValueChange' | 'searchOptions' | 'optionsPending' | 'keyMultiselector' | 'labelSelector' | 'totalOptionsCount' | 'onShowDropdownChange'
+    'onSearchValueChange' | 'searchOptions' | 'optionsPending' | 'keySelector' | 'labelSelector' | 'totalOptionsCount' | 'onShowDropdownChange'
 >;
 
 const keySelector = (d: SearchMunicipalityType) => d.id;
@@ -41,7 +41,6 @@ export function municipalityTitleSelector(m: SearchMunicipalityType) {
     return m.name;
 }
 
-// FIXME: remove this component
 function MunicipalityMultiSelectInput<K extends string>(
     props: MunicipalityMultiSelectInputProps<K>,
 ) {

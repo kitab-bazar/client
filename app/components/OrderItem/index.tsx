@@ -47,11 +47,12 @@ mutation CancelOrder($id: ID!, $comment: String) {
 }
 `;
 
-export type Order = Pick<OrderType, 'id' | 'orderCode' | 'totalPrice' | 'status' | 'totalQuantity' | 'statusDisplay' | 'createdAt'> & {
+export type Order = Pick<OrderType, 'id' | 'orderCode' | 'totalPrice' | 'status' | 'totalQuantity' | 'statusDisplay'> & {
     createdBy?: {
         id: string;
         canonicalName: string;
     }
+    createdAt?: string;
 }
 
 export interface Props {
