@@ -15,6 +15,8 @@ import {
 import { enumKeySelector, enumLabelSelector } from '#utils/types';
 
 import UserSelectInput, { SearchUserType } from '#components/UserSelectInput';
+import MunicipalityMultiSelectInput, { SearchMunicipalityType } from '#components/MunicipalityMultiSelectInput';
+import DistrictMultiSelectInput, { SearchDistrictType } from '#components/DistrictMultiSelectInput';
 import OrderList from '#views/Profile/OrderList';
 import styles from './styles.css';
 
@@ -41,6 +43,16 @@ function Orders(props: Props) {
     const [userOptions, setUserOptions] = useState<SearchUserType[] | undefined | null>();
     const [selectedUser, setSelectedUser] = useState<string | undefined>();
     const [statusFilter, setStatusFilter] = useState<string | undefined>();
+    const [districtFilter, setDistrictFilter] = useState<string[] | undefined>();
+    const [municipalityFilter, setMunicipalityFilter] = useState<string[] | undefined>();
+    const [
+        municipalityOptions,
+        setMunicipalityOptions,
+    ] = useState<SearchMunicipalityType[] | undefined | null>();
+    const [
+        districtOptions,
+        setDistrictOptions,
+    ] = useState<SearchDistrictType[] | undefined | null>();
 
     const {
         data: orderStatusOptionsResponse,
@@ -79,12 +91,32 @@ function Orders(props: Props) {
                         disabled={paymentFieldOptionsLoading}
                         variant="general"
                     />
+                    <MunicipalityMultiSelectInput
+                        name="municipalities"
+                        label="Municipalities"
+                        variant="general"
+                        onChange={setMunicipalityFilter}
+                        value={municipalityFilter}
+                        options={municipalityOptions}
+                        onOptionsChange={setMunicipalityOptions}
+                    />
+                    <DistrictMultiSelectInput
+                        name="districts"
+                        label="Districts"
+                        variant="general"
+                        onChange={setDistrictFilter}
+                        value={districtFilter}
+                        options={districtOptions}
+                        onOptionsChange={setDistrictOptions}
+                    />
                 </>
             )}
         >
             <OrderList
                 user={selectedUser}
                 status={statusFilter}
+                municipalities={municipalityFilter}
+                districts={districtFilter}
             />
         </Container>
     );

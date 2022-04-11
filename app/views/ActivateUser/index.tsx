@@ -8,7 +8,6 @@ import {
     isDefined,
 } from '@togglecorp/fujs';
 import {
-    Error,
     removeNull,
     internal,
 } from '@togglecorp/toggle-form';
@@ -29,7 +28,6 @@ import {
     ActivateUserMutation,
     ActivateUserMutationVariables,
 } from '#generated/types';
-import NonFieldError from '#components/NonFieldError';
 import ErrorMessage from '#components/ErrorMessage';
 import KitabLogo from '#resources/img/KitabLogo.png';
 
@@ -59,7 +57,6 @@ function ActivateUser(props: Props) {
     const alert = useAlert();
 
     const history = useHistory();
-    const [error, setError] = React.useState<Error<Record<string, never>> | undefined>();
 
     const [
         activateUser,
@@ -73,7 +70,6 @@ function ActivateUser(props: Props) {
             onCompleted: (response) => {
                 const { activate } = response;
                 if (!activate) {
-                    // TODO: show error
                     return;
                 }
 
@@ -90,7 +86,6 @@ function ActivateUser(props: Props) {
                     history.replace(routes.login.path);
                 } else if (errors) {
                     const formError = transformToFormError(removeNull(errors) as ObjectError[]);
-                    setError(formError);
                     alert.show(
                         <ErrorMessage
                             header={strings.userActivationFailureMessage}
@@ -123,7 +118,7 @@ function ActivateUser(props: Props) {
                 token: routeParams.token,
             },
         });
-    }, [routeParams, activateUser]);
+    }, [routeParams.token, routeParams.userId, activateUser]);
 
     return (
         <div className={_cs(styles.activateUser, className)}>
@@ -146,7 +141,6 @@ function ActivateUser(props: Props) {
                     </div>
                 ) : (
                     <>
-                        <NonFieldError error={error} />
                         {mutationError && (
                             <div className={styles.mutationError}>
                                 {mutationError.message}

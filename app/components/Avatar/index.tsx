@@ -93,7 +93,6 @@ function Avatar(props: AvatarProps) {
 
     if (!hasImage || hasError || isLoading) {
         const initials = getInitials(name);
-        console.warn('initials', initials);
         const backgroundColor = name && name.trim().length > 0
             ? getHexFromString(name) : '#fff';
         const textColor = getColorOnBgColor(backgroundColor);

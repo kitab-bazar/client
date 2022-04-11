@@ -34,8 +34,10 @@ query OrderListWithBooks(
     $page: Int,
     $status: [OrderStatusEnum!],
     $users: [ID!],
+    $districts: [ID!],
+    $municipalities: [ID!],
 ) {
-    orders(pageSize: $pageSize, page: $page, status: $status, users: $users) {
+    orders(pageSize: $pageSize, page: $page, status: $status, users: $users, districts: $districts, municipalities: $municipalities) {
         page
         pageSize
         totalCount
@@ -46,6 +48,7 @@ query OrderListWithBooks(
             statusDisplay
             totalPrice
             totalQuantity
+            createdAt
              createdBy {
                  canonicalName
                  id
@@ -78,6 +81,8 @@ interface Props {
     className?: string;
     user?: string;
     status?: string;
+    municipalities?: string[];
+    districts?: string[];
 }
 
 function OrderList(props: Props) {
@@ -85,12 +90,15 @@ function OrderList(props: Props) {
         className,
         user,
         status,
+        municipalities,
+        districts,
     } = props;
 
     const [page, setPage] = useState<number>(1);
     useEffect(() => {
         setPage(1);
-    }, [user]);
+    }, [user, status, municipalities, districts]);
+
     const [clickedOrderId, setClickedOrderId] = useState<Order['id']>();
 
     const {
@@ -106,6 +114,8 @@ function OrderList(props: Props) {
                 pageSize: MAX_ITEMS_PER_PAGE,
                 users: user ? [user] : undefined,
                 status: status ? [status as OrderStatusEnum] : undefined,
+                municipalities,
+                districts,
             },
         },
     );

@@ -8,6 +8,7 @@ import {
 import {
     Container,
     TextOutput,
+    DateOutput,
     Button,
     useBooleanState,
     useAlert,
@@ -51,6 +52,7 @@ export type Order = Pick<OrderType, 'id' | 'orderCode' | 'totalPrice' | 'status'
         id: string;
         canonicalName: string;
     }
+    createdAt?: string;
 }
 
 export interface Props {
@@ -73,6 +75,7 @@ function OrderItem(props: Props) {
         status,
         statusDisplay,
         createdBy,
+        createdAt,
     } = order;
 
     const alert = useAlert();
@@ -201,6 +204,17 @@ function OrderItem(props: Props) {
                 <TextOutput
                     label={strings.orderedByLabel}
                     value={createdBy?.canonicalName}
+                />
+            )}
+            {createdAt && (
+                <TextOutput
+                    label={strings.createdAtLabel}
+                    value={(
+                        <DateOutput
+                            format="dd-MM-yyyy"
+                            value={createdAt}
+                        />
+                    )}
                 />
             )}
             <TextOutput

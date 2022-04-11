@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import {
-    SearchSelectInput,
-    SearchSelectInputProps,
+    SearchMultiSelectInput,
+    SearchMultiSelectInputProps,
 } from '@the-deep/deep-ui';
 import { useQuery, gql } from '@apollo/client';
 import {
@@ -27,7 +27,7 @@ const MUNICIPALITIES = gql`
 `;
 
 type Def = { containerClassName?: string };
-type MunicipalitySelectInputProps<K extends string> = SearchSelectInputProps<
+type MunicipalityMultiSelectInputProps<K extends string> = SearchMultiSelectInputProps<
     string,
     K,
     SearchMunicipalityType,
@@ -41,8 +41,9 @@ export function municipalityTitleSelector(m: SearchMunicipalityType) {
     return m.name;
 }
 
-// FIXME: remove this component
-function MunicipalitySelectInput<K extends string>(props: MunicipalitySelectInputProps<K>) {
+function MunicipalityMultiSelectInput<K extends string>(
+    props: MunicipalityMultiSelectInputProps<K>,
+) {
     const {
         className,
         ...otherProps
@@ -69,7 +70,7 @@ function MunicipalitySelectInput<K extends string>(props: MunicipalitySelectInpu
     );
 
     return (
-        <SearchSelectInput
+        <SearchMultiSelectInput
             {...otherProps}
             className={className}
             keySelector={keySelector}
@@ -83,4 +84,4 @@ function MunicipalitySelectInput<K extends string>(props: MunicipalitySelectInpu
     );
 }
 
-export default MunicipalitySelectInput;
+export default MunicipalityMultiSelectInput;
