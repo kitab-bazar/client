@@ -69,7 +69,7 @@ function keySelector(packageBook: InstitutionPackageBook) {
 }
 
 interface Props {
-    institutionPackage: InstitutionPackage;
+    institutionPackage: Pick<InstitutionPackage, 'id' | 'packageId' | 'institution'>;
     onModalClose: () => void;
 }
 

@@ -169,8 +169,7 @@ function Profile(props: Props) {
                                             {strings.aboutTabLabel}
                                         </Tab>
                                         {(
-                                            userDetails.userType === 'PUBLISHER'
-                                            || userDetails.userType === 'SCHOOL_ADMIN'
+                                            userDetails.userType === 'SCHOOL_ADMIN'
                                             || userDetails.userType === 'INSTITUTIONAL_USER'
                                         ) && (
                                             <Tab
@@ -181,7 +180,11 @@ function Profile(props: Props) {
                                                 {strings.ordersTabLabel}
                                             </Tab>
                                         )}
-                                        {(userDetails.userType === 'PUBLISHER' || 'INSTITUTIONAL_USER') && (
+                                        {(
+                                            userDetails.userType === 'PUBLISHER'
+                                            || userDetails.userType === 'SCHOOL_ADMIN'
+                                            || userDetails.userType === 'INSTITUTIONAL_USER'
+                                        ) && (
                                             <Tab
                                                 activeClassName={styles.active}
                                                 className={styles.tabItem}
@@ -282,8 +285,7 @@ function Profile(props: Props) {
                                         </div>
                                     </TabPanel>
                                     {(
-                                        userDetails.userType === 'PUBLISHER'
-                                        || userDetails.userType === 'SCHOOL_ADMIN'
+                                        userDetails.userType === 'SCHOOL_ADMIN'
                                         || userDetails.userType === 'INSTITUTIONAL_USER'
                                     ) && (
                                         <TabPanel

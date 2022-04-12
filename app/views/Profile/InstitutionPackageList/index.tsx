@@ -6,6 +6,8 @@ import {
     ListView,
     TextOutput,
     Container,
+    Button,
+    useModalState,
 } from '@the-deep/deep-ui';
 
 import useTranslation from '#base/hooks/useTranslation';
@@ -16,6 +18,7 @@ import {
     InstitutionalPackagesForProfileQueryVariables,
 } from '#generated/types';
 
+import RelatedBooksModal from '#views/Moderation/InstitutionPackages/Actions/RelatedBooksModal';
 import styles from './styles.css';
 
 const INSTITUTIONAL_PACKAGES_FOR_PROFILE = gql`
@@ -37,6 +40,10 @@ query InstitutionalPackagesForProfile(
             totalPrice
             totalQuantity
             packageId
+            institution {
+                canonicalName
+                id
+            }
             institutionPackageBooks {
                 totalCount
                 results {
@@ -66,15 +73,16 @@ interface PackageItemProps {
 
 function PackageItem(props: PackageItemProps) {
     const {
-        data: {
-            packageId,
-            statusDisplay,
-            totalPrice,
-            totalQuantity,
-        },
+        data,
     } = props;
 
     const strings = useTranslation(profile);
+
+    const [
+        viewRelatedBooksModalShown,
+        showRelatedBooksModal,
+        hideRelatedBooksModal,
+    ] = useModalState(false);
 
     return (
         <Container
@@ -82,22 +90,32 @@ function PackageItem(props: PackageItemProps) {
             heading={(
                 <TextOutput
                     label={strings.packageIdLabel}
-                    value={packageId}
+                    value={data.packageId}
                 />
             )}
             headingSize="extraSmall"
             headerActions={(
                 <TextOutput
                     label={strings.status}
-                    value={statusDisplay}
+                    value={data.statusDisplay}
                 />
+            )}
+            footerActions={(
+                <Button
+                    name={undefined}
+                    title={strings.viewRelatedBooks}
+                    onClick={showRelatedBooksModal}
+                    variant="tertiary"
+                >
+                    {strings.booksLabel}
+                </Button>
             )}
         >
             <TextOutput
                 label={strings.booksCountLabel}
                 value={(
                     <NumberOutput
-                        value={totalQuantity}
+                        value={data.totalQuantity}
                     />
                 )}
             />
@@ -105,11 +123,17 @@ function PackageItem(props: PackageItemProps) {
                 label={strings.totalPriceLabel}
                 value={(
                     <NumberOutput
-                        value={totalPrice}
+                        value={data.totalPrice}
                         currency
                     />
                 )}
             />
+            {viewRelatedBooksModalShown && (
+                <RelatedBooksModal
+                    institutionPackage={data}
+                    onModalClose={hideRelatedBooksModal}
+                />
+            )}
         </Container>
     );
 }

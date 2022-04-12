@@ -69,7 +69,7 @@ function keySelector(packageBook: PublisherPackageBook) {
 }
 
 interface Props {
-    publisherPackage: PublisherPackage;
+    publisherPackage: Pick<PublisherPackage, 'id' | 'packageId' | 'publisher'>;
     onModalClose: () => void;
 }
 

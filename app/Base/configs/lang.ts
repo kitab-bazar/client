@@ -875,6 +875,14 @@ export const profile = {
         en: 'No packages available.',
         ne: 'कुनै प्याकेजहरू उपलब्ध छैन।',
     },
+    viewRelatedBooks: {
+        en: 'View related books',
+        ne: 'सम्बन्धित पुस्तकहरू हेर्नुहोस्',
+    },
+    booksLabel: {
+        en: 'Books',
+        ne: 'किताबहरू',
+    },
 };
 
 export const school = {
