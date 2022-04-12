@@ -485,7 +485,10 @@ function BookItem(props: Props) {
                                 value={props.book.gradeDisplay}
                             />
                             <div className={styles.categories}>
-                                {categoriesDisplay}
+                                <TextOutput
+                                    label={strings.categoriesLabel}
+                                    value={categoriesDisplay}
+                                />
                             </div>
                         </>
                     )}
@@ -567,7 +570,10 @@ function BookItem(props: Props) {
                             value={props.book.publisher.name}
                         />
                         <div className={styles.categories}>
-                            {categoriesDisplay}
+                            <TextOutput
+                                label={strings.categoriesLabel}
+                                value={categoriesDisplay}
+                            />
                         </div>
                     </div>
                     <div className={styles.actions}>
@@ -623,7 +629,10 @@ function BookItem(props: Props) {
                                 value={props.book.gradeDisplay}
                             />
                             <div className={styles.categories}>
-                                {categoriesDisplay}
+                                <TextOutput
+                                    label={strings.categoriesLabel}
+                                    value={categoriesDisplay}
+                                />
                             </div>
                         </>
                     )}
@@ -633,7 +642,7 @@ function BookItem(props: Props) {
                             label={strings.quantityLabel}
                             value={(
                                 <NumberOutput
-                                // eslint-disable-next-line react/destructuring-assignment
+                                    // eslint-disable-next-line react/destructuring-assignment
                                     value={props.quantity}
                                 />
                             )}

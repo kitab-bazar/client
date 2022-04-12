@@ -185,7 +185,7 @@ function Footer(props: Props) {
                         </a>
                         <a
                             className={styles.phoneLink}
-                            href="tel:9741673214"
+                            href="tel:+977-9741673214"
                         >
                             {resolveToComponent(
                                 strings.callUsLabel,

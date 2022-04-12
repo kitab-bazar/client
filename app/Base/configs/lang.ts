@@ -333,7 +333,7 @@ export const about = {
         ne: 'पृष्ठभूमि',
     },
     platformBackgroundPartOne: {
-        en: 'The idea of KITAB Bazar platform was generated through KITAB Project (Knowledge Improvement through Access of Books) launched by World Vision International Nepal (WVI Nepal) in October 2018 through technical support from World Vision Australia (WVA) and financial support of the World Bank with an aim to strengthen the strengthen the education system and the book supply chain by addressing the gaps in the supply chain using Results Based Financing (RBF) mechanism. The project also aligns with one of the PMEC (Priority Enabling Minimum Conditions) standard – establishing book corners as mentioned in the National Early Grade Reading Program (NEGRP) of School Sector Development Plan (SSDP). The plan and the program emphasized on the need for an appropriate environment for enhancing reading skills amongst the children and in ensuring equitable learning across all schools in Nepal.',
+        en: 'The idea of KITAB Bazar platform was generated through KITAB Project (Knowledge Improvement through Access of Books) launched by World Vision International Nepal (WVI Nepal) in October 2018 through technical support from World Vision Australia (WVA) and financial support of the World Bank with an aim to strengthen the education system and the book supply chain by addressing the gaps in the supply chain using Results Based Financing (RBF) mechanism. The project also aligns with one of the PMEC (Priority Enabling Minimum Conditions) standard – establishing book corners as mentioned in the National Early Grade Reading Program (NEGRP) of School Sector Development Plan (SSDP). The plan and the program emphasized on the need for an appropriate environment for enhancing reading skills amongst the children and in ensuring equitable learning across all schools in Nepal.',
         ne: 'यस डिजिटल प्लेटफर्मको पहल KITAB परियोजना (पुस्तकहरूमा पहुँच मार्फत ज्ञान सुधार) मार्फत वल्र्ड भिजन इन्टरनेशनल नेपाल (WVI नेपाल) द्वारा अक्टोबर २०१८ मा वल्र्ड भिजन अष्ट्रेलिया (WVA) को प्राविधिक सहयोग र विश्व बैंकको आर्थिक सहयोगमा सुरु गरिएको थियो। नतिजामा  आधारित वित्तिय संयन्त्र (RBF) प्रयोग गरी माग र आपूर्ति शृङ्खलामा रहेको खाडललाई सम्बोधन गरी शिक्षा प्रणालीलाई सुदृढ पार्ने उद्देश्यले यो परियोजना थालिएको थियो । परियोजना र कार्यक्रमले बालबालिकामा पढ्ने सीप अभिवृद्धि गर्न र नेपालका सबै विध्यालयहरूमा समतामूलक सिकाइ सुनिश्चित गर्न उपयुक्त वातावरणको आवश्यकतामा जोड दिएको थियो।',
     },
     platformBackgroundPartTwo: {
@@ -400,11 +400,11 @@ export const about = {
 
 export const explore = {
     sortOptionsTitleAsc: {
-        en: 'Title (A-Z)',
+        en: 'Title Ascending(A-Z)',
         ne: 'शीर्षक (क-ज्ञ)',
     },
     sortOptionsTitleDsc: {
-        en: 'Title (A-Z)',
+        en: 'Title Descending(Z-A)',
         ne: 'शीर्षक (ज्ञ-क)',
     },
     sortOptionsDateAsc: {
@@ -567,8 +567,8 @@ export const footer = {
         ne: 'किताब बजार बारे प्रतिक्रिया छ वा हाम्रो बारेमा थप जान्न चाहनुहुन्छ?',
     },
     callUsLabel: {
-        en: 'Call: {phoneNumber}',
-        ne: 'फोन: {phoneNumber}',
+        en: 'Call: +977-{phoneNumber}',
+        ne: 'फोन: +977-{phoneNumber}',
     },
     sendUsEmailLabel: {
         en: 'Send us an email at {email}',
@@ -704,11 +704,11 @@ export const profile = {
         ne: 'ठेगाना',
     },
     vatNumberLabel: {
-        en: 'VAT No.',
+        en: 'VAT No',
         ne: 'भ्याट नम्बर',
     },
     panLabel: {
-        en: 'PAN No.',
+        en: 'PAN No',
         ne: 'प्यान नं',
     },
     schoolIdLabel: {
@@ -1265,6 +1265,10 @@ export const bookItem = {
     editDetailsButtonLabel: {
         en: 'Edit Details',
         ne: 'विवरण सम्पादन गर्नुहोस्',
+    },
+    categoriesLabel: {
+        en: 'Categories',
+        ne: 'वर्ग',
     },
 };
 

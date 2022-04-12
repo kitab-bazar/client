@@ -58,7 +58,7 @@ function Nagbar(props: Props) {
     if (authenticated && !user?.isVerified && user?.type !== 'MODERATOR') {
         nagbarItems.push(strings.userNotVerifiedLabel);
     }
-    if (authenticated && !orderWindow) {
+    if (authenticated && !orderWindow && user?.type !== 'MODERATOR') {
         nagbarItems.push(strings.orderWindowExpiryLabel);
     }
     if (isStaging) {
