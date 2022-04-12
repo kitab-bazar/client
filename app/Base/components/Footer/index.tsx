@@ -27,6 +27,9 @@ import {
 } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 import KitabLogo from '#resources/img/KitabLogo.png';
+import WVLogo from '#resources/img/wv.jpg';
+import TCLogo from '#resources/img/tc.png';
+
 import {
     resolveToString,
     resolveToComponent,
@@ -140,116 +143,117 @@ function Footer(props: Props) {
 
     return (
         <div className={_cs(styles.footer, className)}>
-            <div className={styles.supportDetails}>
-                <Link
-                    to="/"
-                    className={styles.appBrand}
-                    linkElementClassName={styles.link}
-                >
-                    <img
-                        className={styles.logo}
-                        src={KitabLogo}
-                        alt="logo"
-                    />
-                    <div className={styles.details}>
-                        <div className={styles.appName}>
-                            {strings.kitabBazarAppLabel}
+            <div className={styles.footerTop}>
+                <div className={styles.supportDetails}>
+                    <Link
+                        to="/"
+                        className={styles.appBrand}
+                        linkElementClassName={styles.link}
+                    >
+                        <img
+                            className={styles.logo}
+                            src={KitabLogo}
+                            alt="logo"
+                        />
+                        <div className={styles.details}>
+                            <div className={styles.appName}>
+                                {strings.kitabBazarAppLabel}
+                            </div>
+                            <div>
+                                {strings.tagLineLabel}
+                            </div>
                         </div>
+                    </Link>
+                    <Container
+                        className={styles.contactUs}
+                        heading={strings.contactUsLabel}
+                        headingSize="extraSmall"
+                        withoutExternalPadding
+                        contentClassName={styles.contactContent}
+                    >
                         <div>
-                            {strings.tagLineLabel}
+                            {strings.contactUsDescription}
                         </div>
-                    </div>
-                </Link>
-                <Container
-                    className={styles.contactUs}
-                    heading={strings.contactUsLabel}
-                    headingSize="extraSmall"
-                    withoutExternalPadding
-                    contentClassName={styles.contactContent}
-                >
-                    <div>
-                        {strings.contactUsDescription}
-                    </div>
-                    <a
-                        className={styles.emailLink}
-                        href="mailto:info@kitabbazar.org"
+                        <a
+                            className={styles.emailLink}
+                            href="mailto:info@kitabbazar.org"
+                        >
+                            {resolveToString(
+                                strings.sendUsEmailLabel,
+                                { email: 'info@kitabbazar.org' },
+                            )}
+                        </a>
+                        <a
+                            className={styles.phoneLink}
+                            href="tel:9741673214"
+                        >
+                            {resolveToComponent(
+                                strings.callUsLabel,
+                                {
+                                    phoneNumber: (
+                                        <NumberOutput
+                                            // NOTE: Currently set as TC's number
+                                            value={9741673214}
+                                            separatorHidden
+                                        />
+                                    ),
+                                },
+                            )}
+                        </a>
+                    </Container>
+                </div>
+                <div className={styles.explore}>
+                    <Container
+                        heading={strings.exploreByGradeHeading}
+                        headingSize="extraSmall"
+                        spacing="loose"
                     >
-                        {resolveToString(
-                            strings.sendUsEmailLabel,
-                            { email: 'info@kitabbazar.org' },
-                        )}
-                    </a>
-                    <a
-                        className={styles.phoneLink}
-                        href="tel:9741673214"
+                        <ListView
+                            className={styles.gradeList}
+                            data={gradeResponse?.gradeList?.enumValues}
+                            keySelector={enumKeySelector}
+                            rendererParams={gradeItemRendererParams}
+                            renderer={Link}
+                            errored={!!gradeError}
+                            pending={gradeLoading}
+                            filtered={false}
+                        />
+                    </Container>
+                    <Container
+                        heading={strings.exploreByLanguageHeading}
+                        headingSize="extraSmall"
+                        spacing="loose"
                     >
-                        {resolveToComponent(
-                            strings.callUsLabel,
-                            {
-                                phoneNumber: (
-                                    <NumberOutput
-                                        // NOTE: Currently set as TC's number
-                                        value={9741673214}
-                                        separatorHidden
-                                    />
-                                ),
-                            },
-                        )}
-                    </a>
-                </Container>
-            </div>
-            <div className={styles.explore}>
-                <Container
-                    heading={strings.exploreByGradeHeading}
-                    headingSize="extraSmall"
-                    spacing="loose"
-                >
-                    <ListView
-                        className={styles.gradeList}
-                        data={gradeResponse?.gradeList?.enumValues}
-                        keySelector={enumKeySelector}
-                        rendererParams={gradeItemRendererParams}
-                        renderer={Link}
-                        errored={!!gradeError}
-                        pending={gradeLoading}
-                        filtered={false}
-                    />
-                </Container>
-                <Container
-                    heading={strings.exploreByLanguageHeading}
-                    headingSize="extraSmall"
-                    spacing="loose"
-                >
-                    <ListView
-                        className={styles.languageList}
-                        data={gradeResponse?.languageList?.enumValues}
-                        keySelector={enumKeySelector}
-                        rendererParams={languageItemRendererParams}
-                        renderer={Link}
-                        errored={!!gradeError}
-                        pending={gradeLoading}
-                        filtered={false}
-                    />
-                </Container>
-                <Container
-                    heading={strings.exploreByCategoryHeading}
-                    headingSize="extraSmall"
-                    spacing="loose"
-                >
-                    <ListView
-                        className={styles.categoryList}
-                        data={gradeResponse?.categories?.results}
-                        keySelector={itemKeySelector}
-                        rendererParams={categoryItemRendererParams}
-                        renderer={Link}
-                        errored={!!gradeError}
-                        pending={gradeLoading}
-                        filtered={false}
-                    />
-                </Container>
-            </div>
-            <div className={styles.actions}>
-                {/*
+                        <ListView
+                            className={styles.languageList}
+                            data={gradeResponse?.languageList?.enumValues}
+                            keySelector={enumKeySelector}
+                            rendererParams={languageItemRendererParams}
+                            renderer={Link}
+                            errored={!!gradeError}
+                            pending={gradeLoading}
+                            filtered={false}
+                        />
+                    </Container>
+                    <Container
+                        heading={strings.exploreByCategoryHeading}
+                        headingSize="extraSmall"
+                        spacing="loose"
+                    >
+                        <ListView
+                            className={styles.categoryList}
+                            data={gradeResponse?.categories?.results}
+                            keySelector={itemKeySelector}
+                            rendererParams={categoryItemRendererParams}
+                            renderer={Link}
+                            errored={!!gradeError}
+                            pending={gradeLoading}
+                            filtered={false}
+                        />
+                    </Container>
+                </div>
+                <div className={styles.actions}>
+                    {/*
                 <SmartButtonLikeLink
                     route={routes.about}
                     variant="action"
@@ -275,71 +279,104 @@ function Footer(props: Props) {
                     {strings.contactUsButtonLabel}
                 </SmartButtonLikeLink>
                 */}
-                <SmartLink
-                    route={routes.about}
-                >
-                    {strings.aboutUsLabel}
-                </SmartLink>
-                <Button
-                    name={undefined}
-                    className={styles.videoModalButton}
-                    onClick={showUserManualModal}
-                    variant="transparent"
-                    spacing="none"
-                >
-                    {strings.userManualHeading}
-                </Button>
-                {userManualModalShown && (
-                    <Modal
-                        heading={strings.userManualLabel}
-                        onCloseButtonClick={hideUserManualModal}
-                        size="free"
+                    <SmartLink
+                        route={routes.about}
                     >
-                        <iframe
-                            title={strings.userManualTitle}
-                            src={activeLanguage.lang === 'ne'
-                                ? userManualNe
-                                : userManualEn}
-                            allowFullScreen
-                            width="1280"
-                            height="720"
-                        />
-                    </Modal>
-                )}
-                <Button
-                    name={undefined}
-                    className={styles.videoModalButton}
-                    onClick={showTutorialModal}
-                    variant="transparent"
-                    spacing="none"
-                >
-                    {strings.tutorialModalHeading}
-                </Button>
-                <Link
-                    to="https://blog.kitabbazar.org"
-                >
-                    {strings.blogLabel}
-                </Link>
-                <SmartLink
-                    route={routes.eBook}
-                >
-                    {strings.eBookLabel}
-                </SmartLink>
-                {tutorialModalShown && (
-                    <Modal
-                        heading={strings.tutorialModalHeading}
-                        onCloseButtonClick={hideTutorialModal}
-                        size="free"
+                        {strings.aboutUsLabel}
+                    </SmartLink>
+                    <Button
+                        name={undefined}
+                        className={styles.videoModalButton}
+                        onClick={showUserManualModal}
+                        variant="transparent"
+                        spacing="none"
                     >
-                        <iframe
-                            title={strings.videoTitle}
-                            src={videoUrl}
-                            allowFullScreen
-                            width="1280"
-                            height="720"
-                        />
-                    </Modal>
-                )}
+                        {strings.userManualHeading}
+                    </Button>
+                    {userManualModalShown && (
+                        <Modal
+                            heading={strings.userManualLabel}
+                            onCloseButtonClick={hideUserManualModal}
+                            size="free"
+                        >
+                            <iframe
+                                title={strings.userManualTitle}
+                                src={activeLanguage.lang === 'ne'
+                                    ? userManualNe
+                                    : userManualEn}
+                                allowFullScreen
+                                width="1280"
+                                height="720"
+                            />
+                        </Modal>
+                    )}
+                    <Button
+                        name={undefined}
+                        className={styles.videoModalButton}
+                        onClick={showTutorialModal}
+                        variant="transparent"
+                        spacing="none"
+                    >
+                        {strings.tutorialModalHeading}
+                    </Button>
+                    <Link
+                        to="https://blog.kitabbazar.org"
+                    >
+                        {strings.blogLabel}
+                    </Link>
+                    <SmartLink
+                        route={routes.eBook}
+                    >
+                        {strings.eBookLabel}
+                    </SmartLink>
+                    {tutorialModalShown && (
+                        <Modal
+                            heading={strings.tutorialModalHeading}
+                            onCloseButtonClick={hideTutorialModal}
+                            size="free"
+                        >
+                            <iframe
+                                title={strings.videoTitle}
+                                src={videoUrl}
+                                allowFullScreen
+                                width="1280"
+                                height="720"
+                            />
+                        </Modal>
+                    )}
+                </div>
+            </div>
+            <div className={styles.footerBottom}>
+                <a
+                    href="https://www.wvi.org/nepal/"
+                    className={styles.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    <div className={styles.details}>
+                        {strings.supportedBy}
+                    </div>
+                    <img
+                        className={styles.logo}
+                        src={WVLogo}
+                        alt="logo"
+                    />
+                </a>
+                <a
+                    href="https://www.togglecorp.com/"
+                    className={styles.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    <div className={styles.details}>
+                        {strings.developedBy}
+                    </div>
+                    <img
+                        className={styles.logo}
+                        src={TCLogo}
+                        alt="logo"
+                    />
+                </a>
             </div>
         </div>
     );
