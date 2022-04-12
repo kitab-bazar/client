@@ -590,6 +590,14 @@ export const footer = {
         en: 'Kitab Bazar User Manual',
         ne: 'किताब बजार प्रयोगकर्ता पुस्तिका',
     },
+    supportedBy: {
+        en: 'Supported By',
+        ne: 'द्वारा समर्थित',
+    },
+    developedBy: {
+        en: 'Developed By',
+        ne: 'द्वारा विकसित',
+    },
 };
 
 export const ebook = {
