@@ -3,9 +3,6 @@
     align-items: flex-start;
     justify-content: flex-start;
     padding: 6vh var(--dui-spacing-medium);
-    width: 100vw;
-    height: 100vh;
-    overflow: auto;
     scrollbar-gutter: stable;
 
     .container {

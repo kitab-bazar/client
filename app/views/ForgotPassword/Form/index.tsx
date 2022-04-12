@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback, useRef } from 'react';
+import React, { useMemo, useState, useCallback, useRef, useEffect } from 'react';
 import { isDefined } from '@togglecorp/fujs';
 import {
     TextInput,
@@ -104,6 +104,7 @@ function ForgotPasswordForm() {
         setFieldValue,
         validate,
         setError,
+        setPristine,
     } = useForm(mySchema, initialValue);
 
     const strings = useTranslation(resetPasswordStrings);
@@ -111,6 +112,12 @@ function ForgotPasswordForm() {
     const error = getErrorObject(riskyError);
 
     const alert = useAlert();
+
+    useEffect(() => {
+        if (emailFromState) {
+            setPristine(false);
+        }
+    }, [emailFromState, setPristine]);
 
     const [
         resetPassword,
