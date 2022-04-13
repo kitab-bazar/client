@@ -891,6 +891,10 @@ export const profile = {
         en: 'Books',
         ne: 'किताबहरू',
     },
+    exportPackage: {
+        en: 'Export',
+        ne: 'निर्यात गर्नुहोस्',
+    },
 };
 
 export const school = {
