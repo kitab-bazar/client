@@ -55,10 +55,14 @@ function Nagbar(props: Props) {
 
     const nagbarItems = [];
 
-    if (authenticated && !user?.isVerified && user?.type !== 'MODERATOR') {
+    if (authenticated && !user?.isVerified && (
+        user?.type === 'SCHOOL_ADMIN' || user?.type === 'INSTITUTIONAL_USER'
+    )) {
         nagbarItems.push(strings.userNotVerifiedLabel);
     }
-    if (authenticated && !orderWindow && user?.type !== 'MODERATOR') {
+    if (authenticated && !orderWindow && (
+        user?.type === 'SCHOOL_ADMIN' || user?.type === 'INSTITUTIONAL_USER'
+    )) {
         nagbarItems.push(strings.orderWindowExpiryLabel);
     }
     if (isStaging) {

@@ -8,6 +8,7 @@ import {
     Button,
     Container,
     useModalState,
+    Link,
 } from '@the-deep/deep-ui';
 
 import useTranslation from '#base/hooks/useTranslation';
@@ -41,6 +42,10 @@ query PublisherPackagesForProfile(
             totalPrice
             totalQuantity
             packageId
+            ordersExportFile {
+                name
+                url
+            }
             publisher {
                 id
                 name
@@ -102,14 +107,24 @@ function PackageItem(props: PackageItemProps) {
                 />
             )}
             footerActions={(
-                <Button
-                    name={undefined}
-                    title={strings.viewRelatedBooks}
-                    onClick={showRelatedBooksModal}
-                    variant="tertiary"
-                >
-                    {strings.booksLabel}
-                </Button>
+                <>
+                    {data.ordersExportFile?.url && (
+                        <Link
+                            to={data.ordersExportFile?.url}
+                        >
+                            {strings.exportPackage}
+                        </Link>
+                    )}
+                    <Button
+                        name={undefined}
+                        title={strings.viewRelatedBooks}
+                        onClick={showRelatedBooksModal}
+                        variant="tertiary"
+                    >
+                        {strings.booksLabel}
+                    </Button>
+                </>
+
             )}
         >
             <TextOutput
