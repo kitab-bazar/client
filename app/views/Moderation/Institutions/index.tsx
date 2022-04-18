@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import {
     _cs,
     isDefined,
@@ -28,6 +28,7 @@ import {
 import {
     IoSearch,
     IoCheckmark,
+    IoClose,
 } from 'react-icons/io5';
 
 import EmptyMessage from '#components/EmptyMessage';
@@ -197,7 +198,7 @@ function InstitutionItem(props: InstitutionItemProps) {
         showUpdateInstitutionModal,
         hideUpdateInstitutionModal,
     ] = useModalState(false);
-    const handleEditInstitutionClick = React.useCallback(() => {
+    const handleEditInstitutionClick = useCallback(() => {
         showUpdateInstitutionModal();
     }, [showUpdateInstitutionModal]);
 
@@ -310,7 +311,7 @@ function InstitutionItem(props: InstitutionItemProps) {
         },
     );
 
-    const handleVerifyButtonClick = React.useCallback(() => {
+    const handleVerifyButtonClick = useCallback(() => {
         updateUserVerificationStatus({
             variables: {
                 userId: user.id,
@@ -318,7 +319,7 @@ function InstitutionItem(props: InstitutionItemProps) {
         });
     }, [user, updateUserVerificationStatus]);
 
-    const handleActiveButtonClick = React.useCallback(() => {
+    const handleActiveButtonClick = useCallback(() => {
         updateUserActiveStatus({
             variables: {
                 isDeactivated: true,
@@ -507,7 +508,7 @@ function Institutions(props: Props) {
     const [search, setSearch] = useStateWithCallback<string | undefined>(undefined, setActivePage);
     const [maxItemsPerPage, setMaxItemsPerPage] = useStateWithCallback<number>(10, setActivePage);
 
-    const isVerifiedFilter = React.useMemo(() => {
+    const isVerifiedFilter = useMemo(() => {
         if (verified === 'verified') {
             return true;
         }
@@ -519,7 +520,7 @@ function Institutions(props: Props) {
         return undefined;
     }, [verified]);
 
-    const isMismatchedFilter = React.useMemo(() => {
+    const isMismatchedFilter = useMemo(() => {
         if (mismatchStatus === 'mismatched') {
             return true;
         }
@@ -549,17 +550,21 @@ function Institutions(props: Props) {
         },
     );
 
-    const handleInstitutionDeactivation = React.useCallback(() => {
+    const handleInstitutionDeactivation = useCallback(() => {
         refetch();
     }, [refetch]);
 
-    const institutionItemRendererParams = React.useCallback(
+    const institutionItemRendererParams = useCallback(
         (_: string, user: InstitutionItemType): InstitutionItemProps => ({
             user,
             onUserDeactivationSuccess: handleInstitutionDeactivation,
         }),
         [handleInstitutionDeactivation],
     );
+
+    const handleSearchClear = useCallback(() => {
+        setSearch(undefined);
+    }, [setSearch]);
 
     return (
         <div
@@ -571,6 +576,16 @@ function Institutions(props: Props) {
                     icons={<IoSearch />}
                     value={search}
                     onChange={setSearch}
+                    actions={search && (
+                        <Button
+                            onClick={handleSearchClear}
+                            variant="action"
+                            name={undefined}
+                            title="Clear"
+                        >
+                            <IoClose />
+                        </Button>
+                    )}
                     variant="general"
                     label="Search by Institution Name"
                     type="search"

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import {
     _cs,
     isDefined,
@@ -28,6 +28,7 @@ import {
 import {
     IoSearch,
     IoCheckmark,
+    IoClose,
 } from 'react-icons/io5';
 
 import EmptyMessage from '#components/EmptyMessage';
@@ -198,7 +199,7 @@ function SchoolItem(props: SchoolItemProps) {
         hideUpdateSchoolModal,
     ] = useModalState(false);
 
-    const handleEditSchoolClick = React.useCallback(() => {
+    const handleEditSchoolClick = useCallback(() => {
         showUpdateSchoolModal();
     }, [showUpdateSchoolModal]);
 
@@ -311,7 +312,7 @@ function SchoolItem(props: SchoolItemProps) {
         },
     );
 
-    const handleVerifyButtonClick = React.useCallback(() => {
+    const handleVerifyButtonClick = useCallback(() => {
         updateUserVerificationStatus({
             variables: {
                 userId: user.id,
@@ -319,7 +320,7 @@ function SchoolItem(props: SchoolItemProps) {
         });
     }, [user, updateUserVerificationStatus]);
 
-    const handleActiveButtonClick = React.useCallback(() => {
+    const handleActiveButtonClick = useCallback(() => {
         updateUserActiveStatus({
             variables: {
                 isDeactivated: true,
@@ -513,7 +514,7 @@ function Schools(props: Props) {
     const [search, setSearch] = useStateWithCallback<string | undefined>(undefined, setActivePage);
     const [maxItemsPerPage, setMaxItemsPerPage] = useStateWithCallback<number>(10, setActivePage);
 
-    const isVerifiedFilter = React.useMemo(() => {
+    const isVerifiedFilter = useMemo(() => {
         if (verified === 'verified') {
             return true;
         }
@@ -525,7 +526,7 @@ function Schools(props: Props) {
         return undefined;
     }, [verified]);
 
-    const isMismatchedFilter = React.useMemo(() => {
+    const isMismatchedFilter = useMemo(() => {
         if (mismatchStatus === 'mismatched') {
             return true;
         }
@@ -555,17 +556,21 @@ function Schools(props: Props) {
         },
     );
 
-    const handleSchoolDeactivation = React.useCallback(() => {
+    const handleSchoolDeactivation = useCallback(() => {
         refetch();
     }, [refetch]);
 
-    const schoolItemRendererParams = React.useCallback(
+    const schoolItemRendererParams = useCallback(
         (_: string, user: SchoolItemType): SchoolItemProps => ({
             user,
             onUserDeactivationSuccess: handleSchoolDeactivation,
         }),
         [handleSchoolDeactivation],
     );
+
+    const handleSearchClear = useCallback(() => {
+        setSearch(undefined);
+    }, [setSearch]);
 
     return (
         <div
@@ -577,6 +582,16 @@ function Schools(props: Props) {
                     icons={<IoSearch />}
                     value={search}
                     onChange={setSearch}
+                    actions={search && (
+                        <Button
+                            onClick={handleSearchClear}
+                            variant="action"
+                            name={undefined}
+                            title="Clear"
+                        >
+                            <IoClose />
+                        </Button>
+                    )}
                     variant="general"
                     label="Search by School Name"
                     type="search"
