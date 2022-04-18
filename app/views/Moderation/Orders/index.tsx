@@ -17,6 +17,7 @@ import { enumKeySelector, enumLabelSelector } from '#utils/types';
 import UserSelectInput, { SearchUserType } from '#components/UserSelectInput';
 import MunicipalityMultiSelectInput, { SearchMunicipalityType } from '#components/MunicipalityMultiSelectInput';
 import DistrictMultiSelectInput, { SearchDistrictType } from '#components/DistrictMultiSelectInput';
+import OrderWindowMultiSelectInput, { SearchOrderWindowType } from '#components/OrderWindowMultiSelectInput';
 import OrderList from '#views/Profile/OrderList';
 import styles from './styles.css';
 
@@ -45,10 +46,16 @@ function Orders(props: Props) {
     const [statusFilter, setStatusFilter] = useState<string | undefined>();
     const [districtFilter, setDistrictFilter] = useState<string[] | undefined>();
     const [municipalityFilter, setMunicipalityFilter] = useState<string[] | undefined>();
+    const [orderWindowFilter, setOrderWindowFilter] = useState<string[] | undefined>();
     const [
         municipalityOptions,
         setMunicipalityOptions,
     ] = useState<SearchMunicipalityType[] | undefined | null>();
+    const [
+        orderWindowOptions,
+        setOrderWindowOptions,
+    ] = useState<SearchOrderWindowType[] | undefined | null>();
+
     const [
         districtOptions,
         setDistrictOptions,
@@ -91,6 +98,15 @@ function Orders(props: Props) {
                         disabled={paymentFieldOptionsLoading}
                         variant="general"
                     />
+                    <OrderWindowMultiSelectInput
+                        name="orderWindows"
+                        label="Order Windows"
+                        variant="general"
+                        onChange={setOrderWindowFilter}
+                        value={orderWindowFilter}
+                        options={orderWindowOptions}
+                        onOptionsChange={setOrderWindowOptions}
+                    />
                     <MunicipalityMultiSelectInput
                         name="municipalities"
                         label="Municipalities"
@@ -117,6 +133,7 @@ function Orders(props: Props) {
                 status={statusFilter}
                 municipalities={municipalityFilter}
                 districts={districtFilter}
+                orderWindows={orderWindowFilter}
             />
         </Container>
     );
