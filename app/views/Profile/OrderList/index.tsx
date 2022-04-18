@@ -36,8 +36,17 @@ query OrderListWithBooks(
     $users: [ID!],
     $districts: [ID!],
     $municipalities: [ID!],
+    $orderWindows: [ID!],
 ) {
-    orders(pageSize: $pageSize, page: $page, status: $status, users: $users, districts: $districts, municipalities: $municipalities) {
+    orders(
+        pageSize: $pageSize,
+        page: $page,
+        status: $status,
+        users: $users,
+        districts: $districts,
+        municipalities: $municipalities
+        orderWindows: $orderWindows
+    ) {
         page
         pageSize
         totalCount
@@ -83,6 +92,7 @@ interface Props {
     status?: string;
     municipalities?: string[];
     districts?: string[];
+    orderWindows?: string[];
 }
 
 function OrderList(props: Props) {
@@ -92,6 +102,7 @@ function OrderList(props: Props) {
         status,
         municipalities,
         districts,
+        orderWindows,
     } = props;
 
     const [page, setPage] = useState<number>(1);
@@ -116,6 +127,7 @@ function OrderList(props: Props) {
                 status: status ? [status as OrderStatusEnum] : undefined,
                 municipalities,
                 districts,
+                orderWindows,
             },
         },
     );

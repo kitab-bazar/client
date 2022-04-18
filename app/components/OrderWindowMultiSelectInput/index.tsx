@@ -12,7 +12,7 @@ import {
 
 import useDebouncedValue from '#hooks/useDebouncedValue';
 
-export type SearchOrderWindowType = Pick<OrderWindowType, 'id' | 'title'>;
+export type SearchOrderWindowType = Pick<OrderWindowType, 'id' | 'title' | 'startDate' | 'endDate'>;
 
 const ORDER_WINDOWS = gql`
     query OrderWindowOptions($search: String) {
@@ -41,7 +41,7 @@ type OrderWindowMultiSelectInputProps<K extends string> = SearchMultiSelectInput
 const keySelector = (d: SearchOrderWindowType) => d.id;
 
 export function OrderWindowTitleSelector(m: SearchOrderWindowType) {
-    return m.title;
+    return `${m.title} (${m.startDate} to ${m.endDate})`;
 }
 
 function OrderWindowMultiSelectInput<K extends string>(
@@ -57,7 +57,7 @@ function OrderWindowMultiSelectInput<K extends string>(
     const debouncedSearchText = useDebouncedValue(searchText);
 
     const variables = useMemo(() => ({
-        name: debouncedSearchText,
+        search: debouncedSearchText,
     }), [debouncedSearchText]);
 
     const {
