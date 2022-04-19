@@ -51,6 +51,13 @@ query OrderDetails($id: ID!, $bookPage: Int, $bookPageSize: Int) {
                 price
                 quantity
                 title
+                gradeDisplay
+                languageDisplay
+                publisher {
+                    id
+                    name
+                }
+
             }
         }
     }

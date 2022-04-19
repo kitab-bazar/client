@@ -62,21 +62,6 @@ query OrderListWithBooks(
                  canonicalName
                  id
              }
-            bookOrders {
-                totalCount
-                results {
-                    id
-                    isbn
-                    title
-                    edition
-                    price
-                    quantity
-                    image {
-                        name
-                        url
-                    }
-                }
-            }
         }
     }
 }

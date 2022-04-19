@@ -115,7 +115,8 @@ type BookForDetail = Pick<BookType, 'id' | 'title' | 'description' | 'gradeDispl
 type BookForCompact = Pick<BookType, 'id' | 'title' | 'image' | 'price'> & {
     authors: Pick<BookType['authors'][number], 'id' | 'name'>[],
 };
-type BookForOrder = Pick<BookType, 'id' | 'title' | 'price' | 'image' | 'edition' | 'isbn'> & {
+type BookForOrder = Pick<BookType, 'id' | 'title' | 'price' | 'image' | 'edition' | 'isbn' | 'gradeDisplay' | 'languageDisplay'> & {
+    publisher?: null | NonNullable<Pick<BookType['publisher'], 'id' | 'name'>>
     quantity?: null | NonNullable<BookType['cartDetails']>['quantity'];
 };
 type BookForPackage = Omit<BookForList, 'cartDetails' | 'wishlistId'>;
@@ -661,35 +662,55 @@ function BookItem(props: Props) {
                     className={styles.details}
                     heading={book.title}
                     headingSize="extraSmall"
+                    contentClassName={styles.content}
                 >
                     <div className={styles.orderBookMeta}>
-                        <TextOutput
-                            label={strings.priceLabel}
-                            value={(
-                                <NumberOutput
-                                    value={book.price}
-                                />
-                            )}
-                        />
-                        <TextOutput
-                            label={strings.quantityLabel}
-                            value={(
-                                <NumberOutput
-                                    // eslint-disable-next-line react/destructuring-assignment
-                                    value={props.book.quantity}
-                                />
-                            )}
-                        />
-                        <TextOutput
-                            label={strings.editionLabel}
-                            // eslint-disable-next-line react/destructuring-assignment
-                            value={props.book.edition}
-                        />
-                        <TextOutput
-                            label={strings.isbnLabel}
-                            // eslint-disable-next-line react/destructuring-assignment
-                            value={props.book.isbn}
-                        />
+                        <div className={styles.left}>
+                            <TextOutput
+                                label={strings.priceLabel}
+                                value={(
+                                    <NumberOutput
+                                        value={book.price}
+                                    />
+                                )}
+                            />
+                            <TextOutput
+                                label={strings.quantityLabel}
+                                value={(
+                                    <NumberOutput
+                                        // eslint-disable-next-line react/destructuring-assignment
+                                        value={props.book.quantity}
+                                    />
+                                )}
+                            />
+                            <TextOutput
+                                label={strings.gradeLabel}
+                                // eslint-disable-next-line react/destructuring-assignment
+                                value={props.book.gradeDisplay}
+                            />
+                            <TextOutput
+                                label={strings.publisherLabel}
+                                // eslint-disable-next-line react/destructuring-assignment
+                                value={props.book.publisher?.name}
+                            />
+                        </div>
+                        <div className={styles.right}>
+                            <TextOutput
+                                label={strings.editionLabel}
+                                // eslint-disable-next-line react/destructuring-assignment
+                                value={props.book.edition}
+                            />
+                            <TextOutput
+                                label={strings.isbnLabel}
+                                // eslint-disable-next-line react/destructuring-assignment
+                                value={props.book.isbn}
+                            />
+                            <TextOutput
+                                label={strings.languageLabel}
+                                // eslint-disable-next-line react/destructuring-assignment
+                                value={props.book.languageDisplay}
+                            />
+                        </div>
                     </div>
                 </Container>
             </div>
