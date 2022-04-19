@@ -1,4 +1,7 @@
 import React, { useState, useCallback } from 'react';
+import {
+    MdFileUpload,
+} from 'react-icons/md';
 import { _cs, isDefined } from '@togglecorp/fujs';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import {
@@ -13,6 +16,7 @@ import {
     requiredListCondition,
     removeNull,
     defaultEmptyArrayType,
+    defaultUndefinedType,
     internal,
 } from '@togglecorp/toggle-form';
 import {
@@ -24,6 +28,7 @@ import {
     NumberInput,
     DateInput,
     useAlert,
+    FileInput,
 } from '@the-deep/deep-ui';
 
 import {
@@ -68,7 +73,7 @@ const CREATE_BOOK = gql`
 
 const CREATE_BOOKS_OPTIONS = gql`
     query CreateBooksOptions {
-        languageOptions: __type(name: "language") {
+        languageOptions: __type(name: "BookLanguageEnum") {
             name
             enumValues {
                 name
@@ -97,8 +102,10 @@ type FormSchemaFields = ReturnType<FormSchema['fields']>;
 
 const schema: FormSchema = {
     fields: (): FormSchemaFields => ({
-        title: [requiredStringCondition],
-        description: [requiredStringCondition],
+        titleEn: [requiredStringCondition],
+        titleNe: [requiredStringCondition],
+        descriptionEn: [requiredStringCondition],
+        descriptionNe: [requiredStringCondition],
         isbn: [requiredStringCondition],
         numberOfPages: [requiredCondition],
         language: [requiredCondition],
@@ -109,7 +116,7 @@ const schema: FormSchema = {
         grade: [],
         categories: [requiredListCondition, defaultEmptyArrayType],
         authors: [requiredListCondition, defaultEmptyArrayType],
-        image: [],
+        image: [defaultUndefinedType],
     }),
 };
 
@@ -227,6 +234,8 @@ function UploadBookModal(props: Props) {
 
     const optionsDisabled = createBooksOptionsPending || !!createBooksOptionsError;
 
+    console.warn('image', value);
+
     return (
         <Modal
             className={_cs(styles.uploadBookModal, className)}
@@ -256,19 +265,48 @@ function UploadBookModal(props: Props) {
             )}
         >
             <NonFieldError error={error} />
+            <FileInput
+                name="image"
+                label="Upload book cover"
+                value={null}
+                onChange={setFieldValue}
+                disabled={createBookPending}
+                accept="image/*"
+                multiple={false}
+                overrideStatus
+                showStatus
+            >
+                <MdFileUpload />
+            </FileInput>
             <TextInput
-                name="title"
-                label={strings.titleLabel}
-                value={value?.title}
-                error={error?.title}
+                name="titleEn"
+                label={strings.titleEnLabel}
+                value={value?.titleEn}
+                error={error?.titleEn}
+                onChange={setFieldValue}
+                disabled={createBookPending}
+            />
+            <TextInput
+                name="titleNe"
+                label={strings.titleNeLabel}
+                value={value?.titleNe}
+                error={error?.titleNe}
                 onChange={setFieldValue}
                 disabled={createBookPending}
             />
             <TextArea
-                name="description"
-                label={strings.descriptionLabel}
-                value={value?.description}
-                error={error?.description}
+                name="descriptionEn"
+                label={strings.descriptionEnLabel}
+                value={value?.descriptionEn}
+                error={error?.descriptionEn}
+                onChange={setFieldValue}
+                disabled={createBookPending}
+            />
+            <TextArea
+                name="descriptionNe"
+                label={strings.descriptionNeLabel}
+                value={value?.descriptionNe}
+                error={error?.descriptionNe}
                 onChange={setFieldValue}
                 disabled={createBookPending}
             />

@@ -895,6 +895,22 @@ export const profile = {
         en: 'Export',
         ne: 'निर्यात गर्नुहोस्',
     },
+    myBooksLabel: {
+        en: 'My Books',
+        ne: 'मेरो किताबहरु',
+    },
+    publisherBooksPendingMessage: {
+        en: 'Loading books',
+        ne: 'पुस्तकहरू लोड गर्दै',
+    },
+    publisherBooksErrorMessage: {
+        en: 'Failed to load books',
+        ne: 'पुस्तकहरू लोड गर्न असफल',
+    },
+    uploadBookModalButtonLabel: {
+        en: 'Upload new book',
+        ne: 'नयाँ पुस्तक अपलोड गर्नुहोस्',
+    },
 };
 
 export const school = {
@@ -1427,9 +1443,13 @@ export const newBookModal = {
         en: 'Cancel',
         ne: 'रद्द गर्नुहोस्',
     },
-    titleLabel: {
-        en: 'Title',
-        ne: 'शीर्षक',
+    titleEnLabel: {
+        en: 'Title (in English)',
+        ne: 'शीर्षक (अंग्रेजीमा)',
+    },
+    titleNeLabel: {
+        en: 'Title (in Nepali)',
+        ne: 'शीर्षक (नेपालीमा)',
     },
     editionLabel: {
         en: 'Edition',
@@ -1439,9 +1459,13 @@ export const newBookModal = {
         en: 'Grade',
         ne: 'कक्षा',
     },
-    descriptionLabel: {
-        en: 'Description',
-        ne: 'विवरण',
+    descriptionEnLabel: {
+        en: 'Description (in English)',
+        ne: 'विवरण (अंग्रेजीमा)',
+    },
+    descriptionNeLabel: {
+        en: 'Description (in Nepali)',
+        ne: 'विवरण (नेपालीमा)',
     },
     isbnLabel: {
         en: 'ISBN',

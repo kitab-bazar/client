@@ -31,6 +31,7 @@ import InstitutionPayments from './InstitutionPayments';
 import PublisherPackageList from './PublisherPackageList';
 import InstitutionPackageList from './InstitutionPackageList';
 import SchoolPackageList from './SchoolPackageList';
+import PublisherBookList from './PublisherBookList';
 
 import styles from './styles.css';
 
@@ -205,6 +206,17 @@ function Profile(props: Props) {
                                                 {strings.paymentsTabLabel}
                                             </Tab>
                                         )}
+                                        {(
+                                            userDetails.userType === 'PUBLISHER'
+                                        ) && (
+                                            <Tab
+                                                activeClassName={styles.active}
+                                                className={styles.tabItem}
+                                                name="myBooks"
+                                            >
+                                                {strings.myBooksLabel}
+                                            </Tab>
+                                        )}
                                     </TabList>
                                     <TabPanel
                                         name="about"
@@ -293,6 +305,18 @@ function Profile(props: Props) {
                                             className={styles.tabContent}
                                         >
                                             <OrderList />
+                                        </TabPanel>
+                                    )}
+                                    {(
+                                        userDetails.userType === 'PUBLISHER'
+                                    ) && (
+                                        <TabPanel
+                                            name="myBooks"
+                                            className={styles.tabContent}
+                                        >
+                                            <PublisherBookList
+                                                publisherId={userDetails?.publisher?.id}
+                                            />
                                         </TabPanel>
                                     )}
                                     {(
