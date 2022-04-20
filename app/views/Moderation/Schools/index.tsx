@@ -70,8 +70,8 @@ interface OrderOption {
 }
 
 const orderOptions: OrderOption[] = [
-    { key: 'date_joined', label: 'Oldest first' },
     { key: '-date_joined', label: 'Newest first' },
+    { key: 'date_joined', label: 'Oldest first' },
 ];
 
 const verificationStatusKeySelector = (d: VerificationStatusOption) => d.key;
@@ -514,7 +514,7 @@ function Schools(props: Props) {
         setActivePage,
     );
     const [ordering, setOrdering] = useStateWithCallback<OrderOption['key']>(
-        'date_joined',
+        '-date_joined',
         setActivePage,
     );
     const [search, setSearch] = useStateWithCallback<string | undefined>(undefined, setActivePage);
