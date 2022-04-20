@@ -68,6 +68,7 @@
     &.order-variant {
         display: flex;
         flex-wrap: wrap;
+        gap: var(--dui-spacing-extra-large);
         --preview-width: 8rem;
         --preview-height: 12rem;
 
@@ -91,15 +92,34 @@
         }
 
         .details {
+            display: flex;
             flex-grow: 1;
             flex-wrap: wrap;
             background-color: unset;
 
-            .order-book-meta {
+            .content {
                 display: flex;
-                align-items: flex-start;
-                flex-direction: column;
-                gap: var(--dui-spacing-small);
+                align-items: center;
+                flex-grow: 1;
+
+                .order-book-meta {
+                    display: flex;
+                    flex-grow: 1;
+                    flex-wrap: wrap;
+                    gap: var(--dui-spacing-super-large);
+
+                    .left {
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--dui-spacing-small);
+                    }
+
+                    .right {
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--dui-spacing-medium);
+                    }
+                }
             }
         }
     }

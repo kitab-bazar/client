@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useState } from 'react';
 import {
     _cs,
     isDefined,
@@ -36,6 +36,8 @@ import ErrorMessage from '#components/ErrorMessage';
 import NumberOutput from '#components/NumberOutput';
 import useStateWithCallback from '#hooks/useStateWithCallback';
 import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
+import MunicipalityMultiSelectInput, { SearchMunicipalityType } from '#components/MunicipalityMultiSelectInput';
+import DistrictMultiSelectInput, { SearchDistrictType } from '#components/DistrictMultiSelectInput';
 
 import {
     ModerationSchoolListQuery,
@@ -98,6 +100,8 @@ query ModerationSchoolList(
     $isVerified: Boolean,
     $orderMismatchUsers: Boolean,
     $ordering: String,
+    $districts: [ID!],
+    $municipalities: [ID!],
 ) {
     moderatorQuery {
         users(
@@ -108,6 +112,8 @@ query ModerationSchoolList(
             orderMismatchUsers: $orderMismatchUsers,
             ordering: $ordering,
             userType: SCHOOL_ADMIN,
+            districts: $districts,
+            municipalities: $municipalities,
         ) {
             totalCount
             results {
@@ -513,6 +519,22 @@ function Schools(props: Props) {
     );
     const [search, setSearch] = useStateWithCallback<string | undefined>(undefined, setActivePage);
     const [maxItemsPerPage, setMaxItemsPerPage] = useStateWithCallback<number>(10, setActivePage);
+    const [
+        districtFilter,
+        setDistrictFilter,
+    ] = useStateWithCallback<string[] | undefined>(undefined, setActivePage);
+    const [
+        municipalityFilter,
+        setMunicipalityFilter,
+    ] = useStateWithCallback<string[] | undefined>(undefined, setActivePage);
+    const [
+        municipalityOptions,
+        setMunicipalityOptions,
+    ] = useState<SearchMunicipalityType[] | undefined | null>();
+    const [
+        districtOptions,
+        setDistrictOptions,
+    ] = useState<SearchDistrictType[] | undefined | null>();
 
     const isVerifiedFilter = useMemo(() => {
         if (verified === 'verified') {
@@ -541,7 +563,18 @@ function Schools(props: Props) {
         ordering,
         isVerified: isVerifiedFilter,
         orderMismatchUsers: isMismatchedFilter,
-    }), [activePage, isMismatchedFilter, isVerifiedFilter, maxItemsPerPage, ordering, search]);
+        districts: districtFilter,
+        municipalities: municipalityFilter,
+    }), [
+        activePage,
+        isMismatchedFilter,
+        isVerifiedFilter,
+        maxItemsPerPage,
+        ordering,
+        search,
+        districtFilter,
+        municipalityFilter,
+    ]);
 
     const {
         previousData,
@@ -622,6 +655,24 @@ function Schools(props: Props) {
                     labelSelector={orderingLabelSelector}
                     value={ordering}
                     onChange={setOrdering}
+                />
+                <MunicipalityMultiSelectInput
+                    name="municipalities"
+                    label="Municipalities"
+                    variant="general"
+                    onChange={setMunicipalityFilter}
+                    value={municipalityFilter}
+                    options={municipalityOptions}
+                    onOptionsChange={setMunicipalityOptions}
+                />
+                <DistrictMultiSelectInput
+                    name="districts"
+                    label="Districts"
+                    variant="general"
+                    onChange={setDistrictFilter}
+                    value={districtFilter}
+                    options={districtOptions}
+                    onOptionsChange={setDistrictOptions}
                 />
             </div>
             <ListView
