@@ -3,6 +3,7 @@ import { _cs } from '@togglecorp/fujs';
 import {
     Container,
     SelectInput,
+    RadioInput,
 } from '@the-deep/deep-ui';
 import {
     gql,
@@ -21,10 +22,6 @@ import OrderWindowMultiSelectInput, { SearchOrderWindowType } from '#components/
 import OrderList from '#views/Profile/OrderList';
 import styles from './styles.css';
 
-interface Props {
-    className?: string;
-}
-
 const ORDER_STATUS_OPTIONS = gql`
     query OrderStatusOptions {
         orderStatusEnum: __type(name: "OrderStatusEnum") {
@@ -35,6 +32,24 @@ const ORDER_STATUS_OPTIONS = gql`
         }
     }
 `;
+
+type OrderOptionKey = 'createdAt' | '-createdAt';
+interface OrderOption {
+    key: OrderOptionKey;
+    label: string;
+}
+
+const orderOptions: OrderOption[] = [
+    { key: '-createdAt', label: 'Newest first' },
+    { key: 'createdAt', label: 'Oldest first' },
+];
+
+const orderingKeySelector = (d: OrderOption) => d.key;
+const orderingLabelSelector = (d: OrderOption) => d.label;
+
+interface Props {
+    className?: string;
+}
 
 function Orders(props: Props) {
     const {
@@ -47,6 +62,7 @@ function Orders(props: Props) {
     const [districtFilter, setDistrictFilter] = useState<string[] | undefined>();
     const [municipalityFilter, setMunicipalityFilter] = useState<string[] | undefined>();
     const [orderWindowFilter, setOrderWindowFilter] = useState<string[] | undefined>();
+    const [ordering, setOrdering] = useState<OrderOption['key']>('-createdAt');
     const [
         municipalityOptions,
         setMunicipalityOptions,
@@ -98,6 +114,15 @@ function Orders(props: Props) {
                         disabled={paymentFieldOptionsLoading}
                         variant="general"
                     />
+                    <RadioInput
+                        label="Order by"
+                        name={undefined}
+                        options={orderOptions}
+                        keySelector={orderingKeySelector}
+                        labelSelector={orderingLabelSelector}
+                        value={ordering}
+                        onChange={setOrdering}
+                    />
                     <OrderWindowMultiSelectInput
                         name="orderWindows"
                         label="Order Windows"
@@ -134,6 +159,7 @@ function Orders(props: Props) {
                 municipalities={municipalityFilter}
                 districts={districtFilter}
                 orderWindows={orderWindowFilter}
+                ordering={ordering}
             />
         </Container>
     );

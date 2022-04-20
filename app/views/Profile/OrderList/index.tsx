@@ -37,6 +37,7 @@ query OrderListWithBooks(
     $districts: [ID!],
     $municipalities: [ID!],
     $orderWindows: [ID!],
+    $ordering: String,
 ) {
     orders(
         pageSize: $pageSize,
@@ -46,6 +47,7 @@ query OrderListWithBooks(
         districts: $districts,
         municipalities: $municipalities
         orderWindows: $orderWindows
+        ordering: $ordering
     ) {
         page
         pageSize
@@ -78,6 +80,7 @@ interface Props {
     municipalities?: string[];
     districts?: string[];
     orderWindows?: string[];
+    ordering?: string;
 }
 
 function OrderList(props: Props) {
@@ -88,12 +91,13 @@ function OrderList(props: Props) {
         municipalities,
         districts,
         orderWindows,
+        ordering,
     } = props;
 
     const [page, setPage] = useState<number>(1);
     useEffect(() => {
         setPage(1);
-    }, [user, status, municipalities, districts]);
+    }, [user, status, municipalities, districts, ordering]);
 
     const [clickedOrderId, setClickedOrderId] = useState<Order['id']>();
 
@@ -113,6 +117,7 @@ function OrderList(props: Props) {
                 municipalities,
                 districts,
                 orderWindows,
+                ordering,
             },
         },
     );
