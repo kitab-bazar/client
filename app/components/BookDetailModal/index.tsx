@@ -33,6 +33,13 @@ query Book($id: ID!) {
         languageDisplay
         price
         title
+        titleEn
+        titleNe
+        descriptionEn
+        descriptionNe
+        publishedDate
+        language
+        grade
         numberOfPages
         authors {
             id

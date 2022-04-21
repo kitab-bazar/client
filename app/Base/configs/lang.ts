@@ -1290,6 +1290,10 @@ export const bookItem = {
         en: 'Categories',
         ne: 'वर्ग',
     },
+    editBookLabel: {
+        en: 'Edit Book',
+        ne: 'पुस्तक सम्पादन गर्नुहोस्',
+    },
 };
 
 export const orderItem = {
@@ -1502,6 +1506,14 @@ export const newBookModal = {
     newBookUploadFailureMessage: {
         en: 'Failed to upload book',
         ne: 'किताब अपलोड गर्न असफल ',
+    },
+    bookEditSuccessMessage: {
+        en: 'Successfully updated book',
+        ne: 'पुस्तक सफलतापूर्वक अद्यावधिक गरियो',
+    },
+    bookEditFailureMessage: {
+        en: 'Failed to update book',
+        ne: 'पुस्तक अद्यावधिक गर्न असफल भयो',
     },
 };
 

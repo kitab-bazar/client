@@ -128,7 +128,6 @@ function PublisherBookList(props: Props) {
                 <UploadBookModal
                     publisher={publisherId}
                     onModalClose={hideUploadBookModal}
-                    onUploadSuccess={() => { console.warn('Book Upload Success'); }}
                 />
             )}
         </div>
