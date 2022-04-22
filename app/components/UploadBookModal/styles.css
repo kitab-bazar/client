@@ -7,7 +7,9 @@
     }
     .file-input-container {
         display: flex;
-        gap: var(--dui-spacing-medium);
+        align-items: center;
+        flex-basis: 50%;
+        gap: var(--dui-spacing-large);
 
         .image-upload {
             display: flex;
@@ -15,13 +17,12 @@
         }
         .image-container {
             width: 5em;
-            height: 6em;
+            overflow: hidden;
             object-fit: cover;
             object-position: center top;
-            overflow: hidden;
 
             .image {
-                width: 100%;
+                height: 6em;
             }
         }
     }
@@ -36,6 +37,16 @@
         align-items: flex-end;
         flex-wrap: wrap;
         justify-content: stretch;
+        gap: var(--dui-spacing-extra-large);
+    }
+    .streamlined {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
         gap: var(--dui-spacing-medium);
+
+        .input {
+            width: unset;
+        }
     }
 }

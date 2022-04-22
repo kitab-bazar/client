@@ -1435,9 +1435,13 @@ export const ordersBar = {
 };
 
 export const newBookModal = {
-    modalHeading: {
+    createBookModalHeading: {
         en: 'Add New Book',
         ne: 'नयाँ किताब थप्नुहोस्',
+    },
+    updateBookModalHeading: {
+        en: 'Edit Book',
+        ne: 'पुस्तक सम्पादन गर्नुहोस्',
     },
     saveButtonLabel: {
         en: 'Save',

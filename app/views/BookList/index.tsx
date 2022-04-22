@@ -7,6 +7,7 @@ import React, {
 import { useLocation } from 'react-router-dom';
 import {
     _cs,
+    isDefined,
 } from '@togglecorp/fujs';
 import {
     CheckListInput,
@@ -19,9 +20,11 @@ import {
     DropdownMenu,
     DropdownMenuItem,
     Border,
+    useModalState,
 } from '@the-deep/deep-ui';
 import {
     IoClose,
+    IoAdd,
     IoSearchSharp,
 } from 'react-icons/io5';
 import {
@@ -46,7 +49,7 @@ import {
     GradeFilterOptionsQueryVariables,
 } from '#generated/types';
 import BookDetailModal from '#components/BookDetailModal';
-// import UploadBookModal from '#components/UploadBookModal';
+import UploadBookModal from '#components/UploadBookModal';
 import BookItem, { Props as BookItemProps } from '#components/BookItem';
 import NumberOutput from '#components/NumberOutput';
 
@@ -185,7 +188,9 @@ function Explore(props: Props) {
         language?: string;
     } | undefined;
 
-    // const canAddBook = user?.permissions.includes('CAN_CREATE_BOOK');
+    const canPublisherCreateBook = isDefined(user?.publisherId);
+    const canModeratorCreateBook = user?.type === 'MODERATOR';
+    const canCreateBook = user?.permissions.includes('CAN_CREATE_BOOK') && (canPublisherCreateBook || canModeratorCreateBook);
 
     // NOTE: A different UI depending on if user is publisher or not
     const publisherId = user?.publisherId;
@@ -333,13 +338,26 @@ function Explore(props: Props) {
         variant: 'list',
     }), []);
 
-    /*
     const [
         uploadBookModalShown,
         showUploadBookModal,
         hideUploadBookModal,
     ] = useModalState(false);
-    */
+
+    const createBookButton = useMemo(() => {
+        if (canCreateBook) {
+            return (
+                <Button
+                    name={undefined}
+                    onClick={showUploadBookModal}
+                    icons={<IoAdd />}
+                >
+                    {strings.addBookButtonLabel}
+                </Button>
+            );
+        }
+        return undefined;
+    }, [canCreateBook, showUploadBookModal, strings.addBookButtonLabel]);
 
     return (
         <div className={_cs(styles.explore, className)}>
@@ -348,17 +366,7 @@ function Explore(props: Props) {
                     className={styles.pageHeader}
                     heading={pageTitle}
                     spacing="loose"
-                    /*
-                    actions={canAddBook && (
-                        <Button
-                            name={undefined}
-                            onClick={showUploadBookModal}
-                            icons={<IoAdd />}
-                        >
-                            {strings.addBookButtonLabel}
-                        </Button>
-                    )}
-                    */
+                    actions={createBookButton}
                 >
                     <TextInput
                         variant="general"
@@ -371,14 +379,12 @@ function Explore(props: Props) {
                         onChange={setSearch}
                     />
                 </Header>
-                {/* uploadBookModalShown && effectivePublisher && (
+                {uploadBookModalShown && (
                     <UploadBookModal
-                        publisher={effectivePublisher}
+                        publisher={user?.publisherId}
                         onModalClose={hideUploadBookModal}
-                        // FIXME: This might not be required
-                        onUploadSuccess={refetchBooks}
                     />
-                ) */}
+                )}
             </div>
             <div className={styles.container}>
                 <div className={styles.sideBar}>

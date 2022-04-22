@@ -428,9 +428,13 @@ function UploadBookModal(props: Props) {
         <Modal
             className={_cs(styles.uploadBookModal, className)}
             bodyClassName={styles.inputList}
-            heading={strings.modalHeading}
+            heading={
+                isDefined(bookDetails)
+                    ? strings.updateBookModalHeading
+                    : strings.createBookModalHeading
+            }
             onCloseButtonClick={onModalClose}
-            size="large"
+            size="medium"
             freeHeight
             footerActions={(
                 <>
@@ -453,50 +457,52 @@ function UploadBookModal(props: Props) {
             )}
         >
             <NonFieldError error={error} />
-            <div className={styles.fileInputContainer}>
-                <FileInput
-                    name="image"
-                    label="Upload book cover"
-                    className={styles.imageUpload}
-                    value={null}
-                    onChange={setFieldValue}
-                    disabled={createBookPending || updateBookPending}
-                    accept="image/*"
-                    multiple={false}
-                    overrideStatus
-                    showStatus
-                >
-                    <MdFileUpload />
-                </FileInput>
-                {imageSrc && (
-                    <div className={styles.imageContainer}>
-                        <img
-                            className={styles.image}
-                            src={imageSrc}
-                            alt="Book Cover"
-                        />
-                    </div>
-                )}
-            </div>
             <div className={styles.inline}>
-                <TextInput
-                    name="titleEn"
-                    className={styles.input}
-                    label={strings.titleEnLabel}
-                    value={value?.titleEn}
-                    error={error?.titleEn}
-                    onChange={setFieldValue}
-                    disabled={createBookPending || updateBookPending}
-                />
-                <TextInput
-                    name="titleNe"
-                    className={styles.input}
-                    label={strings.titleNeLabel}
-                    value={value?.titleNe}
-                    error={error?.titleNe}
-                    onChange={setFieldValue}
-                    disabled={createBookPending || updateBookPending}
-                />
+                <div className={styles.streamlined}>
+                    <TextInput
+                        name="titleEn"
+                        className={styles.input}
+                        label={strings.titleEnLabel}
+                        value={value?.titleEn}
+                        error={error?.titleEn}
+                        onChange={setFieldValue}
+                        disabled={createBookPending || updateBookPending}
+                    />
+                    <TextInput
+                        name="titleNe"
+                        className={styles.input}
+                        label={strings.titleNeLabel}
+                        value={value?.titleNe}
+                        error={error?.titleNe}
+                        onChange={setFieldValue}
+                        disabled={createBookPending || updateBookPending}
+                    />
+                </div>
+                <div className={styles.fileInputContainer}>
+                    <FileInput
+                        name="image"
+                        label="Upload book cover"
+                        className={styles.imageUpload}
+                        value={null}
+                        onChange={setFieldValue}
+                        disabled={createBookPending || updateBookPending}
+                        accept="image/*"
+                        multiple={false}
+                        overrideStatus
+                        showStatus
+                    >
+                        <MdFileUpload />
+                    </FileInput>
+                    {imageSrc && (
+                        <div className={styles.imageContainer}>
+                            <img
+                                className={styles.image}
+                                src={imageSrc}
+                                alt="Book Cover"
+                            />
+                        </div>
+                    )}
+                </div>
             </div>
             <div className={styles.inline}>
                 <TextArea
