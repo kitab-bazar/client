@@ -30,9 +30,7 @@ import {
     DateInput,
     useAlert,
     FileInput,
-    QuickActionButton,
 } from '@the-deep/deep-ui';
-import { IoClose } from 'react-icons/io5';
 
 import {
     CreateBooksOptionsQuery,
@@ -62,6 +60,46 @@ const CREATE_BOOK = gql`
         createBook(data: $data) {
             ok
             errors
+            result {
+                id
+                description
+                image {
+                    name
+                    url
+                }
+                isbn
+                edition
+                gradeDisplay
+                languageDisplay
+                price
+                title
+                titleEn
+                titleNe
+                descriptionEn
+                descriptionNe
+                publishedDate
+                language
+                grade
+                numberOfPages
+                authors {
+                    id
+                    name
+                    aboutAuthor
+                }
+                categories {
+                    id
+                    name
+                }
+                publisher {
+                    id
+                    name
+                }
+                cartDetails {
+                    id
+                    quantity
+                }
+                wishlistId
+            }
         }
     }
 `;
@@ -162,7 +200,7 @@ const schema: FormSchema = {
         grade: [],
         categories: [requiredListCondition, defaultEmptyArrayType],
         authors: [requiredListCondition, defaultEmptyArrayType],
-        image: [defaultUndefinedType],
+        image: [defaultUndefinedType, requiredCondition],
     }),
 };
 
@@ -321,10 +359,6 @@ function UploadBookModal(props: Props) {
         CREATE_BOOKS_OPTIONS,
     );
 
-    const handleRemoveButtonClick = useCallback(() => {
-        setFieldValue(undefined, 'image' as const);
-    }, [setFieldValue]);
-
     const handleSubmit = useCallback(
         () => {
             const submit = createSubmitHandler(
@@ -385,7 +419,7 @@ function UploadBookModal(props: Props) {
             bodyClassName={styles.inputList}
             heading={strings.modalHeading}
             onCloseButtonClick={onModalClose}
-            size="medium"
+            size="large"
             freeHeight
             footerActions={(
                 <>
@@ -408,10 +442,11 @@ function UploadBookModal(props: Props) {
             )}
         >
             <NonFieldError error={error} />
-            <div>
+            <div className={styles.fileInputContainer}>
                 <FileInput
                     name="image"
                     label="Upload book cover"
+                    className={styles.imageUpload}
                     value={null}
                     onChange={setFieldValue}
                     disabled={createBookPending || updateBookPending}
@@ -423,118 +458,126 @@ function UploadBookModal(props: Props) {
                     <MdFileUpload />
                 </FileInput>
                 {imageSrc && (
-                    <div>
-                        <QuickActionButton
-                            name={undefined}
-                            onClick={handleRemoveButtonClick}
-                            className={styles.removeButton}
-                        >
-                            <IoClose />
-                        </QuickActionButton>
+                    <div className={styles.imageContainer}>
                         <img
+                            className={styles.image}
                             src={imageSrc}
                             alt="Book Cover"
                         />
                     </div>
                 )}
             </div>
-
-            <TextInput
-                name="titleEn"
-                label={strings.titleEnLabel}
-                value={value?.titleEn}
-                error={error?.titleEn}
-                onChange={setFieldValue}
-                disabled={createBookPending || updateBookPending}
-            />
-            <TextInput
-                name="titleNe"
-                label={strings.titleNeLabel}
-                value={value?.titleNe}
-                error={error?.titleNe}
-                onChange={setFieldValue}
-                disabled={createBookPending || updateBookPending}
-            />
-            <TextArea
-                name="descriptionEn"
-                label={strings.descriptionEnLabel}
-                value={value?.descriptionEn}
-                error={error?.descriptionEn}
-                onChange={setFieldValue}
-                disabled={createBookPending || updateBookPending}
-            />
-            <TextArea
-                name="descriptionNe"
-                label={strings.descriptionNeLabel}
-                value={value?.descriptionNe}
-                error={error?.descriptionNe}
-                onChange={setFieldValue}
-                disabled={createBookPending || updateBookPending}
-            />
-            <TextInput
-                name="isbn"
-                label={strings.isbnLabel}
-                value={value?.isbn}
-                error={error?.isbn}
-                onChange={setFieldValue}
-                disabled={createBookPending || updateBookPending}
-            />
-            <NumberInput
-                name="numberOfPages"
-                label={strings.numberOfPagesLabel}
-                value={value?.numberOfPages}
-                error={error?.numberOfPages}
-                onChange={setFieldValue}
-                disabled={createBookPending || updateBookPending}
-                min={1}
-            />
-            <TextInput
-                name="edition"
-                label={strings.editionLabel}
-                value={value?.edition}
-                error={error?.edition}
-                onChange={setFieldValue}
-                disabled={createBookPending || updateBookPending}
-            />
-            <SelectInput
-                name="grade"
-                label={strings.gradeLabel}
-                keySelector={enumKeySelector}
-                labelSelector={enumLabelSelector}
-                options={createBooksOptions?.gradeList?.enumValues}
-                value={value?.grade}
-                error={error?.grade}
-                onChange={setFieldValue}
-                disabled={createBookPending || updateBookPending}
-            />
-            <SelectInput
-                label={strings.languageLabel}
-                name="language"
-                options={createBooksOptions?.languageOptions?.enumValues}
-                keySelector={enumKeySelector}
-                labelSelector={enumLabelSelector}
-                value={value.language}
-                error={error?.language}
-                onChange={setFieldValue}
-                disabled={createBookPending || updateBookPending || optionsDisabled}
-            />
-            <DateInput
-                name="publishedDate"
-                label={strings.publishedDateLabel}
-                disabled={createBookPending || updateBookPending}
-                onChange={setFieldValue}
-                value={value?.publishedDate}
-                error={error?.publishedDate}
-            />
-            <NumberInput
-                name="price"
-                label={strings.priceLabel}
-                value={value?.price}
-                error={error?.price}
-                onChange={setFieldValue}
-                disabled={createBookPending || updateBookPending}
-                min={1}
-            />
+            <div className={styles.inline}>
+                <TextInput
+                    name="titleEn"
+                    className={styles.input}
+                    label={strings.titleEnLabel}
+                    value={value?.titleEn}
+                    error={error?.titleEn}
+                    onChange={setFieldValue}
+                    disabled={createBookPending || updateBookPending}
+                />
+                <TextInput
+                    name="titleNe"
+                    className={styles.input}
+                    label={strings.titleNeLabel}
+                    value={value?.titleNe}
+                    error={error?.titleNe}
+                    onChange={setFieldValue}
+                    disabled={createBookPending || updateBookPending}
+                />
+            </div>
+            <div className={styles.inline}>
+                <TextArea
+                    name="descriptionEn"
+                    className={styles.input}
+                    label={strings.descriptionEnLabel}
+                    value={value?.descriptionEn}
+                    error={error?.descriptionEn}
+                    onChange={setFieldValue}
+                    disabled={createBookPending || updateBookPending}
+                    rows={6}
+                />
+                <TextArea
+                    name="descriptionNe"
+                    className={styles.input}
+                    label={strings.descriptionNeLabel}
+                    value={value?.descriptionNe}
+                    error={error?.descriptionNe}
+                    onChange={setFieldValue}
+                    disabled={createBookPending || updateBookPending}
+                    rows={6}
+                />
+            </div>
+            <div className={styles.inline}>
+                <TextInput
+                    name="isbn"
+                    className={styles.input}
+                    label={strings.isbnLabel}
+                    value={value?.isbn}
+                    error={error?.isbn}
+                    onChange={setFieldValue}
+                    disabled={createBookPending || updateBookPending}
+                />
+                <NumberInput
+                    name="numberOfPages"
+                    className={styles.input}
+                    label={strings.numberOfPagesLabel}
+                    value={value?.numberOfPages}
+                    error={error?.numberOfPages}
+                    onChange={setFieldValue}
+                    disabled={createBookPending || updateBookPending}
+                    min={1}
+                />
+            </div>
+            <div className={styles.inline}>
+                <TextInput
+                    name="edition"
+                    className={styles.input}
+                    label={strings.editionLabel}
+                    value={value?.edition}
+                    error={error?.edition}
+                    onChange={setFieldValue}
+                    disabled={createBookPending || updateBookPending}
+                />
+                <SelectInput
+                    name="grade"
+                    className={styles.input}
+                    label={strings.gradeLabel}
+                    keySelector={enumKeySelector}
+                    labelSelector={enumLabelSelector}
+                    options={createBooksOptions?.gradeList?.enumValues}
+                    value={value?.grade}
+                    error={error?.grade}
+                    onChange={setFieldValue}
+                    disabled={createBookPending || updateBookPending}
+                />
+            </div>
+            <div className={styles.inline}>
+                <SelectInput
+                    label={strings.languageLabel}
+                    name="language"
+                    className={styles.input}
+                    options={createBooksOptions?.languageOptions?.enumValues}
+                    keySelector={enumKeySelector}
+                    labelSelector={enumLabelSelector}
+                    value={value.language}
+                    error={error?.language}
+                    onChange={setFieldValue}
+                    disabled={createBookPending || updateBookPending || optionsDisabled}
+                />
+                <AuthorMultiSelectInput
+                    name="authors"
+                    className={styles.input}
+                    label={strings.authorsLabel}
+                    value={value.authors}
+                    onChange={setFieldValue}
+                    options={authors}
+                    onOptionsChange={setAuthors}
+                    disabled={createBookPending || updateBookPending}
+                    error={getErrorString(error?.authors)}
+                />
+            </div>
             <CategoryMultiSelectInput
                 name="categories"
                 label={strings.categoriesLabel}
@@ -545,16 +588,27 @@ function UploadBookModal(props: Props) {
                 disabled={createBookPending || updateBookPending}
                 error={getErrorString(error?.categories)}
             />
-            <AuthorMultiSelectInput
-                name="authors"
-                label={strings.authorsLabel}
-                value={value.authors}
-                onChange={setFieldValue}
-                options={authors}
-                onOptionsChange={setAuthors}
-                disabled={createBookPending || updateBookPending}
-                error={getErrorString(error?.authors)}
-            />
+            <div className={styles.inline}>
+                <DateInput
+                    name="publishedDate"
+                    className={styles.input}
+                    label={strings.publishedDateLabel}
+                    disabled={createBookPending || updateBookPending}
+                    onChange={setFieldValue}
+                    value={value?.publishedDate}
+                    error={error?.publishedDate}
+                />
+                <NumberInput
+                    name="price"
+                    className={styles.input}
+                    label={strings.priceLabel}
+                    value={value?.price}
+                    error={error?.price}
+                    onChange={setFieldValue}
+                    disabled={createBookPending || updateBookPending}
+                    min={1}
+                />
+            </div>
         </Modal>
     );
 }
