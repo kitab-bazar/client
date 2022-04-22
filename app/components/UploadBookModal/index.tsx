@@ -2,7 +2,7 @@ import React, { useState, useCallback, useMemo } from 'react';
 import {
     MdFileUpload,
 } from 'react-icons/md';
-import { _cs, isDefined } from '@togglecorp/fujs';
+import { _cs, isNotDefined, isDefined } from '@togglecorp/fujs';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import {
     PurgeNull,
@@ -184,25 +184,36 @@ type PartialFormType = PartialForm<FormType>;
 type FormSchema = ObjectSchema<PartialFormType>;
 type FormSchemaFields = ReturnType<FormSchema['fields']>;
 
-const schema: FormSchema = {
-    fields: (): FormSchemaFields => ({
-        titleEn: [requiredStringCondition],
-        titleNe: [requiredStringCondition],
-        descriptionEn: [requiredStringCondition],
-        descriptionNe: [requiredStringCondition],
-        isbn: [requiredStringCondition],
-        numberOfPages: [requiredCondition],
-        language: [requiredCondition],
-        publisher: [requiredCondition],
-        publishedDate: [requiredCondition],
-        price: [requiredCondition],
-        edition: [],
-        grade: [],
-        categories: [requiredListCondition, defaultEmptyArrayType],
-        authors: [requiredListCondition, defaultEmptyArrayType],
-        image: [defaultUndefinedType, requiredCondition],
-    }),
-};
+const schema = (imageRequired: boolean):FormSchema => ({
+    fields: (): FormSchemaFields => {
+        const baseSchema: FormSchemaFields = {
+            titleEn: [requiredStringCondition],
+            titleNe: [requiredStringCondition],
+            descriptionEn: [requiredStringCondition],
+            descriptionNe: [requiredStringCondition],
+            isbn: [requiredStringCondition],
+            numberOfPages: [requiredCondition],
+            language: [requiredCondition],
+            publisher: [requiredCondition],
+            publishedDate: [requiredCondition],
+            price: [requiredCondition],
+            edition: [],
+            grade: [],
+            categories: [requiredListCondition, defaultEmptyArrayType],
+            authors: [requiredListCondition, defaultEmptyArrayType],
+        };
+        if (imageRequired) {
+            return ({
+                ...baseSchema,
+                image: [defaultUndefinedType, requiredCondition],
+            });
+        }
+        return ({
+            ...baseSchema,
+            image: [defaultUndefinedType],
+        });
+    },
+});
 
 interface Props {
     publisher: string;
@@ -252,7 +263,7 @@ function UploadBookModal(props: Props) {
         setFieldValue,
         validate,
         setError,
-    } = useForm(schema, initialValue);
+    } = useForm(schema(isNotDefined(bookDetails?.id)), initialValue);
 
     const error = getErrorObject(riskyError);
     const alert = useAlert();
