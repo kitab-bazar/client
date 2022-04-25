@@ -676,7 +676,6 @@ function Schools(props: Props) {
                 />
             </div>
             <ListView
-                className={styles.schoolItemList}
                 data={data?.moderatorQuery?.users?.results ?? undefined}
                 pending={loading}
                 rendererParams={schoolItemRendererParams}

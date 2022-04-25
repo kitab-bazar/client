@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useContext } from 'react';
 import {
     MdFileUpload,
 } from 'react-icons/md';
@@ -40,15 +40,17 @@ import {
     UpdateBookMutation,
     UpdateBookMutationVariables,
 } from '#generated/types';
+
+import UserContext from '#base/context/UserContext';
 import { newBookModal } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
 import AuthorMultiSelectInput, { Author } from '#components/AuthorMultiSelectInput';
 import CategoryMultiSelectInput, { Category } from '#components/CategoryMultiSelectInput';
+import PublisherSelectInput, { PublisherTypeMini } from '#components/PublisherSelectInput';
 import NonFieldError from '#components/NonFieldError';
 import ErrorMessage from '#components/ErrorMessage';
 import { BookForDetail } from '#components/BookItem';
-
 import { EnumFix, enumKeySelector, enumLabelSelector } from '#utils/types';
 
 import styles from './styles.css';
@@ -176,9 +178,9 @@ const CREATE_BOOKS_OPTIONS = gql`
                 name
             }
         }
-
     }
 `;
+
 type FormType = PurgeNull<EnumFix<CreateBookMutationVariables['data'], 'language' | 'grade'>>;
 type PartialFormType = PartialForm<FormType>;
 type FormSchema = ObjectSchema<PartialFormType>;
@@ -194,7 +196,7 @@ const schema = (imageRequired: boolean):FormSchema => ({
             isbn: [requiredStringCondition],
             numberOfPages: [requiredCondition],
             language: [requiredCondition],
-            publisher: [requiredCondition],
+            publisher: [requiredStringCondition],
             publishedDate: [requiredCondition],
             price: [requiredCondition],
             edition: [],
@@ -215,8 +217,15 @@ const schema = (imageRequired: boolean):FormSchema => ({
     },
 });
 
+export function keySelector(d: PublisherTypeMini) {
+    return d.id;
+}
+
+export function labelSelector(d: PublisherTypeMini) {
+    return d.name;
+}
+
 interface Props {
-    publisher: string;
     className?: string;
     onModalClose: () => void;
     bookDetails?: BookForDetail;
@@ -226,10 +235,10 @@ function UploadBookModal(props: Props) {
     const {
         className,
         onModalClose,
-        publisher,
         bookDetails,
     } = props;
 
+    const { user } = useContext(UserContext);
     const strings = useTranslation(newBookModal);
     const [
         authors,
@@ -239,8 +248,17 @@ function UploadBookModal(props: Props) {
         categories,
         setCategories,
     ] = useState<Category[] | undefined | null>(bookDetails?.categories);
+    const [
+        publisherOptions,
+        setPublisherOptions,
+    ] = useState<PublisherTypeMini[] | undefined | null>(
+        bookDetails?.publisher
+            ? [{
+                ...bookDetails?.publisher,
+            }] : undefined,
+    );
+
     const initialValue: PartialFormType = useMemo(() => (removeNull({
-        publisher,
         titleEn: bookDetails?.titleEn,
         titleNe: bookDetails?.titleNe,
         descriptionEn: bookDetails?.descriptionEn,
@@ -254,7 +272,8 @@ function UploadBookModal(props: Props) {
         grade: bookDetails?.grade,
         categories: bookDetails?.categories.map((c) => c.id),
         authors: bookDetails?.authors.map((v) => v.id),
-    })), [bookDetails, publisher]);
+        publisher: user?.publisherId ?? bookDetails?.publisher.id,
+    })), [bookDetails, user?.publisherId]);
 
     const {
         pristine,
@@ -381,7 +400,6 @@ function UploadBookModal(props: Props) {
                             variables: {
                                 data: {
                                     ...val as CreateBookMutationVariables['data'],
-                                    publisher,
                                     // FIXME: add this to form
                                     isPublished: true,
                                 },
@@ -396,7 +414,6 @@ function UploadBookModal(props: Props) {
                             variables: {
                                 data: {
                                     ...val as CreateBookMutationVariables['data'],
-                                    publisher,
                                     // FIXME: add this to form
                                     isPublished: true,
                                 },
@@ -410,7 +427,7 @@ function UploadBookModal(props: Props) {
             );
             submit();
         },
-        [setError, validate, createBook, updateBook, publisher, bookDetails?.id],
+        [setError, validate, createBook, updateBook, bookDetails?.id],
     );
 
     const optionsDisabled = createBooksOptionsPending || !!createBooksOptionsError;
@@ -477,6 +494,19 @@ function UploadBookModal(props: Props) {
                         onChange={setFieldValue}
                         disabled={createBookPending || updateBookPending}
                     />
+                    {isNotDefined(user?.publisherId) && (
+                        <PublisherSelectInput
+                            name="publisher"
+                            label="Publisher"
+                            keySelector={keySelector}
+                            labelSelector={labelSelector}
+                            onChange={setFieldValue}
+                            onOptionsChange={setPublisherOptions}
+                            value={value?.publisher}
+                            options={publisherOptions}
+                            disabled={createBookPending || updateBookPending}
+                        />
+                    )}
                 </div>
                 <div className={styles.fileInputContainer}>
                     <FileInput

@@ -431,7 +431,6 @@ function BookItem(props: Props) {
             return (
                 <Button
                     name={undefined}
-                    className={styles.uploadBookButton}
                     icons={<IoPencil />}
                     onClick={showUploadBookModal}
                 >
@@ -620,8 +619,6 @@ function BookItem(props: Props) {
                 </Container>
                 {uploadBookModalShown && (
                     <UploadBookModal
-                        // eslint-disable-next-line react/destructuring-assignment
-                        publisher={props.book.publisher.id}
                         onModalClose={hideUploadBookModal}
                         // eslint-disable-next-line react/destructuring-assignment
                         bookDetails={props.book}

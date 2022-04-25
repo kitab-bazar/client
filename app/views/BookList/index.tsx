@@ -379,9 +379,8 @@ function Explore(props: Props) {
                         onChange={setSearch}
                     />
                 </Header>
-                {uploadBookModalShown && (
+                {uploadBookModalShown && canCreateBook && (
                     <UploadBookModal
-                        publisher={user?.publisherId}
                         onModalClose={hideUploadBookModal}
                     />
                 )}

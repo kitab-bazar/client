@@ -19,7 +19,7 @@ import {
     PublisherPackageOptionsQueryVariables,
 } from '#generated/types';
 
-import PublisherSelectInput, { SearchUserType } from '#components/PublisherSelectInput';
+import PublisherUserSelectInput, { SearchUserType } from '#components/PublisherUserSelectInput';
 import { enumKeySelector, enumLabelSelector } from '#utils/types';
 import useStateWithCallback from '#hooks/useStateWithCallback';
 
@@ -211,7 +211,7 @@ function PublisherPackages(props: Props) {
                         disabled={publisherPackageOptionsQueryLoading}
                         variant="general"
                     />
-                    <PublisherSelectInput
+                    <PublisherUserSelectInput
                         name="publisher"
                         label="Publisher"
                         variant="general"

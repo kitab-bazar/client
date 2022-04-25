@@ -1,90 +1,71 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import {
-    SearchSelectInput,
-    SearchSelectInputProps,
+    SelectInput,
+    SelectInputProps,
 } from '@the-deep/deep-ui';
 import {
     useQuery,
     gql,
 } from '@apollo/client';
 import {
-    PublisherOptionsQuery,
-    PublisherOptionsQueryVariables,
-    UserType,
+    PublishersQuery,
+    PublishersQueryVariables,
+    PublisherType,
 } from '#generated/types';
 
-import useDebouncedValue from '#hooks/useDebouncedValue';
-
-export type SearchUserType = Pick<UserType, 'id' | 'canonicalName'>;
-
-const PUBLISHERS = gql`
-query PublisherOptions($search: String) {
-    moderatorQuery {
-        users(search: $search, userType: PUBLISHER) {
+const PUBLISHSERS = gql`
+    query Publishers {
+        publishers {
             results {
                 id
-                canonicalName
+                name
             }
             totalCount
         }
     }
-}
 `;
 
+export type PublisherTypeMini = Pick<PublisherType, 'id' | 'name'>;
 type Def = { containerClassName?: string };
-type PublisherSelectInputProps<K extends string> = SearchSelectInputProps<
+type PublisherSelectInputProps<K extends string> = SelectInputProps<
     string,
     K,
-    SearchUserType,
-    Def,
-    'onSearchValueChange' | 'searchOptions' | 'optionsPending' | 'keySelector' | 'labelSelector' | 'totalOptionsCount' | 'onShowDropdownChange'
->;
-
-const keySelector = (d: SearchUserType) => d.id;
-
-export function userTitleSelector(user: SearchUserType) {
-    return user.canonicalName;
-}
+    PublisherTypeMini,
+    Def
+    >;
 
 function PublisherSelectInput<K extends string>(props: PublisherSelectInputProps<K>) {
     const {
-        className,
-        ...otherProps
+        onOptionsChange,
     } = props;
-
     const [opened, setOpened] = useState(false);
-    const [searchText, setSearchText] = useState<string>('');
-    const debouncedSearchText = useDebouncedValue(searchText);
-
-    const variables = useMemo(() => ({
-        search: debouncedSearchText,
-    }), [debouncedSearchText]);
 
     const {
         previousData,
         data = previousData,
         loading,
-    } = useQuery<PublisherOptionsQuery, PublisherOptionsQueryVariables>(
-        PUBLISHERS,
+    } = useQuery<PublishersQuery, PublishersQueryVariables>(
+        PUBLISHSERS,
         {
-            variables,
             skip: !opened,
+            onCompleted: (response) => {
+                if (!response.publishers) {
+                    return;
+                }
+                if (onOptionsChange) {
+                    onOptionsChange(response.publishers.results);
+                }
+            },
         },
     );
 
     return (
-        <SearchSelectInput
-            {...otherProps}
-            className={className}
-            keySelector={keySelector}
-            labelSelector={userTitleSelector}
-            onSearchValueChange={setSearchText}
-            searchOptions={data?.moderatorQuery?.users?.results}
+        <SelectInput
+            {...props}
             optionsPending={loading}
-            totalOptionsCount={data?.moderatorQuery?.users?.totalCount ?? undefined}
+            totalOptionsCount={data?.publishers?.totalCount ?? undefined}
             onShowDropdownChange={setOpened}
         />
     );
 }
-
 export default PublisherSelectInput;
