@@ -62,6 +62,10 @@ const PUBLISHER_PACKAGES = gql`
                     id
                     name
                 }
+                ordersExportFile {
+                    name
+                    url
+                }
                 relatedOrders {
                     id
                     statusDisplay

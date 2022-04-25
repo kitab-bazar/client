@@ -3,6 +3,7 @@ import { _cs } from '@togglecorp/fujs';
 import {
     Button,
     useModalState,
+    Link,
 } from '@the-deep/deep-ui';
 
 import RelatedOrdersModal from '#components/RelatedOrdersModal';
@@ -43,6 +44,13 @@ function Actions(props: Props) {
 
     return (
         <div className={_cs(className)}>
+            {data.ordersExportFile?.url && (
+                <Link
+                    to={data.ordersExportFile?.url}
+                >
+                    Export
+                </Link>
+            )}
             <Button
                 className={styles.button}
                 name={undefined}
