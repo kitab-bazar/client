@@ -5,4 +5,48 @@
         gap: var(--dui-spacing-extra-large);
         padding: var(--dui-spacing-medium) 0;
     }
+    .file-input-container {
+        display: flex;
+        align-items: center;
+        flex-basis: 50%;
+        gap: var(--dui-spacing-large);
+
+        .image-upload {
+            display: flex;
+            --height-border: 0;
+        }
+        .image-container {
+            width: 5em;
+            overflow: hidden;
+            object-fit: cover;
+            object-position: center top;
+
+            .image {
+                height: 6em;
+            }
+        }
+    }
+
+    .input {
+        flex: 1 1 0px;
+        width: 0;
+    }
+
+    .inline {
+        display: flex;
+        align-items: flex-end;
+        flex-wrap: wrap;
+        justify-content: stretch;
+        gap: var(--dui-spacing-extra-large);
+    }
+    .streamlined {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        gap: var(--dui-spacing-medium);
+
+        .input {
+            width: unset;
+        }
+    }
 }

@@ -1,7 +1,11 @@
-import React, { useState, useCallback } from 'react';
-import { _cs, isDefined } from '@togglecorp/fujs';
+import React, { useState, useCallback, useMemo, useContext } from 'react';
+import {
+    MdFileUpload,
+} from 'react-icons/md';
+import { _cs, isNotDefined, isDefined } from '@togglecorp/fujs';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import {
+    PurgeNull,
     ObjectSchema,
     PartialForm,
     useForm,
@@ -13,6 +17,7 @@ import {
     requiredListCondition,
     removeNull,
     defaultEmptyArrayType,
+    defaultUndefinedType,
     internal,
 } from '@togglecorp/toggle-form';
 import {
@@ -24,6 +29,7 @@ import {
     NumberInput,
     DateInput,
     useAlert,
+    FileInput,
 } from '@the-deep/deep-ui';
 
 import {
@@ -31,29 +37,23 @@ import {
     CreateBooksOptionsQueryVariables,
     CreateBookMutation,
     CreateBookMutationVariables,
+    UpdateBookMutation,
+    UpdateBookMutationVariables,
 } from '#generated/types';
+
+import UserContext from '#base/context/UserContext';
 import { newBookModal } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
 import AuthorMultiSelectInput, { Author } from '#components/AuthorMultiSelectInput';
 import CategoryMultiSelectInput, { Category } from '#components/CategoryMultiSelectInput';
+import PublisherSelectInput, { PublisherTypeMini } from '#components/PublisherSelectInput';
 import NonFieldError from '#components/NonFieldError';
 import ErrorMessage from '#components/ErrorMessage';
-import { EnumFix } from '#utils/types';
+import { BookForDetail } from '#components/BookItem';
+import { EnumFix, enumKeySelector, enumLabelSelector } from '#utils/types';
 
 import styles from './styles.css';
-
-interface EnumEntity<T> {
-    name: T;
-    description?: string | null;
-}
-
-function enumKeySelector<T>(d: EnumEntity<T>) {
-    return d.name;
-}
-function enumLabelSelector<T>(d: EnumEntity<T>) {
-    return d.description ?? `${d.name}`;
-}
 
 const CREATE_BOOK = gql`
     mutation CreateBook(
@@ -62,13 +62,104 @@ const CREATE_BOOK = gql`
         createBook(data: $data) {
             ok
             errors
+            result {
+                id
+                description
+                image {
+                    name
+                    url
+                }
+                isbn
+                edition
+                gradeDisplay
+                languageDisplay
+                price
+                title
+                titleEn
+                titleNe
+                descriptionEn
+                descriptionNe
+                publishedDate
+                language
+                grade
+                numberOfPages
+                authors {
+                    id
+                    name
+                    aboutAuthor
+                }
+                categories {
+                    id
+                    name
+                }
+                publisher {
+                    id
+                    name
+                }
+                cartDetails {
+                    id
+                    quantity
+                }
+                wishlistId
+            }
+        }
+    }
+`;
+const UPDATE_BOOK = gql`
+mutation UpdateBook(
+        $data: BookCreateInputType!,
+        $id: ID!,
+    ) {
+        updateBook(data: $data, id: $id) {
+            ok
+            errors
+            result {
+                id
+                description
+                image {
+                    name
+                    url
+                }
+                isbn
+                edition
+                gradeDisplay
+                languageDisplay
+                price
+                title
+                titleEn
+                titleNe
+                descriptionEn
+                descriptionNe
+                publishedDate
+                language
+                grade
+                numberOfPages
+                authors {
+                    id
+                    name
+                    aboutAuthor
+                }
+                categories {
+                    id
+                    name
+                }
+                publisher {
+                    id
+                    name
+                }
+                cartDetails {
+                    id
+                    quantity
+                }
+                wishlistId
+            }
         }
     }
 `;
 
 const CREATE_BOOKS_OPTIONS = gql`
     query CreateBooksOptions {
-        languageOptions: __type(name: "language") {
+        languageOptions: __type(name: "BookLanguageEnum") {
             name
             enumValues {
                 name
@@ -87,53 +178,102 @@ const CREATE_BOOKS_OPTIONS = gql`
                 name
             }
         }
-
     }
 `;
-type FormType = EnumFix<CreateBookMutationVariables['data'], 'language' | 'grade'>;
+
+type FormType = PurgeNull<EnumFix<CreateBookMutationVariables['data'], 'language' | 'grade'>>;
 type PartialFormType = PartialForm<FormType>;
 type FormSchema = ObjectSchema<PartialFormType>;
 type FormSchemaFields = ReturnType<FormSchema['fields']>;
 
-const schema: FormSchema = {
-    fields: (): FormSchemaFields => ({
-        title: [requiredStringCondition],
-        description: [requiredStringCondition],
-        isbn: [requiredStringCondition],
-        numberOfPages: [requiredCondition],
-        language: [requiredCondition],
-        publisher: [requiredCondition],
-        publishedDate: [requiredCondition],
-        price: [requiredCondition],
-        edition: [requiredStringCondition],
-        grade: [],
-        categories: [requiredListCondition, defaultEmptyArrayType],
-        authors: [requiredListCondition, defaultEmptyArrayType],
-        image: [],
-    }),
-};
+const schema = (imageRequired: boolean):FormSchema => ({
+    fields: (): FormSchemaFields => {
+        const baseSchema: FormSchemaFields = {
+            titleEn: [requiredStringCondition],
+            titleNe: [requiredStringCondition],
+            descriptionEn: [requiredStringCondition],
+            descriptionNe: [requiredStringCondition],
+            isbn: [requiredStringCondition],
+            numberOfPages: [requiredCondition],
+            language: [requiredCondition],
+            publisher: [requiredStringCondition],
+            publishedDate: [requiredCondition],
+            price: [requiredCondition],
+            edition: [],
+            grade: [],
+            categories: [requiredListCondition, defaultEmptyArrayType],
+            authors: [requiredListCondition, defaultEmptyArrayType],
+        };
+        if (imageRequired) {
+            return ({
+                ...baseSchema,
+                image: [defaultUndefinedType, requiredCondition],
+            });
+        }
+        return ({
+            ...baseSchema,
+            image: [defaultUndefinedType],
+        });
+    },
+});
+
+export function keySelector(d: PublisherTypeMini) {
+    return d.id;
+}
+
+export function labelSelector(d: PublisherTypeMini) {
+    return d.name;
+}
 
 interface Props {
-    publisher: string;
     className?: string;
     onModalClose: () => void;
-    onUploadSuccess: () => void;
+    bookDetails?: BookForDetail;
 }
 
 function UploadBookModal(props: Props) {
     const {
         className,
         onModalClose,
-        onUploadSuccess,
-        publisher,
+        bookDetails,
     } = props;
 
+    const { user } = useContext(UserContext);
     const strings = useTranslation(newBookModal);
-    const [authors, setAuthors] = useState<Author[] | undefined | null>();
-    const [categories, setCategories] = useState<Category[] | undefined | null>();
-    const initialValue: PartialFormType = {
-        publisher,
-    };
+    const [
+        authors,
+        setAuthors,
+    ] = useState<Author[] | undefined | null>(bookDetails?.authors);
+    const [
+        categories,
+        setCategories,
+    ] = useState<Category[] | undefined | null>(bookDetails?.categories);
+    const [
+        publisherOptions,
+        setPublisherOptions,
+    ] = useState<PublisherTypeMini[] | undefined | null>(
+        bookDetails?.publisher
+            ? [{
+                ...bookDetails?.publisher,
+            }] : undefined,
+    );
+
+    const initialValue: PartialFormType = useMemo(() => (removeNull({
+        titleEn: bookDetails?.titleEn,
+        titleNe: bookDetails?.titleNe,
+        descriptionEn: bookDetails?.descriptionEn,
+        descriptionNe: bookDetails?.descriptionNe,
+        isbn: bookDetails?.isbn,
+        numberOfPages: bookDetails?.numberOfPages,
+        language: bookDetails?.language,
+        publishedDate: bookDetails?.publishedDate,
+        price: bookDetails?.price,
+        edition: bookDetails?.edition,
+        grade: bookDetails?.grade,
+        categories: bookDetails?.categories.map((c) => c.id),
+        authors: bookDetails?.authors.map((v) => v.id),
+        publisher: user?.publisherId ?? bookDetails?.publisher.id,
+    })), [bookDetails, user?.publisherId]);
 
     const {
         pristine,
@@ -142,10 +282,58 @@ function UploadBookModal(props: Props) {
         setFieldValue,
         validate,
         setError,
-    } = useForm(schema, initialValue);
+    } = useForm(schema(isNotDefined(bookDetails?.id)), initialValue);
 
     const error = getErrorObject(riskyError);
     const alert = useAlert();
+
+    const [
+        updateBook,
+        {
+            loading: updateBookPending,
+        },
+    ] = useMutation<UpdateBookMutation, UpdateBookMutationVariables>(
+        UPDATE_BOOK,
+        {
+            onCompleted: (response) => {
+                if (!response.updateBook) {
+                    return;
+                }
+                const { errors, ok } = response.updateBook;
+                if (errors) {
+                    const formError = transformToFormError(removeNull(errors) as ObjectError[]);
+                    setError(formError);
+                    alert.show(
+                        <ErrorMessage
+                            header={strings.bookEditFailureMessage}
+                            description={
+                                isDefined(formError)
+                                    ? formError[internal]
+                                    : undefined
+                            }
+                        />,
+                        { variant: 'error' },
+                    );
+                } else if (ok) {
+                    alert.show(
+                        strings.bookEditSuccessMessage,
+                        { variant: 'success' },
+                    );
+                    onModalClose();
+                }
+            },
+            onError: (errors) => {
+                setError(errors.message);
+                alert.show(
+                    <ErrorMessage
+                        header={strings.bookEditSuccessMessage}
+                        description={errors.message}
+                    />,
+                    { variant: 'error' },
+                );
+            },
+        },
+    );
 
     const [
         createBook,
@@ -177,7 +365,6 @@ function UploadBookModal(props: Props) {
                         strings.newBookUploadSuccessMessage,
                         { variant: 'success' },
                     );
-                    onUploadSuccess();
                     onModalClose();
                 }
             },
@@ -208,30 +395,61 @@ function UploadBookModal(props: Props) {
                 validate,
                 setError,
                 (val) => {
-                    createBook({
-                        variables: {
-                            data: {
-                                ...val as CreateBookMutationVariables['data'],
-                                publisher,
-                                // FIXME: add this to form
-                                isPublished: true,
+                    if (bookDetails?.id) {
+                        updateBook({
+                            variables: {
+                                data: {
+                                    ...val as CreateBookMutationVariables['data'],
+                                    // FIXME: add this to form
+                                    isPublished: true,
+                                },
+                                id: bookDetails.id,
                             },
-                        },
-                    });
+                            context: {
+                                hasUpload: true,
+                            },
+                        });
+                    } else {
+                        createBook({
+                            variables: {
+                                data: {
+                                    ...val as CreateBookMutationVariables['data'],
+                                    // FIXME: add this to form
+                                    isPublished: true,
+                                },
+                            },
+                            context: {
+                                hasUpload: true,
+                            },
+                        });
+                    }
                 },
             );
             submit();
         },
-        [setError, validate, createBook, publisher],
+        [setError, validate, createBook, updateBook, bookDetails?.id],
     );
 
     const optionsDisabled = createBooksOptionsPending || !!createBooksOptionsError;
+    const imageSrc = useMemo(() => {
+        if (value.image) {
+            return URL.createObjectURL(value?.image as File);
+        }
+        if (bookDetails?.image) {
+            return bookDetails.image.url as string;
+        }
+        return undefined;
+    }, [value.image, bookDetails?.image]);
 
     return (
         <Modal
             className={_cs(styles.uploadBookModal, className)}
             bodyClassName={styles.inputList}
-            heading={strings.modalHeading}
+            heading={
+                isDefined(bookDetails)
+                    ? strings.updateBookModalHeading
+                    : strings.createBookModalHeading
+            }
             onCloseButtonClick={onModalClose}
             size="medium"
             freeHeight
@@ -248,7 +466,7 @@ function UploadBookModal(props: Props) {
                         name={undefined}
                         variant="primary"
                         onClick={handleSubmit}
-                        disabled={pristine || createBookPending}
+                        disabled={pristine || createBookPending || updateBookPending}
                     >
                         {strings.saveButtonLabel}
                     </Button>
@@ -256,86 +474,157 @@ function UploadBookModal(props: Props) {
             )}
         >
             <NonFieldError error={error} />
-            <TextInput
-                name="title"
-                label={strings.titleLabel}
-                value={value?.title}
-                error={error?.title}
-                onChange={setFieldValue}
-                disabled={createBookPending}
-            />
-            <TextArea
-                name="description"
-                label={strings.descriptionLabel}
-                value={value?.description}
-                error={error?.description}
-                onChange={setFieldValue}
-                disabled={createBookPending}
-            />
-            <TextInput
-                name="isbn"
-                label={strings.isbnLabel}
-                value={value?.isbn}
-                error={error?.isbn}
-                onChange={setFieldValue}
-                disabled={createBookPending}
-            />
-            <NumberInput
-                name="numberOfPages"
-                label={strings.numberOfPagesLabel}
-                value={value?.numberOfPages}
-                error={error?.numberOfPages}
-                onChange={setFieldValue}
-                disabled={createBookPending}
-                min={1}
-            />
-            <TextInput
-                name="edition"
-                label={strings.editionLabel}
-                value={value?.edition}
-                error={error?.edition}
-                onChange={setFieldValue}
-                disabled={createBookPending}
-            />
-            <SelectInput
-                name="grade"
-                label={strings.gradeLabel}
-                keySelector={enumKeySelector}
-                labelSelector={enumLabelSelector}
-                options={createBooksOptions?.gradeList?.enumValues}
-                value={value?.grade}
-                error={error?.grade}
-                onChange={setFieldValue}
-                disabled={createBookPending}
-            />
-            <SelectInput
-                label={strings.languageLabel}
-                name="language"
-                options={createBooksOptions?.languageOptions?.enumValues}
-                keySelector={enumKeySelector}
-                labelSelector={enumLabelSelector}
-                value={value.language}
-                error={error?.language}
-                onChange={setFieldValue}
-                disabled={createBookPending || optionsDisabled}
-            />
-            <DateInput
-                name="publishedDate"
-                label={strings.publishedDateLabel}
-                disabled={createBookPending}
-                onChange={setFieldValue}
-                value={value?.publishedDate}
-                error={error?.publishedDate}
-            />
-            <NumberInput
-                name="price"
-                label={strings.priceLabel}
-                value={value?.price}
-                error={error?.price}
-                onChange={setFieldValue}
-                disabled={createBookPending}
-                min={1}
-            />
+            <div className={styles.inline}>
+                <div className={styles.streamlined}>
+                    <TextInput
+                        name="titleEn"
+                        className={styles.input}
+                        label={strings.titleEnLabel}
+                        value={value?.titleEn}
+                        error={error?.titleEn}
+                        onChange={setFieldValue}
+                        disabled={createBookPending || updateBookPending}
+                    />
+                    <TextInput
+                        name="titleNe"
+                        className={styles.input}
+                        label={strings.titleNeLabel}
+                        value={value?.titleNe}
+                        error={error?.titleNe}
+                        onChange={setFieldValue}
+                        disabled={createBookPending || updateBookPending}
+                    />
+                    {isNotDefined(user?.publisherId) && (
+                        <PublisherSelectInput
+                            name="publisher"
+                            label="Publisher"
+                            keySelector={keySelector}
+                            labelSelector={labelSelector}
+                            onChange={setFieldValue}
+                            onOptionsChange={setPublisherOptions}
+                            value={value?.publisher}
+                            options={publisherOptions}
+                            disabled={createBookPending || updateBookPending}
+                        />
+                    )}
+                </div>
+                <div className={styles.fileInputContainer}>
+                    <FileInput
+                        name="image"
+                        label="Upload book cover"
+                        className={styles.imageUpload}
+                        value={null}
+                        onChange={setFieldValue}
+                        disabled={createBookPending || updateBookPending}
+                        accept="image/*"
+                        multiple={false}
+                        overrideStatus
+                        showStatus
+                    >
+                        <MdFileUpload />
+                    </FileInput>
+                    {imageSrc && (
+                        <div className={styles.imageContainer}>
+                            <img
+                                className={styles.image}
+                                src={imageSrc}
+                                alt="Book Cover"
+                            />
+                        </div>
+                    )}
+                </div>
+            </div>
+            <div className={styles.inline}>
+                <TextArea
+                    name="descriptionEn"
+                    className={styles.input}
+                    label={strings.descriptionEnLabel}
+                    value={value?.descriptionEn}
+                    error={error?.descriptionEn}
+                    onChange={setFieldValue}
+                    disabled={createBookPending || updateBookPending}
+                    rows={6}
+                />
+                <TextArea
+                    name="descriptionNe"
+                    className={styles.input}
+                    label={strings.descriptionNeLabel}
+                    value={value?.descriptionNe}
+                    error={error?.descriptionNe}
+                    onChange={setFieldValue}
+                    disabled={createBookPending || updateBookPending}
+                    rows={6}
+                />
+            </div>
+            <div className={styles.inline}>
+                <TextInput
+                    name="isbn"
+                    className={styles.input}
+                    label={strings.isbnLabel}
+                    value={value?.isbn}
+                    error={error?.isbn}
+                    onChange={setFieldValue}
+                    disabled={createBookPending || updateBookPending}
+                />
+                <NumberInput
+                    name="numberOfPages"
+                    className={styles.input}
+                    label={strings.numberOfPagesLabel}
+                    value={value?.numberOfPages}
+                    error={error?.numberOfPages}
+                    onChange={setFieldValue}
+                    disabled={createBookPending || updateBookPending}
+                    min={1}
+                />
+            </div>
+            <div className={styles.inline}>
+                <TextInput
+                    name="edition"
+                    className={styles.input}
+                    label={strings.editionLabel}
+                    value={value?.edition}
+                    error={error?.edition}
+                    onChange={setFieldValue}
+                    disabled={createBookPending || updateBookPending}
+                />
+                <SelectInput
+                    name="grade"
+                    className={styles.input}
+                    label={strings.gradeLabel}
+                    keySelector={enumKeySelector}
+                    labelSelector={enumLabelSelector}
+                    options={createBooksOptions?.gradeList?.enumValues}
+                    value={value?.grade}
+                    error={error?.grade}
+                    onChange={setFieldValue}
+                    disabled={createBookPending || updateBookPending}
+                />
+            </div>
+            <div className={styles.inline}>
+                <SelectInput
+                    label={strings.languageLabel}
+                    name="language"
+                    className={styles.input}
+                    options={createBooksOptions?.languageOptions?.enumValues}
+                    keySelector={enumKeySelector}
+                    labelSelector={enumLabelSelector}
+                    value={value.language}
+                    error={error?.language}
+                    onChange={setFieldValue}
+                    disabled={createBookPending || updateBookPending || optionsDisabled}
+                />
+                <AuthorMultiSelectInput
+                    name="authors"
+                    className={styles.input}
+                    label={strings.authorsLabel}
+                    value={value.authors}
+                    onChange={setFieldValue}
+                    options={authors}
+                    onOptionsChange={setAuthors}
+                    disabled={createBookPending || updateBookPending}
+                    error={getErrorString(error?.authors)}
+                />
+            </div>
             <CategoryMultiSelectInput
                 name="categories"
                 label={strings.categoriesLabel}
@@ -343,19 +632,30 @@ function UploadBookModal(props: Props) {
                 onChange={setFieldValue}
                 options={categories}
                 onOptionsChange={setCategories}
-                disabled={createBookPending}
+                disabled={createBookPending || updateBookPending}
                 error={getErrorString(error?.categories)}
             />
-            <AuthorMultiSelectInput
-                name="authors"
-                label={strings.authorsLabel}
-                value={value.authors}
-                onChange={setFieldValue}
-                options={authors}
-                onOptionsChange={setAuthors}
-                disabled={createBookPending}
-                error={getErrorString(error?.authors)}
-            />
+            <div className={styles.inline}>
+                <DateInput
+                    name="publishedDate"
+                    className={styles.input}
+                    label={strings.publishedDateLabel}
+                    disabled={createBookPending || updateBookPending}
+                    onChange={setFieldValue}
+                    value={value?.publishedDate}
+                    error={error?.publishedDate}
+                />
+                <NumberInput
+                    name="price"
+                    className={styles.input}
+                    label={strings.priceLabel}
+                    value={value?.price}
+                    error={error?.price}
+                    onChange={setFieldValue}
+                    disabled={createBookPending || updateBookPending}
+                    min={1}
+                />
+            </div>
         </Modal>
     );
 }

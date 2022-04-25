@@ -895,6 +895,22 @@ export const profile = {
         en: 'Export',
         ne: 'निर्यात गर्नुहोस्',
     },
+    myBooksLabel: {
+        en: 'My Books',
+        ne: 'मेरो किताबहरु',
+    },
+    publisherBooksPendingMessage: {
+        en: 'Loading books',
+        ne: 'पुस्तकहरू लोड गर्दै',
+    },
+    publisherBooksErrorMessage: {
+        en: 'Failed to load books',
+        ne: 'पुस्तकहरू लोड गर्न असफल',
+    },
+    uploadBookModalButtonLabel: {
+        en: 'Upload new book',
+        ne: 'नयाँ पुस्तक अपलोड गर्नुहोस्',
+    },
 };
 
 export const school = {
@@ -1274,6 +1290,10 @@ export const bookItem = {
         en: 'Categories',
         ne: 'वर्ग',
     },
+    editBookLabel: {
+        en: 'Edit Book',
+        ne: 'पुस्तक सम्पादन गर्नुहोस्',
+    },
 };
 
 export const orderItem = {
@@ -1415,9 +1435,13 @@ export const ordersBar = {
 };
 
 export const newBookModal = {
-    modalHeading: {
+    createBookModalHeading: {
         en: 'Add New Book',
         ne: 'नयाँ किताब थप्नुहोस्',
+    },
+    updateBookModalHeading: {
+        en: 'Edit Book',
+        ne: 'पुस्तक सम्पादन गर्नुहोस्',
     },
     saveButtonLabel: {
         en: 'Save',
@@ -1427,9 +1451,13 @@ export const newBookModal = {
         en: 'Cancel',
         ne: 'रद्द गर्नुहोस्',
     },
-    titleLabel: {
-        en: 'Title',
-        ne: 'शीर्षक',
+    titleEnLabel: {
+        en: 'Title (in English)',
+        ne: 'शीर्षक (अंग्रेजीमा)',
+    },
+    titleNeLabel: {
+        en: 'Title (in Nepali)',
+        ne: 'शीर्षक (नेपालीमा)',
     },
     editionLabel: {
         en: 'Edition',
@@ -1439,9 +1467,13 @@ export const newBookModal = {
         en: 'Grade',
         ne: 'कक्षा',
     },
-    descriptionLabel: {
-        en: 'Description',
-        ne: 'विवरण',
+    descriptionEnLabel: {
+        en: 'Description (in English)',
+        ne: 'विवरण (अंग्रेजीमा)',
+    },
+    descriptionNeLabel: {
+        en: 'Description (in Nepali)',
+        ne: 'विवरण (नेपालीमा)',
     },
     isbnLabel: {
         en: 'ISBN',
@@ -1478,6 +1510,14 @@ export const newBookModal = {
     newBookUploadFailureMessage: {
         en: 'Failed to upload book',
         ne: 'किताब अपलोड गर्न असफल ',
+    },
+    bookEditSuccessMessage: {
+        en: 'Successfully updated book',
+        ne: 'पुस्तक सफलतापूर्वक अद्यावधिक गरियो',
+    },
+    bookEditFailureMessage: {
+        en: 'Failed to update book',
+        ne: 'पुस्तक अद्यावधिक गर्न असफल भयो',
     },
 };
 

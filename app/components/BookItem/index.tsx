@@ -7,11 +7,13 @@ import {
     Button,
     useAlert,
     Tag,
+    useModalState,
 } from '@the-deep/deep-ui';
 import {
     IoCheckmark,
     IoClose,
     IoBookOutline,
+    IoPencil,
 } from 'react-icons/io5';
 import {
     gql,
@@ -36,6 +38,7 @@ import {
 import { CART_ITEMS } from '#components/OrdersBar/queries';
 import ErrorMessage from '#components/ErrorMessage';
 import NumberOutput from '#components/NumberOutput';
+import UploadBookModal from '#components/UploadBookModal';
 import { transformToFormError, ObjectError } from '#base/utils/errorTransform';
 
 import UserContext from '#base/context/UserContext';
@@ -102,18 +105,19 @@ mutation RemoveFromWishList($id: ID!) {
 }
 `;
 
-type BookForList = Pick<BookType, 'id' | 'title' | 'price' | 'gradeDisplay' | 'categories' | 'languageDisplay' | 'image' | 'wishlistId'> & {
+export type BookForList = Pick<BookType, 'id' | 'title' | 'price' | 'gradeDisplay' | 'categories' | 'languageDisplay' | 'image' | 'wishlistId'> & {
     authors: Pick<BookType['authors'][number], 'id' | 'name'>[],
     publisher: Pick<BookType['publisher'], 'id' | 'name'>,
     cartDetails?: Pick<NonNullable<BookType['cartDetails']>, 'id' | 'quantity'> | null | undefined,
 };
-type BookForDetail = Pick<BookType, 'id' | 'title' | 'description' | 'gradeDisplay' | 'price' | 'languageDisplay' | 'numberOfPages' | 'isbn' | 'authors' | 'categories' | 'image' | 'wishlistId'> & {
+export type BookForDetail = Pick<BookType, 'id' | 'title' | 'description' | 'gradeDisplay' | 'price' | 'languageDisplay' | 'numberOfPages' | 'isbn' | 'authors' | 'categories' | 'image' | 'wishlistId' | 'titleEn' | 'titleNe' | 'descriptionEn' | 'descriptionNe' | 'grade' | 'language' | 'publishedDate' | 'edition'> & {
     authors: Pick<BookType['authors'][number], 'id' | 'name' | 'aboutAuthor'>[],
     publisher: Pick<BookType['publisher'], 'id' | 'name'>,
     cartDetails?: Pick<NonNullable<BookType['cartDetails']>, 'id' | 'quantity'> | null | undefined,
 };
 type BookForCompact = Pick<BookType, 'id' | 'title' | 'image' | 'price'> & {
     authors: Pick<BookType['authors'][number], 'id' | 'name'>[],
+    publisher?: Pick<BookType['publisher'], 'id' | 'name'>,
 };
 type BookForOrder = Pick<BookType, 'id' | 'title' | 'price' | 'image' | 'edition' | 'isbn' | 'gradeDisplay' | 'languageDisplay'> & {
     publisher?: null | NonNullable<Pick<BookType['publisher'], 'id' | 'name'>>
@@ -151,6 +155,7 @@ function BookItem(props: Props) {
     const {
         className,
         book,
+        variant,
         wishListActionsShown,
     } = props;
 
@@ -159,6 +164,14 @@ function BookItem(props: Props) {
     const { user } = useContext(UserContext);
 
     const canCreateOrder = user?.permissions.includes('CREATE_ORDER');
+    const isPublisher = variant === 'detail' && book?.publisher?.id === user?.publisherId;
+    const isModerator = user?.type === 'MODERATOR';
+    const canUpdateBook = user?.permissions.includes('CAN_UPDATE_BOOK') && (isPublisher || isModerator);
+    const [
+        uploadBookModalShown,
+        showUploadBookModal,
+        hideUploadBookModal,
+    ] = useModalState(false);
 
     const [
         addToOrder,
@@ -414,6 +427,21 @@ function BookItem(props: Props) {
         wishListActionsShown,
     ]);
 
+    const editBookButton = React.useMemo(() => {
+        if (canUpdateBook) {
+            return (
+                <Button
+                    name={undefined}
+                    icons={<IoPencil />}
+                    onClick={showUploadBookModal}
+                >
+                    {strings.editBookLabel}
+                </Button>
+            );
+        }
+        return undefined;
+    }, [canUpdateBook, showUploadBookModal, strings.editBookLabel]);
+
     const bookCoverPreview = (
         <div className={styles.preview}>
             {book.image?.url ? (
@@ -498,7 +526,6 @@ function BookItem(props: Props) {
                         <>
                             {wishListButton}
                             {orderButton}
-                            {/* editButton */}
                         </>
                     )}
                 />
@@ -524,6 +551,7 @@ function BookItem(props: Props) {
                             <IoClose />
                         </Button>
                     )}
+                    footerActions={editBookButton}
                     headingSize="small"
                     headingDescription={authorsDisplay}
                     borderBelowHeader
@@ -580,7 +608,6 @@ function BookItem(props: Props) {
                     <div className={styles.actions}>
                         {wishListButton}
                         {orderButton}
-                        {/* editButton */}
                     </div>
                     <div
                         // TODO: sanitize description
@@ -591,6 +618,13 @@ function BookItem(props: Props) {
                         }
                     />
                 </Container>
+                {uploadBookModalShown && (
+                    <UploadBookModal
+                        onModalClose={hideUploadBookModal}
+                        // eslint-disable-next-line react/destructuring-assignment
+                        bookDetails={props.book}
+                    />
+                )}
             </div>
         );
     }
