@@ -117,6 +117,7 @@ export type BookForDetail = Pick<BookType, 'id' | 'title' | 'description' | 'gra
 };
 type BookForCompact = Pick<BookType, 'id' | 'title' | 'image' | 'price'> & {
     authors: Pick<BookType['authors'][number], 'id' | 'name'>[],
+    publisher?: Pick<BookType['publisher'], 'id' | 'name'>,
 };
 type BookForOrder = Pick<BookType, 'id' | 'title' | 'price' | 'image' | 'edition' | 'isbn' | 'gradeDisplay' | 'languageDisplay'> & {
     publisher?: null | NonNullable<Pick<BookType['publisher'], 'id' | 'name'>>
@@ -163,9 +164,9 @@ function BookItem(props: Props) {
     const { user } = useContext(UserContext);
 
     const canCreateOrder = user?.permissions.includes('CREATE_ORDER');
-    const canPublisherUpdateBook = variant === 'detail' && book.publisher.id === user?.publisherId;
-    const canModeratorUpdateBook = user?.type === 'MODERATOR';
-    const canUpdateBook = user?.permissions.includes('CAN_UPDATE_BOOK') && (canPublisherUpdateBook || canModeratorUpdateBook);
+    const isPublisher = variant === 'detail' && book?.publisher?.id === user?.publisherId;
+    const isModerator = user?.type === 'MODERATOR';
+    const canUpdateBook = user?.permissions.includes('CAN_UPDATE_BOOK') && (isPublisher || isModerator);
     const [
         uploadBookModalShown,
         showUploadBookModal,

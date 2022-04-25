@@ -188,9 +188,9 @@ function Explore(props: Props) {
         language?: string;
     } | undefined;
 
-    const canPublisherCreateBook = isDefined(user?.publisherId);
-    const canModeratorCreateBook = user?.type === 'MODERATOR';
-    const canCreateBook = user?.permissions.includes('CAN_CREATE_BOOK') && (canPublisherCreateBook || canModeratorCreateBook);
+    const isPublisher = isDefined(user?.publisherId);
+    const isModerator = user?.type === 'MODERATOR';
+    const canCreateBook = user?.permissions.includes('CAN_CREATE_BOOK') && (isPublisher || isModerator);
 
     // NOTE: A different UI depending on if user is publisher or not
     const publisherId = user?.publisherId;
