@@ -138,7 +138,7 @@ function PublisherPackages(props: Props) {
                 data,
                 disabled: publisherPackagesLoading,
             }),
-            columnWidth: 350,
+            columnWidth: 450,
         };
 
         return [
