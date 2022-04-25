@@ -38,7 +38,6 @@ query PublisherPackagesForProfile(
             id
             status
             statusDisplay
-            incentive
             totalPrice
             totalQuantity
             packageId
@@ -141,14 +140,6 @@ function PackageItem(props: PackageItemProps) {
                     <NumberOutput
                         value={data.totalPrice}
                         currency
-                    />
-                )}
-            />
-            <TextOutput
-                label={strings.incentiveLabel}
-                value={(
-                    <NumberOutput
-                        value={data.incentive}
                     />
                 )}
             />
