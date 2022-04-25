@@ -1,7 +1,6 @@
-import React, { ReactNode, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { _cs, isDefined } from '@togglecorp/fujs';
 import {
-    Element,
     Container,
     Pager,
     SelectInput,
@@ -13,7 +12,6 @@ import {
     createNumberColumn,
 } from '@the-deep/deep-ui';
 import { useQuery, gql } from '@apollo/client';
-import { IoCheckmark, IoClose } from 'react-icons/io5';
 
 import {
     CourierPackagesQuery,
@@ -66,7 +64,6 @@ const COURIER_PACKAGES = gql`
                 statusDisplay
                 totalPrice
                 totalQuantity
-                isEligibleForIncentive
                 type
                 typeDisplay
                 municipality {
@@ -146,25 +143,6 @@ function CourierPackages(props: Props) {
             }),
             columnWidth: 350,
         };
-        const incentiveColumn: TableColumn<
-            CourierPackage,
-            string,
-            ReactNode,
-            TableHeaderCellProps
-        > = {
-            id: 'isEligibleForIncentive',
-            title: 'Incentive',
-            headerCellRenderer: TableHeaderCell,
-            headerCellRendererParams: {
-                sortable: false,
-            },
-            cellRenderer: Element,
-            cellRendererClassName: styles.actions,
-            cellRendererParams: (_, data) => ({
-                children: data.isEligibleForIncentive ? <IoCheckmark /> : <IoClose />,
-            }),
-            columnWidth: 120,
-        };
 
         return [
             createStringColumn<CourierPackage, string>(
@@ -203,7 +181,6 @@ function CourierPackages(props: Props) {
                 'Municipality',
                 (item) => item.municipality.name,
             ),
-            incentiveColumn,
             actionsColumn,
         ];
     }, [courierPackagesLoading]);

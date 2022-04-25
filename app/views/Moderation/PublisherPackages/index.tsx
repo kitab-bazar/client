@@ -58,10 +58,13 @@ const PUBLISHER_PACKAGES = gql`
                 statusDisplay
                 totalPrice
                 totalQuantity
-                incentive
                 publisher {
                     id
                     name
+                }
+                ordersExportFile {
+                    name
+                    url
                 }
                 relatedOrders {
                     id
@@ -169,11 +172,6 @@ function PublisherPackages(props: Props) {
                 'totalQuantity',
                 'Quantity',
                 (item) => item.totalQuantity,
-            ),
-            createNumberColumn<PublisherPackage, string>(
-                'incentive',
-                'Incentive',
-                (item) => item.incentive,
             ),
             actionsColumn,
         ];
