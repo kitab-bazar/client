@@ -190,6 +190,8 @@ function Navbar(props: Props) {
                     className={styles.logo}
                     src={KitabLogo}
                     alt="logo"
+                    width="20"
+                    height="30"
                 />
                 <div className={styles.appName}>
                     {commonStrings.kitabBazarAppLabel}
