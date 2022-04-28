@@ -27,7 +27,7 @@ import {
 } from '#base/configs/lang';
 import useTranslation from '#base/hooks/useTranslation';
 import KitabLogo from '#resources/img/KitabLogo.png';
-import WVLogo from '#resources/img/wv.jpg';
+import WVLogo from '#resources/img/wv.png';
 import TCLogo from '#resources/img/tc.png';
 
 import {
@@ -154,6 +154,8 @@ function Footer(props: Props) {
                             className={styles.logo}
                             src={KitabLogo}
                             alt="logo"
+                            width="50"
+                            height="80"
                         />
                         <div className={styles.details}>
                             <div className={styles.appName}>
@@ -360,6 +362,9 @@ function Footer(props: Props) {
                         className={styles.logo}
                         src={WVLogo}
                         alt="logo"
+                        width="170"
+                        height="48"
+
                     />
                 </a>
                 <a
@@ -375,6 +380,8 @@ function Footer(props: Props) {
                         className={styles.logo}
                         src={TCLogo}
                         alt="logo"
+                        width="170"
+                        height="48"
                     />
                 </a>
             </div>
