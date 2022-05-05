@@ -1,8 +1,9 @@
-.login {
+.forgot-password {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
+    flex-grow: 1;
     justify-content: flex-start;
-    padding: 6vh var(--dui-spacing-medium);
+    padding: 0 var(--dui-spacing-medium);
     scrollbar-gutter: stable;
 
     .container {

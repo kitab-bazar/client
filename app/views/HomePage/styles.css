@@ -108,6 +108,11 @@
                         background-color: var(--dui-color-foreground);
                         min-width: 15rem;
                     }
+                    @media (max-width: 435px) {
+                        .grade-item {
+                            min-width: 13rem;
+                        }
+                    }
                 }
             }
 
@@ -124,6 +129,12 @@
                         flex-basis: 25%;
                         background-color: var(--dui-color-foreground);
                         min-width: 15rem;
+                    }
+
+                    @media (max-width: 435px) {
+                        .category-item {
+                            min-width: 13rem;
+                        }
                     }
                 }
             }
