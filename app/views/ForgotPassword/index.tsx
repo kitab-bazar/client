@@ -11,7 +11,7 @@ function ForgotPassword() {
     const strings = useTranslation(common);
 
     return (
-        <div className={styles.login}>
+        <div className={styles.forgotPassword}>
             <div className={styles.container}>
                 <div className={styles.left}>
                     <img
