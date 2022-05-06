@@ -22,6 +22,7 @@ import {
     SchoolPackageOptionsQueryVariables,
 } from '#generated/types';
 
+import OrderWindowMultiSelectInput, { SearchOrderWindowType } from '#components/OrderWindowMultiSelectInput';
 import SchoolSelectInput, { SearchUserType } from '#components/SchoolSelectInput';
 import { enumKeySelector, enumLabelSelector } from '#utils/types';
 import useStateWithCallback from '#hooks/useStateWithCallback';
@@ -41,8 +42,8 @@ const SCHOOL_PACKAGE_OPTIONS = gql`
 `;
 
 const SCHOOL_PACKAGES = gql`
-    query SchoolPackages($ordering: String, $page: Int, $pageSize: Int, $status: [SchoolPackageStatusEnum!], $schools: [ID!]) {
-        schoolPackages(ordering: $ordering, page: $page, pageSize: $pageSize, status: $status, schools: $schools) {
+    query SchoolPackages($ordering: String, $page: Int, $pageSize: Int, $status: [SchoolPackageStatusEnum!], $schools: [ID!], $orderWindows: [ID!]) {
+        schoolPackages(ordering: $ordering, page: $page, pageSize: $pageSize, status: $status, schools: $schools, orderWindows: $orderWindows) {
             results {
                 id
                 packageId
@@ -93,17 +94,24 @@ function SchoolPackages(props: Props) {
         setSchoolFilter,
     ] = useStateWithCallback<string | undefined>(undefined, setActivePage);
     const [schoolOptions, setSchoolOptions] = useState<SearchUserType[] | undefined | null>();
+    const [orderWindowFilter, setOrderWindowFilter] = useState<string[] | undefined>();
+    const [
+        orderWindowOptions,
+        setOrderWindowOptions,
+    ] = useState<SearchOrderWindowType[] | undefined | null>();
 
     const variables = useMemo(() => ({
         pageSize: maxItemsPerPage,
         page: activePage,
         status: statusFilter as SchoolPackagesQueryVariables['status'],
         schools: schoolFilter ? [schoolFilter] : undefined,
+        orderWindows: orderWindowFilter,
     }), [
         maxItemsPerPage,
         activePage,
         statusFilter,
         schoolFilter,
+        orderWindowFilter,
     ]);
 
     const {
@@ -240,6 +248,15 @@ function SchoolPackages(props: Props) {
                         value={schoolFilter}
                         options={schoolOptions}
                         onOptionsChange={setSchoolOptions}
+                    />
+                    <OrderWindowMultiSelectInput
+                        name="orderWindows"
+                        label="Order Windows"
+                        variant="general"
+                        onChange={setOrderWindowFilter}
+                        value={orderWindowFilter}
+                        options={orderWindowOptions}
+                        onOptionsChange={setOrderWindowOptions}
                     />
                 </>
             )}

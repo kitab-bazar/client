@@ -20,6 +20,7 @@ import {
     CourierPackageOptionsWithTypeQueryVariables,
 } from '#generated/types';
 
+import OrderWindowMultiSelectInput, { SearchOrderWindowType } from '#components/OrderWindowMultiSelectInput';
 import { enumKeySelector, enumLabelSelector } from '#utils/types';
 import useStateWithCallback from '#hooks/useStateWithCallback';
 
@@ -52,8 +53,8 @@ const COURIER_PACKAGE_OPTIONS_WITH_TYPE = gql`
 `;
 
 const COURIER_PACKAGES = gql`
-    query CourierPackages($page: Int, $pageSize: Int, $status: [CourierPackageStatusEnum!], $type: [CourierPackageTypeEnum!]) {
-        courierPackages(page: $page, pageSize: $pageSize, status: $status, type: $type) {
+    query CourierPackages($page: Int, $pageSize: Int, $status: [CourierPackageStatusEnum!], $type: [CourierPackageTypeEnum!], $orderWindows: [ID!]) {
+        courierPackages(page: $page, pageSize: $pageSize, status: $status, type: $type, orderWindows: $orderWindows) {
             page
             pageSize
             totalCount
@@ -93,17 +94,24 @@ function CourierPackages(props: Props) {
         undefined,
         setActivePage,
     );
+    const [orderWindowFilter, setOrderWindowFilter] = useState<string[] | undefined>();
+    const [
+        orderWindowOptions,
+        setOrderWindowOptions,
+    ] = useState<SearchOrderWindowType[] | undefined | null>();
 
     const variables = useMemo(() => ({
         pageSize: maxItemsPerPage,
         page: activePage,
         status: statusFilter as CourierPackagesQueryVariables['status'],
         type: typeFilter as CourierPackagesQueryVariables['type'],
+        orderWindows: orderWindowFilter,
     }), [
         maxItemsPerPage,
         activePage,
         statusFilter,
         typeFilter,
+        orderWindowFilter,
     ]);
 
     const {
@@ -233,6 +241,15 @@ function CourierPackages(props: Props) {
                         onChange={setTypeFilter}
                         disabled={courierPackageOptionsQueryLoading}
                         variant="general"
+                    />
+                    <OrderWindowMultiSelectInput
+                        name="orderWindows"
+                        label="Order Windows"
+                        variant="general"
+                        onChange={setOrderWindowFilter}
+                        value={orderWindowFilter}
+                        options={orderWindowOptions}
+                        onOptionsChange={setOrderWindowOptions}
                     />
                 </>
             )}
