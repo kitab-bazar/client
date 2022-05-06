@@ -19,6 +19,7 @@ import {
     PublisherPackageOptionsQueryVariables,
 } from '#generated/types';
 
+import OrderWindowMultiSelectInput, { SearchOrderWindowType } from '#components/OrderWindowMultiSelectInput';
 import PublisherUserSelectInput, { SearchUserType } from '#components/PublisherUserSelectInput';
 import { enumKeySelector, enumLabelSelector } from '#utils/types';
 import useStateWithCallback from '#hooks/useStateWithCallback';
@@ -46,8 +47,8 @@ const PUBLISHER_PACKAGE_OPTIONS = gql`
 `;
 
 const PUBLISHER_PACKAGES = gql`
-    query PublisherPackages($page: Int, $pageSize: Int, $status: [PublisherPackageStatusEnum!], $publishers: [ID!]) {
-        publisherPackages(page: $page, pageSize: $pageSize, status: $status, publishers: $publishers) {
+    query PublisherPackages($page: Int, $pageSize: Int, $status: [PublisherPackageStatusEnum!], $publishers: [ID!], $orderWindows: [ID!]) {
+        publisherPackages(page: $page, pageSize: $pageSize, status: $status, publishers: $publishers, orderWindows: $orderWindows) {
             page
             pageSize
             totalCount
@@ -91,17 +92,24 @@ function PublisherPackages(props: Props) {
         setPublisherFilter,
     ] = useStateWithCallback<string | undefined>(undefined, setActivePage);
     const [publisherOptions, setPublisherOptions] = useState<SearchUserType[] | undefined | null>();
+    const [orderWindowFilter, setOrderWindowFilter] = useState<string[] | undefined>();
+    const [
+        orderWindowOptions,
+        setOrderWindowOptions,
+    ] = useState<SearchOrderWindowType[] | undefined | null>();
 
     const variables = useMemo(() => ({
         pageSize: maxItemsPerPage,
         page: activePage,
         status: statusFilter as PublisherPackagesQueryVariables['status'],
         publishers: publisherFilter ? [publisherFilter] : undefined,
+        orderWindows: orderWindowFilter,
     }), [
         maxItemsPerPage,
         activePage,
         statusFilter,
         publisherFilter,
+        orderWindowFilter,
     ]);
 
     const {
@@ -219,6 +227,15 @@ function PublisherPackages(props: Props) {
                         value={publisherFilter}
                         options={publisherOptions}
                         onOptionsChange={setPublisherOptions}
+                    />
+                    <OrderWindowMultiSelectInput
+                        name="orderWindows"
+                        label="Order Windows"
+                        variant="general"
+                        onChange={setOrderWindowFilter}
+                        value={orderWindowFilter}
+                        options={orderWindowOptions}
+                        onOptionsChange={setOrderWindowOptions}
                     />
                 </>
             )}

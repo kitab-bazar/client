@@ -20,6 +20,7 @@ import {
     InstitutionPackageOptionsQueryVariables,
 } from '#generated/types';
 
+import OrderWindowMultiSelectInput, { SearchOrderWindowType } from '#components/OrderWindowMultiSelectInput';
 import InstitutionSelectInput, { SearchUserType } from '#components/InstitutionSelectInput';
 import { enumKeySelector, enumLabelSelector } from '#utils/types';
 import useStateWithCallback from '#hooks/useStateWithCallback';
@@ -39,8 +40,8 @@ const INSTITUTION_PACKAGE_OPTIONS = gql`
 `;
 
 const INSTITUTION_PACKAGES = gql`
-    query InstitutionPackages($ordering: String, $page: Int, $pageSize: Int, $status: [InstitutionPackageStatusEnum!], $institutions: [ID!]) {
-        institutionPackages(ordering: $ordering, page: $page, pageSize: $pageSize, status: $status, institutions: $institutions) {
+    query InstitutionPackages($ordering: String, $page: Int, $pageSize: Int, $status: [InstitutionPackageStatusEnum!], $institutions: [ID!], $orderWindows: [ID!]) {
+        institutionPackages(ordering: $ordering, page: $page, pageSize: $pageSize, status: $status, institutions: $institutions, orderWindows: $orderWindows) {
             results {
                 id
                 packageId
@@ -93,17 +94,24 @@ function InstitutionPackages(props: Props) {
         institutionOptions,
         setInstitutionOptions,
     ] = useState<SearchUserType[] | undefined | null>();
+    const [orderWindowFilter, setOrderWindowFilter] = useState<string[] | undefined>();
+    const [
+        orderWindowOptions,
+        setOrderWindowOptions,
+    ] = useState<SearchOrderWindowType[] | undefined | null>();
 
     const variables = useMemo(() => ({
         pageSize: maxItemsPerPage,
         page: activePage,
         status: statusFilter as InstitutionPackagesQueryVariables['status'],
         institutions: institutionFilter ? [institutionFilter] : undefined,
+        orderWindows: orderWindowFilter,
     }), [
         maxItemsPerPage,
         activePage,
         statusFilter,
         institutionFilter,
+        orderWindowFilter,
     ]);
 
     const {
@@ -221,6 +229,15 @@ function InstitutionPackages(props: Props) {
                         value={institutionFilter}
                         options={institutionOptions}
                         onOptionsChange={setInstitutionOptions}
+                    />
+                    <OrderWindowMultiSelectInput
+                        name="orderWindows"
+                        label="Order Windows"
+                        variant="general"
+                        onChange={setOrderWindowFilter}
+                        value={orderWindowFilter}
+                        options={orderWindowOptions}
+                        onOptionsChange={setOrderWindowOptions}
                     />
                 </>
             )}
