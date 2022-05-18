@@ -33,9 +33,7 @@ const COURIER_SCHOOL_PACKAGES = gql`
 function SchoolRenderer({ school }: { school: string }) {
     return (
         <div className={styles.schoolPackageList}>
-            <ul>
-                <li>{school}</li>
-            </ul>
+            {school}
         </div>
     );
 }
@@ -83,7 +81,7 @@ function SchoolPackages(props: Props) {
             className={styles.relatedBooksModal}
             backdropClassName={styles.modalBackdrop}
             onCloseButtonClick={onModalClose}
-            heading="School Package"
+            heading="List of Schools"
         >
             <ListView
                 className={styles.bookItemList}

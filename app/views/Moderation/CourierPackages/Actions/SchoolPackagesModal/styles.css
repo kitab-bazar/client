@@ -5,6 +5,7 @@
 
     .related-books-modal {
         border-radius: unset;
+        width: 25%;
         height: 100%;
         max-height: unset;
         animation: appear-from-right .3s ease-in forwards;
@@ -29,17 +30,28 @@
     }
 }
 
-.schoolPackageList{
+.schoolPackageList {
+    margin-top: var(--dui-spacing-medium);
     color: var(--dui-color-accent);
     font-weight: bold;
 }
 
 @keyframes appear-from-right {
-    from { transform: translateX(100%); }
-    to { transform: translateX(0); }
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
 }
 
 @keyframes appear-from-bottom {
-    from { transform: translateY(100%); }
-    to { transform: translateY(4%); }
+    from {
+        transform: translateY(100%);
+    }
+
+    to {
+        transform: translateY(4%);
+    }
 }
