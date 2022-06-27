@@ -37,9 +37,9 @@
     }
 
     .data-visualizations {
-        display: flex;
         width: 30rem;
         height: 30rem;
+        text-align: center;
     }
 
 }
