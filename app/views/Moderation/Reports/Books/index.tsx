@@ -11,9 +11,11 @@ import {
     ResponsiveContainer,
     PieChart,
     Pie,
-    Label,
+    ScatterChart,
+    Scatter,
+    ZAxis,
 } from 'recharts';
-import { Container, SelectInput, InformationCard } from '@the-deep/deep-ui';
+import { Container, SelectInput } from '@the-deep/deep-ui';
 import styles from './styles.css';
 import { enumKeySelector, enumLabelSelector } from '#utils/types';
 
@@ -40,12 +42,8 @@ const options: Option[] = [{
     name: 'language',
     description: 'language',
 },
-{
-    name: 'per_category_each_publisher',
-    description: 'Per Category for each publisher',
-},
-
 ];
+
 const grade: any = [
 
     {
@@ -104,37 +102,25 @@ const publisher: any = [
     },
 ];
 
-const categoryEkta: any = [{
-    id: 1,
-    name: 'story',
-    number: 11,
+const orderedAndCost: any = [{
+    name: 'School A',
+    noOfBooksOrdered: 55,
+    totalCost: 2000,
 },
 {
-    id: 2,
-    name: 'poem',
-    number: 15,
+    name: 'School B',
+    noOfBooksOrdered: 78,
+    totalCost: 3000,
 },
 {
-    id: 3,
-    name: 'song',
-    number: 20,
-},
-];
-
-const categoryBhudipuran: any = [{
-    id: 1,
-    name: 'story',
-    number: 13,
+    name: 'School C',
+    noOfBooksOrdered: 78,
+    totalCost: 2500,
 },
 {
-    id: 2,
-    name: 'poem',
-    number: 17,
-},
-{
-    id: 3,
-    name: 'song',
-    number: 25,
+    name: 'School D',
+    noOfBooksOrdered: 78,
+    totalCost: 2750,
 },
 ];
 
@@ -145,25 +131,84 @@ const highestLowestBook: any = [{
 },
 {
     publisher: 'bhudipuran',
-    highest_book: 200,
+    Highest_book: 180,
     lowest_book: 30,
 },
+];
+
+let categoryEkta: any[] = [];
+let categoryBhudipuran: any[] = [];
+
+const categoryBooks: any = [
+    categoryEkta = [
+        {
+            id: 1,
+            name: 'story',
+            number: 11,
+        },
+        {
+            id: 2,
+            name: 'poem',
+            number: 15,
+        },
+        {
+            id: 3,
+            name: 'song',
+            number: 20,
+        },
+    ],
+
+    categoryBhudipuran = [
+        {
+            id: 1,
+            name: 'story',
+            number: 21,
+        },
+        {
+            id: 2,
+            name: 'poem',
+            number: 25,
+        },
+        {
+            id: 3,
+            name: 'song',
+            number: 40,
+        },
+    ],
 ];
 
 function Books() {
     const [data, setData] = useState<string[]>(publisher);
     const [value, setValue] = useState<string>('publisher');
+    const [color, setColor] = useState<string>('#0088FE');
 
     const onBooksSelectChange = (e: any) => {
         setValue(e);
         if (e === 'publisher') {
             setData(publisher);
+            setColor('#0088FE');
         } else if (e === 'category') {
             setData(category);
+            setColor('#00C49F');
         } else if (e === 'grade') {
             setData(grade);
+            setColor('#FFBB28');
         }
     };
+
+    const customizedPieLegend = () => (
+        <ul>
+            {
+                categoryEkta.map((entry: any) => (
+                    <li
+                        key={`item-${entry.id}`}
+                    >
+                        {entry.name}
+                    </li>
+                ))
+            }
+        </ul>
+    );
 
     return (
         <Container
@@ -171,26 +216,6 @@ function Books() {
             heading="Books"
             headingSize="extraSmall"
         >
-            <div className={styles.informationCardWrapper}>
-                <InformationCard
-                    label="Number of publishers"
-                    value={10}
-                    variant="accent"
-                    className={styles.informationCard}
-                />
-                <InformationCard
-                    label="Number of incentive books"
-                    value={14}
-                    variant="accent"
-                    className={styles.informationCard}
-                />
-                <InformationCard
-                    label="Number of books on the Platform"
-                    value={154}
-                    variant="accent"
-                    className={styles.informationCard}
-                />
-            </div>
             <Container
                 className={styles.reports}
                 heading="Choose Category"
@@ -216,65 +241,90 @@ function Books() {
                     <div className={styles.dataVisualizations}>
                         <ResponsiveContainer>
                             <BarChart
-                                width={150}
-                                height={40}
                                 data={data}
                             >
+                                <Tooltip />
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="dataKeyX" />
                                 <YAxis />
                                 <Bar
                                     dataKey="numberOfBooks"
-                                    fill="#82ca9d"
                                     label={{ position: 'top' }}
+                                    fill={color}
+                                    name="Number of Books"
                                 />
                                 <Legend />
                             </BarChart>
                         </ResponsiveContainer>
+                        <div>Number of books per</div>
                     </div>
                     <div className={styles.dataVisualizations}>
                         <ResponsiveContainer>
-                            <PieChart
-                                width={150}
-                                height={40}
-                            >
-                                <Pie
-                                    dataKey="number"
-                                    data={categoryEkta}
-                                    label
-                                    cx={120}
-                                    cy={200}
-                                    paddingAngle={5}
-                                    innerRadius={60}
-                                    outerRadius={80}
-                                >
-                                    {categoryEkta.map((entry: any) => (
-                                        <Cell
-                                            key={`cell-${entry.id}`}
-                                            fill={COLORS[entry.id % COLORS.length]}
-                                        />
-                                    ))}
-                                </Pie>
-                                <Legend />
-                                <Pie
-                                    dataKey="number"
-                                    data={categoryBhudipuran}
-                                    label
-                                    cx={350}
-                                    cy={200}
-                                    paddingAngle={5}
-                                    innerRadius={60}
-                                    outerRadius={80}
-                                >
-                                    {categoryBhudipuran.map((entry: any) => (
-                                        <Cell
-                                            key={`cell-${entry.id}`}
-                                            fill={COLORS[entry.id % COLORS.length]}
-                                        />
-                                    ))}
-                                </Pie>
+                            <PieChart>
+                                <Tooltip />
+                                <Legend content={customizedPieLegend} />
+                                {categoryBooks.map((entry: any) => (
+                                    <Pie
+                                        dataKey="number"
+                                        data={entry}
+                                        label
+                                        paddingAngle={5}
+                                        innerRadius={60}
+                                        outerRadius={80}
+                                        cx="50%"
+                                        cy="50%"
+                                    >
+                                        {entry.map((el: any) => (
+                                            <Cell
+                                                key={`cell-${el.id}`}
+                                                fill={COLORS[el.id % COLORS.length]}
+                                            />
+                                        ))}
+                                    </Pie>
+                                ))}
                             </PieChart>
                         </ResponsiveContainer>
+                        <div>Number of books per category for each publisher</div>
+                    </div>
+                </div>
+                <div className={styles.wrapper}>
+                    <div className={styles.dataVisualizations}>
+                        <ResponsiveContainer>
+                            <ScatterChart>
+                                <Tooltip />
+                                <ZAxis dataKey="name" name="Name" />
+                                <XAxis dataKey="noOfBooksOrdered" name="Number of Books Ordered" />
+                                <YAxis dataKey="totalCost" name="Total Cost" />
+                                <Scatter fill="#F87060" name="name" data={orderedAndCost} />
+                            </ScatterChart>
+                        </ResponsiveContainer>
+                        <div>Number of books and total cost per school</div>
+                    </div>
+                    <div className={styles.dataVisualizations}>
+                        <ResponsiveContainer>
+                            <BarChart
+                                data={highestLowestBook}
+                            >
+                                <Tooltip />
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="dataKeyX" />
+                                <YAxis />
+                                <Bar
+                                    dataKey="Highest_book"
+                                    label={{ position: 'top' }}
+                                    fill="#CF5C36"
+                                    name="Number of highest selling books"
+                                />
+                                <Bar
+                                    dataKey="lowest_book"
+                                    label={{ position: 'top' }}
+                                    fill="#1E3888"
+                                    name="Number of lowest selling books"
+                                />
+                                <Legend />
+                            </BarChart>
+                        </ResponsiveContainer>
+                        <div>Number of Highest and Lowest selling books by publisher</div>
                     </div>
                 </div>
             </Container>
