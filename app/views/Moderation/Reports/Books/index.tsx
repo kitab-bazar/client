@@ -1,224 +1,119 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
+
 import {
     BarChart,
     Bar,
-    Cell,
     XAxis,
     YAxis,
-    CartesianGrid,
     Tooltip,
     Legend,
     ResponsiveContainer,
-    PieChart,
-    Pie,
-    ScatterChart,
-    Scatter,
-    ZAxis,
 } from 'recharts';
 import { Container, SelectInput } from '@the-deep/deep-ui';
 import styles from './styles.css';
-import { enumKeySelector, enumLabelSelector } from '#utils/types';
+import { ReportsQuery } from '#generated/types';
 
+type booksPerCategoryType = NonNullable<NonNullable<ReportsQuery['moderatorQuery']>['reports']>['booksPerCategory'];
+type booksPerLanguageType = NonNullable<NonNullable<ReportsQuery['moderatorQuery']>['reports']>['booksPerLanguage'];
+type booksPerGradeType = NonNullable<NonNullable<ReportsQuery['moderatorQuery']>['reports']>['booksPerGrade'];
+type booksPerPublisherType = NonNullable<NonNullable<ReportsQuery['moderatorQuery']>['reports']>['booksPerPublisher'];
+type booksPerPublisherPerCategoryType = NonNullable<NonNullable<ReportsQuery['moderatorQuery']>['reports']>['booksPerPublisherPerCategory'];
+interface BooksProps {
+    booksPerCategory: booksPerCategoryType;
+    booksPerLanguage: booksPerLanguageType;
+    booksPerGrade: booksPerGradeType;
+    booksPerPublisher: booksPerPublisherType;
+    booksPerPublisherPerCategory: booksPerPublisherPerCategoryType;
+    publisherColor: {
+        publisher: string | undefined;
+        fill: string;
+    }[] | undefined
+}
 interface Option {
     name: string;
-    description: string;
+    description: string | undefined;
+    color: string | undefined;
 }
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+export const bookKeySelector = (d: Option) => d.name ?? '';
+export const bookLabelSelector = (d: Option) => d.description ?? '';
 
-const options: Option[] = [{
-    name: 'publisher',
-    description: 'Publisher',
-},
-{
-    name: 'category',
-    description: 'Category',
-},
-{
-    name: 'grade',
-    description: 'Grade',
-},
-{
-    name: 'language',
-    description: 'language',
-},
-];
+function Books(props: BooksProps) {
+    const {
+        booksPerCategory,
+        booksPerLanguage,
+        booksPerPublisher,
+        booksPerGrade,
+        booksPerPublisherPerCategory,
+        publisherColor,
+    } = props;
 
-const grade: any = [
+    const [value, setValue] = useState<string | undefined>('Publisher');
+    const [publisherValue, setPublisherValue] = useState<string | undefined>('Parichaya');
 
-    {
-        dataKeyX: 1,
-        numberOfBooks: 50,
+    const options: Option[] = [{
+        name: 'Publisher',
+        description: 'Publisher',
+        color: 'var(--dui-color-cornflower-blue)',
     },
     {
-        dataKeyX: 2,
-        numberOfBooks: 46,
+        name: 'Category',
+        description: 'Category',
+        color: 'var(--dui-color-elton-blue)',
     },
     {
-        dataKeyX: 3,
-        numberOfBooks: 46,
+        name: 'Grade',
+        description: 'Grade',
+        color: 'var(--dui-color-maximum-yellow-red)',
     },
-];
+    {
+        name: 'Language',
+        description: 'Language',
+        color: 'var(--dui-color-rose-madder)',
+    },
+    ];
 
-const category: any = [
-    {
-        dataKeyX: 'Story',
-        numberOfBooks: 47,
-    },
-    {
-        dataKeyX: 'Poem',
-        numberOfBooks: 12,
-    },
-    {
-        dataKeyX: 'Picture Story',
-        numberOfBooks: 2,
-    },
-    {
-        dataKeyX: 'Song',
-        numberOfBooks: 3,
-    },
-    {
-        dataKeyX: 'Picture',
-        numberOfBooks: 1,
-    },
-];
+    const categorizedPublisherOption = useMemo(() => (
+        booksPerPublisherPerCategory
+            ?.map((publisher) => {
+                const color = publisherColor?.find(
+                    (item) => item.publisher === publisher?.publisherName,
+                );
 
-const publisher: any = [
-    {
-        dataKeyX: 'Bhundipuran',
-        numberOfBooks: 47,
-    },
-    {
-        dataKeyX: 'Ekta',
-        numberOfBooks: 12,
-    },
-    {
-        dataKeyX: 'Kathalaya',
-        numberOfBooks: 2,
-    },
-    {
-        dataKeyX: 'Parichaya',
-        numberOfBooks: 3,
-    },
-];
+                return {
+                    name: publisher?.publisherName ?? '',
+                    description: publisher?.publisherName,
+                    color: color?.fill,
+                };
+            })
+    ), [booksPerPublisherPerCategory, publisherColor]);
 
-const orderedAndCost: any = [{
-    name: 'School A',
-    noOfBooksOrdered: 55,
-    totalCost: 2000,
-},
-{
-    name: 'School B',
-    noOfBooksOrdered: 78,
-    totalCost: 3000,
-},
-{
-    name: 'School C',
-    noOfBooksOrdered: 78,
-    totalCost: 2500,
-},
-{
-    name: 'School D',
-    noOfBooksOrdered: 78,
-    totalCost: 2750,
-},
-];
+    const publisherOptions = categorizedPublisherOption?.find(
+        (newOptions) => newOptions.name === publisherValue,
+    );
 
-const highestLowestBook: any = [{
-    publisher: 'Ekta',
-    Highest_book: 150,
-    lowest_book: 50,
-},
-{
-    publisher: 'bhudipuran',
-    Highest_book: 180,
-    lowest_book: 30,
-},
-];
+    const booksOptions = options.find((newOptions) => newOptions.name === value);
 
-let categoryEkta: any[] = [];
-let categoryBhudipuran: any[] = [];
+    const numberOfCategorizedBooksPerPublisher = booksPerPublisherPerCategory
+        ?.find((item) => item?.publisherName === publisherValue);
 
-const categoryBooks: any = [
-    categoryEkta = [
-        {
-            id: 1,
-            name: 'story',
-            number: 11,
-        },
-        {
-            id: 2,
-            name: 'poem',
-            number: 15,
-        },
-        {
-            id: 3,
-            name: 'song',
-            number: 20,
-        },
-    ],
-
-    categoryBhudipuran = [
-        {
-            id: 1,
-            name: 'story',
-            number: 21,
-        },
-        {
-            id: 2,
-            name: 'poem',
-            number: 25,
-        },
-        {
-            id: 3,
-            name: 'song',
-            number: 40,
-        },
-    ],
-];
-
-function Books() {
-    const [data, setData] = useState<string[]>(publisher);
-    const [value, setValue] = useState<string>('publisher');
-    const [color, setColor] = useState<string>('#0088FE');
-
-    const onBooksSelectChange = (e: any) => {
-        setValue(e);
-        if (e === 'publisher') {
-            setData(publisher);
-            setColor('#0088FE');
-        } else if (e === 'category') {
-            setData(category);
-            setColor('#00C49F');
-        } else if (e === 'grade') {
-            setData(grade);
-            setColor('#FFBB28');
-        }
+    const onBooksSelectChange = (newOption?: string) => {
+        setValue(newOption);
     };
 
-    const customizedPieLegend = () => (
-        <ul>
-            {
-                categoryEkta.map((entry: any) => (
-                    <li
-                        key={`item-${entry.id}`}
-                    >
-                        {entry.name}
-                    </li>
-                ))
-            }
-        </ul>
-    );
+    const onPublisherSelectChange = (newPublisher?: string) => {
+        setPublisherValue(newPublisher);
+    };
 
     return (
         <Container
             className={styles.reports}
             heading="Books"
-            headingSize="extraSmall"
+            headingSize="small"
         >
             <Container
                 className={styles.reports}
-                heading="Choose Category"
+                heading={`Number of Books per ${value}`}
                 headingSize="extraSmall"
                 headerDescriptionClassName={styles.filters}
                 headerDescription={(
@@ -227,8 +122,8 @@ function Books() {
                             className={styles.filterInput}
                             name="books"
                             placeholder="Select"
-                            keySelector={enumKeySelector}
-                            labelSelector={enumLabelSelector}
+                            keySelector={bookKeySelector}
+                            labelSelector={bookLabelSelector}
                             options={options}
                             value={value}
                             onChange={onBooksSelectChange}
@@ -239,93 +134,252 @@ function Books() {
             >
                 <div className={styles.wrapper}>
                     <div className={styles.dataVisualizations}>
-                        <ResponsiveContainer>
-                            <BarChart
-                                data={data}
-                            >
-                                <Tooltip />
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="dataKeyX" />
-                                <YAxis />
-                                <Bar
-                                    dataKey="numberOfBooks"
-                                    label={{ position: 'top' }}
-                                    fill={color}
-                                    name="Number of Books"
-                                />
-                                <Legend />
-                            </BarChart>
-                        </ResponsiveContainer>
-                        <div>Number of books per</div>
-                    </div>
-                    <div className={styles.dataVisualizations}>
-                        <ResponsiveContainer>
-                            <PieChart>
-                                <Tooltip />
-                                <Legend content={customizedPieLegend} />
-                                {categoryBooks.map((entry: any) => (
-                                    <Pie
-                                        dataKey="number"
-                                        data={entry}
-                                        label
-                                        paddingAngle={5}
-                                        innerRadius={60}
-                                        outerRadius={80}
-                                        cx="50%"
-                                        cy="50%"
-                                    >
-                                        {entry.map((el: any) => (
-                                            <Cell
-                                                key={`cell-${el.id}`}
-                                                fill={COLORS[el.id % COLORS.length]}
-                                            />
-                                        ))}
-                                    </Pie>
-                                ))}
-                            </PieChart>
-                        </ResponsiveContainer>
-                        <div>Number of books per category for each publisher</div>
+                        {booksOptions?.name === 'Publisher' && (
+                            <ResponsiveContainer>
+                                <BarChart
+                                    margin={{
+                                        left: 10,
+                                        top: 10,
+                                        right: 10,
+                                        bottom: 30,
+                                    }}
+                                    data={booksPerPublisher ?? undefined}
+                                >
+                                    <Tooltip />
+                                    <XAxis
+                                        dataKey="publisherName"
+                                        label={{
+                                            value: 'Publishers',
+                                            position: 'bottom',
+                                            textAnchor: 'middle',
+                                        }}
+                                    />
+                                    <Legend
+                                        verticalAlign="top"
+                                    />
+                                    <YAxis
+                                        label={{
+                                            value: 'Number of Books',
+                                            angle: -90,
+                                            position: 'insideLeft',
+                                            textAnchor: 'middle',
+                                        }}
+                                        padding={{
+                                            top: 30,
+                                        }}
+                                    />
+                                    <Bar
+                                        dataKey="numberOfBooks"
+                                        label={{ position: 'top' }}
+                                        fill={booksOptions?.color}
+                                        name="Number of Books"
+                                        barSize={50}
+                                    />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        )}
+                        {booksOptions?.name === 'Category' && (
+                            <ResponsiveContainer>
+                                <BarChart
+                                    margin={{
+                                        left: 10,
+                                        top: 10,
+                                        right: 10,
+                                        bottom: 30,
+                                    }}
+                                    data={booksPerCategory ?? undefined}
+                                >
+                                    <Tooltip />
+                                    <XAxis
+                                        dataKey="category"
+                                        label={{
+                                            value: 'Categories',
+                                            position: 'bottom',
+                                            textAnchor: 'middle',
+                                        }}
+                                    />
+                                    <YAxis
+                                        label={{
+                                            value: 'Number of Books',
+                                            angle: -90,
+                                            position: 'insideLeft',
+                                            textAnchor: 'middle',
+                                        }}
+                                        padding={{
+                                            top: 30,
+                                        }}
+                                    />
+                                    <Bar
+                                        dataKey="numberOfBooks"
+                                        label={{ position: 'top' }}
+                                        fill={booksOptions?.color}
+                                        name="Number of Books"
+                                        barSize={50}
+                                    />
+                                    <Legend
+                                        verticalAlign="top"
+                                    />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        )}
+                        {booksOptions?.name === 'Grade' && (
+                            <ResponsiveContainer>
+                                <BarChart
+                                    margin={{
+                                        left: 10,
+                                        top: 10,
+                                        right: 10,
+                                        bottom: 30,
+                                    }}
+                                    data={booksPerGrade ?? undefined}
+                                >
+                                    <Tooltip />
+                                    <XAxis
+                                        dataKey="grade"
+                                        label={{
+                                            value: 'Grades',
+                                            position: 'bottom',
+                                            textAnchor: 'middle',
+                                        }}
+                                    />
+                                    <YAxis
+                                        label={{
+                                            value: 'Number of Books',
+                                            angle: -90,
+                                            position: 'insideLeft',
+                                            textAnchor: 'middle',
+                                        }}
+                                        padding={{
+                                            top: 30,
+                                        }}
+                                    />
+                                    <Bar
+                                        dataKey="numberOfBooks"
+                                        label={{ position: 'top' }}
+                                        fill={booksOptions?.color}
+                                        name="Number of Books"
+                                        barSize={50}
+                                    />
+                                    <Legend
+                                        verticalAlign="top"
+                                    />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        )}
+                        {booksOptions?.name === 'Language' && (
+                            <ResponsiveContainer>
+                                <BarChart
+                                    margin={{
+                                        left: 10,
+                                        top: 10,
+                                        right: 10,
+                                        bottom: 30,
+                                    }}
+                                    data={booksPerLanguage ?? undefined}
+                                >
+                                    <Tooltip />
+                                    <XAxis
+                                        dataKey="language"
+                                        label={{
+                                            value: 'Languages',
+                                            position: 'bottom',
+                                            textAnchor: 'middle',
+                                        }}
+                                    />
+                                    <YAxis
+                                        label={{
+                                            value: 'Number of Books',
+                                            angle: -90,
+                                            position: 'insideLeft',
+                                            textAnchor: 'middle',
+                                        }}
+                                        padding={{
+                                            top: 30,
+                                        }}
+                                    />
+                                    <Bar
+                                        dataKey="numberOfBooks"
+                                        label={{ position: 'top' }}
+                                        fill={booksOptions?.color}
+                                        name="Number of Books"
+                                        barSize={50}
+                                    />
+                                    <Legend
+                                        verticalAlign="top"
+                                    />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        )}
                     </div>
                 </div>
+            </Container>
+            <Container
+                className={styles.reports}
+                heading={`Number of Books per ${publisherValue}`}
+                headingSize="extraSmall"
+                headerDescriptionClassName={styles.filters}
+                headerDescription={(
+                    <>
+                        <SelectInput
+                            className={styles.filterInput}
+                            name="categorizedNoOfBooks"
+                            placeholder="Select"
+                            keySelector={bookKeySelector}
+                            labelSelector={bookLabelSelector}
+                            options={categorizedPublisherOption}
+                            value={publisherValue}
+                            onChange={onPublisherSelectChange}
+                            variant="general"
+                        />
+                    </>
+                )}
+            >
                 <div className={styles.wrapper}>
                     <div className={styles.dataVisualizations}>
                         <ResponsiveContainer>
-                            <ScatterChart>
-                                <Tooltip />
-                                <ZAxis dataKey="name" name="Name" />
-                                <XAxis dataKey="noOfBooksOrdered" name="Number of Books Ordered" />
-                                <YAxis dataKey="totalCost" name="Total Cost" />
-                                <Scatter fill="#F87060" name="name" data={orderedAndCost} />
-                            </ScatterChart>
-                        </ResponsiveContainer>
-                        <div>Number of books and total cost per school</div>
-                    </div>
-                    <div className={styles.dataVisualizations}>
-                        <ResponsiveContainer>
                             <BarChart
-                                data={highestLowestBook}
+                                margin={{
+                                    left: 10,
+                                    top: 10,
+                                    right: 10,
+                                    bottom: 30,
+                                }}
+                                data={numberOfCategorizedBooksPerPublisher?.categories ?? undefined}
                             >
                                 <Tooltip />
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="dataKeyX" />
-                                <YAxis />
-                                <Bar
-                                    dataKey="Highest_book"
-                                    label={{ position: 'top' }}
-                                    fill="#CF5C36"
-                                    name="Number of highest selling books"
+                                <XAxis
+                                    dataKey="category"
+                                    label={{
+                                        value: 'Categories',
+                                        position: 'bottom',
+                                        textAnchor: 'middle',
+                                    }}
+                                />
+                                <YAxis
+                                    label={{
+                                        value: 'Number of Books',
+                                        angle: -90,
+                                        position: 'insideLeft',
+                                        textAnchor: 'middle',
+                                    }}
+                                    padding={{
+                                        top: 30,
+                                    }}
                                 />
                                 <Bar
-                                    dataKey="lowest_book"
+                                    dataKey="numberOfBooks"
                                     label={{ position: 'top' }}
-                                    fill="#1E3888"
-                                    name="Number of lowest selling books"
+                                    name="Number of Books"
+                                    fill={publisherOptions?.color}
+                                    barSize={50}
                                 />
-                                <Legend />
+                                <Legend
+                                    verticalAlign="top"
+                                />
                             </BarChart>
                         </ResponsiveContainer>
-                        <div>Number of Highest and Lowest selling books by publisher</div>
                     </div>
+
                 </div>
             </Container>
         </Container>

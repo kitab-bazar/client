@@ -3,119 +3,96 @@ import {
     Container,
     InformationCard,
 } from '@the-deep/deep-ui';
-import { useQuery, gql } from '@apollo/client';
 
 import styles from './styles.css';
-import { OverallReportsQuery } from '#generated/types';
 
-export type OverallReports = NonNullable<NonNullable<OverallReportsQuery['moderatorQuery']>>;
+export interface overallType {
+    booksOnThePlatform: number | undefined,
+    districtsReached: number | undefined,
+    incentiveBooks: number | undefined,
+    booksOrdered: number | undefined,
+    municipalities: number | undefined,
+    publishers: number | undefined,
+    schoolsReached: number | undefined,
+    schoolsRegistered: number | undefined,
+    schoolsUnverified: number | undefined,
+    schoolsVerified: number | undefined
+}
 
-const OVERALL_REPORTS = gql`
-    query OverallReports {
-        moderatorQuery {
-            reports {
-                numberOfBooksOnThePlatform
-                numberOfBooksOrdered
-                numberOfDistrictsReached
-                numberOfIncentiveBooks
-                numberOfMunicipalities
-                numberOfPublishers
-                numberOfSchoolsReached
-                numberOfSchoolsRegistered
-                numberOfSchoolsUnverfied
-                numberOfSchoolsVerified
-            }
-        }
-    }
-`;
+interface OverallProps {
+    overallData: overallType;
+}
 
-function Overall() {
-    const {
-        data: OverallReportsResponse,
-        loading: OverallReportsLoading,
-        error,
-    } = useQuery<OverallReportsQuery>(
-        OVERALL_REPORTS,
-    );
+function Overall(props: OverallProps) {
+    const { overallData } = props;
 
-    console.log(OverallReportsResponse);
     return (
         <Container
             className={styles.overallContainer}
             heading="Overall"
-            headingSize="extraSmall"
+            headingSize="small"
         >
             <div className={styles.informationCardWrapper}>
                 <InformationCard
-                    label="Number of schools registered"
-                    value={OverallReportsResponse?.moderatorQuery
-                        ?.reports?.numberOfSchoolsRegistered ?? undefined}
+                    label="Number of Schools Registered"
+                    value={overallData.schoolsRegistered}
                     variant="accent"
                 />
                 <InformationCard
-                    label="Number of Schools verified"
-                    value={OverallReportsResponse?.moderatorQuery
-                        ?.reports?.numberOfSchoolsVerified ?? undefined}
+                    label="Number of Schools Verified"
+                    value={overallData.schoolsVerified}
                     variant="accent"
                     className={styles.informationCard}
                 />
                 <InformationCard
-                    label="Number of Schools unverified"
-                    value={OverallReportsResponse?.moderatorQuery
-                        ?.reports?.numberOfSchoolsUnverfied ?? undefined}
+                    label="Number of Schools Unverified"
+                    value={overallData.schoolsUnverified}
                     variant="accent"
                     className={styles.informationCard}
                 />
                 <InformationCard
-                    label="Number of publishers"
-                    value={OverallReportsResponse?.moderatorQuery
-                        ?.reports?.numberOfPublishers ?? undefined}
+                    label="Number of Publishers"
+                    value={overallData.publishers}
                     variant="accent"
                     className={styles.informationCard}
                 />
             </div>
             <div className={styles.informationCardWrapper}>
                 <InformationCard
-                    label="Number of books on the Platform"
-                    value={OverallReportsResponse?.moderatorQuery
-                        ?.reports?.numberOfBooksOnThePlatform ?? undefined}
+                    label="Number of Books on the Platform"
+                    value={overallData.booksOnThePlatform}
                     variant="accent"
                     className={styles.informationCard}
                 />
                 <InformationCard
-                    label="Number of incentive books"
-                    value={OverallReportsResponse?.moderatorQuery
-                        ?.reports?.numberOfIncentiveBooks ?? undefined}
+                    label="Number of Incentive Books"
+                    value={overallData.incentiveBooks}
                     variant="accent"
                     className={styles.informationCard}
                 />
                 <InformationCard
-                    label="Number of books ordered"
-                    value={OverallReportsResponse?.moderatorQuery
-                        ?.reports?.numberOfBooksOrdered ?? undefined}
+                    label="Number of Books Ordered"
+                    value={overallData.booksOrdered}
                     variant="accent"
                     className={styles.informationCard}
                 />
             </div>
             <div className={styles.informationCardWrapper}>
                 <InformationCard
-                    label="Number of districts reached"
-                    value={OverallReportsResponse?.moderatorQuery
-                        ?.reports?.numberOfDistrictsReached ?? undefined}
+                    label="Number of Districts Reached"
+                    value={overallData.districtsReached}
                     variant="accent"
                     className={styles.informationCard}
                 />
                 <InformationCard
-                    label="Number of municipalities"
-                    value={OverallReportsResponse?.moderatorQuery
-                        ?.reports?.numberOfMunicipalities ?? undefined}
+                    label="Number of Municipalities"
+                    value={overallData.municipalities}
                     variant="accent"
                     className={styles.informationCard}
                 />
                 <InformationCard
-                    label="Number of schools reached"
-                    value={OverallReportsResponse?.moderatorQuery
-                        ?.reports?.numberOfSchoolsReached ?? undefined}
+                    label="Number of Schools Reached"
+                    value={overallData.schoolsReached}
                     variant="accent"
                     className={styles.informationCard}
                 />

@@ -4,101 +4,195 @@ import {
     Bar,
     XAxis,
     YAxis,
-    CartesianGrid,
     Tooltip,
     Legend,
     ResponsiveContainer,
     LineChart,
     Line,
+    ScatterChart,
+    Scatter,
+    ZAxis,
 } from 'recharts';
 import { Container } from '@the-deep/deep-ui';
+import { ReportsQuery } from '#generated/types';
+
 import styles from './styles.css';
 
-// Dummy Data for Payment
-const windowPayment: any = [{
-    window: 'Window 1',
-    payment: 900,
-},
-{
-    window: 'Window 2',
-    payment: 800,
-},
-];
+type paymentPerOrderWindowType = NonNullable<NonNullable<ReportsQuery['moderatorQuery']>['reports']>['paymentPerOrderWindow'];
+type bookGradesPerOrderWindowType = NonNullable<NonNullable<ReportsQuery['moderatorQuery']>['reports']>['bookGradesPerOrderWindow'];
+type booksAndCostPerSchoolType = NonNullable<NonNullable<ReportsQuery['moderatorQuery']>['reports']>['booksAndCostPerSchool'];
+interface windowProps {
+    paymentPerOrderWindow: paymentPerOrderWindowType;
+    bookGradesPerOrderWindow: bookGradesPerOrderWindowType;
+    booksAndCostPerSchool: booksAndCostPerSchoolType;
+    orderWindows: {
+        window: string;
+        fill: string;
+    }[] | undefined
+}
 
-const orderedWindow: any = [{
-    name: 'Poem',
-    orderWindow1Books: 30,
-    orderWindow2Books: 100,
-},
-{
-    name: 'Story',
-    orderWindow1Books: 25,
-    orderWindow2Books: 75,
-},
-{
-    name: 'Song',
-    orderWindow1Books: 29,
-    orderWindow2Books: 70,
-},
-{
-    name: 'Picture',
-    orderWindow1Books: 30,
-    orderWindow2Books: 65,
-},
-];
+interface GradeOrder {
+    [key: string]: number | string;
+    grade: string;
+}
 
-function Window() {
+function Window(props: windowProps) {
+    const { paymentPerOrderWindow,
+        bookGradesPerOrderWindow, orderWindows, booksAndCostPerSchool } = props;
+
+    const gradesOrder = bookGradesPerOrderWindow?.map((bg) => (
+        bg?.grades?.map((g) => ({ grade: g.grade, [bg.title]: g.numberOfBooks })) ?? []
+    ));
+
+    const numberOfbooksPerGradePerOrderWindow = ([] as GradeOrder[]).concat(...(gradesOrder ?? []));
+
     return (
         <>
             <Container
                 className={styles.reports}
-                heading="Window"
-                headingSize="extraSmall"
+                heading="Window and Payment"
+                headingSize="small"
             >
                 <div className={styles.wrapper}>
-
                     <div className={styles.dataVisualizations}>
+                        <div className={styles.chartLabel}>Total Payments per Order Window</div>
                         <ResponsiveContainer>
                             <BarChart
-                                data={windowPayment}
+                                data={paymentPerOrderWindow ?? undefined}
                                 margin={{
-                                    top: 5,
-                                    right: 30,
-                                    left: 20,
-                                    bottom: 5,
+                                    left: 10,
+                                    top: 10,
+                                    right: 10,
+                                    bottom: 30,
                                 }}
                             >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="window" />
-                                <YAxis />
+                                <XAxis
+                                    dataKey="title"
+                                    label={{
+                                        value: 'Order Windows',
+                                        position: 'bottom',
+                                        textAnchor: 'middle',
+                                    }}
+                                />
+                                <YAxis
+                                    label={{
+                                        value: 'Payments in NRs',
+                                        angle: -90,
+                                        position: 'insideLeft',
+                                        textAnchor: 'middle',
+                                    }}
+                                    padding={{
+                                        top: 30,
+                                    }}
+                                />
                                 <Tooltip />
+                                <Legend
+                                    verticalAlign="top"
+                                />
                                 <Bar
                                     dataKey="payment"
-                                    fill="#2A4494"
+                                    fill="var(--dui-color-cornflower-blue)"
                                     label={{ position: 'top' }}
                                     name="Payment"
+                                    barSize={50}
                                 />
                             </BarChart>
                         </ResponsiveContainer>
-                        <div>Total payment per order window</div>
                     </div>
                     <div className={styles.dataVisualizations}>
+                        <div className={styles.chartLabel}>
+                            Number of Grade books ordered per order window
+                        </div>
                         <ResponsiveContainer>
                             <LineChart
-                                width={500}
-                                height={300}
-                                data={orderedWindow}
+                                data={numberOfbooksPerGradePerOrderWindow}
+                                margin={{
+                                    left: 10,
+                                    top: 10,
+                                    right: 10,
+                                    bottom: 30,
+                                }}
                             >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" />
-                                <YAxis />
+                                <XAxis
+                                    dataKey="grade"
+                                    label={{
+                                        value: 'Grades',
+                                        position: 'bottom',
+                                        textAnchor: 'middle',
+                                    }}
+                                />
+                                <YAxis
+                                    label={{
+                                        value: 'Number of Books',
+                                        angle: -90,
+                                        position: 'insideLeft',
+                                        textAnchor: 'middle',
+                                    }}
+                                    padding={{
+                                        top: 30,
+                                    }}
+                                />
                                 <Tooltip />
-                                <Line dataKey="orderWindow2Books" stroke="#0098A6" name="Window 2" />
-                                <Line dataKey="orderWindow1Books" stroke="#FF8552" name="Window 1" />
+                                <Legend
+                                    verticalAlign="top"
+                                />
+                                {orderWindows?.map((item) => (
+                                    <Line dataKey={item.window} stroke={item.fill} />
+                                ))}
                                 <Legend />
                             </LineChart>
                         </ResponsiveContainer>
-                        <div>Number of categories books ordered per order window</div>
+                    </div>
+                </div>
+                <div className={styles.wrapper}>
+
+                    <div className={styles.dataVisualizations}>
+                        <div className={styles.chartLabel}>
+                            Number of Books and Total Cost per School
+                        </div>
+                        <ResponsiveContainer>
+                            <ScatterChart
+                                margin={{
+                                    left: 10,
+                                    top: 10,
+                                    right: 10,
+                                    bottom: 30,
+                                }}
+                            >
+                                <Tooltip />
+                                <Scatter
+                                    fill="var(--dui-color-princeton-orange)"
+                                    name="name"
+                                    data={booksAndCostPerSchool ?? undefined}
+                                />
+                                <XAxis
+                                    dataKey="numberOfBooksOrdered"
+                                    name="Number of Ordered Books"
+                                    label={{
+                                        value: 'Number of Ordered Books',
+                                        position: 'bottom',
+                                        textAnchor: 'middle',
+                                    }}
+                                />
+                                <YAxis
+                                    dataKey="totalCost"
+                                    name="Total Cost"
+                                    label={{
+                                        value: 'Total Cost',
+                                        angle: -90,
+                                        position: 'insideLeft',
+                                        textAnchor: 'middle',
+                                    }}
+                                    padding={{
+                                        top: 30,
+                                    }}
+                                />
+                                <ZAxis
+                                    dataKey="schoolName"
+                                    name="School"
+                                />
+                            </ScatterChart>
+                        </ResponsiveContainer>
                     </div>
                 </div>
             </Container>

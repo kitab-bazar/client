@@ -1,7 +1,7 @@
 .reports {
     display: flex;
     flex-grow: 1;
-    margin-top: 5px;
+    margin-top: 1rem;
     background-color: unset;
 
     .filters {
@@ -11,33 +11,16 @@
         .filter-input {
             max-width: 10rem;
         }
-
-        .filter-input-medium {
-            max-width: 25rem;
-        }
-    }
-
-    .information-card-wrapper {
-        display: flex;
-        justify-content: start;
-        gap: var(--dui-spacing-large);
-        margin-bottom: 2rem;
-
-        .information-card {
-            max-width: 30rem;
-            height: 6rem;
-        }
     }
 
     .wrapper {
         display: flex;
-        justify-content: start;
-        margin-top: 3rem;
-        margin-bottom: 2rem;
         gap: var(--dui-spacing-super-large);
+        overflow: hidden;
     }
 
     .data-visualizations {
+        flex-grow: 1;
         width: 30rem;
         height: 30rem;
         text-align: center;

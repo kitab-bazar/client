@@ -1,45 +1,30 @@
 .reports {
     display: flex;
     flex-grow: 1;
-    margin-top: 5px;
+    margin-top: 1rem;
     background-color: unset;
 
     .filters {
         display: flex;
         gap: var(--dui-spacing-large);
-
-        .filter-input {
-            max-width: 10rem;
-        }
-
-        .filter-input-medium {
-            max-width: 25rem;
-        }
-    }
-
-    .information-card-wrapper {
-        display: flex;
-        justify-content: start;
-        gap: var(--dui-spacing-large);
-        margin-bottom: 2rem;
-
-        .information-card {
-            max-width: 30rem;
-            height: 6rem;
-        }
     }
 
     .wrapper {
         display: flex;
-        justify-content: start;
-        margin-bottom: 2rem;
         gap: var(--dui-spacing-large);
     }
 
     .data-visualizations {
+        flex-grow: 1;
+        margin: 3rem 0;
         width: 30rem;
         height: 30rem;
         text-align: center;
+    }
+
+    .chart-label {
+        font-size: var(--dui-font-size-large);
+        font-weight: 700;
     }
 
 }

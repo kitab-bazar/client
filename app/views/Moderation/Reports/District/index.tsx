@@ -2,173 +2,206 @@ import React from 'react';
 import {
     BarChart,
     Bar,
-    Cell,
     XAxis,
     YAxis,
-    CartesianGrid,
     Tooltip,
     Legend,
     ResponsiveContainer,
-    PieChart,
-    Pie,
+    LabelList,
 } from 'recharts';
-import { Container, SelectInput } from '@the-deep/deep-ui';
+import { Container } from '@the-deep/deep-ui';
+import { ReportsQuery } from '#generated/types';
 import styles from './styles.css';
 
-// Dummy data for Schools Bar chart
-const district = [
-    {
-        district: 'Kathmandu',
-        numberOfSchools: 10,
-    },
-    {
-        district: 'Bhaktapur',
-        numberOfSchools: 5,
-    },
-    {
-        district: 'Lalitpur',
-        numberOfSchools: 19,
-    },
-    {
-        district: 'Kavrepalanchok',
-        numberOfSchools: 4,
-    },
-];
+type usersPerDistrictType = NonNullable<NonNullable<ReportsQuery['moderatorQuery']>['reports']>['usersPerDistrict'];
+type booksOrderedAndIncentivesPerDistrictType = NonNullable<NonNullable<ReportsQuery['moderatorQuery']>['reports']>['booksOrderedAndIncentivesPerDistrict'];
+type deliveriesPerDistrict = NonNullable<NonNullable<ReportsQuery['moderatorQuery']>['reports']>['deliveriesPerDistrict'];
+interface DistrictProps {
+    usersPerDistrict: usersPerDistrictType;
+    booksOrderedAndIncentivesPerDistrict: booksOrderedAndIncentivesPerDistrictType;
+    deliveriesPerDistrict: deliveriesPerDistrict;
+}
 
-const orderedAndIncentive: any = [
-    {
-        name: 'Gulmi',
-        noOfBooksOrdered: 100,
-        noOfIncentiveBooks: 400,
-    },
-    {
-        name: 'Bagmati',
-        noOfBooksOrdered: 75,
-        noOfIncentiveBooks: 300,
-    },
-    {
-        name: 'Kailali',
-        noOfBooksOrdered: 175,
-        noOfIncentiveBooks: 700,
-    },
-];
+function District(props: DistrictProps) {
+    const { usersPerDistrict, booksOrderedAndIncentivesPerDistrict, deliveriesPerDistrict } = props;
 
-const usersPerDistrict: any = [{
-    name: 'Gulmi',
-    number: 70,
-},
-{
-    name: 'kathmandu',
-    number: 50,
-},
-];
-
-const deliveryDistrict: any = [{
-    name: 'Gulmi',
-    number: 25,
-},
-{
-    name: 'kailali',
-    number: 30,
-},
-{
-    name: 'Bajhang',
-    number: 41,
-},
-];
-
-function District() {
     return (
         <>
             <Container
                 className={styles.reports}
                 heading="District"
-                headingSize="extraSmall"
+                headingSize="small"
                 headerDescriptionClassName={styles.filters}
             >
                 <div className={styles.wrapper}>
                     <div className={styles.dataVisualizations}>
+                        <div className={styles.chartLabel}>
+                            Number of Deliveries by District
+                        </div>
                         <ResponsiveContainer>
                             <BarChart
-                                data={district}
+                                margin={{
+                                    left: 10,
+                                    top: 10,
+                                    right: 10,
+                                    bottom: 30,
+                                }}
+                                data={deliveriesPerDistrict ?? undefined}
                             >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="district" />
-                                <YAxis />
                                 <Tooltip />
-                                <Bar dataKey="numberOfSchools" fill="#8884d8" name="Number of Schools" />
+                                <XAxis
+                                    dataKey="name"
+                                    label={{
+                                        value: 'Districts',
+                                        position: 'bottom',
+                                        textAnchor: 'middle',
+                                    }}
+                                />
+                                <Legend
+                                    verticalAlign="top"
+                                />
+                                <YAxis
+                                    tickCount={6}
+                                    label={{
+                                        value: 'Number of Deliveries',
+                                        angle: -90,
+                                        position: 'insideLeft',
+                                        textAnchor: 'middle',
+                                    }}
+                                    padding={{
+                                        top: 30,
+                                    }}
+                                />
+                                <Bar
+                                    dataKey="schoolDelivered"
+                                    fill="var(--dui-color-accent)"
+                                    name="Number of Deliveries"
+                                    barSize={50}
+                                >
+                                    <LabelList dataKey="schoolDelivered" position="top" />
+                                </Bar>
                             </BarChart>
                         </ResponsiveContainer>
-                        <div>Number of verified users per district</div>
+
                     </div>
                     <div className={styles.dataVisualizations}>
+                        <div className={styles.chartLabel}>
+                            Number of Ordered and Incentive Books Distributed per District
+                        </div>
                         <ResponsiveContainer>
                             <BarChart
-                                data={orderedAndIncentive}
+                                margin={{
+                                    left: 10,
+                                    top: 10,
+                                    right: 10,
+                                    bottom: 30,
+                                }}
+                                data={booksOrderedAndIncentivesPerDistrict ?? undefined}
                             >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" />
-                                <Legend />
-                                <YAxis />
+                                <XAxis
+                                    dataKey="name"
+                                    label={{
+                                        value: 'Districts',
+                                        position: 'bottom',
+                                        textAnchor: 'middle',
+                                    }}
+                                />
+                                <Legend
+                                    verticalAlign="top"
+                                />
+                                <YAxis
+                                    label={{
+                                        value: 'Total Number of Books',
+                                        angle: -90,
+                                        position: 'insideLeft',
+                                        textAnchor: 'middle',
+                                    }}
+                                    padding={{
+                                        top: 30,
+                                    }}
+                                />
                                 <Tooltip />
                                 <Bar
                                     dataKey="noOfBooksOrdered"
                                     fill="#82ca9d"
                                     label={{ position: 'top' }}
-                                    name="Number of Books Ordered"
-                                    stackId="a"
+                                    name="Books Ordered"
+                                    stackId="name"
+                                    barSize={50}
+
                                 />
                                 <Bar
                                     dataKey="noOfIncentiveBooks"
                                     fill="#ffc658"
                                     label={{ position: 'top' }}
-                                    stackId="a"
-                                    name="Number of Incentive Books"
+                                    stackId="name"
+                                    name="Incentive Books"
+                                    barSize={50}
+
                                 />
                             </BarChart>
                         </ResponsiveContainer>
-                        <div>Number of ordered and incentive books distributed per district</div>
                     </div>
                 </div>
                 <div className={styles.wrapper}>
                     <div className={styles.dataVisualizations}>
+                        <div className={styles.chartLabel}>
+                            Number of Verified Users per District
+                        </div>
                         <ResponsiveContainer>
                             <BarChart
-                                data={usersPerDistrict}
+                                margin={{
+                                    left: 10,
+                                    top: 10,
+                                    right: 10,
+                                    bottom: 30,
+                                }}
+                                data={usersPerDistrict ?? undefined}
                             >
-                                <Tooltip />
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" />
-                                <YAxis />
-                                <Bar
-                                    dataKey="number"
-                                    fill="#F2BB05"
-                                    name="Number of Users"
-                                    label={{ position: 'top' }}
+                                <XAxis
+                                    dataKey="name"
+                                    label={{
+                                        value: 'Districts',
+                                        position: 'bottom',
+                                        textAnchor: 'middle',
+                                    }}
                                 />
-                                <Legend />
+                                <YAxis
+                                    tickCount={6}
+                                    label={{
+                                        value: 'Total Number of Books',
+                                        angle: -90,
+                                        position: 'insideLeft',
+                                        textAnchor: 'middle',
+                                    }}
+                                    padding={{
+                                        top: 30,
+                                    }}
+                                />
+                                <Tooltip />
+                                <Legend
+                                    verticalAlign="top"
+                                />
+                                <Bar
+                                    dataKey="verifiedUsers"
+                                    fill="var(--dui-color-medium-purple)"
+                                    name="Verified Users"
+                                    stackId="name"
+                                    label={{ position: 'top' }}
+                                    barSize={50}
+
+                                />
+                                <Bar
+                                    dataKey="unverifiedUsers"
+                                    fill="var(--dui-color-maximum-yellow-red)"
+                                    name="Unverified Users"
+                                    stackId="name"
+                                    label={{ position: 'top' }}
+                                    barSize={50}
+
+                                />
                             </BarChart>
                         </ResponsiveContainer>
-                        <div>Number of users per district</div>
-                    </div>
-                    <div className={styles.dataVisualizations}>
-                        <ResponsiveContainer>
-                            <BarChart
-                                data={deliveryDistrict}
-                            >
-                                <Tooltip />
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" />
-                                <YAxis />
-                                <Bar
-                                    dataKey="number"
-                                    fill="#D74E09"
-                                    name="Number of deliveries"
-                                    label={{ position: 'top' }}
-                                />
-                            </BarChart>
-                        </ResponsiveContainer>
-                        <div>Number of deliveries by district</div>
                     </div>
                 </div>
             </Container>
