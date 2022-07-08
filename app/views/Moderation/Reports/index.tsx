@@ -1,12 +1,14 @@
 import React from 'react';
 import { Container } from '@the-deep/deep-ui';
 import { useQuery, gql } from '@apollo/client';
-import styles from './styles.css';
-import District from './District/index';
-import Overall from './Overall/index';
-import Books from './Books/index';
-import Window from './Window/index';
 import { ReportsQuery } from '#generated/types';
+
+import District from './District';
+import Overall from './Overall';
+import Books from './Books';
+import Window from './Window';
+
+import styles from './styles.css';
 
 const REPORTS = gql`
     query Reports {
@@ -183,40 +185,36 @@ function Reports() {
     });
 
     return (
-        <>
-            <Container
-                className={styles.reports}
-                heading="Reports"
-                headingSize="small"
-            >
-                <>
-                    <Overall
-                        overallData={overallData}
-                    />
-                    <District
-                        usersPerDistrict={usersPerDistrict}
-                        booksOrderedAndIncentivesPerDistrict={booksOrderedAndIncentivesPerDistrict}
-                        deliveriesPerDistrict={deliveriesPerDistrict}
-                    />
-                    <Window
-                        paymentPerOrderWindow={paymentPerOrderWindow}
-                        bookGradesPerOrderWindow={bookGradesPerOrderWindow}
-                        orderWindows={orderWindows}
-                        booksAndCostPerSchool={booksAndCostPerSchool}
-                    />
-                    {booksPerPublisher && (
-                        <Books
-                            booksPerCategory={booksPerCategory}
-                            booksPerGrade={booksPerGrade}
-                            booksPerLanguage={booksPerLanguage}
-                            booksPerPublisher={booksPerPublisher}
-                            booksPerPublisherPerCategory={booksPerPublisherPerCategory}
-                            publisherColor={publisherColor}
-                        />
-                    )}
-                </>
-            </Container>
-        </>
+        <Container
+            className={styles.reports}
+            heading="Reports"
+            headingSize="small"
+        >
+            <>
+                <Overall
+                    overallData={overallData}
+                />
+                <District
+                    usersPerDistrict={usersPerDistrict}
+                    booksOrderedAndIncentivesPerDistrict={booksOrderedAndIncentivesPerDistrict}
+                    deliveriesPerDistrict={deliveriesPerDistrict}
+                />
+                <Window
+                    paymentPerOrderWindow={paymentPerOrderWindow}
+                    bookGradesPerOrderWindow={bookGradesPerOrderWindow}
+                    orderWindows={orderWindows}
+                    booksAndCostPerSchool={booksAndCostPerSchool}
+                />
+                <Books
+                    booksPerCategory={booksPerCategory}
+                    booksPerGrade={booksPerGrade}
+                    booksPerLanguage={booksPerLanguage}
+                    booksPerPublisher={booksPerPublisher}
+                    booksPerPublisherPerCategory={booksPerPublisherPerCategory}
+                    publisherColor={publisherColor}
+                />
+            </>
+        </Container>
     );
 }
 

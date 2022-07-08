@@ -1,7 +1,7 @@
 .overall-container {
     display: flex;
     flex-grow: 1;
-    margin-top: 5px;
+    margin-top: 1rem;
     background-color: unset;
 
     .information-card-wrapper {

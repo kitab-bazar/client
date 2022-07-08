@@ -23,7 +23,9 @@ interface DistrictProps {
 }
 
 function District(props: DistrictProps) {
-    const { usersPerDistrict, booksOrderedAndIncentivesPerDistrict, deliveriesPerDistrict } = props;
+    const { usersPerDistrict,
+        booksOrderedAndIncentivesPerDistrict,
+        deliveriesPerDistrict } = props;
 
     return (
         <>
@@ -82,7 +84,6 @@ function District(props: DistrictProps) {
                                 </Bar>
                             </BarChart>
                         </ResponsiveContainer>
-
                     </div>
                     <div className={styles.dataVisualizations}>
                         <div className={styles.chartLabel}>
@@ -123,21 +124,19 @@ function District(props: DistrictProps) {
                                 <Tooltip />
                                 <Bar
                                     dataKey="noOfBooksOrdered"
-                                    fill="#82ca9d"
+                                    fill="var(--dui-color-elton-blue)"
                                     label={{ position: 'top' }}
                                     name="Books Ordered"
                                     stackId="name"
                                     barSize={50}
-
                                 />
                                 <Bar
                                     dataKey="noOfIncentiveBooks"
-                                    fill="#ffc658"
+                                    fill="var(--dui-color-maximum-yellow-red)"
                                     label={{ position: 'top' }}
                                     stackId="name"
                                     name="Incentive Books"
                                     barSize={50}
-
                                 />
                             </BarChart>
                         </ResponsiveContainer>
@@ -189,7 +188,6 @@ function District(props: DistrictProps) {
                                     stackId="name"
                                     label={{ position: 'top' }}
                                     barSize={50}
-
                                 />
                                 <Bar
                                     dataKey="unverifiedUsers"
@@ -198,7 +196,6 @@ function District(props: DistrictProps) {
                                     stackId="name"
                                     label={{ position: 'top' }}
                                     barSize={50}
-
                                 />
                             </BarChart>
                         </ResponsiveContainer>

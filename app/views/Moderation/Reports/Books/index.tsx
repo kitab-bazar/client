@@ -10,8 +10,8 @@ import {
     ResponsiveContainer,
 } from 'recharts';
 import { Container, SelectInput } from '@the-deep/deep-ui';
-import styles from './styles.css';
 import { ReportsQuery } from '#generated/types';
+import styles from './styles.css';
 
 type booksPerCategoryType = NonNullable<NonNullable<ReportsQuery['moderatorQuery']>['reports']>['booksPerCategory'];
 type booksPerLanguageType = NonNullable<NonNullable<ReportsQuery['moderatorQuery']>['reports']>['booksPerLanguage'];
@@ -31,12 +31,34 @@ interface BooksProps {
 }
 interface Option {
     name: string;
-    description: string | undefined;
+    description: string;
     color: string | undefined;
 }
 
-export const bookKeySelector = (d: Option) => d.name ?? '';
-export const bookLabelSelector = (d: Option) => d.description ?? '';
+export const bookKeySelector = (d: Option) => d.name;
+export const bookLabelSelector = (d: Option) => d.description;
+
+const options: Option[] = [{
+    name: 'Publisher',
+    description: 'Publisher',
+    color: 'var(--dui-color-cornflower-blue)',
+},
+{
+    name: 'Category',
+    description: 'Category',
+    color: 'var(--dui-color-elton-blue)',
+},
+{
+    name: 'Grade',
+    description: 'Grade',
+    color: 'var(--dui-color-maximum-yellow-red)',
+},
+{
+    name: 'Language',
+    description: 'Language',
+    color: 'var(--dui-color-rose-madder)',
+},
+];
 
 function Books(props: BooksProps) {
     const {
@@ -48,30 +70,8 @@ function Books(props: BooksProps) {
         publisherColor,
     } = props;
 
-    const [value, setValue] = useState<string | undefined>('Publisher');
-    const [publisherValue, setPublisherValue] = useState<string | undefined>('Parichaya');
-
-    const options: Option[] = [{
-        name: 'Publisher',
-        description: 'Publisher',
-        color: 'var(--dui-color-cornflower-blue)',
-    },
-    {
-        name: 'Category',
-        description: 'Category',
-        color: 'var(--dui-color-elton-blue)',
-    },
-    {
-        name: 'Grade',
-        description: 'Grade',
-        color: 'var(--dui-color-maximum-yellow-red)',
-    },
-    {
-        name: 'Language',
-        description: 'Language',
-        color: 'var(--dui-color-rose-madder)',
-    },
-    ];
+    const [booksOptionValue, setBooksOptionValue] = useState<string | undefined>('Publisher');
+    const [publisherOptionValue, setPublisherOptionValue] = useState<string | undefined>('Parichaya');
 
     const categorizedPublisherOption = useMemo(() => (
         booksPerPublisherPerCategory
@@ -82,28 +82,20 @@ function Books(props: BooksProps) {
 
                 return {
                     name: publisher?.publisherName ?? '',
-                    description: publisher?.publisherName,
+                    description: publisher?.publisherName ?? '',
                     color: color?.fill,
                 };
             })
     ), [booksPerPublisherPerCategory, publisherColor]);
 
-    const publisherOptions = categorizedPublisherOption?.find(
-        (newOptions) => newOptions.name === publisherValue,
+    const publisherOption = categorizedPublisherOption?.find(
+        (newOptions) => newOptions.name === publisherOptionValue,
     );
 
-    const booksOptions = options.find((newOptions) => newOptions.name === value);
+    const booksOption = options.find((newOptions) => newOptions.name === booksOptionValue);
 
-    const numberOfCategorizedBooksPerPublisher = booksPerPublisherPerCategory
-        ?.find((item) => item?.publisherName === publisherValue);
-
-    const onBooksSelectChange = (newOption?: string) => {
-        setValue(newOption);
-    };
-
-    const onPublisherSelectChange = (newPublisher?: string) => {
-        setPublisherValue(newPublisher);
-    };
+    const categorizedBooksPerPublisher = booksPerPublisherPerCategory
+        ?.find((item) => item?.publisherName === publisherOptionValue);
 
     return (
         <Container
@@ -113,28 +105,28 @@ function Books(props: BooksProps) {
         >
             <Container
                 className={styles.reports}
-                heading={`Number of Books per ${value}`}
+                heading={`Number of Books per ${booksOptionValue}`}
                 headingSize="extraSmall"
                 headerDescriptionClassName={styles.filters}
                 headerDescription={(
-                    <>
-                        <SelectInput
-                            className={styles.filterInput}
-                            name="books"
-                            placeholder="Select"
-                            keySelector={bookKeySelector}
-                            labelSelector={bookLabelSelector}
-                            options={options}
-                            value={value}
-                            onChange={onBooksSelectChange}
-                            variant="general"
-                        />
-                    </>
+                    <SelectInput
+                        className={styles.filterInput}
+                        name="books"
+                        placeholder="Select"
+                        keySelector={bookKeySelector}
+                        labelSelector={bookLabelSelector}
+                        options={options}
+                        value={booksOptionValue}
+                        onChange={
+                            (newOption) => { setBooksOptionValue(newOption); }
+                        }
+                        variant="general"
+                    />
                 )}
             >
                 <div className={styles.wrapper}>
                     <div className={styles.dataVisualizations}>
-                        {booksOptions?.name === 'Publisher' && (
+                        {booksOption?.name === 'Publisher' && (
                             <ResponsiveContainer>
                                 <BarChart
                                     margin={{
@@ -171,14 +163,14 @@ function Books(props: BooksProps) {
                                     <Bar
                                         dataKey="numberOfBooks"
                                         label={{ position: 'top' }}
-                                        fill={booksOptions?.color}
+                                        fill={booksOption?.color}
                                         name="Number of Books"
                                         barSize={50}
                                     />
                                 </BarChart>
                             </ResponsiveContainer>
                         )}
-                        {booksOptions?.name === 'Category' && (
+                        {booksOption?.name === 'Category' && (
                             <ResponsiveContainer>
                                 <BarChart
                                     margin={{
@@ -212,7 +204,7 @@ function Books(props: BooksProps) {
                                     <Bar
                                         dataKey="numberOfBooks"
                                         label={{ position: 'top' }}
-                                        fill={booksOptions?.color}
+                                        fill={booksOption?.color}
                                         name="Number of Books"
                                         barSize={50}
                                     />
@@ -222,7 +214,7 @@ function Books(props: BooksProps) {
                                 </BarChart>
                             </ResponsiveContainer>
                         )}
-                        {booksOptions?.name === 'Grade' && (
+                        {booksOption?.name === 'Grade' && (
                             <ResponsiveContainer>
                                 <BarChart
                                     margin={{
@@ -256,7 +248,7 @@ function Books(props: BooksProps) {
                                     <Bar
                                         dataKey="numberOfBooks"
                                         label={{ position: 'top' }}
-                                        fill={booksOptions?.color}
+                                        fill={booksOption?.color}
                                         name="Number of Books"
                                         barSize={50}
                                     />
@@ -266,7 +258,7 @@ function Books(props: BooksProps) {
                                 </BarChart>
                             </ResponsiveContainer>
                         )}
-                        {booksOptions?.name === 'Language' && (
+                        {booksOption?.name === 'Language' && (
                             <ResponsiveContainer>
                                 <BarChart
                                     margin={{
@@ -300,7 +292,7 @@ function Books(props: BooksProps) {
                                     <Bar
                                         dataKey="numberOfBooks"
                                         label={{ position: 'top' }}
-                                        fill={booksOptions?.color}
+                                        fill={booksOption?.color}
                                         name="Number of Books"
                                         barSize={50}
                                     />
@@ -315,23 +307,23 @@ function Books(props: BooksProps) {
             </Container>
             <Container
                 className={styles.reports}
-                heading={`Number of Books per ${publisherValue}`}
+                heading={`Number of Books per ${publisherOptionValue}`}
                 headingSize="extraSmall"
                 headerDescriptionClassName={styles.filters}
                 headerDescription={(
-                    <>
-                        <SelectInput
-                            className={styles.filterInput}
-                            name="categorizedNoOfBooks"
-                            placeholder="Select"
-                            keySelector={bookKeySelector}
-                            labelSelector={bookLabelSelector}
-                            options={categorizedPublisherOption}
-                            value={publisherValue}
-                            onChange={onPublisherSelectChange}
-                            variant="general"
-                        />
-                    </>
+                    <SelectInput
+                        className={styles.filterInput}
+                        name="categorizedNoOfBooks"
+                        placeholder="Select"
+                        keySelector={bookKeySelector}
+                        labelSelector={bookLabelSelector}
+                        options={categorizedPublisherOption}
+                        value={publisherOptionValue}
+                        onChange={
+                            (newOption) => { setPublisherOptionValue(newOption); }
+                        }
+                        variant="general"
+                    />
                 )}
             >
                 <div className={styles.wrapper}>
@@ -344,7 +336,7 @@ function Books(props: BooksProps) {
                                     right: 10,
                                     bottom: 30,
                                 }}
-                                data={numberOfCategorizedBooksPerPublisher?.categories ?? undefined}
+                                data={categorizedBooksPerPublisher?.categories ?? undefined}
                             >
                                 <Tooltip />
                                 <XAxis
@@ -370,7 +362,7 @@ function Books(props: BooksProps) {
                                     dataKey="numberOfBooks"
                                     label={{ position: 'top' }}
                                     name="Number of Books"
-                                    fill={publisherOptions?.color}
+                                    fill={publisherOption?.color}
                                     barSize={50}
                                 />
                                 <Legend

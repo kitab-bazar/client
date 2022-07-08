@@ -5,18 +5,30 @@ import {
 } from '@the-deep/deep-ui';
 
 import styles from './styles.css';
+import { ReportsQuery } from '#generated/types';
+
+type booksOnThePlatformType = NonNullable<NonNullable<ReportsQuery['moderatorQuery']>['reports']>['numberOfBooksOnThePlatform'];
+type districtsReachedType = NonNullable<NonNullable<ReportsQuery['moderatorQuery']>['reports']>['numberOfDistrictsReached'];
+type incentiveBooksType = NonNullable<NonNullable<ReportsQuery['moderatorQuery']>['reports']>['numberOfIncentiveBooks'];
+type booksOrderedType = NonNullable<NonNullable<ReportsQuery['moderatorQuery']>['reports']>['numberOfBooksOrdered'];
+type municipalitiesType = NonNullable<NonNullable<ReportsQuery['moderatorQuery']>['reports']>['numberOfMunicipalities'];
+type publishersType = NonNullable<NonNullable<ReportsQuery['moderatorQuery']>['reports']>['numberOfPublishers'];
+type schoolsReachedType = NonNullable<NonNullable<ReportsQuery['moderatorQuery']>['reports']>['numberOfSchoolsReached'];
+type schoolsRegisteredType = NonNullable<NonNullable<ReportsQuery['moderatorQuery']>['reports']>['numberOfSchoolsRegistered'];
+type schoolsUnverifiedType = NonNullable<NonNullable<ReportsQuery['moderatorQuery']>['reports']>['numberOfSchoolsUnverified'];
+type schoolsVerifiedType = NonNullable<NonNullable<ReportsQuery['moderatorQuery']>['reports']>['numberOfSchoolsVerified'];
 
 export interface overallType {
-    booksOnThePlatform: number | undefined,
-    districtsReached: number | undefined,
-    incentiveBooks: number | undefined,
-    booksOrdered: number | undefined,
-    municipalities: number | undefined,
-    publishers: number | undefined,
-    schoolsReached: number | undefined,
-    schoolsRegistered: number | undefined,
-    schoolsUnverified: number | undefined,
-    schoolsVerified: number | undefined
+    booksOnThePlatform: booksOnThePlatformType,
+    districtsReached: districtsReachedType,
+    incentiveBooks: incentiveBooksType,
+    booksOrdered: booksOrderedType,
+    municipalities: municipalitiesType,
+    publishers: publishersType,
+    schoolsReached: schoolsReachedType,
+    schoolsRegistered: schoolsRegisteredType,
+    schoolsUnverified: schoolsUnverifiedType,
+    schoolsVerified: schoolsVerifiedType,
 }
 
 interface OverallProps {
@@ -37,6 +49,7 @@ function Overall(props: OverallProps) {
                     label="Number of Schools Registered"
                     value={overallData.schoolsRegistered}
                     variant="accent"
+                    className={styles.informationCard}
                 />
                 <InformationCard
                     label="Number of Schools Verified"
