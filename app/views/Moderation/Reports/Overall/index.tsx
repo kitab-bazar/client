@@ -18,21 +18,21 @@ type schoolsRegisteredType = NonNullable<NonNullable<ReportsQuery['moderatorQuer
 type schoolsUnverifiedType = NonNullable<NonNullable<ReportsQuery['moderatorQuery']>['reports']>['numberOfSchoolsUnverified'];
 type schoolsVerifiedType = NonNullable<NonNullable<ReportsQuery['moderatorQuery']>['reports']>['numberOfSchoolsVerified'];
 
-export interface overallType {
-    booksOnThePlatform: booksOnThePlatformType | undefined,
-    districtsReached: districtsReachedType | undefined,
-    incentiveBooks: incentiveBooksType | null | undefined,
-    booksOrdered: booksOrderedType | undefined,
-    municipalities: municipalitiesType | undefined,
-    publishers: publishersType | undefined,
-    schoolsReached: schoolsReachedType | undefined,
-    schoolsRegistered: schoolsRegisteredType | undefined,
-    schoolsUnverified: schoolsUnverifiedType | undefined,
-    schoolsVerified: schoolsVerifiedType | undefined,
+export interface OverallType {
+    booksOnThePlatform: booksOnThePlatformType | undefined;
+    districtsReached: districtsReachedType | undefined;
+    incentiveBooks: incentiveBooksType | null | undefined;
+    booksOrdered: booksOrderedType | undefined;
+    municipalities: municipalitiesType | undefined;
+    publishers: publishersType | undefined;
+    schoolsReached: schoolsReachedType | undefined;
+    schoolsRegistered: schoolsRegisteredType | undefined;
+    schoolsUnverified: schoolsUnverifiedType | undefined;
+    schoolsVerified: schoolsVerifiedType | undefined;
 }
 
 interface OverallProps {
-    overallData: overallType;
+    overallData: OverallType;
 }
 
 function Overall(props: OverallProps) {
