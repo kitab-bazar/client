@@ -12,6 +12,15 @@
     --dui-color-background-information: #ffffff;
     --dui-color-background-hover-primary-button: #0098a6;
 
+    --dui-color-cornflower-blue: #2A4494;
+    --dui-color-elton-blue: #82ca9d;
+    --dui-color-maximum-yellow-red: #ffc658;
+    --dui-color-medium-purple: #8884d8;
+    --dui-color-princeton-orange: #FC893C;
+    --dui-color-rose-madder: #D83A3A;
+    --dui-color-deep-taupe: #7A6563;
+    --dui-color-brandy: #803434;
+
     --dui-font-size-extra-small: 0.7rem;
     --dui-font-size-small: 0.8rem;
     --dui-font-size-medium: 1rem;
@@ -27,6 +36,7 @@
 
 html {
     background-color: var(--kitab-page-background-color);
+
     @media(max-width:900px) {
         font-size: 14px;
     }
@@ -85,6 +95,7 @@ html {
         width: 100%;
         animation: appear-from-bottom .2s ease-in forwards;
     }
+
     .goto-top-button {
         position: fixed;
         right: var(--dui-spacing-super-large);
@@ -100,6 +111,7 @@ html {
         transform: scale(0);
         opacity: 0;
     }
+
     to {
         transform: scale(1);
         opacity: 100%;
@@ -107,6 +119,11 @@ html {
 }
 
 @keyframes appear-from-bottom {
-    from { transform: translateY(100%); }
-    to { transform: translateY(0); }
+    from {
+        transform: translateY(100%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
 }

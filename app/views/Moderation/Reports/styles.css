@@ -1,0 +1,7 @@
+.reports {
+    display: flex;
+    flex-grow: 1;
+    margin-top: 1rem;
+    background-color: unset;
+    overflow: hidden;
+}

@@ -1,0 +1,18 @@
+.overall-container {
+    display: flex;
+    flex-grow: 1;
+    margin-top: 1rem;
+    background-color: unset;
+
+    .information-card-wrapper {
+        display: flex;
+        justify-content: start;
+        gap: var(--dui-spacing-large);
+        margin-bottom: 2rem;
+
+        .information-card {
+            width: 20rem;
+            height: 6rem;
+        }
+    }
+}
