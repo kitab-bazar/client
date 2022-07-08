@@ -28,7 +28,6 @@ function District(props: DistrictProps) {
         deliveriesPerDistrict } = props;
 
     return (
-        <>
             <Container
                 className={styles.reports}
                 heading="District"
@@ -202,7 +201,6 @@ function District(props: DistrictProps) {
                     </div>
                 </div>
             </Container>
-        </>
     );
 }
 
