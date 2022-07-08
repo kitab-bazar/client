@@ -19,16 +19,16 @@ type schoolsUnverifiedType = NonNullable<NonNullable<ReportsQuery['moderatorQuer
 type schoolsVerifiedType = NonNullable<NonNullable<ReportsQuery['moderatorQuery']>['reports']>['numberOfSchoolsVerified'];
 
 export interface overallType {
-    booksOnThePlatform: booksOnThePlatformType,
-    districtsReached: districtsReachedType,
-    incentiveBooks: incentiveBooksType,
-    booksOrdered: booksOrderedType,
-    municipalities: municipalitiesType,
-    publishers: publishersType,
-    schoolsReached: schoolsReachedType,
-    schoolsRegistered: schoolsRegisteredType,
-    schoolsUnverified: schoolsUnverifiedType,
-    schoolsVerified: schoolsVerifiedType,
+    booksOnThePlatform: booksOnThePlatformType | undefined,
+    districtsReached: districtsReachedType | undefined,
+    incentiveBooks: incentiveBooksType | null | undefined,
+    booksOrdered: booksOrderedType | undefined,
+    municipalities: municipalitiesType | undefined,
+    publishers: publishersType | undefined,
+    schoolsReached: schoolsReachedType | undefined,
+    schoolsRegistered: schoolsRegisteredType | undefined,
+    schoolsUnverified: schoolsUnverifiedType | undefined,
+    schoolsVerified: schoolsVerifiedType | undefined,
 }
 
 interface OverallProps {
@@ -79,7 +79,7 @@ function Overall(props: OverallProps) {
                 />
                 <InformationCard
                     label="Number of Incentive Books"
-                    value={overallData.incentiveBooks}
+                    value={overallData.incentiveBooks ?? undefined}
                     variant="accent"
                     className={styles.informationCard}
                 />
