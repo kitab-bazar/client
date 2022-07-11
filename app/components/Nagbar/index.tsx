@@ -83,6 +83,10 @@ function Nagbar(props: Props) {
         ));
     }
 
+    if (user?.type !== 'MODERATOR') {
+        nagbarItems.push(strings.peerReviewed);
+    }
+
     if (nagbarItems.length <= 0) {
         return null;
     }

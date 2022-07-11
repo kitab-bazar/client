@@ -65,6 +65,10 @@ export const nagbar = {
         en: 'Kitab Bazar',
         ne: 'किताब बजार',
     },
+    peerReviewed: {
+        en: 'The books available in Kitab Bazar are peer-reviewed.',
+        ne: 'किताब बजारमा उपलब्ध पुस्तकहरू सहकर्मी-समीक्षा हुन्',
+    },
 };
 
 export const navbar = {
