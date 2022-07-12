@@ -4,11 +4,6 @@
     margin-top: 1rem;
     background-color: unset;
 
-    .filters {
-        display: flex;
-        gap: var(--dui-spacing-large);
-    }
-
     .wrapper {
         display: flex;
         gap: var(--dui-spacing-large);
