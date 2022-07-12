@@ -90,7 +90,7 @@ function Window(props: windowProps) {
                                     top: 30,
                                 }}
                             />
-                            <Tooltip />
+                            <Tooltip cursor={false} />
                             <Legend
                                 verticalAlign="top"
                             />

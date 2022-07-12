@@ -89,6 +89,12 @@ function Overall(props: OverallProps) {
                     variant="accent"
                     className={styles.informationCard}
                 />
+                <InformationCard
+                    label="Number of Schools Reached"
+                    value={overallData.schoolsReached}
+                    variant="accent"
+                    className={styles.informationCard}
+                />
             </div>
             <div className={styles.informationCardWrapper}>
                 <InformationCard
@@ -103,12 +109,7 @@ function Overall(props: OverallProps) {
                     variant="accent"
                     className={styles.informationCard}
                 />
-                <InformationCard
-                    label="Number of Schools Reached"
-                    value={overallData.schoolsReached}
-                    variant="accent"
-                    className={styles.informationCard}
-                />
+
             </div>
         </Container>
     );

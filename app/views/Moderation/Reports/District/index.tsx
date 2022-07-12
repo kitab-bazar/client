@@ -7,7 +7,6 @@ import {
     Tooltip,
     Legend,
     ResponsiveContainer,
-    LabelList,
 } from 'recharts';
 import { Container } from '@the-deep/deep-ui';
 import { ReportsQuery } from '#generated/types';
@@ -32,7 +31,6 @@ function District(props: DistrictProps) {
             className={styles.reports}
             heading="District"
             headingSize="small"
-            headerDescriptionClassName={styles.filters}
         >
             <div className={styles.wrapper}>
                 <div className={styles.dataVisualizations}>
@@ -41,15 +39,14 @@ function District(props: DistrictProps) {
                     </div>
                     <ResponsiveContainer>
                         <BarChart
+                            data={deliveriesPerDistrict ?? undefined}
                             margin={{
                                 left: 10,
                                 top: 10,
                                 right: 10,
                                 bottom: 30,
                             }}
-                            data={deliveriesPerDistrict ?? undefined}
                         >
-                            <Tooltip />
                             <XAxis
                                 dataKey="name"
                                 label={{
@@ -57,9 +54,6 @@ function District(props: DistrictProps) {
                                     position: 'bottom',
                                     textAnchor: 'middle',
                                 }}
-                            />
-                            <Legend
-                                verticalAlign="top"
                             />
                             <YAxis
                                 tickCount={6}
@@ -73,14 +67,17 @@ function District(props: DistrictProps) {
                                     top: 30,
                                 }}
                             />
+                            <Tooltip cursor={false} />
+                            <Legend
+                                verticalAlign="top"
+                            />
                             <Bar
                                 dataKey="schoolDelivered"
                                 fill="var(--dui-color-accent)"
+                                label={{ position: 'top' }}
                                 name="Number of Deliveries"
                                 barSize={50}
-                            >
-                                <LabelList dataKey="schoolDelivered" position="top" />
-                            </Bar>
+                            />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
@@ -90,13 +87,13 @@ function District(props: DistrictProps) {
                     </div>
                     <ResponsiveContainer>
                         <BarChart
+                            data={booksOrderedAndIncentivesPerDistrict ?? undefined}
                             margin={{
                                 left: 10,
                                 top: 10,
                                 right: 10,
                                 bottom: 30,
                             }}
-                            data={booksOrderedAndIncentivesPerDistrict ?? undefined}
                         >
                             <XAxis
                                 dataKey="name"
@@ -105,9 +102,6 @@ function District(props: DistrictProps) {
                                     position: 'bottom',
                                     textAnchor: 'middle',
                                 }}
-                            />
-                            <Legend
-                                verticalAlign="top"
                             />
                             <YAxis
                                 label={{
@@ -120,7 +114,10 @@ function District(props: DistrictProps) {
                                     top: 30,
                                 }}
                             />
-                            <Tooltip />
+                            <Tooltip cursor={false} />
+                            <Legend
+                                verticalAlign="top"
+                            />
                             <Bar
                                 dataKey="noOfBooksOrdered"
                                 fill="var(--dui-color-elton-blue)"
@@ -167,7 +164,7 @@ function District(props: DistrictProps) {
                             <YAxis
                                 tickCount={6}
                                 label={{
-                                    value: 'Total Number of Books',
+                                    value: 'Total Number of Users',
                                     angle: -90,
                                     position: 'insideLeft',
                                     textAnchor: 'middle',
@@ -176,7 +173,7 @@ function District(props: DistrictProps) {
                                     top: 30,
                                 }}
                             />
-                            <Tooltip />
+                            <Tooltip cursor={false} />
                             <Legend
                                 verticalAlign="top"
                             />
@@ -185,7 +182,6 @@ function District(props: DistrictProps) {
                                 fill="var(--dui-color-medium-purple)"
                                 name="Verified Users"
                                 stackId="name"
-                                label={{ position: 'top' }}
                                 barSize={50}
                             />
                             <Bar

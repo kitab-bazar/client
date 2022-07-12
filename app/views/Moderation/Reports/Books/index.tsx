@@ -121,6 +121,7 @@ function Books(props: BooksProps) {
                             (newOption) => { setBooksOptionValue(newOption); }
                         }
                         variant="general"
+                        nonClearable
                     />
                 )}
             >
@@ -137,7 +138,7 @@ function Books(props: BooksProps) {
                                     }}
                                     data={booksPerPublisher ?? undefined}
                                 >
-                                    <Tooltip />
+                                    <Tooltip cursor={false} />
                                     <XAxis
                                         dataKey="publisherName"
                                         label={{
@@ -181,7 +182,7 @@ function Books(props: BooksProps) {
                                     }}
                                     data={booksPerCategory ?? undefined}
                                 >
-                                    <Tooltip />
+                                    <Tooltip cursor={false} />
                                     <XAxis
                                         dataKey="category"
                                         label={{
@@ -225,7 +226,7 @@ function Books(props: BooksProps) {
                                     }}
                                     data={booksPerGrade ?? undefined}
                                 >
-                                    <Tooltip />
+                                    <Tooltip cursor={false} />
                                     <XAxis
                                         dataKey="grade"
                                         label={{
@@ -269,7 +270,7 @@ function Books(props: BooksProps) {
                                     }}
                                     data={booksPerLanguage ?? undefined}
                                 >
-                                    <Tooltip />
+                                    <Tooltip cursor={false} />
                                     <XAxis
                                         dataKey="language"
                                         label={{
@@ -323,6 +324,7 @@ function Books(props: BooksProps) {
                             (newOption) => { setPublisherOptionValue(newOption); }
                         }
                         variant="general"
+                        nonClearable
                     />
                 )}
             >
@@ -338,7 +340,7 @@ function Books(props: BooksProps) {
                                 }}
                                 data={categorizedBooksPerPublisher?.categories ?? undefined}
                             >
-                                <Tooltip />
+                                <Tooltip cursor={false} />
                                 <XAxis
                                     dataKey="category"
                                     label={{
