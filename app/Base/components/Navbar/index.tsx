@@ -217,6 +217,12 @@ function Navbar(props: Props) {
                 >
                     {strings.moderationLabel}
                 </SmartNavLink>
+                <SmartNavLink
+                    route={routes.schoolReports}
+                    className={styles.navLink}
+                >
+                    {strings.reportsLabel}
+                </SmartNavLink>
             </div>
             <div className={styles.actions}>
                 {orderWindow && user?.type === 'SCHOOL_ADMIN' && (
