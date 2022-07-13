@@ -205,6 +205,10 @@ function HomePage(props: Props) {
                             messageShown
                         />
                     </Container>
+                    <Container
+                        className={styles.exploreByCategoriesSection}
+                        heading={strings.top5SellingBooksHeading}
+                    />
                     {/*
                     <Container
                         className={styles.featuredBooksSection}
