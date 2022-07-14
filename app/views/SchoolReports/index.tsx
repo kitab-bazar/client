@@ -15,23 +15,62 @@ import {
 } from 'recharts';
 import { SchoolReportsQuery } from '#generated/types';
 
+import Books from '../Moderation/Reports/Books';
 import styles from './styles.css';
 
 const REPORTS = gql`
     query SchoolReports {
         schoolQuery {
             reports {
+                booksPerCategory {
+                    category
+                    categoryId
+                    numberOfBooks
+                }
+                booksPerGrade {
+                    grade
+                    numberOfBooks
+                }
+                booksPerLanguage {
+                    language
+                    numberOfBooks
+                }
+                booksPerPublisher {
+                    numberOfBooks
+                    publisherId
+                    publisherName
+                }
+                booksPerPublisherPerCategory {
+                    categories {
+                        category
+                        categoryId
+                        numberOfBooks
+                    }
+                    publisherId
+                    publisherName
+                }
+                numberOfBooksOrdered
+                numberOfIncentiveBooks
                 paymentPerOrderWindow {
                     orderWindowId
                     payment
                     title
                 }
-                numberOfIncentiveBooks
-                numberOfBooksOrdered
             }
         }
     }
 `;
+
+const COLORS = [
+    'var(--dui-color-cornflower-blue)',
+    'var(--dui-color-elton-blue)',
+    'var(--dui-color-maximum-yellow-red)',
+    'var(--dui-color-medium-purple)',
+    'var(--dui-color-princeton-orange)',
+    'var(--dui-color-rose-madder)',
+    'var(--dui-color-deep-taupe)',
+    'var(--dui-color-brandy)',
+];
 
 function SchoolReports() {
     const {
@@ -39,6 +78,25 @@ function SchoolReports() {
     } = useQuery<SchoolReportsQuery>(
         REPORTS,
     );
+
+    const booksPerCategory = reportsResponse
+        ?.schoolQuery?.reports?.booksPerCategory ?? undefined;
+    const booksPerGrade = reportsResponse
+        ?.schoolQuery?.reports?.booksPerGrade ?? undefined;
+    const booksPerLanguage = reportsResponse
+        ?.schoolQuery?.reports?.booksPerLanguage ?? undefined;
+    const booksPerPublisher = reportsResponse
+        ?.schoolQuery?.reports?.booksPerPublisher ?? undefined;
+    const booksPerPublisherPerCategory = reportsResponse
+        ?.schoolQuery?.reports?.booksPerPublisherPerCategory ?? undefined;
+
+    const publisherColor = booksPerPublisher?.map((publisher) => {
+        const colors = COLORS[Number(publisher?.publisherId) % COLORS.length];
+        return {
+            publisher: publisher?.publisherName,
+            fill: colors,
+        };
+    });
 
     return (
         <div className={styles.schoolReports}>
@@ -113,6 +171,14 @@ function SchoolReports() {
                         </ResponsiveContainer>
                     </div>
                 </div>
+                <Books
+                    booksPerCategory={booksPerCategory}
+                    booksPerGrade={booksPerGrade}
+                    booksPerLanguage={booksPerLanguage}
+                    booksPerPublisher={booksPerPublisher}
+                    booksPerPublisherPerCategory={booksPerPublisherPerCategory}
+                    publisherColor={publisherColor}
+                />
             </Container>
         </div>
     );
