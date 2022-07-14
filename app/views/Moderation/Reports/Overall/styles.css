@@ -6,7 +6,7 @@
 
     .information-card-wrapper {
         display: flex;
-        justify-content: start;
+        flex-wrap: wrap;
         gap: var(--dui-spacing-large);
         margin-bottom: 2rem;
 
