@@ -23,7 +23,7 @@ import coverImage from '#resources/img/cover.png';
 
 import GradeItem, { Props as GradeItemProps } from './GradeItem';
 import CategoryItem, { Props as CategoryItemProps } from './CategoryItem';
-import TopSellingBookItem from './TopSellingItem';
+import TopSellingItem from './TopSellingItem';
 
 import styles from './styles.css';
 
@@ -210,19 +210,7 @@ function HomePage(props: Props) {
                         className={styles.exploreByCategoriesSection}
                         heading={strings.top5SellingBooksHeading}
                     >
-                        <ListView
-                            className={styles.categoryList}
-                            data={categoryWithGradeOptionsResponse?.categories?.results}
-                            keySelector={itemKeySelector}
-                            rendererParams={categoryItemRendererParams}
-                            renderer={CategoryItem}
-                            errored={!!categoriesGradesError}
-                            pending={categoriesGradesLoading}
-                            filtered={false}
-                            emptyMessage={strings.emptyCategoriesMessage}
-                            pendingMessage={strings.pendingCategoriesMessage}
-                            messageShown
-                        />
+                        <TopSellingItem />
                     </Container>
                     {/*
                     <Container
