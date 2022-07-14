@@ -1,49 +1,45 @@
 import React from 'react';
-import { Container } from '@the-deep/deep-ui';
+import {
+    Container,
+    InformationCard,
+} from '@the-deep/deep-ui';
 import { useQuery, gql } from '@apollo/client';
-import { ReportsQuery } from '#generated/types';
+import {
+    BarChart,
+    Bar,
+    XAxis,
+    YAxis,
+    Tooltip,
+    Legend,
+    ResponsiveContainer,
+} from 'recharts';
+import { SchoolReportsQuery } from '#generated/types';
 
-import Books from '../Moderation/Reports/Books';
 import styles from './styles.css';
 
-const Reports = gql`
-    query schoolReports {
-        moderatorQuery {
+const REPORTS = gql`
+    query SchoolReports {
+        schoolQuery {
             reports {
-                booksPerGrade {
-                    grade
-                    numberOfBooks
+                paymentPerOrderWindow {
+                    orderWindowId
+                    payment
+                    title
                 }
-                booksPerLanguage {
-                    language
-                    numberOfBooks
-                }
-                booksPerPublisher {
-                    numberOfBooks
-                    publisherId
-                    publisherName
-                }
-                booksPerCategory {
-                    category
-                    categoryId
-                    numberOfBooks
-                }
-                booksPerPublisherPerCategory {
-                    categories {
-                        category
-                        categoryId
-                        numberOfBooks
-                    }
-                    publisherId
-                    publisherName
-                }
+                numberOfIncentiveBooks
+                numberOfBooksOrdered
             }
         }
     }
 `;
 
 function SchoolReports() {
-    console.log('run');
+    const {
+        data: reportsResponse,
+    } = useQuery<SchoolReportsQuery>(
+        REPORTS,
+    );
+
     return (
         <div className={styles.schoolReports}>
             <Container
@@ -51,14 +47,72 @@ function SchoolReports() {
                 heading="Reports"
                 headingSize="small"
             >
-                <Books
-                    booksPerCategory={booksPerCategory}
-                    booksPerGrade={booksPerGrade}
-                    booksPerLanguage={booksPerLanguage}
-                    booksPerPublisher={booksPerPublisher}
-                    booksPerPublisherPerCategory={booksPerPublisherPerCategory}
-                    publisherColor={publisherColor}
-                />
+                <div className={styles.informationCardWrapper}>
+                    <InformationCard
+                        label="Number of Books Ordered"
+                        value={reportsResponse
+                            ?.schoolQuery?.reports?.numberOfBooksOrdered ?? undefined}
+                        variant="accent"
+                        className={styles.informationCard}
+                    />
+                    <InformationCard
+                        label="Number of Incentive Books"
+                        value={reportsResponse
+                            ?.schoolQuery?.reports?.numberOfIncentiveBooks ?? undefined}
+                        variant="accent"
+                        className={styles.informationCard}
+                    />
+                </div>
+                <div className={styles.wrapper}>
+                    <div className={styles.dataVisualizations}>
+                        <div className={styles.chartLabel}>
+                            Total Payments per Order Window
+                        </div>
+                        <ResponsiveContainer>
+                            <BarChart
+                                data={reportsResponse
+                                    ?.schoolQuery?.reports?.paymentPerOrderWindow ?? undefined}
+                                margin={{
+                                    left: 10,
+                                    top: 10,
+                                    right: 10,
+                                    bottom: 30,
+                                }}
+                            >
+                                <XAxis
+                                    dataKey="title"
+                                    label={{
+                                        value: 'Order Windows',
+                                        position: 'bottom',
+                                        textAnchor: 'middle',
+                                    }}
+                                />
+                                <YAxis
+                                    label={{
+                                        value: 'Payments in NRs',
+                                        angle: -90,
+                                        position: 'insideLeft',
+                                        textAnchor: 'middle',
+                                    }}
+                                    padding={{
+                                        top: 30,
+                                    }}
+                                />
+                                <Tooltip cursor={false} />
+                                <Legend
+                                    verticalAlign="top"
+                                />
+                                <Bar
+                                    dataKey="payment"
+                                    fill="var(--dui-color-cornflower-blue)"
+                                    label={{ position: 'top' }}
+                                    name="Payment"
+                                    barSize={50}
+                                />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+                </div>
             </Container>
         </div>
     );
