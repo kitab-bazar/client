@@ -13,7 +13,11 @@ import {
     Scatter,
     ZAxis,
 } from 'recharts';
-import { listToGroupList, isDefined, mapToList, listToMap } from '@togglecorp/fujs';
+import {
+    listToGroupList,
+    isDefined,
+    mapToList,
+} from '@togglecorp/fujs';
 import { Container } from '@the-deep/deep-ui';
 import { ReportsQuery } from '#generated/types';
 
