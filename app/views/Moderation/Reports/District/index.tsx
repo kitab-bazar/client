@@ -41,7 +41,7 @@ function District(props: DistrictProps) {
                         <BarChart
                             data={deliveriesPerDistrict ?? undefined}
                             margin={{
-                                left: 10,
+                                left: 50,
                                 top: 10,
                                 right: 10,
                                 bottom: 30,
@@ -60,11 +60,12 @@ function District(props: DistrictProps) {
                                 label={{
                                     value: 'Number of Deliveries',
                                     angle: -90,
+                                    offset: -20,
                                     position: 'insideLeft',
                                     textAnchor: 'middle',
                                 }}
                                 padding={{
-                                    top: 30,
+                                    top: 50,
                                 }}
                             />
                             <Tooltip cursor={false} />
@@ -83,13 +84,13 @@ function District(props: DistrictProps) {
                 </div>
                 <div className={styles.dataVisualizations}>
                     <div className={styles.chartLabel}>
-                        Number of Ordered and Incentive Books Distributed per District
+                        Number of Books Distributed per District
                     </div>
                     <ResponsiveContainer>
                         <BarChart
                             data={booksOrderedAndIncentivesPerDistrict ?? undefined}
                             margin={{
-                                left: 10,
+                                left: 50,
                                 top: 10,
                                 right: 10,
                                 bottom: 30,
@@ -107,11 +108,12 @@ function District(props: DistrictProps) {
                                 label={{
                                     value: 'Total Number of Books',
                                     angle: -90,
+                                    offset: -20,
                                     position: 'insideLeft',
                                     textAnchor: 'middle',
                                 }}
                                 padding={{
-                                    top: 30,
+                                    top: 50,
                                 }}
                             />
                             <Tooltip cursor={false} />
@@ -145,7 +147,7 @@ function District(props: DistrictProps) {
                     <ResponsiveContainer>
                         <BarChart
                             margin={{
-                                left: 10,
+                                left: 50,
                                 top: 10,
                                 right: 10,
                                 bottom: 30,
@@ -165,6 +167,7 @@ function District(props: DistrictProps) {
                                 label={{
                                     value: 'Total Number of Users',
                                     angle: -90,
+                                    offset: -20,
                                     position: 'insideLeft',
                                     textAnchor: 'middle',
                                 }}
