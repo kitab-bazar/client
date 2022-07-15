@@ -13,6 +13,7 @@ import {
     Scatter,
     ZAxis,
 } from 'recharts';
+import { listToGroupList, isDefined, mapToList, listToMap } from '@togglecorp/fujs';
 import { Container } from '@the-deep/deep-ui';
 import { ReportsQuery } from '#generated/types';
 
@@ -31,24 +32,35 @@ interface windowProps {
     }[] | undefined
 }
 
-interface GradeOrder {
-    [key: string]: number | string;
-    grade: string;
-}
-
 function Window(props: windowProps) {
     const { paymentPerOrderWindow,
         bookGradesPerOrderWindow,
         orderWindows,
         booksAndCostPerSchool } = props;
 
-    const gradesOrder = bookGradesPerOrderWindow?.map((bookGrades) => (
-        bookGrades?.grades?.map((grade) => (
-            { grade: grade.grade, [bookGrades.title]: grade.numberOfBooks }
-        )) ?? []
-    ));
+    const booksPerGradePerOrderWindow = bookGradesPerOrderWindow?.map((data) => (
+        data?.grades?.map((grade) => ({
+            grade: grade.grade,
+            numberOfBooks: grade.numberOfBooks,
+            orderWindowTitle: data.title,
+        }))
+    )).flat().filter(isDefined);
 
-    const booksPerGradePerOrderWindow = ([] as GradeOrder[]).concat(...(gradesOrder ?? []));
+    const gradeGroupedList = listToGroupList(
+        booksPerGradePerOrderWindow,
+        (order) => order.grade,
+    );
+
+    const chartData = mapToList(
+        gradeGroupedList,
+        (groupList, key) => groupList.reduce(
+            (acc, item) => ({
+                ...acc,
+                [item.orderWindowTitle]: item.numberOfBooks,
+            }),
+            { grade: key },
+        ),
+    );
 
     return (
         <Container
@@ -110,7 +122,7 @@ function Window(props: windowProps) {
                     </div>
                     <ResponsiveContainer>
                         <LineChart
-                            data={booksPerGradePerOrderWindow}
+                            data={chartData}
                             margin={{
                                 left: 10,
                                 top: 10,
