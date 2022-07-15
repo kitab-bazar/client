@@ -112,10 +112,6 @@ export const navbar = {
         en: 'Moderation',
         ne: 'मध्यस्थता',
     },
-    reportsLabel: {
-        en: 'Reports',
-        ne: 'रिपोर्टहरू',
-    },
     cancelLabel: {
         en: 'Cancel',
         ne: 'रद्द गर्नुहोस्',
@@ -686,6 +682,10 @@ export const profile = {
     paymentsTabLabel: {
         en: 'Payments',
         ne: 'भुक्तानीहरू',
+    },
+    reportTabLabel: {
+        en: 'Reports',
+        ne: 'रिपोर्टहरू',
     },
     schoolNameLabel: {
         en: 'School Name',

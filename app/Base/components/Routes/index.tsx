@@ -101,12 +101,6 @@ function Routes(props: Props) {
                 </Route>
                 <Route
                     exact
-                    path={routes.schoolReports.path}
-                >
-                    {routes.schoolReports.load({ className })}
-                </Route>
-                <Route
-                    exact
                     path={routes.translationDashboard.path}
                 >
                     {routes.translationDashboard.load({ className })}

@@ -118,16 +118,6 @@ const moderation = wrap({
     visibility: 'is-authenticated',
     checkPermissions: (user) => user?.type === 'MODERATOR',
 });
-const schoolReports = wrap({
-    path: '/reports/',
-    title: `${title} - Reports`,
-    navbarVisibility: true,
-    component: lazy(() => import('#views/SchoolReports')),
-    componentProps: {
-    },
-    visibility: 'is-authenticated',
-    checkPermissions: (user) => user?.type === 'SCHOOL_ADMIN',
-});
 const translationDashboard = wrap({
     path: '/translation-dashboard/',
     title: `${title} - Translation Dashboard`,
@@ -162,6 +152,5 @@ const routes = {
     moderation,
     translationDashboard,
     eBook,
-    schoolReports,
 };
 export default routes;
