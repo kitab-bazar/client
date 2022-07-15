@@ -308,7 +308,7 @@ function Books(props: BooksProps) {
             </Container>
             <Container
                 className={styles.reports}
-                heading={`Number of Books per ${publisherOptionValue}`}
+                heading="Number of Books per Publisher"
                 headingSize="extraSmall"
                 headerDescriptionClassName={styles.filters}
                 headerDescription={(
