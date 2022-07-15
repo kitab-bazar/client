@@ -683,6 +683,10 @@ export const profile = {
         en: 'Payments',
         ne: 'भुक्तानीहरू',
     },
+    reportTabLabel: {
+        en: 'Reports',
+        ne: 'रिपोर्टहरू',
+    },
     schoolNameLabel: {
         en: 'School Name',
         ne: 'विद्यालयको नाम',

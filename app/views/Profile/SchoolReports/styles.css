@@ -1,0 +1,43 @@
+.school-reports {
+    display: flex;
+    margin: 0 auto;
+}
+
+.reports {
+    display: flex;
+    flex-grow: 1;
+    margin-top: 1rem;
+    background-color: unset;
+    overflow: hidden;
+
+    .information-card-wrapper {
+        display: flex;
+        justify-content: start;
+        gap: var(--dui-spacing-large);
+        margin-bottom: 2rem;
+
+        .information-card {
+            width: 20rem;
+            height: 6rem;
+        }
+    }
+
+    .wrapper {
+        display: flex;
+        gap: var(--dui-spacing-large);
+        overflow: hidden;
+    }
+
+    .data-visualizations {
+        flex-grow: 1;
+        margin: 3rem 0;
+        width: 30rem;
+        height: 30rem;
+        text-align: center;
+    }
+
+    .chart-label {
+        font-size: var(--dui-font-size-large);
+        font-weight: 700;
+    }
+}

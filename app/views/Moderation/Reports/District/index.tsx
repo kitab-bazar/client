@@ -121,7 +121,6 @@ function District(props: DistrictProps) {
                             <Bar
                                 dataKey="noOfBooksOrdered"
                                 fill="var(--dui-color-elton-blue)"
-                                label={{ position: 'top' }}
                                 name="Books Ordered"
                                 stackId="name"
                                 barSize={50}
