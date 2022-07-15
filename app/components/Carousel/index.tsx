@@ -12,19 +12,24 @@ import styles from './styles.css';
 const CAROUSEL_ITEM_CHANGE_DURATION = 0; // in seconds
 
 function bound(value: number, min: number, max: number) {
-    const diff = max - min;
+    const diff = (max - min + 1); // 5
 
     if (value > max) {
         return ((value - min) % diff) + min;
     }
 
     if (value < min) {
-        const minDiff = min - value;
+        const minDiff = (min - value) - 1; // 0 -> 2
         return max - (minDiff % diff);
     }
 
     return value;
 }
+
+console.info(6, 1, 5, bound(6, 1, 5));
+console.info(-1, 1, 5, bound(-1, 1, 5));
+console.info(0, 1, 5, bound(0, 1, 5));
+console.info(7, 1, 5, bound(7, 1, 5));
 
 interface Props {
     className?: string;

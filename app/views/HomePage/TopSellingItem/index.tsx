@@ -38,6 +38,10 @@ function TopSellingItem() {
         TOP_SELLING_ITEMS,
     );
 
+    const category = topSellingItemsResponse?.books?.results?.map((item) => (
+        item.categories.map((categoryName) => (categoryName.name))
+    ));
+
     return (
         <Carousel
             className={styles.carousel}
@@ -64,9 +68,15 @@ function TopSellingItem() {
                                     src={books.image?.url ?? undefined}
                                     alt={books.title}
                                 />
-                                <div className={styles.description}>
-                                    {books.title}
+                                <div className={styles.bookTitle}>
+                                    <div className={styles.description}>
+                                        {books.title}
+                                    </div>
+                                    <div className={styles.price}>{`Rs. ${books.price}`}</div>
                                 </div>
+                                <h5>
+                                    {`Total Pages: ${books.price}`}
+                                </h5>
                             </Link>
                         </CarouselItem>
                     ))}

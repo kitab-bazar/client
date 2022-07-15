@@ -84,9 +84,6 @@ function CarouselItem(props: Props) {
             }}
         >
             {children}
-            {order}
-            <br />
-            {displayOrder}
         </div>
     );
 }

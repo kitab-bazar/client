@@ -16,6 +16,7 @@
 
                 .link {
                     display: flex;
+                    align-items: initial;
                     flex-direction: column;
                     flex-grow: 1;
                     border-radius: var(--kitab-radius-border);
@@ -29,14 +30,23 @@
                         object-position: center center;
                     }
 
-                    .description {
-                        align-self: stretch;
-                        flex-shrink: 0;
-                        border-bottom-left-radius: var(--kitab-radius-border);
-                        border-bottom-right-radius: var(--kitab-radius-border);
-                        background-color: var(--kitab-page-background-color);
-                        padding: var(--dui-spacing-medium);
-                        font-weight: var(--dui-font-weight-bold);
+                    .book-title {
+                        display: flex;
+
+                        .description {
+                            display: flex;
+                            align-self: stretch;
+                            flex-shrink: 0;
+                            border-bottom-left-radius: var(--kitab-radius-border);
+                            border-bottom-right-radius: var(--kitab-radius-border);
+                            background-color: var(--kitab-page-background-color);
+                            padding: var(--dui-spacing-medium);
+                            font-weight: var(--dui-font-weight-bold);
+                        }
+
+                        .price {
+                            padding: var(--dui-spacing-medium);
+                        }
                     }
                 }
             }
