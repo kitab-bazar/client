@@ -55,7 +55,7 @@ import NumberOutput from '#components/NumberOutput';
 
 import styles from './styles.css';
 
-const enumKeySelector = (d: { name: string}) => d.name;
+const enumKeySelector = (d: { name: string }) => d.name;
 const enumLabelSelector = (d: { description?: string | null }) => d.description ?? '???';
 
 const EXPLORE_FILTER_OPTIONS = gql`
@@ -186,6 +186,7 @@ function Explore(props: Props) {
         category?: string;
         publisher?: string;
         language?: string;
+        book?: string;
     } | undefined;
 
     const isPublisher = isDefined(user?.publisherId);
@@ -220,7 +221,7 @@ function Explore(props: Props) {
         setPage,
     );
     const [search, setSearch] = useStateWithCallback<string | undefined>(
-        undefined,
+        locationState?.book ?? undefined,
         setPage,
     );
     const [publishers, setPublishers] = useStateWithCallback<string[] | undefined>(

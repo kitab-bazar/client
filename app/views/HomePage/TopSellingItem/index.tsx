@@ -43,36 +43,38 @@ function TopSellingItem() {
             className={styles.carousel}
             numberOfVisibleItems={3}
         >
-            <div className={styles.itemList}>
-                {topSellingItemsResponse?.books?.results?.map((books, i) => (
-                    <CarouselItem
-                        className={styles.carouselItem}
-                        order={i + 1}
-                    >
-                        <Link
-                            to={{
-                                pathname: routes.bookList.path,
-                                state: { book: books.title },
-                            }}
-                            className={styles.gradeItem}
-                            linkElementClassName={styles.link}
-                        >
-                            <img
-                                className={styles.preview}
-                                src={books.image?.url ?? undefined}
-                                alt={books.title}
-                            />
-                            <div className={styles.description}>
-                                {books.title}
-                            </div>
-                        </Link>
-                    </CarouselItem>
-                ))}
-            </div>
-            <div className={styles.actions}>
+            <div>
                 <CarouselButton action="prev" />
+                <div className={styles.itemList}>
+                    {topSellingItemsResponse?.books?.results?.map((books, i) => (
+                        <CarouselItem
+                            className={styles.carouselItem}
+                            order={i + 1}
+                        >
+                            <Link
+                                to={{
+                                    pathname: routes.bookList.path,
+                                    state: { book: books.title },
+                                }}
+                                className={styles.gradeItem}
+                                linkElementClassName={styles.link}
+                            >
+                                <img
+                                    className={styles.preview}
+                                    src={books.image?.url ?? undefined}
+                                    alt={books.title}
+                                />
+                                <div className={styles.description}>
+                                    {books.title}
+                                </div>
+                            </Link>
+                        </CarouselItem>
+                    ))}
+                </div>
                 <CarouselButton action="next" />
             </div>
+            {/* <div className={styles.actions}>
+            </div> */}
         </Carousel>
     );
 }

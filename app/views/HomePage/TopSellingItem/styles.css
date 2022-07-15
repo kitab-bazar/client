@@ -1,12 +1,13 @@
 .carousel {
     .item-list {
         display: flex;
+        flex-direction: row;
+        justify-content: space-between;
 
         .carousel-item {
             display: flex;
-            flex-basis: 30%;
+            flex-basis: 20%;
             flex-direction: column;
-
 
             .grade-item {
                 border: var(--dui-width-separator-thin) solid var(--dui-color-separator);
