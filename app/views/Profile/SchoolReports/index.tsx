@@ -15,7 +15,7 @@ import {
 } from 'recharts';
 import { SchoolReportsQuery } from '#generated/types';
 
-import Books from '../Moderation/Reports/Books';
+import Books from '../../Moderation/Reports/Books';
 import styles from './styles.css';
 
 const REPORTS = gql`

@@ -31,6 +31,7 @@ import InstitutionPayments from './InstitutionPayments';
 import PublisherPackageList from './PublisherPackageList';
 import InstitutionPackageList from './InstitutionPackageList';
 import SchoolPackageList from './SchoolPackageList';
+import SchoolReports from './SchoolReports';
 
 import styles from './styles.css';
 
@@ -205,6 +206,17 @@ function Profile(props: Props) {
                                                 {strings.paymentsTabLabel}
                                             </Tab>
                                         )}
+                                        {(
+                                            userDetails.userType === 'SCHOOL_ADMIN'
+                                        ) && (
+                                            <Tab
+                                                activeClassName={styles.active}
+                                                className={styles.tabItem}
+                                                name="reports"
+                                            >
+                                                {strings.reportTabLabel}
+                                            </Tab>
+                                        )}
                                     </TabList>
                                     <TabPanel
                                         name="about"
@@ -343,6 +355,16 @@ function Profile(props: Props) {
                                             className={styles.tabContent}
                                         >
                                             <InstitutionPayments />
+                                        </TabPanel>
+                                    )}
+                                    {(
+                                        userDetails.userType === 'SCHOOL_ADMIN'
+                                    ) && (
+                                        <TabPanel
+                                            name="reports"
+                                            className={styles.tabContent}
+                                        >
+                                            <SchoolReports />
                                         </TabPanel>
                                     )}
                                     {updateInstitutionDetailModalShown
