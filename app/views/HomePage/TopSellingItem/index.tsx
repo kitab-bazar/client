@@ -64,8 +64,6 @@ function TopSellingItem() {
         };
     }, []);
 
-    console.info('visible items', visibleItems);
-
     return (
         <Carousel
             className={styles.carousel}

@@ -26,11 +26,6 @@ function bound(value: number, min: number, max: number) {
     return value;
 }
 
-console.info(6, 1, 5, bound(6, 1, 5));
-console.info(-1, 1, 5, bound(-1, 1, 5));
-console.info(0, 1, 5, bound(0, 1, 5));
-console.info(7, 1, 5, bound(7, 1, 5));
-
 interface Props {
     className?: string;
     children: React.ReactNode;
@@ -61,7 +56,6 @@ function Carousel(props: Props) {
     });
 
     const switchToNextItem = React.useCallback(() => {
-        console.info('switching to next item');
         setItemState((prevState) => {
             if (prevState.items.length === 0) {
                 return prevState;
@@ -88,7 +82,8 @@ function Carousel(props: Props) {
         });
     }, [setItemState]);
 
-    // Commented out automatic changes not need
+    // TODO: Commented out it is not needed for now
+
     // const decreaseTimer = React.useCallback(() => {
     //    if (autoChangeTimerRef.current === 0) {
     //        switchToNextItem();
@@ -100,6 +95,8 @@ function Carousel(props: Props) {
 
     React.useEffect(() => {
         let intervalId: number;
+        // TODO: Commented out it is not needed for now
+
         // if (shouldAnimate) {
         //    intervalId = window.setInterval(decreaseTimer, 1000);
         // }
@@ -146,6 +143,7 @@ function Carousel(props: Props) {
                 };
             });
         }
+        // TODO: Not needed for now
         // setActiveItem(newValueOrSetter);
     }, []);
 

@@ -71,7 +71,7 @@ function Books(props: BooksProps) {
     } = props;
 
     const [booksOptionValue, setBooksOptionValue] = useState<string | undefined>('Publisher');
-    const [publisherOptionValue, setPublisherOptionValue] = useState<string | undefined>('Parichaya');
+    const [publisherOptionValue, setPublisherOptionValue] = useState<string | undefined>('');
 
     const categorizedPublisherOption = useMemo(() => (
         booksPerPublisherPerCategory
@@ -79,7 +79,7 @@ function Books(props: BooksProps) {
                 const color = publisherColor?.find(
                     (item) => item.publisher === publisher?.publisherName,
                 );
-
+                setPublisherOptionValue(publisher?.publisherName);
                 return {
                     name: publisher?.publisherName ?? '',
                     description: publisher?.publisherName ?? '',
