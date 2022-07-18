@@ -88,14 +88,15 @@ function Carousel(props: Props) {
         });
     }, [setItemState]);
 
-    const decreaseTimer = React.useCallback(() => {
-        if (autoChangeTimerRef.current === 0) {
-            switchToNextItem();
-            autoChangeTimerRef.current = CAROUSEL_ITEM_CHANGE_DURATION;
-        } else if (autoChangeTimerRef.current > 0) {
-            autoChangeTimerRef.current -= 1;
-        }
-    }, [switchToNextItem]);
+    // Commented out automatic changes not need
+    // const decreaseTimer = React.useCallback(() => {
+    //    if (autoChangeTimerRef.current === 0) {
+    //        switchToNextItem();
+    //        autoChangeTimerRef.current = CAROUSEL_ITEM_CHANGE_DURATION;
+    //    } else if (autoChangeTimerRef.current > 0) {
+    //        autoChangeTimerRef.current -= 1;
+    //    }
+    // }, [switchToNextItem]);
 
     React.useEffect(() => {
         let intervalId: number;

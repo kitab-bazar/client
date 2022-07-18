@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from '@the-deep/deep-ui';
 import {
     gql,
@@ -38,16 +38,40 @@ function TopSellingItem() {
         TOP_SELLING_ITEMS,
     );
 
-    const category = topSellingItemsResponse?.books?.results?.map((item) => (
-        item.categories.map((categoryName) => (categoryName.name))
-    ));
+    const [visibleItems, setVisibleItems] = useState(3);
+    const debounceTimeoutRef = React.useRef<number>();
+
+    React.useEffect(() => {
+        const onNumberOfVisibleItemsChange = () => {
+            window.clearTimeout(debounceTimeoutRef.current);
+            debounceTimeoutRef.current = window.setTimeout(() => {
+                const width = document.documentElement.clientWidth;
+                if (width < 710) {
+                    setVisibleItems(1);
+                } else if (width < 1200) {
+                    setVisibleItems(2);
+                } else {
+                    setVisibleItems(3);
+                }
+            }, 200);
+        };
+
+        window.addEventListener('resize', onNumberOfVisibleItemsChange);
+        onNumberOfVisibleItemsChange();
+
+        return () => {
+            window.removeEventListener('resize', onNumberOfVisibleItemsChange);
+        };
+    }, []);
+
+    console.info('visible items', visibleItems);
 
     return (
         <Carousel
             className={styles.carousel}
-            numberOfVisibleItems={3}
+            numberOfVisibleItems={visibleItems}
         >
-            <div>
+            <div className={styles.carouselWrapper}>
                 <CarouselButton action="prev" />
                 <div className={styles.itemList}>
                     {topSellingItemsResponse?.books?.results?.map((books, i) => (
@@ -68,23 +92,18 @@ function TopSellingItem() {
                                     src={books.image?.url ?? undefined}
                                     alt={books.title}
                                 />
-                                <div className={styles.bookTitle}>
-                                    <div className={styles.description}>
-                                        {books.title}
-                                    </div>
-                                    <div className={styles.price}>{`Rs. ${books.price}`}</div>
+                                <div className={styles.description}>
+                                    {books.title}
                                 </div>
-                                <h5>
-                                    {`Total Pages: ${books.price}`}
-                                </h5>
+                                <div className={styles.price}>
+                                    {`Rs. ${books.price}`}
+                                </div>
                             </Link>
                         </CarouselItem>
                     ))}
                 </div>
-                <CarouselButton action="next" />
+                <CarouselButton className={styles.carouselButton} action="next" />
             </div>
-            {/* <div className={styles.actions}>
-            </div> */}
         </Carousel>
     );
 }

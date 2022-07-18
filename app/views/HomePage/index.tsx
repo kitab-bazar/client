@@ -171,6 +171,12 @@ function HomePage(props: Props) {
                 </div>
                 <div className={styles.pageContainer}>
                     <Container
+                        className={styles.exploreByCategoriesSection}
+                        heading={strings.highestSellingBooksHeading}
+                    >
+                        <TopSellingItem />
+                    </Container>
+                    <Container
                         className={styles.exploreByGradeSection}
                         heading={strings.exploreByGradeHeading}
                     >
@@ -206,12 +212,7 @@ function HomePage(props: Props) {
                             messageShown
                         />
                     </Container>
-                    <Container
-                        className={styles.exploreByCategoriesSection}
-                        heading={strings.top5SellingBooksHeading}
-                    >
-                        <TopSellingItem />
-                    </Container>
+
                     {/*
                     <Container
                         className={styles.featuredBooksSection}

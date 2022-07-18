@@ -73,9 +73,9 @@ function CarouselButton(props: Props) {
             onClick={handleClick}
         >
             {/* eslint-disable-next-line react/destructuring-assignment */}
-            {props.action === 'next' && <IoChevronForward />}
+            {props.action === 'next' && <IoChevronForward size="large" />}
             {/* eslint-disable-next-line react/destructuring-assignment */}
-            {props.action === 'prev' && <IoChevronBack />}
+            {props.action === 'prev' && <IoChevronBack size="large" />}
             {/* eslint-disable-next-line react/destructuring-assignment */}
             {props.action === 'set' && <IoEllipse />}
         </RawButton>
