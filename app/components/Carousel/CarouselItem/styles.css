@@ -1,0 +1,24 @@
+.carousel-item {
+    position: relative;
+
+    .expand-button {
+        position: absolute;
+        top: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: var(--tui-spacing-small);
+        color: var(--tui-color-text-on-dark);
+    }
+}
+
+.modal-backdrop {
+    /* NOTE: z-index of Navbar on IDMC Website is 1030 */
+    z-index: 1031;
+
+    .expanded-modal {
+        width: 100%!important;
+        max-width: 96vw;
+        height: 100%!important;
+        max-height: 98vh;
+    }
+}

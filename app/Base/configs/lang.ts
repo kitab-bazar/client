@@ -285,6 +285,10 @@ export const homePage = {
         en: 'Explore by Category',
         ne: 'श्रेणी द्वारा अन्वेषण गर्नुहोस्',
     },
+    highestSellingBooksHeading: {
+        en: 'Highest Selling Books',
+        ne: 'बढी बिक्रि हुने किताबहरु',
+    },
     exploreByPublisherHeading: {
         en: 'Explore by Publisher',
         ne: 'प्रकाशक द्वारा अन्वेषण',

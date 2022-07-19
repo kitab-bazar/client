@@ -23,6 +23,7 @@ import coverImage from '#resources/img/cover.png';
 
 import GradeItem, { Props as GradeItemProps } from './GradeItem';
 import CategoryItem, { Props as CategoryItemProps } from './CategoryItem';
+import TopSellingItem from './TopSellingItem';
 
 import styles from './styles.css';
 
@@ -170,6 +171,12 @@ function HomePage(props: Props) {
                 </div>
                 <div className={styles.pageContainer}>
                     <Container
+                        className={styles.exploreByCategoriesSection}
+                        heading={strings.highestSellingBooksHeading}
+                    >
+                        <TopSellingItem />
+                    </Container>
+                    <Container
                         className={styles.exploreByGradeSection}
                         heading={strings.exploreByGradeHeading}
                     >
@@ -205,6 +212,7 @@ function HomePage(props: Props) {
                             messageShown
                         />
                     </Container>
+
                     {/*
                     <Container
                         className={styles.featuredBooksSection}
