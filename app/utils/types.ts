@@ -1,5 +1,3 @@
-import { memo } from 'react';
-
 type Check<T> = T extends string[] ? string[] : T extends string ? string : undefined;
 
 export type EnumFix<T, F> = T extends Record<string, unknown>[] ? (
@@ -8,7 +6,6 @@ export type EnumFix<T, F> = T extends Record<string, unknown>[] ? (
 ) : ({
     [K in keyof T]: K extends F ? Check<T[K]> : EnumFix<T[K], F>;
 })
-export const genericMemo: (<T>(c: T) => T) = memo;
 
 export type EnumOption = {
     name: string;

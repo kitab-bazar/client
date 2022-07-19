@@ -20,6 +20,7 @@ const TOP_SELLING_ITEMS = gql`
                     name
                     url
                 }
+                id
                 title
                 price
                 categories {
@@ -37,7 +38,7 @@ function TopSellingItem() {
     } = useQuery<TopSellingItemQuery>(
         TOP_SELLING_ITEMS,
     );
-
+    console.log(topSellingItemsResponse);
     const [visibleItems, setVisibleItems] = useState(3);
     const debounceTimeoutRef = React.useRef<number>();
 
@@ -82,7 +83,7 @@ function TopSellingItem() {
                                     pathname: routes.bookList.path,
                                     state: { book: books.title },
                                 }}
-                                className={styles.gradeItem}
+                                className={styles.topSellingItem}
                                 linkElementClassName={styles.link}
                             >
                                 <img
@@ -100,7 +101,7 @@ function TopSellingItem() {
                         </CarouselItem>
                     ))}
                 </div>
-                <CarouselButton className={styles.carouselButton} action="next" />
+                <CarouselButton action="next" />
             </div>
         </Carousel>
     );

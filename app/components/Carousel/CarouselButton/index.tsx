@@ -9,7 +9,7 @@ import {
     IoEllipse,
 } from 'react-icons/io5';
 
-import RawButton from '#components/RawButton';
+import { RawButton } from '@the-deep/deep-ui';
 import CarouselContext from '../CarouselContext';
 
 import styles from './styles.css';
