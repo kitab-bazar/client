@@ -75,6 +75,7 @@ function TopSellingItem() {
                 <div className={styles.itemList}>
                     {topSellingItemsResponse?.books?.results?.map((books, i) => (
                         <CarouselItem
+                            key={books.id}
                             className={styles.carouselItem}
                             order={i + 1}
                         >
