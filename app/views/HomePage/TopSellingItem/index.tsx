@@ -94,9 +94,9 @@ function TopSellingItem() {
                                 />
                                 <div className={styles.description}>
                                     {books.title}
-                                </div>
-                                <div className={styles.price}>
-                                    {`Rs. ${books.price}`}
+                                    <div className={styles.price}>
+                                        {`Rs. ${books.price}`}
+                                    </div>
                                 </div>
                             </Link>
                         </CarouselItem>
