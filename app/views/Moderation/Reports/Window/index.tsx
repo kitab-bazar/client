@@ -81,7 +81,7 @@ function Window(props: windowProps) {
                         <BarChart
                             data={paymentPerOrderWindow ?? undefined}
                             margin={{
-                                left: 10,
+                                left: 50,
                                 top: 10,
                                 right: 10,
                                 bottom: 30,
@@ -99,11 +99,12 @@ function Window(props: windowProps) {
                                 label={{
                                     value: 'Payments in NRs',
                                     angle: -90,
+                                    offset: -20,
                                     position: 'insideLeft',
                                     textAnchor: 'middle',
                                 }}
                                 padding={{
-                                    top: 30,
+                                    top: 50,
                                 }}
                             />
                             <Tooltip cursor={false} />
@@ -122,13 +123,13 @@ function Window(props: windowProps) {
                 </div>
                 <div className={styles.dataVisualizations}>
                     <div className={styles.chartLabel}>
-                        Number of Grade books ordered per order window
+                        Number of Grade Books Ordered per Order Window
                     </div>
                     <ResponsiveContainer>
                         <LineChart
                             data={chartData}
                             margin={{
-                                left: 10,
+                                left: 50,
                                 top: 10,
                                 right: 10,
                                 bottom: 30,
@@ -146,11 +147,12 @@ function Window(props: windowProps) {
                                 label={{
                                     value: 'Number of Books',
                                     angle: -90,
+                                    offset: -20,
                                     position: 'insideLeft',
                                     textAnchor: 'middle',
                                 }}
                                 padding={{
-                                    top: 30,
+                                    top: 50,
                                 }}
                             />
                             <Tooltip />
@@ -173,7 +175,7 @@ function Window(props: windowProps) {
                     <ResponsiveContainer>
                         <ScatterChart
                             margin={{
-                                left: 10,
+                                left: 50,
                                 top: 10,
                                 right: 10,
                                 bottom: 30,
@@ -200,11 +202,12 @@ function Window(props: windowProps) {
                                 label={{
                                     value: 'Total Cost',
                                     angle: -90,
+                                    offset: -20,
                                     position: 'insideLeft',
                                     textAnchor: 'middle',
                                 }}
                                 padding={{
-                                    top: 30,
+                                    top: 50,
                                 }}
                             />
                             <ZAxis

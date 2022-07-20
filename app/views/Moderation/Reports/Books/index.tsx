@@ -131,7 +131,7 @@ function Books(props: BooksProps) {
                             <ResponsiveContainer>
                                 <BarChart
                                     margin={{
-                                        left: 10,
+                                        left: 50,
                                         top: 10,
                                         right: 10,
                                         bottom: 30,
@@ -154,11 +154,12 @@ function Books(props: BooksProps) {
                                         label={{
                                             value: 'Number of Books',
                                             angle: -90,
+                                            offset: -20,
                                             position: 'insideLeft',
                                             textAnchor: 'middle',
                                         }}
                                         padding={{
-                                            top: 30,
+                                            top: 50,
                                         }}
                                     />
                                     <Bar
@@ -175,7 +176,7 @@ function Books(props: BooksProps) {
                             <ResponsiveContainer>
                                 <BarChart
                                     margin={{
-                                        left: 10,
+                                        left: 50,
                                         top: 10,
                                         right: 10,
                                         bottom: 30,
@@ -195,11 +196,12 @@ function Books(props: BooksProps) {
                                         label={{
                                             value: 'Number of Books',
                                             angle: -90,
+                                            offset: -20,
                                             position: 'insideLeft',
                                             textAnchor: 'middle',
                                         }}
                                         padding={{
-                                            top: 30,
+                                            top: 50,
                                         }}
                                     />
                                     <Bar
@@ -219,7 +221,7 @@ function Books(props: BooksProps) {
                             <ResponsiveContainer>
                                 <BarChart
                                     margin={{
-                                        left: 10,
+                                        left: 50,
                                         top: 10,
                                         right: 10,
                                         bottom: 30,
@@ -239,11 +241,12 @@ function Books(props: BooksProps) {
                                         label={{
                                             value: 'Number of Books',
                                             angle: -90,
+                                            offset: -20,
                                             position: 'insideLeft',
                                             textAnchor: 'middle',
                                         }}
                                         padding={{
-                                            top: 30,
+                                            top: 50,
                                         }}
                                     />
                                     <Bar
@@ -263,7 +266,7 @@ function Books(props: BooksProps) {
                             <ResponsiveContainer>
                                 <BarChart
                                     margin={{
-                                        left: 10,
+                                        left: 50,
                                         top: 10,
                                         right: 10,
                                         bottom: 30,
@@ -283,11 +286,12 @@ function Books(props: BooksProps) {
                                         label={{
                                             value: 'Number of Books',
                                             angle: -90,
+                                            offset: -20,
                                             position: 'insideLeft',
                                             textAnchor: 'middle',
                                         }}
                                         padding={{
-                                            top: 30,
+                                            top: 50,
                                         }}
                                     />
                                     <Bar
@@ -333,7 +337,7 @@ function Books(props: BooksProps) {
                         <ResponsiveContainer>
                             <BarChart
                                 margin={{
-                                    left: 10,
+                                    left: 50,
                                     top: 10,
                                     right: 10,
                                     bottom: 30,
@@ -353,11 +357,12 @@ function Books(props: BooksProps) {
                                     label={{
                                         value: 'Number of Books',
                                         angle: -90,
+                                        offset: -20,
                                         position: 'insideLeft',
                                         textAnchor: 'middle',
                                     }}
                                     padding={{
-                                        top: 30,
+                                        top: 50,
                                     }}
                                 />
                                 <Bar
@@ -373,7 +378,6 @@ function Books(props: BooksProps) {
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
-
                 </div>
             </Container>
         </Container>
