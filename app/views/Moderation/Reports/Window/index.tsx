@@ -189,6 +189,7 @@ function Window(props: windowProps) {
                             />
                             <XAxis
                                 dataKey="numberOfBooksOrdered"
+                                type="number"
                                 name="Number of Ordered Books"
                                 label={{
                                     value: 'Number of Ordered Books',
