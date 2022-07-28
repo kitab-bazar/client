@@ -14,7 +14,7 @@ import styles from './styles.css';
 
 const TOP_SELLING_ITEMS = gql`
     query TopSellingItem {
-        books(ordering: "ordered_count", pageSize: 5) {
+        books(ordering: "-ordered_count", pageSize: 5) {
             results {
                 image {
                     name
