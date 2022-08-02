@@ -283,7 +283,9 @@ function Base() {
                                             <Nagbar />
                                             <Routes className={styles.view} />
                                             <Footer className={styles.footer} />
-                                            <OrdersBar className={styles.ordersBar} />
+                                            { authenticated && (
+                                                <OrdersBar className={styles.ordersBar} />
+                                            )}
                                         </Init>
                                     </Router>
                                 </AlertContext.Provider>
