@@ -187,7 +187,7 @@ function Footer(props: Props) {
                         </a>
                         <a
                             className={styles.phoneLink}
-                            href="tel:+977-9741673214"
+                            href="tel:+977-9762416156"
                         >
                             {resolveToComponent(
                                 strings.callUsLabel,
@@ -195,7 +195,7 @@ function Footer(props: Props) {
                                     phoneNumber: (
                                         <NumberOutput
                                             // NOTE: Currently set as TC's number
-                                            value={9741673214}
+                                            value={9762416156}
                                             separatorHidden
                                         />
                                     ),
